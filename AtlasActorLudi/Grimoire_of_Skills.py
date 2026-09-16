@@ -203,10 +203,11 @@ class Skill:
 			base += self.ProficiencyBonus
 		if self.proficiency_level >= 2:
 			base += self.ProficiencyBonus
-		else:
-			if self.jack:
-				# If Jack of All Trades is active and the skill is not proficient, add half PB
-				base = base + (self.ProficiencyBonus//2)
+		if self.proficiency_level == 0 and self.jack:
+			# Jack of All Trades adds half PB only to a check that adds no PB
+			# (2024).  The flag is set before Backgrounds and Feats train their
+			# skills, so a trained skill may still carry it (QST-0125).
+			base = base + (self.ProficiencyBonus//2)
 		flat = int(
 			getattr(
 				self,
@@ -806,8 +807,8 @@ class Char_Skills:
 					return self.activate_expertise(n,skill_names)
 
 			elif s == "Animal Handling":
-				if self.Survival.proficiency_level < 2:
-					self.Survival.proficiency_level = 2
+				if self.Animal_Handling.proficiency_level < 2:
+					self.Animal_Handling.proficiency_level = 2
 					skill_names.remove(s)
 					return self.activate_expertise(n-1,skill_names)
 				else:

@@ -6,7 +6,7 @@
 - **Owner:** Claude (restoration below, complete) — *sidequests .1–.4 unclaimed*
 - **Route to:** any recovery agent, Cleric (Repair), Rogue (Testing), Julio
 - **Parent:** —
-- **Sidequests:** QST-0050.1 · QST-0050.2 · QST-0050.3 · QST-0050.4 · QST-0050.5
+- **Sidequests:** QST-0050.1 · QST-0050.2 · QST-0050.3 · QST-0050.4 · QST-0050.5 · QST-0050.6
 - **Related:** QST-0049 (the same crisis, spell lane) · `$S/RECOVERY-COORD.md` (live agent board) · the reflog `reset` + `fdf3b08` crisis commit
 
 ---
