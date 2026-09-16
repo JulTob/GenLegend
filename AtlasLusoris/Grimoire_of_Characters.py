@@ -40,8 +40,6 @@ try: # Cartography
 	from AtlasLusoris.BackgroundKit import (
 			Apply_Background,
 			)
-	from AtlasInventarium import Grimoire_of_Objects
-	from AtlasInventarium.Grimoire_of_Objects import Object, GenerateEquipment, Inventory
 	from AtlasLusoris.Grimoire_of_Spellcasters import spellcaster
 	from AtlasActorLudi.CharactersKit import (
 			Character as Character_Skeleton,
@@ -377,12 +375,10 @@ class Character(Character_Skeleton):
 	@guardian
 	def SetFeatures(char):
 		from AtlasLusoris.Map_of_Classes import (
-				apply_class_proficiencies,
 				GetFeatures,                 # main entry-point to get features list
 				health_dice
 				)
 		GetFeatures(char)
-		apply_class_proficiencies(char)
 		return char
 
 
@@ -390,7 +386,6 @@ class Character(Character_Skeleton):
 	def apply_class_features(character):
 		from AtlasLusoris.Map_of_Classes import get_class_progression
 		from AtlasLusoris.Map_of_Classes import (
-				apply_class_proficiencies,
 				GetFeatures,                 # main entry-point to get features list
 				health_dice
 				)

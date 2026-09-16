@@ -76,7 +76,7 @@ disappear, not to be maintained alongside.
 
 ## 🚧 Remaining
 
-- Delete `Grimoire_of_Objects` (now unreachable from the player path, still imported).
+- ~~Delete `Grimoire_of_Objects` (now unreachable from the player path, still imported).~~ Done 2026-09-16 on Julio's go: the module, its two dead imports and `Codex_of_Progression.apply_class_proficiencies` (never called; it would crash on the GearKit `Loadout`) are gone. Measured first: 13 Guilds at levels 1 and 5 made zero calls into the module, and 52 generated characters fingerprint identically before and after.
 - NPCs stay on their own path **by Julio's explicit decision** — they should carry less,
   favour characteristic weapons, and use lootables. Not this quest.
 - `str_requirement` / `stealth_disadvantage` recorded but not enforced.

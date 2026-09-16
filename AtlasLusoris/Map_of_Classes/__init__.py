@@ -9,7 +9,6 @@ from .Codex_of_Progression  import (
 		Progression,
 		get_class_progression,
 		get_features,
-		apply_class_proficiencies
 		)
 
 # Import concrete classes
@@ -48,7 +47,7 @@ __all__ = [
 	"Multiclass",
 	"classes", "subclasses",
 	"get_class_progression", "GetClassProgression",
-	"apply_class_proficiencies", "apply_class_features"]
+	"apply_class_features"]
 
 GetFeatures = get_features # legacy Camel-Case alias so old code continues to work
 __all__.extend(["get_features", "GetFeatures"])
