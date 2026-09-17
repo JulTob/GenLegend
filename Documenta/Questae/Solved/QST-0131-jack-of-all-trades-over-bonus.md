@@ -1,4 +1,4 @@
-# QST-0125 — Jack of All Trades adds half PB to skills that already add PB
+# QST-0131 — Jack of All Trades adds half PB to skills that already add PB
 
 - **Type:** bug
 - **Priority:** 🔴 urgent — *every Bard of level 2 or more printed a wrong skill modifier*

@@ -206,7 +206,7 @@ class Skill:
 		if self.proficiency_level == 0 and self.jack:
 			# Jack of All Trades adds half PB only to a check that adds no PB
 			# (2024).  The flag is set before Backgrounds and Feats train their
-			# skills, so a trained skill may still carry it (QST-0125).
+			# skills, so a trained skill may still carry it (QST-0131).
 			base = base + (self.ProficiencyBonus//2)
 		flat = int(
 			getattr(
