@@ -101,8 +101,8 @@ remaining bridges, and the next safe cuts.
   names weapons the Character actually carries.
 - Each module carries its own `__main__` self-test; `GearKit.__main__` also sweeps
   12 guilds × 5 levels for the equipment invariants.
-- `Grimoire_of_Objects` (legacy `Inventory`, `GenerateEquipment`) is unreachable from the
-  player path but still present — see QST-0046.
+- `Grimoire_of_Objects` (legacy `Inventory`, `GenerateEquipment`) was deleted on
+  2026-09-16 (QST-0046); `GearKit` is the only equipment path.
 - NPCs remain on their own gear path by explicit decision.
 
 ### Gear and equipment (2026-08-01)
@@ -120,8 +120,8 @@ remaining bridges, and the next safe cuts.
   names weapons the Character actually carries.
 - Each module carries its own `__main__` self-test; `GearKit.__main__` also sweeps
   12 guilds × 5 levels for the equipment invariants.
-- `Grimoire_of_Objects` (legacy `Inventory`, `GenerateEquipment`) is unreachable from the
-  player path but still present — see QST-0046.
+- `Grimoire_of_Objects` (legacy `Inventory`, `GenerateEquipment`) was deleted on
+  2026-09-16 (QST-0046); `GearKit` is the only equipment path.
 - NPCs remain on their own gear path by explicit decision.
 
 ## Approved destination not yet complete
