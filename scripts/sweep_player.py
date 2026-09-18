@@ -21,6 +21,21 @@ import sys
 import time
 import traceback
 from collections import Counter, defaultdict
+from pathlib import Path
+
+
+PROJECT_ROOT = Path(
+        __file__
+        ).resolve().parent.parent
+if str(
+        PROJECT_ROOT
+        ) not in sys.path:
+    sys.path.insert(
+            0,
+            str(
+                    PROJECT_ROOT
+                    ),
+            )
 
 WIDE = "--wide" in sys.argv[1:]
 args = [a for a in sys.argv[1:] if a != "--wide"]
