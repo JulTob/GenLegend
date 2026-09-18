@@ -126,6 +126,7 @@ def _glamour(
 		min_level: int,
 		description,
 		chips=(),
+		apply=None,
 		):
 	return _path(
 			GLAMOUR,
@@ -133,6 +134,7 @@ def _glamour(
 			min_level=min_level,
 			description=description,
 			chips=chips,
+			apply=apply,
 			)
 
 def _lore(
@@ -141,6 +143,7 @@ def _lore(
 		min_level: int,
 		description,
 		chips=(),
+		apply=None,
 		):
 	return _path(
 			LORE,
@@ -148,6 +151,7 @@ def _lore(
 			min_level=min_level,
 			description=description,
 			chips=chips,
+			apply=apply,
 			)
 
 def _valor(
@@ -156,6 +160,7 @@ def _valor(
 		min_level: int,
 		description,
 		chips=(),
+		apply=None,
 		):
 	return _path(
 			VALOR,
@@ -163,7 +168,107 @@ def _valor(
 			min_level=min_level,
 			description=description,
 			chips=chips,
+			apply=apply,
 			)
+
+def _Untrained_Skill_Names(
+		skills,
+		) -> list[str]:
+	"""
+	Name every skill this Character is not yet proficient in.
+
+	``get_all_skills`` answers with Skill objects; ``activate_proficiencies``
+	compares each entry against a name. Handing it the objects matches
+	nothing and grants nothing, which is how the College of Lore lost all
+	three of its skills in silence.
+	"""
+	return [
+		skill.name
+		for skill in skills.get_all_skills()
+		if skill.proficiency_level < 1
+		]
+
+
+def _Grant_Untrained_Skills(
+		char,
+		count: int,
+		) -> None:
+	"""Make the Character proficient in ``count`` skills they lack."""
+	skills = getattr(
+			char,
+			"skills",
+			None,
+			)
+	if skills is None:
+		return
+	skills.activate_proficiencies(
+			count,
+			_Untrained_Skill_Names(
+					skills,
+					),
+			)
+
+
+def _apply_expertise(
+		char,
+		) -> None:
+	"""
+	Double the Proficiency Bonus on two more trained skills.
+
+	This used to run inside ``set_Skills``, which seats the Guild's three
+	skills and then reaches for Expertise straight away. The Background's
+	two skills are seated afterwards, so the pool held three names when it
+	should have held five, and the level 9 lesson regularly found nothing
+	left to double. A Training awakens after the Background has taught, so
+	the pool here is the whole sheet.
+	"""
+	skills = getattr(
+			char,
+			"skills",
+			None,
+			)
+	if skills is None:
+		return
+	skills.activate_expertise(
+			2,
+			skills.get_proficient_skills(),
+			)
+
+
+def _apply_bonus_proficiencies(
+		char,
+		) -> None:
+	"""College of Lore: three more skills go in the bag."""
+	_Grant_Untrained_Skills(
+			char,
+			3,
+			)
+
+
+def _apply_martial_training(
+		char,
+		) -> None:
+	"""College of Valor: Martial weapons, Medium armor, Shields."""
+	skills = getattr(
+			char,
+			"skills",
+			None,
+			)
+	if skills is None:
+		return
+	for proficiency in (
+			"Martial_Weapons",
+			"Medium",
+			"Shields",
+			):
+		trained = getattr(
+				skills,
+				proficiency,
+				None,
+				)
+		if trained is not None:
+			trained.set_proficiency()
+
 
 def _bardic_entry(
 		char,
@@ -232,6 +337,7 @@ Expertise = _core(
 		"Choose two skills you are proficient in. Your proficiency bonus is "
 		"doubled for any ability check you make using either of those skills."
 		),
+	apply=_apply_expertise,
 	)
 
 Jack_of_All_Trades = _core(
@@ -248,7 +354,9 @@ Font_of_Inspiration = _core(
 	min_level=5,
 	description=(
 		"You regain all your expended Bardic Inspiration uses when you finish a "
-		"Short or Long Rest."
+		"Short or Long Rest. <br>"
+		"You can also expend a spell slot (no action required) to regain one "
+		"expended use."
 		),
 	)
 
@@ -256,11 +364,12 @@ Countercharm = _core(
 	name="Countercharm",
 	min_level=7,
 	description=(
-		"<b>Action:</b> you begin a performance that lasts until the end of your "
-		"next turn. During that time, you and any friendly creature within 30 "
-		"feet that can hear you have Advantage on saving throws against the "
-		"Charmed and Frightened conditions. A creature must be able to hear you "
-		"at the start of its turn to gain this benefit."
+		"<b>Reaction:</b> when you, or a creature within 30 feet of you, fails a "
+		"saving throw against an effect that applies the <b>Charmed</b> or "
+		"<b>Frightened</b> condition, that saving throw is rerolled with "
+		"Advantage. The new roll stands. <br>"
+		"This spends no Bardic Inspiration, and there is no limit on how often "
+		"you can do it."
 		),
 	)
 
@@ -271,6 +380,7 @@ Expertise_II = _core(
 		"Choose two more skills you are proficient in. Your proficiency bonus is "
 		"doubled for any ability check you make using either of those skills."
 		),
+	apply=_apply_expertise,
 	)
 
 Magical_Secrets = _core(
@@ -278,10 +388,11 @@ Magical_Secrets = _core(
 	min_level=10,
 	description=(
 		"You have plundered magical knowledge from a wide spectrum of "
-		"disciplines. Choose two spells from any class's spell list. The chosen "
-		"spells count as Bard spells for you and are always prepared. <br>"
-		"Whenever you gain a Bard level, you can replace one of the chosen spells "
-		"with another eligible spell."
+		"disciplines. Whenever your number of prepared spells increases, and "
+		"whenever you replace one of them, you can take the spell from the "
+		"<b>Cleric</b>, <b>Druid</b> or <b>Wizard</b> list as readily as your "
+		"own. <br>"
+		"A spell taken this way counts as a Bard spell for you."
 		),
 	)
 
@@ -289,8 +400,8 @@ Superior_Inspiration = _core(
 	name="Superior Inspiration",
 	min_level=18,
 	description=(
-		"When you roll Initiative and have no Bardic Inspiration uses remaining, "
-		"you regain <b>one</b> expended use."
+		"When you roll Initiative, you regain expended uses of Bardic "
+		"Inspiration until you have <b>two</b>."
 		),
 	)
 
@@ -340,6 +451,12 @@ def _dazzling_armour_class(
 def _apply_dazzling_footwork(
 		char,
 		) -> None:
+	"""Seat the dancer's proficiency and the Armor Class it buys.
+
+	The unarmored Armor Class used to be set by the legacy Progression
+	layer. It belongs to the Feature that describes it, so that a reader
+	of this entry can find the number it promises.
+	"""
 	skills = getattr(
 			char,
 			"skills",
@@ -352,6 +469,9 @@ def _apply_dazzling_footwork(
 			)
 	if dance is not None:
 		dance.set_proficiency()
+	char.AC = _dazzling_armour_class(
+			char,
+			)
 
 
 Dazzling_Footwork = _dance(
@@ -491,6 +611,7 @@ Bonus_Proficiencies = _lore(
 	name="Bonus Proficiencies",
 	min_level=3,
 	description="You gain proficiency in three skills of your choice.",
+	apply=_apply_bonus_proficiencies,
 	)
 
 Cutting_Words = _lore(
@@ -559,6 +680,7 @@ Martial_Training = _valor(
 		"In addition, you can use a Simple or Martial weapon as a Spellcasting "
 		"Focus to cast spells from your Bard spell list."
 		),
+	apply=_apply_martial_training,
 	)
 
 Valor_Extra_Attack = _valor(
