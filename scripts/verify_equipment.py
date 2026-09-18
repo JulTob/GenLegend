@@ -86,11 +86,31 @@ def check_records(failures):
 				)
 
 
+def chip_label(chip):
+	"""
+	The label a chip prints on the sheet, whichever shape the chip is.
+
+	Two shapes are in use. Most Guilds write a plain ``(label, value)``
+	pair. The Bard writes ``AtlasVenustas.Chip``, which subclasses ``str``
+	so a chip can BE its own HTML — indexing one returns the ``<`` that
+	opens its ``<div>``, not a label, so it is asked for ``.label`` by name.
+	"""
+	named = getattr(
+			chip,
+			"label",
+			None,
+			)
+	if named is not None:
+		return named
+	return chip[0]
+
+
 def check_character(char, guild, level, seed, failures):
 	from AtlasInventarium.GearKit import (
 			armour_allowance,
 			armour_voids_unarmoured,
 			current_armour_class,
+			trained_for,
 			unarmoured_formula,
 			weapon_pool,
 			)
@@ -189,15 +209,19 @@ def check_character(char, guild, level, seed, failures):
 				)
 
 	# --- weapons are trained ones, never firearms --------------------------
-	allowed_weapons = {
-			weapon.name
-			for weapon in weapon_pool(char)
-			}
+	# ``trained_for`` answers the PROFICIENCY question; ``weapon_pool``
+	# answers the SHOPPING one and is necessarily a catalogue of
+	# Ledger_of_Weapons. A levelled caster's implement is bought from
+	# Ledger_of_Wonders, so the catalogue does not list it even though it
+	# is a Simple weapon every Guild is trained for.
 	for weapon in equipped(
 			char,
 			Weapon,
 			):
-		if weapon.name not in allowed_weapons:
+		if not trained_for(
+				char,
+				weapon,
+				):
 			fail(
 					f"wields untrained {weapon.called}"
 					)
@@ -251,6 +275,12 @@ def check_character(char, guild, level, seed, failures):
 			item.name
 			for item in owned(char)
 			}
+	# Masteries are drilled on catalogue weapons and are chosen BY NAME, so
+	# here the shopping catalogue is exactly the right question to ask.
+	allowed_weapons = {
+			weapon.name
+			for weapon in weapon_pool(char)
+			}
 	for weapon_name, _mastery in picks:
 		# A drill you cannot practise is a line of text about nothing.
 		if weapon_name not in owned_names:
@@ -287,7 +317,7 @@ def check_character(char, guild, level, seed, failures):
 
 	# --- no duplicate chip labels on the sheet ------------------------------
 	chip_labels = [
-			chip[0]
+			chip_label(chip)
 			for feature in char.features
 			for chip in getattr(feature, "chips", ())
 			]
