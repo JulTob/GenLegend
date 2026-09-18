@@ -163,7 +163,7 @@ def Resolve_Dragonborn_Features(
 		"Draconic Flight",
 		(
 			f"As a {Draconic_Flight.ACTION}, you sprout spectral wings on your "
-			f"back, made of the same energy as your Breath Weapon. They last "
+			f"back, made of Spectral {damage} energy. They last "
 			f"for {Draconic_Flight.DURATION_MINUTES} minutes, or until you "
 			"retract them (no action required) or have the Incapacitated "
 			f"condition. During that time you have a Fly Speed of {fly_speed} "
