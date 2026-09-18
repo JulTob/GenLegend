@@ -54,7 +54,7 @@ RECORDS = (
 	Background(
 		name='Wildkeeper',
 		description=(
-			'You did not tame anything. You stayed. Season after season in one wild place: a wood, a marsh, a valley, a stretch of coast where the fog comes in by noon... Until it started treating you like a neighbour. You know which water is safe in a dry year, which root brings a fever down and which one you never touch, where the deer go when the snow comes and why they stopped going there. And somewhere in all that quiet you learned to truly listen, until the crows and the foxes and the old boar began to answer, and it turned out they had been complaining about you for years. You have buried animals you loved. You have sheltered both fox and rabbit in your hut through an especially hard winter, and all of you parted as friends. You do not think of the place as yours. If anything, it is the other way around.'
+			'You did not tame anything. You just stayed. Season after season in one wild place: a wood, a marsh, a valley, a stretch of coast where the fog comes in by noon... Until it started treating you like a neighbour. You know which water is safe in a dry year, which root brings a fever down and which one you never touch, where the deer go when the snow comes and why they stopped going there. And somewhere in all that quiet you learned to truly listen, until the crows and the foxes and the old boar began to answer, and it turned out they had been complaining about you for years. You have buried animals you loved. You have sheltered both fox and rabbit in your hut through an especially hard winter, and all of you parted as friends. You do not think of the place as yours. If anything, it is the other way around.'
 			),
 		abilities=('CON', 'INT', 'WIS',),
 		origin_feat='Wildwarden',
