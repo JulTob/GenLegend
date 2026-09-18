@@ -189,35 +189,118 @@ def _Untrained_Skill_Names(
 		]
 
 
-def _Grant_Untrained_Skills(
+# ---------------------------------------------------------------------------
+# What the Dice Bag chose
+#
+# This is a generator, not a builder: every pick was rolled before the page
+# existed, so no entry may read as though a decision is still pending
+# (Documenta/Canon/Feature-Text.md). Each lesson below rolls its own pick and
+# writes the result into a ledger on the Character, and its Entry reads that
+# ledger back when the sheet is rendered.
+# ---------------------------------------------------------------------------
+
+_LEDGER = "bard_choices"
+
+
+def _Ledger(
 		char,
-		count: int,
-		) -> None:
-	"""Make the Character proficient in ``count`` skills they lack."""
+		) -> dict:
+	"""The record of what each Bard lesson chose for this Character."""
+	chosen = getattr(
+			char,
+			_LEDGER,
+			None,
+			)
+	if chosen is None:
+		chosen = {}
+		setattr(
+				char,
+				_LEDGER,
+				chosen,
+				)
+	return chosen
+
+
+def _Recall(
+		char,
+		lesson: str,
+		) -> tuple[str, ...]:
+	"""What one lesson chose, or nothing if it has not run."""
+	return _Ledger(
+			char,
+			).get(
+			lesson,
+			(),
+			)
+
+
+def _Named(
+		entries,
+		) -> str:
+	"""Join names the way a sentence would: a, b and c."""
+	names = list(
+			entries
+			)
+	if not names:
+		return ""
+	if len(names) == 1:
+		return names[0]
+	return " and ".join(
+			(
+				", ".join(
+						names[:-1]
+						),
+				names[-1],
+				)
+			)
+
+
+def _Doubled_Skill_Names(
+		char,
+		) -> list[str]:
+	"""Every skill whose Proficiency Bonus is already doubled."""
 	skills = getattr(
 			char,
 			"skills",
 			None,
 			)
 	if skills is None:
-		return
-	skills.activate_proficiencies(
-			count,
-			_Untrained_Skill_Names(
-					skills,
-					),
-			)
+		return []
+	return [
+		skill.name
+		for skill in skills.get_all_skills()
+		if skill.proficiency_level >= 2
+		]
 
 
-def _apply_expertise(
+def _Trained_Skill_Names(
 		char,
+		) -> list[str]:
+	"""Every skill this Character is trained in, doubled or not."""
+	skills = getattr(
+			char,
+			"skills",
+			None,
+			)
+	if skills is None:
+		return []
+	return [
+		skill.name
+		for skill in skills.get_all_skills()
+		if skill.proficiency_level >= 1
+		]
+
+
+def _Double_Two_Skills(
+		char,
+		lesson: str,
 		) -> None:
 	"""
-	Double the Proficiency Bonus on two more trained skills.
+	Double the Proficiency Bonus on two more trained skills, and record them.
 
 	This used to run inside ``set_Skills``, which seats the Guild's three
-	skills and then reaches for Expertise straight away. The Background's
-	two skills are seated afterwards, so the pool held three names when it
+	skills and reaches for Expertise straight away. The Background's two
+	skills are seated afterwards, so the pool held three names when it
 	should have held five, and the level 9 lesson regularly found nothing
 	left to double. A Training awakens after the Background has taught, so
 	the pool here is the whole sheet.
@@ -229,19 +312,169 @@ def _apply_expertise(
 			)
 	if skills is None:
 		return
+	before = set(
+			_Doubled_Skill_Names(
+					char,
+					)
+			)
 	skills.activate_expertise(
 			2,
 			skills.get_proficient_skills(),
+			)
+	_Ledger(
+			char,
+			)[lesson] = tuple(
+			name
+			for name in _Doubled_Skill_Names(
+					char,
+					)
+			if name not in before
+			)
+
+
+def _apply_expertise(
+		char,
+		) -> None:
+	"""The level 2 lesson doubles two skills."""
+	_Double_Two_Skills(
+			char,
+			"Expertise",
+			)
+
+
+def _apply_expertise_II(
+		char,
+		) -> None:
+	"""The level 9 lesson doubles two more."""
+	_Double_Two_Skills(
+			char,
+			"Expertise (II)",
 			)
 
 
 def _apply_bonus_proficiencies(
 		char,
 		) -> None:
-	"""College of Lore: three more skills go in the bag."""
-	_Grant_Untrained_Skills(
+	"""College of Lore: three more skills go in the bag, and are named."""
+	skills = getattr(
 			char,
+			"skills",
+			None,
+			)
+	if skills is None:
+		return
+	before = set(
+			_Trained_Skill_Names(
+					char,
+					)
+			)
+	skills.activate_proficiencies(
 			3,
+			_Untrained_Skill_Names(
+					skills,
+					),
+			)
+	_Ledger(
+			char,
+			)["Bonus Proficiencies"] = tuple(
+			name
+			for name in _Trained_Skill_Names(
+					char,
+					)
+			if name not in before
+			)
+
+
+def _Highest_Spell_Rank(
+		char,
+		) -> int:
+	"""
+	The highest spell rank this Bard holds a slot for.
+
+	The Bard is a full caster, so the rank climbs by one every second
+	Guild level and stops at nine: rank 1 at Bard 1 and 2, rank 2 at 3
+	and 4, and so on.
+	"""
+	level = _rank(
+			char,
+			)
+	return min(
+			9,
+			(level + 1) // 2,
+			)
+
+
+def _Borrowable_Spells(
+		char,
+		):
+	"""
+	Cleric, Druid and Wizard spells this Bard could actually cast.
+
+	A cantrip, or a spell of a rank they hold a slot for, exactly as the
+	lesson's own wording requires.
+	"""
+	from AtlasLusoris.Grimoire_of_Spellcasters import SPELL_LISTS
+
+	ceiling = _Highest_Spell_Rank(
+			char,
+			)
+	borrowable = {}
+	for guild in (
+			"Cleric",
+			"Druid",
+			"Wizard",
+			):
+		for rank, bank in SPELL_LISTS.get(
+				guild,
+				{},
+				).items():
+			if rank > ceiling:
+				continue
+			for spell in bank:
+				borrowable.setdefault(
+						spell.name,
+						spell,
+						)
+	return list(
+			borrowable.values()
+			)
+
+
+def _apply_magical_discoveries(
+		char,
+		) -> None:
+	"""College of Lore: two spells lifted from the other traditions."""
+	from AtlasLusoris.Grimoire_of_Spellcasters import _pick_distinct
+
+	held = {
+		spell.name
+		for spell in getattr(
+				char,
+				"known_spells",
+				(),
+				) or ()
+		}
+	pool = [
+		spell
+		for spell in _Borrowable_Spells(
+				char,
+				)
+		if spell.name not in held
+		]
+	taken = _pick_distinct(
+			char,
+			pool,
+			2,
+			)
+	for spell in taken:
+		char.known_spells.append(
+				spell
+				)
+	_Ledger(
+			char,
+			)["Magical Discoveries"] = tuple(
+			spell.name
+			for spell in taken
 			)
 
 
@@ -297,6 +530,79 @@ def _bardic_entry(
 			)
 
 
+def _expertise_entry(
+		char,
+		) -> str:
+	"""Name the two skills this lesson doubled."""
+	return _Doubling_Text(
+			char,
+			"Expertise",
+			)
+
+
+def _expertise_II_entry(
+		char,
+		) -> str:
+	"""Name the two more this lesson doubled."""
+	return _Doubling_Text(
+			char,
+			"Expertise (II)",
+			)
+
+
+def _Doubling_Text(
+		char,
+		lesson: str,
+		) -> str:
+	"""One Expertise entry, naming its own pair."""
+	chosen = _Recall(
+			char,
+			lesson,
+			)
+	if not chosen:
+		return (
+			"Your Proficiency Bonus is doubled for any ability check that "
+			"uses a skill this lesson has doubled."
+			)
+	return (
+		f"Your Proficiency Bonus is <b>doubled</b> on "
+		f"<b>{_Named(chosen)}</b>."
+		)
+
+
+def _bonus_proficiencies_entry(
+		char,
+		) -> str:
+	"""Name the three skills the College added."""
+	chosen = _Recall(
+			char,
+			"Bonus Proficiencies",
+			)
+	if not chosen:
+		return "The College trains you in three more skills."
+	return f"The College trained you in <b>{_Named(chosen)}</b>."
+
+
+def _magical_discoveries_entry(
+		char,
+		) -> str:
+	"""Name the two spells lifted from the other traditions."""
+	chosen = _Recall(
+			char,
+			"Magical Discoveries",
+			)
+	if not chosen:
+		return (
+			"Two spells from the Cleric, Druid or Wizard traditions are "
+			"always prepared for you, and never count against the number "
+			"you prepare."
+			)
+	return (
+		f"<b>{_Named(chosen)}</b> are always prepared for you, and never "
+		"count against the number of spells you prepare."
+		)
+
+
 # ---------------------------------------------------------------------------
 # Core Guild lessons
 # ---------------------------------------------------------------------------
@@ -333,10 +639,7 @@ Spellcasting = _core(
 Expertise = _core(
 	name="Expertise",
 	min_level=2,
-	description=(
-		"Choose two skills you are proficient in. Your proficiency bonus is "
-		"doubled for any ability check you make using either of those skills."
-		),
+	description=_expertise_entry,
 	apply=_apply_expertise,
 	)
 
@@ -376,11 +679,8 @@ Countercharm = _core(
 Expertise_II = _core(
 	name="Expertise (II)",
 	min_level=9,
-	description=(
-		"Choose two more skills you are proficient in. Your proficiency bonus is "
-		"doubled for any ability check you make using either of those skills."
-		),
-	apply=_apply_expertise,
+	description=_expertise_II_entry,
+	apply=_apply_expertise_II,
 	)
 
 Magical_Secrets = _core(
@@ -610,7 +910,7 @@ Unbreakable_Majesty = _glamour(
 Bonus_Proficiencies = _lore(
 	name="Bonus Proficiencies",
 	min_level=3,
-	description="You gain proficiency in three skills of your choice.",
+	description=_bonus_proficiencies_entry,
 	apply=_apply_bonus_proficiencies,
 	)
 
@@ -629,14 +929,8 @@ Cutting_Words = _lore(
 Magical_Discoveries = _lore(
 	name="Magical Discoveries",
 	min_level=6,
-	description=(
-		"You learn two spells of your choice from the Cleric, Druid, or Wizard "
-		"spell list (or any combination). A chosen spell must be a cantrip or a "
-		"spell for which you have spell slots. <br>"
-		"These spells are always prepared and don't count against your number of "
-		"prepared spells. Whenever you gain a Bard level, you can replace one "
-		"chosen spell with another that meets these requirements."
-		),
+	description=_magical_discoveries_entry,
+	apply=_apply_magical_discoveries,
 	)
 
 Peerless_Skill = _lore(
