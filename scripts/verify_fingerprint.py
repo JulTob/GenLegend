@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """Prove that a change moved code without moving any Character.
 
+This is intentionally a cross-module integration rite, and it is here rather
+than in a module's ``__main__`` for the reason ``Code-Style.md`` allows as the
+rare exception: one generated Character crosses every Atlas — species, guild,
+background, feats, training, gear, spells, names — so no single module can
+hold the proof.  Its sibling rites (``verify_player_replay``,
+``verify_equipment``, ``sweep_player``) sit here for the same reason.  A check
+that *can* live beside the code it guards belongs in that module's
+``__main__``, not in this folder.
+
 The standing gate of the recovery plan (QST-0132): a refactor meant to change
 nothing must leave every generated Character identical, field by field.  Record
 a fingerprint before the change, compare after it.  When a questa *intends* a
