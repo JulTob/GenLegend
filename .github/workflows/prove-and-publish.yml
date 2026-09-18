@@ -1,0 +1,117 @@
+# The README's two rites, run by GitHub instead of by hand.
+#
+#   Prove     every pull request, and every push to main
+#   Publish   main only, and only after Prove is green
+#
+# Publishing is outward-facing, and QST-0093.8 records that the word is
+# Julio's: "the first deploy is on Julio's word". So Publish is bound to the
+# `production` Environment, and GitHub holds the job there until a reviewer
+# approves it. Delete the `environment:` block to let main publish by itself.
+#
+# No key is stored anywhere. `id-token: write` lets this workflow prove to
+# Google who it is (Workload Identity Federation), and Google answers with a
+# short-lived token. Nothing long-lived lives in the repository.
+
+name: Prove and Publish
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+# One run per branch. A newer push cancels an older run still in flight.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+
+  prove:
+    name: Prove
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Take the code
+        uses: actions/checkout@v4
+
+      - name: Take the Python the container runs
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: pip
+
+      - name: Build the venv
+        run: make setup
+
+      # The same three rites a contributor runs, by the same commands, so
+      # there is one definition of the gate rather than two.
+      - name: Smoke
+        run: make smoke-player
+
+      - name: Replay
+        run: make replay-player
+
+      - name: Sweep
+        run: make sweep-player
+
+  publish:
+    name: Publish
+    needs: prove
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: https://genlegend.eu
+    env:
+      SERVICE: ${{ vars.CLOUD_RUN_SERVICE || 'gen-legend' }}
+      REGION: ${{ vars.CLOUD_RUN_REGION || 'us-central1' }}
+    steps:
+      - name: Take the code
+        uses: actions/checkout@v4
+
+      # Fail here, loudly and early, rather than inside the cloud tool with a
+      # message nobody can act on.
+      - name: Check the Google settings are present
+        run: |
+          missing=""
+          [ -n "${{ vars.GCP_PROJECT_ID }}" ] || missing="$missing GCP_PROJECT_ID"
+          [ -n "${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}" ] || missing="$missing GCP_WORKLOAD_IDENTITY_PROVIDER"
+          [ -n "${{ vars.GCP_SERVICE_ACCOUNT }}" ] || missing="$missing GCP_SERVICE_ACCOUNT"
+          if [ -n "$missing" ]; then
+            echo "Missing repository variables:$missing"
+            echo "Set them under Settings -> Secrets and variables -> Actions -> Variables."
+            exit 1
+          fi
+
+      - name: Say who we are to Google
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Take the cloud tool
+        uses: google-github-actions/setup-gcloud@v2
+
+      # The same command the README documents, with the commit stamped on so
+      # the running service can say which build it is.
+      - name: Publish the container
+        run: |
+          gcloud run deploy "$SERVICE" \
+            --source . \
+            --region "$REGION" \
+            --allow-unauthenticated \
+            --set-env-vars "BUILD_SHA=${GITHUB_SHA::7}" \
+            --quiet
+
+      - name: Say where it went
+        run: |
+          gcloud run services describe "$SERVICE" \
+            --region "$REGION" \
+            --format 'value(status.url)'
