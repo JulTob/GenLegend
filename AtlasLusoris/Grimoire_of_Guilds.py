@@ -1163,8 +1163,50 @@ Barbarian = _PHB_Guild(
 				),
 		)
 
+# Julio's, 2026-09-18.  The Bard's core is **attention**, and it runs both
+# ways: you command it, and you pay it.  "All eyes on you" is the first
+# direction; "you have eyes on them" is the second, and the third verse is
+# that second direction at work.  The Bard notices, recalls and works it out
+# fast.  It never steals: an earlier draft said "steal" and was cut three
+# times for it.
+#
+# The register is the stadium song, and the text is shaped like one: two
+# short hooks around a long verse, with the refrain returning changed
+# ("The show is on" opens, "The show goes on" closes).  Every line is meant
+# to read twice, as a stage direction and as an order given in a fight.
+# "Start the beat" is a count-in or the rhythm of a melee.  "All eyes on
+# you" is an audience or a rank of enemies choosing a target.  The
+# ambiguity is the class: attention does not care which room it is in.
+#
+# "Take a bow" and "You will live this life for another day" close on the
+# survival the whole show was bought with.  Nothing here restates a rule;
+# the lessons carry those.
+#
+# Breaks are explicit per Documenta/Canon/Feature-Text.md.  This is a song.
+# A renderer that reflowed it would destroy the verses.
+BARD_DESCRIPTION = (
+	"Start the beat.<br>"
+	"Put on a smile.<br>"
+	"The show is on.\n\n"
+	"All eyes on you.<br>"
+	"And you have eyes on them.<br>"
+	"You get your spotlight. You don't need more than that.<br>"
+	"Time to show your own kind of magic.\n\n"
+	"Nothing ever gets past you.<br>"
+	"Not the breath before the lunge.<br>"
+	"Not the pause a priest leaves after the name.<br>"
+	"Not the tell in a liar's hands.<br>"
+	"You have heard this one before. You remember how it ends.<br>"
+	"Now you know what the room needs before the room does.\n\n"
+	"Then the beat stops. Take a bow.<br>"
+	"You will live this life for another day.<br>"
+	"The show goes on."
+	)
+
+
 Bard = _PHB_Guild(
 		name="Bard",
+		description=BARD_DESCRIPTION,
 		primary="CHA",
 		secondary="DEX",
 		hit_die=8,
