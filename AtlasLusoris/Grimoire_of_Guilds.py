@@ -1163,8 +1163,45 @@ Barbarian = _PHB_Guild(
 				),
 		)
 
+# Julio's, settled in the wiki (Class: Bard).  The Bard's core is
+# **attention**, and it runs both ways: you command it, and you pay it.
+# "All eyes on you" is the first direction, "you have eyes on them" the
+# second.  The Bard notices, recalls and works it out; it never steals.
+#
+# The register is the stadium song and the text is shaped like one: two
+# hooks around a turn, with the refrain returning changed.  "The show is
+# on" opens and "The show goes on" closes, and the second is the promise
+# the first only implied.
+#
+# Every line is meant to read twice, as a stage direction and as an order
+# given in a fight.  "Start the beat" is a count-in or the rhythm of a
+# melee.  "All eyes on you" is an audience or a rank of enemies choosing a
+# target.  The ambiguity is the class: attention does not care which room
+# it is in.  The close pays for all of it, because the bow is only taken
+# by someone who is still standing to take it.
+#
+# Nothing here restates a rule.  The lessons carry those, each under its
+# own line, also Julio's.
+#
+# Breaks are explicit per Documenta/Canon/Feature-Text.md.  This is a
+# song.  A renderer that reflowed it would destroy the verses.
+BARD_DESCRIPTION = (
+	"Start the beat.<br>"
+	"Put on a smile.<br>"
+	"The show is on.\n\n"
+	"All eyes on you.<br>"
+	"And you have eyes on them.<br>"
+	"You get your spotlight. That is all you need.<br>"
+	"Time to show your own kind of magic.\n\n"
+	"You have heard this one before. You remember how it ends.<br>"
+	"Then the beat stops. Take a bow. The show goes on.<br>"
+	"You will live this life for another day."
+	)
+
+
 Bard = _PHB_Guild(
 		name="Bard",
+		description=BARD_DESCRIPTION,
 		primary="CHA",
 		secondary="DEX",
 		hit_die=8,

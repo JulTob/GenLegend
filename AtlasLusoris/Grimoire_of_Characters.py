@@ -859,16 +859,11 @@ class Character(Character_Skeleton):
 					'Persuasion',
 					])
 				if char.level >= 2:
-					char.skills.activate_expertise(
-						2,
-						char.skills.get_proficient_skills()
-						)
+					# Expertise is granted by its own Training Tag, in
+					# AtlasOfTraining/Map_of_Bard_Training.py, because the
+					# Background has not taught its two skills yet and the
+					# pool here is too small to double twice.
 					char.skills.activate_jack_of_all_trades()
-					if char.level >= 9:
-						char.skills.activate_expertise(
-							2,
-							char.skills.get_proficient_skills()
-							)
 				if (
 						getattr(
 							char,
