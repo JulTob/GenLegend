@@ -59,10 +59,26 @@ jobs:
       - name: Sweep
         run: make sweep-player
 
+  # Not configured and half configured are different things, and the job
+  # treats them differently.
+  #
+  # With none of the three Google variables set, publishing simply is not
+  # set up yet, so this job is skipped and main stays green. A red main on
+  # every push would teach everyone to ignore the colour, which costs more
+  # than the missing deploy.
+  #
+  # With some of them set, somebody meant to configure it and something is
+  # wrong, so the job runs and the guard step below fails naming exactly
+  # which variable is absent.
   publish:
     name: Publish
     needs: prove
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: >-
+      github.event_name == 'push'
+      && github.ref == 'refs/heads/main'
+      && (vars.GCP_PROJECT_ID != ''
+          || vars.GCP_WORKLOAD_IDENTITY_PROVIDER != ''
+          || vars.GCP_SERVICE_ACCOUNT != '')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment:
@@ -75,8 +91,10 @@ jobs:
       - name: Take the code
         uses: actions/checkout@v4
 
-      # Fail here, loudly and early, rather than inside the cloud tool with a
-      # message nobody can act on.
+      # Reached only when at least one variable is set, so anything missing
+      # here is a half-finished setup rather than an absent one. Fail loudly
+      # and early, rather than inside the cloud tool with a message nobody
+      # can act on.
       - name: Check the Google settings are present
         run: |
           missing=""
