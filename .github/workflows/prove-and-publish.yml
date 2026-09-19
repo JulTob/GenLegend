@@ -85,7 +85,11 @@ jobs:
       name: production
       url: https://genlegend.eu
     env:
-      SERVICE: ${{ vars.CLOUD_RUN_SERVICE || 'gen-legend' }}
+      # gen-legends, with an s. That is the service genlegend.eu maps to.
+      # The default was gen-legend, which deploys successfully to a second
+      # service nobody is looking at, so an automatic publish would have
+      # reported success and changed nothing.
+      SERVICE: ${{ vars.CLOUD_RUN_SERVICE || 'gen-legends' }}
       REGION: ${{ vars.CLOUD_RUN_REGION || 'us-central1' }}
     steps:
       - name: Take the code
