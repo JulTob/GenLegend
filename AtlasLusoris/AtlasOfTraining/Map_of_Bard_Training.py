@@ -72,6 +72,7 @@ def _core(
 		description,
 		chips=(),
 		apply=None,
+		on_sheet: bool = True,
 		):
 	return Build_Training(
 			name=name,
@@ -80,6 +81,7 @@ def _core(
 			description=description,
 			chips=chips,
 			apply=apply,
+			on_sheet=on_sheet,
 			source=CORE_SOURCE,
 			)
 
@@ -548,47 +550,22 @@ def _Sung(
 def _expertise_entry(
 		char,
 		) -> str:
-	"""Name the two skills this lesson doubled."""
-	return _Doubling_Text(
+	"""
+	Name every skill Expertise has doubled, both helpings in one entry.
+
+	The level 9 lesson does not print a second time. It grows this one.
+	The rules hand out Expertise twice, but a reader holding the sheet
+	wants one answer to "which of my skills are doubled", not two entries
+	to add up, and the second would repeat this one's line word for word.
+	So the level 9 Training awakens with ``on_sheet=False``: it still
+	rolls and grants its two, and what it chose is named here.
+	"""
+	chosen = _Recall(
 			char,
 			"Expertise",
-			)
-
-
-def _expertise_II_entry(
-		char,
-		) -> str:
-	"""
-	Name the two more this lesson doubled.
-
-	No inspiration line. The wiki carries one Expertise feature and folds
-	the level 9 helping into it, so the line belongs to the lesson rather
-	than to each serving of it. Printing "Learn your lines" twice on one
-	sheet reads as a fault rather than a refrain.
-	"""
-	chosen = _Recall(
+			) + _Recall(
 			char,
 			"Expertise (II)",
-			)
-	if not chosen:
-		return (
-			"Your Proficiency Bonus is doubled for two more of your trained "
-			"skills."
-			)
-	return (
-		f"Your Proficiency Bonus is <b>doubled</b> on "
-		f"<b>{_Named(chosen)}</b> as well."
-		)
-
-
-def _Doubling_Text(
-		char,
-		lesson: str,
-		) -> str:
-	"""One Expertise entry, naming its own pair."""
-	chosen = _Recall(
-			char,
-			lesson,
 			)
 	if not chosen:
 		return _Sung(
@@ -724,8 +701,9 @@ Countercharm = _core(
 Expertise_II = _core(
 	name="Expertise (II)",
 	min_level=9,
-	description=_expertise_II_entry,
+	description="",
 	apply=_apply_expertise_II,
+	on_sheet=False,
 	)
 
 Magical_Secrets = _core(
