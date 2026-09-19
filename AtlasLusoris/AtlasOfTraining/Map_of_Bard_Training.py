@@ -516,7 +516,8 @@ def _bardic_entry(
 			char,
 			)
 	rest = "Short or Long" if level >= 5 else "Long"
-	return (
+	return _Sung(
+			"Believe in them. You will see.",
 			f"Your Bardic Inspiration die is a <b>{die}</b>. "
 			"<br><b>Bonus Action:</b> inspire a creature within 60 feet "
 			"that can see or hear you. That creature gains one Bardic "
@@ -528,6 +529,20 @@ def _bardic_entry(
 			f"<br>You can confer a total of <b>{uses} Bardic Inspiration dice</b>. "
 			f"You regain all expended uses when you finish a <b>{rest} Rest</b>."
 			)
+
+
+def _Sung(
+		line: str,
+		rules: str,
+		) -> str:
+	"""
+	One Entry: the line that inspires it, then the rule that pays it off.
+
+	The inspiration line comes first and the mechanics follow, which is the
+	house order for a Feature Entry, and the same shape the Fighter and the
+	Barbarian already print. The lines are Julio's, from the wiki.
+	"""
+	return f"*{line}*\n\n{rules}"
 
 
 def _expertise_entry(
@@ -543,11 +558,27 @@ def _expertise_entry(
 def _expertise_II_entry(
 		char,
 		) -> str:
-	"""Name the two more this lesson doubled."""
-	return _Doubling_Text(
+	"""
+	Name the two more this lesson doubled.
+
+	No inspiration line. The wiki carries one Expertise feature and folds
+	the level 9 helping into it, so the line belongs to the lesson rather
+	than to each serving of it. Printing "Learn your lines" twice on one
+	sheet reads as a fault rather than a refrain.
+	"""
+	chosen = _Recall(
 			char,
 			"Expertise (II)",
 			)
+	if not chosen:
+		return (
+			"Your Proficiency Bonus is doubled for two more of your trained "
+			"skills."
+			)
+	return (
+		f"Your Proficiency Bonus is <b>doubled</b> on "
+		f"<b>{_Named(chosen)}</b> as well."
+		)
 
 
 def _Doubling_Text(
@@ -560,13 +591,15 @@ def _Doubling_Text(
 			lesson,
 			)
 	if not chosen:
-		return (
+		return _Sung(
+			"Learn your lines. Then we'll start.",
 			"Your Proficiency Bonus is doubled for any ability check that "
-			"uses a skill this lesson has doubled."
+			"uses a skill this lesson has doubled.",
 			)
-	return (
+	return _Sung(
+		"Learn your lines. Then we'll start.",
 		f"Your Proficiency Bonus is <b>doubled</b> on "
-		f"<b>{_Named(chosen)}</b>."
+		f"<b>{_Named(chosen)}</b>.",
 		)
 
 
@@ -579,8 +612,14 @@ def _bonus_proficiencies_entry(
 			"Bonus Proficiencies",
 			)
 	if not chosen:
-		return "The College trains you in three more skills."
-	return f"The College trained you in <b>{_Named(chosen)}</b>."
+		return _Sung(
+			"Knowledge dies unpractised.",
+			"The College trains you in three more skills.",
+			)
+	return _Sung(
+		"Knowledge dies unpractised.",
+		f"The College trained you in <b>{_Named(chosen)}</b>.",
+		)
 
 
 def _magical_discoveries_entry(
@@ -592,14 +631,16 @@ def _magical_discoveries_entry(
 			"Magical Discoveries",
 			)
 	if not chosen:
-		return (
+		return _Sung(
+			"Everyone keeps secrets. I keep copies.",
 			"Two spells from the Cleric, Druid or Wizard traditions are "
 			"always prepared for you, and never count against the number "
-			"you prepare."
+			"you prepare.",
 			)
-	return (
+	return _Sung(
+		"Everyone keeps secrets. I keep copies.",
 		f"<b>{_Named(chosen)}</b> are always prepared for you, and never "
-		"count against the number of spells you prepare."
+		"count against the number of spells you prepare.",
 		)
 
 
@@ -628,7 +669,8 @@ Bardic_Inspiration = _core(
 Spellcasting = _core(
 	name="Spellcasting",
 	min_level=1,
-	description=(
+	description=_Sung(
+		"Anyone can say the words. Few can play the role.",
 		"You cast Bard spells through performance and wit. <b>Charisma</b> is "
 		"your spellcasting ability. You know a selection of Bard spells from the "
 		"Bard spell list, and you can replace one known spell when you gain a "
@@ -646,7 +688,8 @@ Expertise = _core(
 Jack_of_All_Trades = _core(
 	name="Jack of All Trades",
 	min_level=2,
-	description=(
+	description=_Sung(
+		"Theory says theory always works.",
 		"You can add half your proficiency bonus (rounded down) to any ability "
 		"check you make that doesn't already use your proficiency bonus."
 		),
@@ -655,7 +698,8 @@ Jack_of_All_Trades = _core(
 Font_of_Inspiration = _core(
 	name="Font of Inspiration",
 	min_level=5,
-	description=(
+	description=_Sung(
+		"Passion, nap, repeat.",
 		"You regain all your expended Bardic Inspiration uses when you finish a "
 		"Short or Long Rest. <br>"
 		"You can also expend a spell slot (no action required) to regain one "
@@ -666,7 +710,8 @@ Font_of_Inspiration = _core(
 Countercharm = _core(
 	name="Countercharm",
 	min_level=7,
-	description=(
+	description=_Sung(
+		"Smoke and mirrors, sure, but transparent when you know the tricks.",
 		"<b>Reaction:</b> when you, or a creature within 30 feet of you, fails a "
 		"saving throw against an effect that applies the <b>Charmed</b> or "
 		"<b>Frightened</b> condition, that saving throw is rerolled with "
@@ -686,7 +731,8 @@ Expertise_II = _core(
 Magical_Secrets = _core(
 	name="Magical Secrets",
 	min_level=10,
-	description=(
+	description=_Sung(
+		"You heard a song once and learnt it? That's cute.",
 		"You have plundered magical knowledge from a wide spectrum of "
 		"disciplines. Whenever your number of prepared spells increases, and "
 		"whenever you replace one of them, you can take the spell from the "
@@ -699,7 +745,8 @@ Magical_Secrets = _core(
 Superior_Inspiration = _core(
 	name="Superior Inspiration",
 	min_level=18,
-	description=(
+	description=_Sung(
+		"Breathe in. Breathe out. Easy.",
 		"When you roll Initiative, you regain expended uses of Bardic "
 		"Inspiration until you have <b>two</b>."
 		),
@@ -708,7 +755,8 @@ Superior_Inspiration = _core(
 Words_of_Creation = _core(
 	name="Words of Creation",
 	min_level=20,
-	description=(
+	description=_Sung(
+		"You are no longer an instrument. You are the conductor.",
 		"You have mastered two of the Words of Creation: <em>Power Word Heal</em> "
 		"and <em>Power Word Kill</em>. These spells are always prepared for you "
 		"and don't count against your number of prepared spells. <br>"
@@ -777,7 +825,8 @@ def _apply_dazzling_footwork(
 Dazzling_Footwork = _dance(
 	name="Dazzling Footwork",
 	min_level=3,
-	description=(
+	description=_Sung(
+		"Don't you dare look back. Just keep your eyes on me.",
 		"While you aren't wearing armor or wielding a Shield, you gain:<ul>"
 		"<li><b>Unarmored Defense.</b> Your base AC equals 10 + your Dexterity "
 		"modifier + your Charisma modifier.</li>"
@@ -805,7 +854,8 @@ Dazzling_Footwork = _dance(
 Inspiring_Movement = _dance(
 	name="Inspiring Movement",
 	min_level=6,
-	description=(
+	description=_Sung(
+		"Don't get so close",
 		"When an enemy you can see ends its turn within 5 feet of you, you can "
 		"take a Reaction and expend one use of your Bardic Inspiration to move up "
 		"to half your Speed. One ally of your choice within 30 feet can then also "
@@ -817,7 +867,8 @@ Inspiring_Movement = _dance(
 Tandem_Footwork = _dance(
 	name="Tandem Footwork",
 	min_level=6,
-	description=(
+	description=_Sung(
+		"On your marks.",
 		"When you roll Initiative (and don't have the Incapacitated condition), "
 		"you can expend one use of your Bardic Inspiration. When you do, roll "
 		"your Bardic Inspiration die; you and each ally within 30 feet that can "
@@ -828,7 +879,8 @@ Tandem_Footwork = _dance(
 Leading_Evasion = _dance(
 	name="Leading Evasion",
 	min_level=14,
-	description=(
+	description=_Sung(
+		"Watch out!",
 		"When you are subjected to an effect that allows you to make a Dexterity "
 		"saving throw to take only half damage, you instead take no damage on a "
 		"success and only half damage on a failure. <br>"
@@ -846,7 +898,8 @@ Leading_Evasion = _dance(
 Beguiling_Magic = _glamour(
 	name="Beguiling Magic",
 	min_level=3,
-	description=(
+	description=_Sung(
+		"Adore me or dread me. Either way, you are mine.",
 		"You always have the <em>Charm Person</em> and <em>Mirror Image</em> "
 		"spells prepared. <br>"
 		"Immediately after you cast an Enchantment or Illusion spell using a "
@@ -863,7 +916,8 @@ Beguiling_Magic = _glamour(
 Mantle_of_Inspiration = _glamour(
 	name="Mantle of Inspiration",
 	min_level=3,
-	description=(
+	description=_Sung(
+		"On your feet, darling. The night is young.",
 		"<b>Bonus Action:</b> expend a use of Bardic Inspiration and roll the "
 		"die. Choose a number of other creatures within 60 feet, up to your "
 		"Charisma modifier (minimum one). Each chosen creature gains Temporary "
@@ -875,7 +929,8 @@ Mantle_of_Inspiration = _glamour(
 Mantle_of_Majesty = _glamour(
 	name="Mantle of Majesty",
 	min_level=6,
-	description=(
+	description=_Sung(
+		"Say no, then. I'll wait.",
 		"You always have the <em>Command</em> spell prepared. <br>"
 		"<b>Bonus Action:</b> cast <em>Command</em> without expending a spell "
 		"slot and assume an unearthly appearance for 1 minute or until your "
@@ -891,7 +946,8 @@ Mantle_of_Majesty = _glamour(
 Unbreakable_Majesty = _glamour(
 	name="Unbreakable Majesty",
 	min_level=14,
-	description=(
+	description=_Sung(
+		"Go on, bite. Pure gold.",
 		"<b>Bonus Action:</b> assume a magically majestic presence for 1 minute "
 		"or until you have the Incapacitated condition. <br>"
 		"For the duration, the first time each turn any creature hits you with an "
@@ -917,7 +973,8 @@ Bonus_Proficiencies = _lore(
 Cutting_Words = _lore(
 	name="Cutting Words",
 	min_level=3,
-	description=(
+	description=_Sung(
+		"I only cut them short. Truth is the best distraction.",
 		"<b>Reaction:</b> when a creature you can see within 60 feet makes a "
 		"damage roll or succeeds on an ability check or attack roll, you can "
 		"expend one use of Bardic Inspiration and roll the die. Subtract the "
@@ -936,7 +993,8 @@ Magical_Discoveries = _lore(
 Peerless_Skill = _lore(
 	name="Peerless Skill",
 	min_level=14,
-	description=(
+	description=_Sung(
+		"Don't panic. Keep thinking. Fail better",
 		"When you make an ability check or attack roll and fail, you can expend "
 		"one use of Bardic Inspiration. Roll the Bardic Inspiration die and add "
 		"the number rolled to your d20, potentially turning a failure into a "
@@ -952,7 +1010,8 @@ Peerless_Skill = _lore(
 Combat_Inspiration = _valor(
 	name="Combat Inspiration",
 	min_level=3,
-	description=(
+	description=_Sung(
+		"Hold the line. I'll hold your back.",
 		"A creature that has a Bardic Inspiration die from you can use it for one "
 		"of the following effects:<ul>"
 		"<li><b>Defense.</b> When the creature is hit by an attack roll, it can "
@@ -968,7 +1027,8 @@ Combat_Inspiration = _valor(
 Martial_Training = _valor(
 	name="Martial Training",
 	min_level=3,
-	description=(
+	description=_Sung(
+		"Blade and board. Some weights are worth holding onto.",
 		"You gain proficiency with Martial weapons and training with Medium Armor "
 		"and Shields. <br>"
 		"In addition, you can use a Simple or Martial weapon as a Spellcasting "
@@ -980,7 +1040,8 @@ Martial_Training = _valor(
 Valor_Extra_Attack = _valor(
 	name="Extra Attack",
 	min_level=6,
-	description=(
+	description=_Sung(
+		"Hold fast. Every strike is a refusal to be moved.",
 		"You can attack twice instead of once whenever you take the Attack action "
 		"on your turn. <br>"
 		"In addition, you can cast one of your cantrips that has a casting time "
@@ -991,7 +1052,8 @@ Valor_Extra_Attack = _valor(
 Battle_Magic = _valor(
 	name="Battle Magic",
 	min_level=14,
-	description=(
+	description=_Sung(
+		"Never hold back.",
 		"After you cast a spell that has a casting time of an action, you can "
 		"make one attack with a weapon or Unarmed Strike as a Bonus Action."
 		),
