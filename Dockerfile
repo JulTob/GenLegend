@@ -1,7 +1,11 @@
 # Gen Legend, the Player Character generator, as one container.
-#   docker build --build-arg BUILD_SHA=$(git rev-parse --short HEAD) -t gen-legend .
-#   docker run -p 8080:8080 gen-legend
-#   gcloud run deploy gen-legend --source . --region us-central1 --allow-unauthenticated
+#   docker build --build-arg BUILD_SHA=$(git rev-parse --short HEAD) -t gen-legends .
+#   docker run -p 8080:8080 gen-legends
+#   gcloud run deploy gen-legends --source . --region us-central1 --allow-unauthenticated
+#
+# The Cloud Run service is gen-legends, with an s, and genlegend.eu maps to
+# it. Deploying to gen-legend builds and succeeds and changes nothing the
+# domain serves, because it creates a second service instead.
 FROM python:3.14-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \

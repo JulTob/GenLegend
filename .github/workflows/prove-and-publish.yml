@@ -19,6 +19,10 @@ on:
   push:
     branches:
       - main
+  # The button. Actions tab -> Prove and Publish -> Run workflow, with main
+  # selected. Publishing still needs main, so choosing another branch there
+  # proves it and publishes nothing, which is the safe way round.
+  workflow_dispatch:
 
 # One run per branch. A newer push cancels an older run still in flight.
 concurrency:
@@ -74,7 +78,7 @@ jobs:
     name: Publish
     needs: prove
     if: >-
-      github.event_name == 'push'
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
       && github.ref == 'refs/heads/main'
       && (vars.GCP_PROJECT_ID != ''
           || vars.GCP_WORKLOAD_IDENTITY_PROVIDER != ''
@@ -85,7 +89,11 @@ jobs:
       name: production
       url: https://genlegend.eu
     env:
-      SERVICE: ${{ vars.CLOUD_RUN_SERVICE || 'gen-legend' }}
+      # gen-legends, with an s. That is the service genlegend.eu maps to.
+      # The default was gen-legend, which deploys successfully to a second
+      # service nobody is looking at, so an automatic publish would have
+      # reported success and changed nothing.
+      SERVICE: ${{ vars.CLOUD_RUN_SERVICE || 'gen-legends' }}
       REGION: ${{ vars.CLOUD_RUN_REGION || 'us-central1' }}
     steps:
       - name: Take the code

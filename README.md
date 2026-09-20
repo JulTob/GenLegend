@@ -42,7 +42,27 @@ git checkout -b questa/QST-####-short-slug
 One container, one command:
 
 ```bash
-docker build --build-arg BUILD_SHA=$(git rev-parse --short HEAD) -t gen-legend .
+docker build --build-arg BUILD_SHA=$(git rev-parse --short HEAD) -t gen-legends .
 ```
 
-`gcloud run deploy gen-legend --source . --region us-central1 --allow-unauthenticated` builds the same Dockerfile on Cloud Run.
+`gcloud run deploy gen-legends --source . --region us-central1 --allow-unauthenticated` builds the same Dockerfile on Cloud Run.
+
+**The service is `gen-legends`, with an s.** `genlegend.eu` maps to it, and to nothing else. Deploying to `gen-legend` builds fine and changes nothing a visitor sees, because it quietly creates a second service the domain does not point at.
+
+`--source .` uploads the working directory as it stands, not the last commit, so deploy from a clean checkout of `main` or you ship whatever you were editing.
+
+If the deploy stops on `Missing required argument [--clear-base-image]`, the service is still set to let Cloud Run manage a base image for it, which a Dockerfile build cannot do. Add `--clear-base-image` once; the setting stays cleared.
+
+### Deploying from GitHub instead
+
+`.github/workflows/prove-and-publish.yml` runs the two rites above. **Prove** checks every pull request and every push to `main`. **Publish** deploys, and runs only on `main`, only once Prove is green, and only once the Google side exists.
+
+Set that up once, from Cloud Shell:
+
+```bash
+bash scripts/setup-github-deploy.sh
+```
+
+It creates a deployer account and a Workload Identity provider locked to this repository, then prints three values to paste into GitHub as **Variables** (not Secrets) under Settings → Secrets and variables → Actions. No key is created, so no key can leak. Until those variables exist, Publish skips and `main` stays green.
+
+Two ways to deploy once it is wired: push to `main`, or press **Run workflow** on the Actions tab. Add a `production` Environment with yourself as a required reviewer if the deploy should wait for your word; without one, GitHub publishes without asking.
