@@ -23,19 +23,13 @@ import traceback
 from collections import Counter, defaultdict
 from pathlib import Path
 
-
-PROJECT_ROOT = Path(
-        __file__
-        ).resolve().parent.parent
-if str(
-        PROJECT_ROOT
-        ) not in sys.path:
-    sys.path.insert(
-            0,
-            str(
-                    PROJECT_ROOT
-                    ),
-            )
+# `python scripts/sweep_player.py` puts scripts/ on the import path, not the
+# project root, so the Atlas packages are invisible and the documented
+# `make sweep-player` dies on the first import. Every other rite in this
+# folder seats the root itself; this one never did.
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 
 WIDE = "--wide" in sys.argv[1:]
 args = [a for a in sys.argv[1:] if a != "--wide"]
