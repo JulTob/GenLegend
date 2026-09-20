@@ -17,7 +17,7 @@ Player_Handbook_2024(
 	description=(
 		"""Orcs. The children of the horizon. Your people were on the plains first. Then the dwarves came for the gold underneath, the humans came to call it discovery, and the elves promised trade and brought curses. No orc was asked.
 
-The old wisdom says the plains are open to everyone, and riders must travel. Now all orcs are riders and no camp is safe. The new peoples fence the plains and attack when your beasts pass through the old ways. You are called raiders instead of riders. You ride further, carry more and go without longer than anyone who says it. Every soul walks a wind path, and we orcs carry our own through the storm. If we fall, we carry on.
+The old wisdom says the plains are open to everyone, and riders must travel. Now all orcs are riders and no camp is safe. The new peoples fence the plains and attack when your beasts pass through the old ways. We are called raiders instead of riders. We ride further, carry more and go without longer. Every soul walks a wind path, and we orcs carry our own through the storm. If we fall, we carry on.
 
 Think of why {name} left the Orc Camp, and what would bring them back."""
 		),
