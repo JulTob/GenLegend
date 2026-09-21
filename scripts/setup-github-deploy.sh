@@ -22,7 +22,28 @@
 
 set -euo pipefail
 
-PROJECT_ID="${PROJECT_ID:-gen-legend}"
+# Two names live here, one letter apart, and they are not the same thing.
+#
+#   gen-legend    the Google Cloud *project*. The box that holds the
+#                 billing account, the permissions and everything this
+#                 script creates. Singular, no s.
+#
+#   gen-legends   the Cloud Run *service* inside that project. The thing
+#                 that actually answers genlegend.eu. Plural, with an s.
+#
+# Both are real, both are correct, and each belongs to a different layer.
+# The service URL shows the nesting: the project's number is stamped into
+# the service's address,
+#
+#   https://gen-legends-1068852386499.us-central1.run.app
+#          |            |
+#          service      project number
+#
+# This script only ever names the project, so the singular is right here.
+# The service is named once, in .github/workflows/prove-and-publish.yml,
+# and there the plural is right. Deploying to the singular name succeeds,
+# quietly builds a second service, and serves nobody.
+PROJECT_ID="${PROJECT_ID:-gen-legend}"   # the project. Singular.
 REPO="${REPO:-JulTob/GenLegend}"
 POOL="github"
 PROVIDER="github"
@@ -120,6 +141,8 @@ Settings -> Secrets and variables -> Actions -> Variables:
 
   GCP_PROJECT_ID
   ${PROJECT_ID}
+  (the project, singular. The service it holds is gen-legends, with an s,
+   and the workflow already knows that name.)
 
   GCP_SERVICE_ACCOUNT
   ${SA}

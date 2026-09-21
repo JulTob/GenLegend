@@ -93,6 +93,10 @@ jobs:
       # The default was gen-legend, which deploys successfully to a second
       # service nobody is looking at, so an automatic publish would have
       # reported success and changed nothing.
+      #
+      # The near-identical gen-legend, without the s, is the *project*, and
+      # it arrives separately as vars.GCP_PROJECT_ID. Project holds service;
+      # they are two layers, not two spellings of one name.
       SERVICE: ${{ vars.CLOUD_RUN_SERVICE || 'gen-legends' }}
       REGION: ${{ vars.CLOUD_RUN_REGION || 'us-central1' }}
     steps:
