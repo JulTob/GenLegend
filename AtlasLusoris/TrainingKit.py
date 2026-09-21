@@ -604,10 +604,10 @@ def filter_legacy_features(
 			"specialization",
 			None,
 			)
-	# GuildKit Specializations publish the patron voice via ``extends=`` /
-	# ``heading=`` into the composed Guild Entry. Legacy Map_of_Classes
-	# Training still emits a second "{Patron} Patron" blurbs with the old
-	# "Your pact draws on…" text — drop those so Julio's transcription wins.
+	# GuildKit Specializations publish their voice via ``extends=`` and
+	# ``heading=`` inside the composed Guild Entry. An exact-name legacy
+	# introduction therefore repeats that entry. Warlock's legacy introduction
+	# uses the separate "{Patron} Patron" heading, so cover that form too.
 	patron_heading = (
 		f"{specialization} Patron"
 		if specialization
@@ -621,6 +621,8 @@ def filter_legacy_features(
 				None,
 				)
 		if name in covered:
+			continue
+		if specialization and name == specialization:
 			continue
 		if patron_heading and name == patron_heading:
 			continue

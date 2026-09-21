@@ -1,8 +1,8 @@
 # 🗝️ Rogue: Opportunity, read against the whole setting
 
 > 📖 **In flow.** Opportunity is the design decision. The core class text and
-> all four active archetype texts are current. The generator wiring still
-> remains. 📜 1 · 📚 2 · 📔 5 · 📖 2
+> all four active archetype texts are current. Every settled feature line is
+> wired into the generator. 📜 1 · 📚 2 · 📔 5 · 📖 2
 
 *Mythos analysis, 2026-09-08; revised 2026-09-17. This page records
 **Opportunity** as the Rogue's core fantasy, reads the rules and setting through
@@ -12,9 +12,10 @@ current design.*
 
 **Where the text lives.** Class and archetype paragraphs:
 `AtlasOfGuilds/RogueKit.py`. Lessons:
-`AtlasOfTraining/Map_of_Rogue_Training.py`; one shared filler line remains on
-Weapon Mastery. A 2014-era layer in `Map_of_Classes/Training/Rogue.py` still
-emits the feature *"Arcane Trickster: 3"* as a bare number. Active archetypes:
+`AtlasOfTraining/Map_of_Rogue_Training.py`; class-specific Weapon Mastery
+lines pass through the shared mastery renderer. The legacy progression still
+fills gaps, while its duplicate subclass-introduction cards are filtered.
+Active archetypes:
 Arcane Trickster, Assassin, Soulknife, Thief. Swashbuckler survives only in a
 legacy roster and is treated here as a future lens, not a generated option.
 Gear theme: `shadow` (Misericorde, Sleeve Knife, Quiet Answer, Alley Snap). No
@@ -35,12 +36,12 @@ question is "what breaks this?" Opportunity gives that question a purpose.
 
 Four sheets (Human Thief, Elf Assassin, Gnome Arcane Trickster, Tiefling
 Soulknife). Each now receives the same core invitation and a different answer
-to it: take, wait, stage, or read the opportunity. *Expertise* still says
-"Choose two" twice, the Arcane Trickster's legacy entry is still the number 3,
-and three of the four draw official one-sentence backgrounds (Charlatan,
-Entertainer, Soldier). The fourth draws the Renegade, which is the class's own
-background and the only other prose the Gnome receives that sounds like a
-person.
+to it: take, wait, stage, or read the opportunity. *Expertise* expands one
+entry at level 6, and the legacy subclass-introduction cards no longer reach
+the sheet. Three of the four draw official one-sentence backgrounds
+(Charlatan, Entertainer, Soldier). The fourth draws the Renegade, which is the
+class's own background and the only other prose the Gnome receives that sounds
+like a person.
 
 ---
 
@@ -333,17 +334,14 @@ Levantine key is ever playable. Keep the kunai out of the Rogue's gear theme.
 
 ### ⚠️ Stock, contradictory, or thin
 
-1. **The class and archetype paragraphs are written; most feature lines remain
-   unwired**, and "Arcane Trickster: 3" is still a feature.
-2. **Expertise is an open choice twice.**
-3. **The shadow budget's fourth site** (§5).
-4. **The Human and Halfling Thief** are the cliché; the register and the
+1. **The shadow budget's fourth site** (§5).
+2. **The Human and Halfling Thief** are the cliché; the register and the
    Egyptian heist are the rescue.
-5. **The ninja** must stay the Monk's (§5).
-6. **The official backgrounds the Rogue draws most printed as stubs** (§7): a
+3. **The ninja** must stay the Monk's (§5).
+4. **The official backgrounds the Rogue draws most printed as stubs** (§7): a
    code repair (Repairs-Ledger B17), not a rewrite.
-7. **Agent of the Ninth Quill** is one sentence.
-8. **Swashbuckler is only a legacy roster entry.** Its Opportunity lens is
+5. **Agent of the Ninth Quill** is one sentence.
+6. **Swashbuckler is only a legacy roster entry.** Its Opportunity lens is
    reserved until the subclass has a real Guild Tag and training path.
 
 ---
