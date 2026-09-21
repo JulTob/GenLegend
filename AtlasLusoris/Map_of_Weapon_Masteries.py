@@ -775,8 +775,13 @@ def weapon_mastery_chip(
 def weapon_mastery_entry(
 		char: Any,
 		n: int | None = None,
+		*,
+		lead: str = (
+			"You feel comfortable with the weapons you trained with."
+			),
 		) -> str:
 	"""Sheet prose naming the chosen weapons and their mastery properties."""
+	opening = f"*{lead}*\n\n"
 	count = mastery_count(
 			char
 			) if n is None else n
@@ -786,8 +791,8 @@ def weapon_mastery_entry(
 			)
 	if not picks:
 		return (
-			"*You feel comfortable with the weapons you trained with.*\n\n"
-			"Your training with weapons allows you to use the mastery "
+			opening
+			+ "Your training with weapons allows you to use the mastery "
 			"properties of weapons you practice with."
 			)
 	if len(
@@ -807,8 +812,8 @@ def weapon_mastery_entry(
 			+ f", and {picks[-1][0]}"
 			)
 	parts = [
-			"*You feel comfortable with the weapons you trained with.*\n\n"
-			"Your training with weapons allows you to use the mastery "
+			opening
+			+ "Your training with weapons allows you to use the mastery "
 			f"properties of <b>{weapons}</b>. Whenever you finish a Long Rest, "
 			"you can change one of those weapon choices.",
 			]

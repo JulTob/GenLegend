@@ -47,6 +47,7 @@ def _core(
 		description,
 		chips=(),
 		apply=None,
+		on_sheet: bool = True,
 		):
 	return Build_Training(
 			name=name,
@@ -56,6 +57,7 @@ def _core(
 			chips=chips,
 			apply=apply,
 			source=CORE_SOURCE,
+			on_sheet=on_sheet,
 			)
 
 
@@ -151,6 +153,43 @@ def _thief(
 # ---------------------------------------------------------------------------
 
 
+def _feature_line(
+		line: str,
+		rules,
+		):
+	lead = f"*{line}*\n\n"
+
+	if callable(
+			rules
+			):
+		def entry(
+				char,
+				) -> str:
+			return lead + rules(
+					char
+					)
+
+		return entry
+
+	return lead + rules
+
+
+def _expertise_entry(
+		char,
+		) -> str:
+	count = (
+		"four"
+		if _rank(
+				char
+				) >= 6
+		else "two"
+		)
+	return (
+		"Your proficiency bonus is doubled for any ability check you make "
+		f"that uses any of {count} of your skill proficiencies."
+		)
+
+
 def _sneak_attack_entry(
 		char,
 		) -> str:
@@ -168,6 +207,53 @@ def _sneak_attack_entry(
 		)
 
 
+def _cunning_strike_entry(
+		char,
+		) -> str:
+	rules = (
+		"When you deal Sneak Attack damage, you can add one of the "
+		"following Cunning Strike effects. Each effect costs a number "
+		"of Sneak Attack dice that you forgo before rolling."
+		"<br>Saving throw DC = 8 + Dexterity modifier + proficiency bonus."
+		"<br><b>Poison (Cost: 1d6).</b> Force a Constitution save or "
+		"the target has the Poisoned condition for 1 minute (repeating "
+		"save at end of each of its turns). Requires a Poisoner's Kit."
+		"<br><b>Trip (Cost: 1d6).</b> If Large or smaller, Dexterity "
+		"save or Prone."
+		"<br><b>Withdraw (Cost: 1d6).</b> Move up to half your Speed "
+		"without provoking Opportunity Attacks immediately after "
+		"the attack."
+		)
+	level = _rank(
+		char
+		)
+
+	if level >= 11:
+		rules += (
+			"<br><b>Improved Cunning Strike.</b> You can use up to two "
+			"Cunning Strike effects when you deal Sneak Attack damage, "
+			"paying the die cost for each."
+			)
+
+	if level >= 14:
+		rules += (
+			"<br><b>Devious Strikes.</b> You add the following effects to "
+			"your Cunning Strike options:"
+			"<ul>"
+			"<li><b>Daze (Cost: 2d6).</b> Constitution save or the target "
+			"can do only one of the following on its next turn: move, take "
+			"an action, or take a Bonus Action.</li>"
+			"<li><b>Knock Out (Cost: 6d6).</b> Constitution save or the "
+			"target has the Unconscious condition for 1 minute or until it "
+			"takes damage. It repeats the save at the end of each turn.</li>"
+			"<li><b>Obscure (Cost: 3d6).</b> Dexterity save or the target "
+			"has the Blinded condition until the end of its next turn.</li>"
+			"</ul>"
+			)
+
+	return rules
+
+
 # ---------------------------------------------------------------------------
 # Core Guild lessons
 # ---------------------------------------------------------------------------
@@ -176,17 +262,20 @@ def _sneak_attack_entry(
 Expertise = _core(
 		name="Expertise",
 		min_level=1,
-		description=(
-			"Choose two of your skill proficiencies. Your proficiency "
-			"bonus is doubled for any ability check you make that uses "
-			"either of the chosen proficiencies."
+		description=_feature_line(
+			"You learnt. You trained. You rehearsed. You know what to do.",
+			_expertise_entry,
 			),
 		)
 
 Sneak_Attack = _core(
 		name="Sneak Attack",
 		min_level=1,
-		description=_sneak_attack_entry,
+		description=_feature_line(
+			"One look is all it takes. One heartbeat. They give you the "
+			"chance. You take the shot.",
+			_sneak_attack_entry,
+			),
 		chips=(
 				("Sneak Attack", _sneak_dice, "🕷️"),
 				),
@@ -228,7 +317,10 @@ def _thieves_cant_entry(
 Thieves_Cant = _core(
 		name="Thieves' Cant",
 		min_level=1,
-		description=_thieves_cant_entry,
+		description=_feature_line(
+			"The streets know. The streets talk. You listen.",
+			_thieves_cant_entry,
+			),
 		)
 
 def _weapon_mastery_entry(
@@ -236,7 +328,8 @@ def _weapon_mastery_entry(
 		) -> str:
 	from AtlasLusoris.Map_of_Weapon_Masteries import weapon_mastery_entry
 	return weapon_mastery_entry(
-			char
+			char,
+			lead="You know the tools of the game.",
 			)
 
 
@@ -261,7 +354,8 @@ Weapon_Mastery = _core(
 Cunning_Action = _core(
 		name="Cunning Action",
 		min_level=2,
-		description=(
+		description=_feature_line(
+			"Cross the floor, slip past the blade, leave only a shadow.",
 			"Your quick thinking and agility allow you to move and act "
 			"quickly. On your turn, you can take one of the following "
 			"actions as a <i>Bonus Action</i>:"
@@ -281,7 +375,8 @@ Cunning_Action = _core(
 Steady_Aim = _core(
 		name="Steady Aim",
 		min_level=3,
-		description=(
+		description=_feature_line(
+			"Aim. Don't waste your shot. Don't let it slip.",
 			"As a <i>Bonus Action</i>, you give yourself Advantage on "
 			"your next attack roll on the current turn. You can use this "
 			"feature only if you haven't moved during this turn, and "
@@ -293,26 +388,17 @@ Steady_Aim = _core(
 Cunning_Strike = _core(
 		name="Cunning Strike",
 		min_level=5,
-		description=(
-			"When you deal Sneak Attack damage, you can add one of the "
-			"following Cunning Strike effects. Each effect costs a number "
-			"of Sneak Attack dice that you forgo before rolling."
-			"<br>Saving throw DC = 8 + Dexterity modifier + proficiency bonus."
-			"<br><b>Poison (Cost: 1d6).</b> Force a Constitution save or "
-			"the target has the Poisoned condition for 1 minute (repeating "
-			"save at end of each of its turns). Requires a Poisoner's Kit."
-			"<br><b>Trip (Cost: 1d6).</b> If Large or smaller, Dexterity "
-			"save or Prone."
-			"<br><b>Withdraw (Cost: 1d6).</b> Move up to half your Speed "
-			"without provoking Opportunity Attacks immediately after "
-			"the attack."
+		description=_feature_line(
+			"It's not in the blade. It's in the move.",
+			_cunning_strike_entry,
 			),
 		)
 
 Uncanny_Dodge = _core(
 		name="Uncanny Dodge",
 		min_level=5,
-		description=(
+		description=_feature_line(
+			"They thought they had you this time. Almost.",
 			"When an attacker that you can see hits you with an attack "
 			"roll, you can take a <i>Reaction</i> to halve the attack's "
 			"damage against you (round down)."
@@ -327,12 +413,14 @@ Expertise_II = _core(
 			"bonus is doubled for any ability check you make that uses "
 			"either of the chosen proficiencies."
 			),
+		on_sheet=False,
 		)
 
 Evasion = _core(
 		name="Evasion",
 		min_level=7,
-		description=(
+		description=_feature_line(
+			"Walk it off. It wasn't that bad.",
 			"You can nimbly dodge out of the way of certain dangers. "
 			"When you're subjected to an effect that allows you to make "
 			"a Dexterity saving throw to take only half damage, you "
@@ -345,7 +433,8 @@ Evasion = _core(
 Reliable_Talent = _core(
 		name="Reliable Talent",
 		min_level=7,
-		description=(
+		description=_feature_line(
+			"Don't throw away your shot.",
 			"Whenever you make an ability check that uses one of your "
 			"skill or tool proficiencies, you can treat a d20 roll of "
 			"<b>9 or lower as a 10</b>."
@@ -359,6 +448,7 @@ Improved_Cunning_Strike = _core(
 			"You can use <b>up to two</b> Cunning Strike effects when "
 			"you deal Sneak Attack damage, paying the die cost for each."
 			),
+		on_sheet=False,
 		)
 
 Devious_Strikes = _core(
@@ -378,12 +468,14 @@ Devious_Strikes = _core(
 			"has the Blinded condition until the end of its next turn.</li>"
 			"</ul>"
 			),
+		on_sheet=False,
 		)
 
 Slippery_Mind = _core(
 		name="Slippery Mind",
 		min_level=15,
-		description=(
+		description=_feature_line(
+			"Rogue means you make the call.",
 			"Your cunning mind is exceptionally difficult to control. "
 			"You gain proficiency in <b>Wisdom and Charisma saving "
 			"throws</b>."
@@ -393,7 +485,8 @@ Slippery_Mind = _core(
 Elusive = _core(
 		name="Elusive",
 		min_level=18,
-		description=(
+		description=_feature_line(
+			"They wait for one mistake. Keep waiting.",
 			"You're so evasive that attackers rarely gain the upper hand "
 			"against you. <b>No attack roll can have Advantage against "
 			"you</b> unless you have the Incapacitated condition."
@@ -403,7 +496,8 @@ Elusive = _core(
 Stroke_of_Luck = _core(
 		name="Stroke of Luck",
 		min_level=20,
-		description=(
+		description=_feature_line(
+			"You know the game. You don't make mistakes. That was a gambit.",
 			"You have a marvelous knack for succeeding when you need to. "
 			"If you fail a D20 Test, you can turn the roll into a 20."
 			"<br>Once you use this feature, you can't use it again until "
@@ -420,7 +514,8 @@ Stroke_of_Luck = _core(
 Spellcasting_AT = _arcane_trickster(
 		name="Spellcasting",
 		min_level=3,
-		description=(
+		description=_feature_line(
+			"Your best trick: it is not a trick.",
 			"You augment your roguish abilities with Enchantment and "
 			"Illusion spells. You learn two Wizard cantrips of your "
 			"choice and three level 1 Wizard spells, two of which must "
@@ -432,7 +527,8 @@ Spellcasting_AT = _arcane_trickster(
 Mage_Hand_Legerdemain = _arcane_trickster(
 		name="Mage Hand Legerdemain",
 		min_level=3,
-		description=(
+		description=_feature_line(
+			"One hand distracts. The other dazzles. The third checks the purse.",
 			"You know the <i>Mage Hand</i> cantrip. When you cast it, "
 			"you can cast it as a <i>Bonus Action</i>, and you can make "
 			"the spectral hand <b>Invisible</b>. You can control the "
@@ -444,7 +540,8 @@ Mage_Hand_Legerdemain = _arcane_trickster(
 Magical_Ambush = _arcane_trickster(
 		name="Magical Ambush",
 		min_level=9,
-		description=(
+		description=_feature_line(
+			"Now you see me? Too late.",
 			"If you have the Invisible condition when you cast a spell "
 			"on a creature, it has <b>Disadvantage on any saving throw</b> "
 			"it makes against the spell on the same turn."
@@ -454,7 +551,8 @@ Magical_Ambush = _arcane_trickster(
 Versatile_Trickster = _arcane_trickster(
 		name="Versatile Trickster",
 		min_level=13,
-		description=(
+		description=_feature_line(
+			"Let's see how the audience sways.",
 			"You gain the ability to distract targets with your Mage Hand. "
 			"When you use the Trip option of your Cunning Strike on a "
 			"creature, you can also use that option on another creature "
@@ -465,7 +563,8 @@ Versatile_Trickster = _arcane_trickster(
 Spell_Thief = _arcane_trickster(
 		name="Spell Thief",
 		min_level=17,
-		description=(
+		description=_feature_line(
+			"Good artists copy. Great artists steal.",
 			"Immediately after a creature casts a spell that targets you "
 			"or includes you in its area of effect, you can take a "
 			"<i>Reaction</i> to force the creature to make an Intelligence "
@@ -488,7 +587,8 @@ Spell_Thief = _arcane_trickster(
 Assassinate = _assassin(
 		name="Assassinate",
 		min_level=3,
-		description=(
+		description=_feature_line(
+			"All that waiting. First move is yours.",
 			"You're adept at ambushing a target."
 			"<br><b>Initiative.</b> You have Advantage on Initiative rolls."
 			"<br><b>Surprising Strikes.</b> During the first round of each "
@@ -525,7 +625,8 @@ def _grant_assassins_tools(
 Assassins_Tools = _assassin(
 		name="Assassin's Tools",
 		min_level=3,
-		description=(
+		description=_feature_line(
+			"Either way, you are getting in.",
 			"You gain a <b>Disguise Kit</b> and a <b>Poisoner's Kit</b>, "
 			"and you have proficiency with both."
 			),
@@ -535,7 +636,8 @@ Assassins_Tools = _assassin(
 Infiltration_Expertise = _assassin(
 		name="Infiltration Expertise",
 		min_level=9,
-		description=(
+		description=_feature_line(
+			"Prepare to improvise.",
 			"You are expert at techniques that aid your infiltrations."
 			"<br><b>Masterful Mimicry.</b> You can unerringly mimic "
 			"another person's speech, handwriting, or both if you have "
@@ -548,7 +650,8 @@ Infiltration_Expertise = _assassin(
 Envenom_Weapons = _assassin(
 		name="Envenom Weapons",
 		min_level=13,
-		description=(
+		description=_feature_line(
+			"Preparation is half the job.",
 			"When you use the Poison option of your Cunning Strike, "
 			"the target also takes <b>2d6 Poison damage</b> whenever "
 			"it fails the saving throw. This damage ignores Resistance "
@@ -559,7 +662,8 @@ Envenom_Weapons = _assassin(
 Death_Strike = _assassin(
 		name="Death Strike",
 		min_level=17,
-		description=(
+		description=_feature_line(
+			"First move. Game over.",
 			"When you hit with your Sneak Attack on the first round of "
 			"a combat, the target must succeed on a Constitution saving "
 			"throw (DC 8 + Dexterity modifier + proficiency bonus), or "
@@ -600,13 +704,17 @@ def _psionic_power_rogue_entry(
 Psionic_Power_SK = _soulknife(
 		name="Psionic Power",
 		min_level=3,
-		description=_psionic_power_rogue_entry,
+		description=_feature_line(
+			"It is the thought that counts.",
+			_psionic_power_rogue_entry,
+			),
 		)
 
 Psychic_Blades = _soulknife(
 		name="Psychic Blades",
 		min_level=3,
-		description=(
+		description=_feature_line(
+			"Weaponless, not harmless.",
 			"You can manifest blades of psychic energy. Whenever you take "
 			"the Attack action, you can replace one of your attacks with "
 			"manifesting a <b>Psychic Blade</b> from a free hand. The "
@@ -622,7 +730,8 @@ Psychic_Blades = _soulknife(
 Soul_Blades = _soulknife(
 		name="Soul Blades",
 		min_level=9,
-		description=(
+		description=_feature_line(
+			"Know your moves. Know your cheats.",
 			"Your Psychic Blades are now an expression of your psi, "
 			"sharpened to deadly potential."
 			"<br><b>Homing Strikes.</b> If you miss with your Psychic "
@@ -638,7 +747,8 @@ Soul_Blades = _soulknife(
 Psychic_Veil = _soulknife(
 		name="Psychic Veil",
 		min_level=13,
-		description=(
+		description=_feature_line(
+			"The eyes do not see what the mind does not want to look at.",
 			"You can weave a veil of psychic static to mask yourself. "
 			"As a Magic action, you gain the <b>Invisible condition</b> "
 			"for 1 hour or until you dismiss the effect (no action "
@@ -653,7 +763,8 @@ Psychic_Veil = _soulknife(
 Rend_Mind = _soulknife(
 		name="Rend Mind",
 		min_level=17,
-		description=(
+		description=_feature_line(
+			"Physical pain has limits. Mental pain does not.",
 			"You can sweep your Psychic Blades through a creature's mind. "
 			"When you use your Psychic Blades to deal Sneak Attack damage "
 			"to a creature, you can force that target to make a Wisdom "
@@ -676,7 +787,8 @@ Rend_Mind = _soulknife(
 Fast_Hands = _thief(
 		name="Fast Hands",
 		min_level=3,
-		description=(
+		description=_feature_line(
+			"The blink of an eye is plenty.",
 			"As a <i>Bonus Action</i>, you can do one of the following:"
 			"<ul>"
 			"<li><b>Sleight of Hand.</b> Make a Dexterity (Sleight of "
@@ -692,7 +804,8 @@ Fast_Hands = _thief(
 Second_Story_Work = _thief(
 		name="Second-Story Work",
 		min_level=3,
-		description=(
+		description=_feature_line(
+			"A window is just a door that was not expecting you.",
 			"You've trained to get into especially hard-to-reach places."
 			"<br><b>Climber.</b> You gain a <b>Climb Speed</b> equal to "
 			"your Speed."
@@ -704,7 +817,8 @@ Second_Story_Work = _thief(
 Supreme_Sneak = _thief(
 		name="Supreme Sneak",
 		min_level=9,
-		description=(
+		description=_feature_line(
+			"Wait... wait... now!",
 			"You gain the following Cunning Strike option:"
 			"<br><b>Stealth Attack (Cost: 1d6).</b> If you have the "
 			"Invisible condition granted by the Hide action, this attack "
@@ -716,7 +830,8 @@ Supreme_Sneak = _thief(
 Use_Magic_Device = _thief(
 		name="Use Magic Device",
 		min_level=13,
-		description=(
+		description=_feature_line(
+			"Magic has rules. You have more creativity.",
 			"You've learned how to maximize use of magic items."
 			"<ul>"
 			"<li><b>Attunement.</b> You can attune to up to <b>four</b> "
@@ -736,7 +851,8 @@ Use_Magic_Device = _thief(
 Thiefs_Reflexes = _thief(
 		name="Thief's Reflexes",
 		min_level=17,
-		description=(
+		description=_feature_line(
+			"If you get seen, run.",
 			"You are adept at laying ambushes and quickly escaping danger. "
 			"You can take <b>two turns during the first round of any "
 			"combat</b>. You take your first turn at your normal Initiative "

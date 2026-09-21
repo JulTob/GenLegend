@@ -277,7 +277,10 @@ def _weapon_mastery_entry(
 		) -> str:
 	from AtlasLusoris.Map_of_Weapon_Masteries import weapon_mastery_entry
 	return weapon_mastery_entry(
-			char
+			char,
+			lead=(
+				"You trained. The weapon feels like an extension, not a tool."
+				),
 			)
 
 

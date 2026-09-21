@@ -2083,7 +2083,8 @@ class ArcaneTrickster(Spellcaster):
 		return f"""
 			<div class="npc-textbox--full">
 				<h1 style="font-family: {title_font('Arcane Trickster')}; font-size:    3.1em;">Arcane Trickster Spellcasting</h1>
-				<p> As an Arcane Trickster, you've learned to weave subtle magic with your rogue's cunning. Your spells come from the Wizard list, cast using Intelligence. <br> You always know <b>Mage Hand</b>, and can select other cantrips and spells from the Wizard list. </p>
+				<p><i>Your best trick: it is not a trick.</i></p>
+				<p>As an Arcane Trickster, you've learned to weave subtle magic with your rogue's cunning. Your spells come from the Wizard list, cast using Intelligence. <br> You always know <b>Mage Hand</b>, and can select other cantrips and spells from the Wizard list.</p>
 				</div>
 			<div class="npc-textbox" style="grid-column: span 1;">
 				<h2>Spell Slots:</h2> {slots_html} <br>  You regain all expended slots when you finish a Long Rest.
