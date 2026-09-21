@@ -49,6 +49,8 @@ docker build --build-arg BUILD_SHA=$(git rev-parse --short HEAD) -t gen-legends 
 
 **The service is `gen-legends`, with an s.** `genlegend.eu` maps to it, and to nothing else. Deploying to `gen-legend` builds fine and changes nothing a visitor sees, because it quietly creates a second service the domain does not point at.
 
+`gen-legend`, without the s, is the Google Cloud *project* — the box that holds the service, the billing and the permissions. Both names are correct, one layer apart. The service URL spells the nesting out: `gen-legends-1068852386499.us-central1.run.app` is the service, then the project's number.
+
 `--source .` uploads the working directory as it stands, not the last commit, so deploy from a clean checkout of `main` or you ship whatever you were editing.
 
 If the deploy stops on `Missing required argument [--clear-base-image]`, the service is still set to let Cloud Run manage a base image for it, which a Dockerfile build cannot do. Add `--clear-base-image` once; the setting stays cleared.
