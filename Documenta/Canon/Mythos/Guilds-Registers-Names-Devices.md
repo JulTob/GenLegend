@@ -20,7 +20,7 @@ follow the law the Warlock kit demonstrated.*
 | **Cleric** | Warm scripture: parallelism, the triple "Maybe" | The seated prayer from a species- and culture-keyed ledger; parenting styles per Domain | Kept | *klērikos*, the allotted | (none) | Class and Life shipping; Domains in the plain pass; no lines |
 | **Paladin** | The oath remembered: austere, one unquoted sentence | The sentence once said, never quoted; the Warlock as the oath-breaker next door | Sworn | *palatinus*, the Palatine guard; Rome (Goliath). The guard of a palace that is gone | `arthuriana` (early Arthur) | Nothing; 2014 features leak |
 | **Ranger** | The adventure novel: geography, weather, the edge of the map | Each archetype text ends mid-pursuit; the Quarry line | (none: the mark) | *saltuarius, limitanei, horoi, peripoloi*: the wardens of the frontier | (none; `wyrm_myth` proposed) | Nothing |
-| **Rogue** | The picaresque: the confession that is not sorry | Each text admits one thing and refuses to apologise | (none: the moment) | *rogare*, the vagabond | `shadow` gear theme | Nothing; "Arcane Trickster: 3" leaks |
+| **Rogue** | The shared picaresque: a crew let in on the method | Each archetype takes a different relationship to Opportunity | (none: Opportunity, figured as Kairos) | *rogare*, the vagabond | `shadow` gear theme | Class and four archetypes shipping; "Arcane Trickster: 3" still leaks |
 | **Bard** | The told tale: oral performance, a drummed cadence, no verse | The Glamour echo of the Archfey poem; Lorca's duende as the quality bar | (none: the world listens) | *bardos*, the praiser | (none; instrument map proposed) | Nothing wired; rulebook paragraphs verbatim leak |
 | **Druid** | The walker's field diary: warmth without awe, geological close | The geological tricolon; Starry Form spends Wild Shape | Lent (Dialog 0017: the friend\'s coat) | The most external to a Celestial (Caesar, Pliny) | (none) | Nothing wired; two Primal Orders leak |
 | **Sorcerer** | Sensation: the magic felt in the body before it is understood | Each Origin ends on what the body is turning into, unnamed | Marked | *sortiarius*, the bender of fate | (none) | Nothing; "see PHB pp145-150" leaks |
@@ -33,13 +33,14 @@ follow the law the Warlock kit demonstrated.*
 ## 📔 2. The rules the table implies
 
 1. **One register per class, chosen on purpose**. Thirteen registers,
-   no two alike, and the Rogue's was the one gap (the picaresque, proposed).
+   no two alike. The Rogue's former gap is now filled by the shared
+   picaresque.
 2. **One device per text, not only a register** (from the Warlock kit).
    Recorded here so the next author is asked *what does your text do* before
    *how does it sound*. Ten devices exist now: the chant's refrain, the bold
    We, the Order-axis branch, the seated prayer, the `{name}` slot, the
-   unquoted sentence, the mid-pursuit close, the unapologetic confession, the
-   glyph span, the verse, the drawn object.
+   unquoted sentence, the mid-pursuit close, the shared conspiracy, the glyph
+   span, the verse, the drawn object.
 3. **Six theology seats, six Guilds, no overlap**: kept (Cleric), noticed
    (Warlock), ridden (Zealot), sworn (Paladin), marked (Sorcerer), owed
    (Druid). Two Guilds face each other across the page: sworn and forsworn.

@@ -12,7 +12,6 @@ Regenerate rather than edit.*
 
 **11. Lines**
 
-- Darkvision: *Darkness cannot hide the truth from you.*
 - Celestial Revelation, Talarian Wings: *You spread your wings to show your true self.*
 - Monk's Focus, Aasimar only (proposal): *It comes down from the ring above your head and out through your hands. The body was always the instrument. You only had to consecrate it.*
 - Celestial Patron, Aasimar only (proposal, for the ancestor synergy): *You know exactly who hired you. You have their wings.*
@@ -703,32 +702,32 @@ Regenerate rather than edit.*
 - Stroke of Luck (20): *The roll that should have missed, and did not. You call it luck in front of strangers.*
 **Thief**
 
-- Fast Hands (3): *Your hands finished before your turn did.*
-- Second-Story Work (3): *A wall is a staircase. A window is a door that was not expecting you.*
-- Supreme Sneak (9): *Strike from hiding and stay hidden, if you end where the wall is.*
-- Use Magic Device (13): *You have never understood a scroll in your life. They work anyway.*
-- Thief's Reflexes (17): *Two turns in the first breath. By the second one they know; by then you were not there.*
+- Fast Hands (3): *The blink of an eye is plenty.*
+- Second-Story Work (3): *A window is just a door that was not expecting you.*
+- Supreme Sneak (9): *Wait... wait... now!*
+- Use Magic Device (13): *Magic has rules. You have more creativity.*
+- Thief's Reflexes (17): *If you get seen, run.*
 **Assassin**
 
-- Assassinate (3): *The first breath of the fight is the only breath that matters.*
-- Assassin's Tools (3): *A face for every room and a poison for every wound.*
-- Infiltration Expertise (9): *An hour of watching, and you can write in their hand.*
-- Envenom Weapons (13): *The poison does not care what it was told to resist.*
-- Death Strike (17): *You do not fight. You finish.*
+- Assassinate (3): *All that waiting. First move is yours.*
+- Assassin's Tools (3): *Either way, you are getting in.*
+- Infiltration Expertise (9): *Prepare to improvise.*
+- Envenom Weapons (13): *Preparation is half the job.*
+- Death Strike (17): *First move. Game over.*
 **Arcane Trickster**
 
-- Spellcasting (3): *Magic that was lying around, and somebody was not watching it.*
-- Mage Hand Legerdemain (3): *A second hand nobody can see, and it has your fingers.*
-- Magical Ambush (9): *A spell from where nobody is looking lands harder.*
-- Versatile Trickster (13): *The invisible hand trips one, and the one beside them.*
-- Spell Thief (17): *You caught it in flight. It is yours now.*
+- Spellcasting (3): *Your best trick: it is not a trick.*
+- Mage Hand Legerdemain (3): *One hand distracts. The other dazzles. The third checks the purse.*
+- Magical Ambush (9): *Now you see me? Too late.*
+- Versatile Trickster (13): *Let's see how the audience sways.*
+- Spell Thief (17): *Good artists copy. Great artists steal.*
 **Soulknife**
 
-- Psionic Power (3): *A well of something sharp, and a crew that speaks without speaking.*
-- Psychic Blades (3): *The blade is a thought. It goes through armour the way an idea goes through a door.*
-- Soul Blades (9): *A miss turns, mid-air. A step through the place where a room is thin.*
-- Psychic Veil (13): *Static, worn like a coat. Nobody can find the thought that is you.*
-- Rend Mind (17): *The blade goes in where the thinking is, and the thinking stops.*
+- Psionic Power (3): *It is the thought that counts.*
+- Psychic Blades (3): *Weaponless, not harmless.*
+- Soul Blades (9): *Know your moves. Know your cheats.*
+- Psychic Veil (13): *The eyes do not see what the mind does not want to look at.*
+- Rend Mind (17): *Physical pain has limits. Mental pain does not.*
 
 ## Sheet-Alignment-Languages
 
@@ -921,4 +920,3 @@ Regenerate rather than edit.*
 - Extra Attack (6): *Two strokes, then a word.*
 - Song of Defense (10): *A spell spent to not be hit. Memory, traded for a moment.*
 - Song of Victory (14): *The mind lands behind the blade now.*
-

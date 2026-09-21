@@ -57,7 +57,7 @@ objection looks like, and how to fetch pages remotely.
 | [Cleric](Cleric.md) | kept | warm scripture |
 | [Paladin](Paladin.md) | sworn | the oath remembered |
 | [Ranger](Ranger.md) | the mark | the adventure novel |
-| [Rogue](Rogue.md) | the moment | the picaresque |
+| [Rogue](Rogue.md) | Opportunity | the shared picaresque |
 | [Bard](Bard.md) | the world listens | the told tale |
 | [Druid](Druid.md) | owed | the field diary |
 | [Sorcerer](Sorcerer.md) | marked | sensation |

@@ -48,8 +48,8 @@ them invert the usual advice on purpose.
    **Advice to "explain the lore more" is wrong here** and will be discarded.
 2. **One register per voice.** Each class and each people has a single
    consistent register: the Fighter is a training memoir, the Warlock is a
-   contract, the Barbarian is a chant, the Rogue is a confession that is not
-   sorry. Mixing registers inside one piece is a defect.
+   contract, the Barbarian is a chant, the Rogue is a shared picaresque. Mixing
+   registers inside one piece is a defect.
 3. **Second person throughout, and no collective "we"** for a people with no
    shared culture. Species prose states identity and drive; it never restates
    the rules the feature entries already carry.

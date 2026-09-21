@@ -159,12 +159,12 @@ def _sneak_attack_entry(
 		"Once per turn, you can deal an extra <b>"
 		f"{dice}</b> damage to one creature you hit "
 		"with an attack if you have Advantage on the attack roll, or "
-		"if any ally of yours is within 5 feet of the enemy."
+		"if an ally of yours is within 5 feet of the target and that "
+		"ally doesn't have the Incapacitated condition."
 		"<br>You must be using a Finesse or Ranged weapon. The extra "
 		"damage type matches the weapon's type."
-		"<br>An enemy with the <b>Incapacitated</b> condition "
-		"automatically triggers a Sneak Attack. Disadvantage on the "
-		"attack roll cancels it regardless of activating factors."
+		"<br>Disadvantage on the attack roll prevents Sneak Attack even "
+		"when an ally is beside the target."
 		)
 
 
