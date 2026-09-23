@@ -137,12 +137,17 @@ cat <<END
 Done.
 
 Put these three into GitHub, as Variables (not Secrets), under
-Settings -> Secrets and variables -> Actions -> Variables:
+Settings -> Secrets and variables -> Actions -> Variables.
+
+Each value is the single line directly beneath its NAME. Copy that line
+and nothing else.
+
+One name catches people out: GCP_PROJECT_ID is the project, gen-legend,
+singular. The Cloud Run service it holds is gen-legends, with an s. You
+do not set the service here -- the workflow already carries that name.
 
   GCP_PROJECT_ID
   ${PROJECT_ID}
-  (the project, singular. The service it holds is gen-legends, with an s,
-   and the workflow already knows that name.)
 
   GCP_SERVICE_ACCOUNT
   ${SA}
