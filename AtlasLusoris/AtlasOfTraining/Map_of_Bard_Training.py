@@ -10,8 +10,11 @@ Thought pattern
 
 from __future__ import annotations
 
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
 from AtlasVenustas import Chip
+from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+		Unarmored_Armour_Class,
+		)
 
 
 GUILD = "Bard"
@@ -74,7 +77,7 @@ def _core(
 		apply=None,
 		on_sheet: bool = True,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -94,7 +97,7 @@ def _path(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -748,58 +751,6 @@ Words_of_Creation = _core(
 # College of Dance
 # ---------------------------------------------------------------------------
 
-def _dazzling_armour_class(
-		char,
-		) -> int:
-	from AtlasActorLudi.Map_of_Scores import Modifier
-	scores = getattr(
-			char,
-			"AS",
-			None,
-			)
-	if scores is None:
-		return 10
-	return 10 + Modifier(
-			getattr(
-					scores,
-					"DEX",
-					10,
-					)
-			) + Modifier(
-			getattr(
-					scores,
-					"CHA",
-					10,
-					)
-			)
-
-
-def _apply_dazzling_footwork(
-		char,
-		) -> None:
-	"""Seat the dancer's proficiency and the Armor Class it buys.
-
-	The unarmored Armor Class used to be set by the legacy Progression
-	layer. It belongs to the Feature that describes it, so that a reader
-	of this entry can find the number it promises.
-	"""
-	skills = getattr(
-			char,
-			"skills",
-			None,
-			)
-	dance = getattr(
-			skills,
-			"Unarmed_Dance",
-			None,
-			)
-	if dance is not None:
-		dance.set_proficiency()
-	char.AC = _dazzling_armour_class(
-			char,
-			)
-
-
 Dazzling_Footwork = _dance(
 	name="Dazzling Footwork",
 	min_level=3,
@@ -823,10 +774,9 @@ Dazzling_Footwork = _dance(
 		Chip(
 			"🩰",
 			"Unarmored AC",
-			_dazzling_armour_class,
+			Unarmored_Armour_Class,
 			),
 		),
-	apply=_apply_dazzling_footwork,
 	)
 
 Inspiring_Movement = _dance(

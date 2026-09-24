@@ -11,7 +11,7 @@
 
 ## 🔍 Diagnosis (what & where)
 
-`Build_Fighting_Style` accepts an optional `apply=` callable and invokes it when
+`Make_Fighting_Style` accepts an optional `apply=` callable and invokes it when
 the style awakens. Neither **Blessed Warrior** nor **Druidic Warrior** passes
 one.
 

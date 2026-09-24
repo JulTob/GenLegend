@@ -12,7 +12,10 @@ Thought pattern
 
 from __future__ import annotations
 
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+		Unarmored_Armour_Class,
+		)
 
 
 GUILD = "Monk"
@@ -89,7 +92,7 @@ def _core(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -108,7 +111,7 @@ def _path(
 		description,
 		chips=(),
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -269,43 +272,11 @@ Martial_Arts = _core(
 				),
 		)
 
-def _unarmored_armour_class(
-		char,
-		abilities: tuple[str, str],
-		) -> int:
-	"""What this Character's AC would be with nothing on."""
-	from AtlasActorLudi.Map_of_Scores import Modifier
-
-	scores = getattr(
-			char,
-			"AS",
-			None,
-			)
-
-	return 10 + sum(
-			Modifier(
-					getattr(
-							scores,
-							ability,
-							10,
-							)
-					)
-			for ability in abilities
-			) if scores is not None else 10
-
-
 def _unarmored_defense_entry(
 		char,
 		) -> str:
-	# Same computation as the chip below: resolved here so the prose
-	# can print the live number for this Character.
-	armour_class = _unarmored_armour_class(
-			char,
-			(
-					"DEX",
-					"WIS",
-					),
-			)
+	# Same reader as the chip below, so the prose prints the live number.
+	armour_class = Unarmored_Armour_Class( char )
 
 	return (
 		"While not wearing armor or wielding a Shield, your AC "
@@ -319,13 +290,7 @@ Unarmored_Defense = _core(
 		min_level=1,
 		description=_unarmored_defense_entry,
 		chips=(
-				("Unarmored AC", lambda char: _unarmored_armour_class(
-						char,
-						(
-								"DEX",
-								"WIS",
-								),
-						), "🥋"),
+				("Unarmored AC", Unarmored_Armour_Class, "🥋"),
 				),
 		)
 

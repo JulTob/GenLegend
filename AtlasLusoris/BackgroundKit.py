@@ -10,7 +10,7 @@ Entry, and role eligibility. Pins classify each Background Tag directly:
     background_tag in NPC_Background
 
 The Pin Fields derive every public registry.  Adding a homebrew
-Background therefore requires one ``Build_Background`` call and no parallel
+Background therefore requires one ``Make_Background`` call and no parallel
 choice lists.
 """
 
@@ -844,7 +844,7 @@ def _awaken(
 		)
 
 
-def Build_Background(
+def Make_Background(
 	*,
 	name: str,
 	audiences: Iterable[type[Background_Audience]],
@@ -997,7 +997,7 @@ def Build_Background(
 def _Build_Player_Handbook_Background(
 		**record,
 		) -> type[Background]:
-	return Build_Background(
+	return Make_Background(
 		source_title="Player's Handbook (2024)",
 		source_url="https://www.dndbeyond.com/sources/dnd/phb-2024",
 		source_locator="Chapter 4: Character Origins — Background Descriptions",
@@ -1811,7 +1811,7 @@ Wayfarer = _Build_Player_Handbook_Background(
 # ---------------------------------------------------------------------------
 
 
-Artist = Build_Background(
+Artist = Make_Background(
 	name="Artist",
 	audiences=(
 		NPC_Background,
@@ -1834,7 +1834,7 @@ Artist = Build_Background(
 		),
 	)
 
-Bandit = Build_Background(
+Bandit = Make_Background(
 	name="Bandit",
 	audiences=(
 		NPC_Background,
@@ -1857,7 +1857,7 @@ Bandit = Build_Background(
 		),
 	)
 
-Berserker = Build_Background(
+Berserker = Make_Background(
 	name="Berserker",
 	audiences=(
 		NPC_Background,
@@ -1880,7 +1880,7 @@ Berserker = Build_Background(
 		),
 	)
 
-Commoner = Build_Background(
+Commoner = Make_Background(
 	name="Commoner",
 	audiences=(
 		NPC_Background,
@@ -1903,7 +1903,7 @@ Commoner = Build_Background(
 		),
 	)
 
-Crafter = Build_Background(
+Crafter = Make_Background(
 	name="Crafter",
 	audiences=(
 		NPC_Background,
@@ -1926,7 +1926,7 @@ Crafter = Build_Background(
 		),
 	)
 
-Cultist = Build_Background(
+Cultist = Make_Background(
 	name="Cultist",
 	audiences=(
 		NPC_Background,
@@ -1949,7 +1949,7 @@ Cultist = Build_Background(
 		),
 	)
 
-Doctor = Build_Background(
+Doctor = Make_Background(
 	name="Doctor",
 	audiences=(
 		NPC_Background,
@@ -1972,7 +1972,7 @@ Doctor = Build_Background(
 		),
 	)
 
-Expert = Build_Background(
+Expert = Make_Background(
 	name="Expert",
 	audiences=(
 		NPC_Background,
@@ -1995,7 +1995,7 @@ Expert = Build_Background(
 		),
 	)
 
-Explorer = Build_Background(
+Explorer = Make_Background(
 	name="Explorer",
 	audiences=(
 		NPC_Background,
@@ -2018,7 +2018,7 @@ Explorer = Build_Background(
 		),
 	)
 
-Guardian = Build_Background(
+Guardian = Make_Background(
 	name="Guardian",
 	audiences=(
 		NPC_Background,
@@ -2041,7 +2041,7 @@ Guardian = Build_Background(
 		),
 	)
 
-Healer = Build_Background(
+Healer = Make_Background(
 	name="Healer",
 	audiences=(
 		NPC_Background,
@@ -2064,7 +2064,7 @@ Healer = Build_Background(
 		),
 	)
 
-Hero = Build_Background(
+Hero = Make_Background(
 	name="Hero",
 	audiences=(
 		NPC_Background,
@@ -2087,7 +2087,7 @@ Hero = Build_Background(
 		),
 	)
 
-Hunter = Build_Background(
+Hunter = Make_Background(
 	name="Hunter",
 	audiences=(
 		NPC_Background,
@@ -2110,7 +2110,7 @@ Hunter = Build_Background(
 		),
 	)
 
-Knight = Build_Background(
+Knight = Make_Background(
 	name="Knight",
 	audiences=(
 		NPC_Background,
@@ -2133,7 +2133,7 @@ Knight = Build_Background(
 		),
 	)
 
-Mage = Build_Background(
+Mage = Make_Background(
 	name="Mage",
 	audiences=(
 		NPC_Background,
@@ -2156,7 +2156,7 @@ Mage = Build_Background(
 		),
 	)
 
-Mentor = Build_Background(
+Mentor = Make_Background(
 	name="Mentor",
 	audiences=(
 		NPC_Background,
@@ -2179,7 +2179,7 @@ Mentor = Build_Background(
 		),
 	)
 
-Ninja = Build_Background(
+Ninja = Make_Background(
 	name="Ninja",
 	audiences=(
 		NPC_Background,
@@ -2202,7 +2202,7 @@ Ninja = Build_Background(
 		),
 	)
 
-Pirate = Build_Background(
+Pirate = Make_Background(
 	name="Pirate",
 	audiences=(
 		NPC_Background,
@@ -2225,7 +2225,7 @@ Pirate = Build_Background(
 		),
 	)
 
-Priest = Build_Background(
+Priest = Make_Background(
 	name="Priest",
 	audiences=(
 		NPC_Background,
@@ -2248,7 +2248,7 @@ Priest = Build_Background(
 		),
 	)
 
-Scholar = Build_Background(
+Scholar = Make_Background(
 	name="Scholar",
 	audiences=(
 		NPC_Background,
@@ -2271,7 +2271,7 @@ Scholar = Build_Background(
 		),
 	)
 
-Shaman = Build_Background(
+Shaman = Make_Background(
 	name="Shaman",
 	audiences=(
 		NPC_Background,
@@ -2294,7 +2294,7 @@ Shaman = Build_Background(
 		),
 	)
 
-Spy = Build_Background(
+Spy = Make_Background(
 	name="Spy",
 	audiences=(
 		NPC_Background,
@@ -2317,7 +2317,7 @@ Spy = Build_Background(
 		),
 	)
 
-Trickster = Build_Background(
+Trickster = Make_Background(
 	name="Trickster",
 	audiences=(
 		NPC_Background,
@@ -2340,7 +2340,7 @@ Trickster = Build_Background(
 		),
 	)
 
-Traveler = Build_Background(
+Traveler = Make_Background(
 	name="Traveler",
 	audiences=(
 		NPC_Background,
@@ -2363,7 +2363,7 @@ Traveler = Build_Background(
 		),
 	)
 
-Warrior = Build_Background(
+Warrior = Make_Background(
 	name="Warrior",
 	audiences=(
 		NPC_Background,
@@ -2386,7 +2386,7 @@ Warrior = Build_Background(
 		),
 	)
 
-Witch = Build_Background(
+Witch = Make_Background(
 	name="Witch",
 	audiences=(
 		NPC_Background,
@@ -2416,7 +2416,7 @@ Witch = Build_Background(
 
 
 OFFICIAL_2024_BACKGROUNDS = Register_Official_2024_Backgrounds(
-	build_background=Build_Background,
+	build_background=Make_Background,
 	pc_background=Available,
 	npc_background=NPC_Background,
 	artisan_tools=ARTISAN_TOOLS,
@@ -3092,7 +3092,7 @@ __all__ = (
 	"Background_Audience",
 	"Background_Is_Available",
 	"Backgrounds_For",
-	"Build_Background",
+	"Make_Background",
 	"Find_Background",
 	"NPC_Background",
 	"NONPLAYER_BACKGROUNDS",

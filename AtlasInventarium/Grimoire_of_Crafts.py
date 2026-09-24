@@ -84,7 +84,7 @@ def _class_name(
 			)
 
 
-def Build_Craft(
+def Make_Craft(
 		*,
 		name: str,
 		grants: dict[str, int],
@@ -107,22 +107,22 @@ def Build_Craft(
 	"""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_Craft: name is required."
+				"Make_Craft: name is required."
 				)
 	if tier not in TIERS:
 		raise ValueError(
-				f"Build_Craft: tier must be one of {sorted(TIERS)}, got {tier!r}."
+				f"Make_Craft: tier must be one of {sorted(TIERS)}, got {tier!r}."
 				)
 	if affix not in (
 			"prefix",
 			"suffix",
 			):
 		raise ValueError(
-				"Build_Craft: affix must be 'prefix' or 'suffix'."
+				"Make_Craft: affix must be 'prefix' or 'suffix'."
 				)
 	if not grants:
 		raise ValueError(
-				f"Build_Craft: {name!r} must grant something."
+				f"Make_Craft: {name!r} must grant something."
 				)
 
 	namespace = {
@@ -345,7 +345,7 @@ _ARMOUR_LIKE = (
 		)
 
 
-Of_Defense = Build_Craft(
+Of_Defense = Make_Craft(
 		name="of Defense",
 		grants={
 				"AC": 1,
@@ -355,7 +355,7 @@ Of_Defense = Build_Craft(
 		description="The piece turns a blow that should have landed.",
 		)
 
-Of_Warding = Build_Craft(
+Of_Warding = Make_Craft(
 		name="of Warding",
 		grants={
 				"saves": 1,
@@ -365,7 +365,7 @@ Of_Warding = Build_Craft(
 		description="Ill fortune slides off the wearer.",
 		)
 
-Of_Precision = Build_Craft(
+Of_Precision = Make_Craft(
 		name="of Precision",
 		grants={
 				"attack": 1,
@@ -377,7 +377,7 @@ Of_Precision = Build_Craft(
 		description="The weapon finds the gap by itself.",
 		)
 
-Of_Wounding = Build_Craft(
+Of_Wounding = Make_Craft(
 		name="of Wounding",
 		grants={
 				"damage": 1,
@@ -389,7 +389,7 @@ Of_Wounding = Build_Craft(
 		description="Its edge bites deeper than the wound suggests.",
 		)
 
-Of_the_Bear = Build_Craft(
+Of_the_Bear = Make_Craft(
 		name="of the Bear",
 		grants={
 				"HP": 5,
@@ -399,7 +399,7 @@ Of_the_Bear = Build_Craft(
 		description="The wearer endures well past the point of sense.",
 		)
 
-Of_Swiftness = Build_Craft(
+Of_Swiftness = Make_Craft(
 		name="of Swiftness",
 		grants={
 				"speed": 5,
@@ -412,7 +412,7 @@ Of_Swiftness = Build_Craft(
 		description="The ground gives a little more with every stride.",
 		)
 
-Of_Vigilance = Build_Craft(
+Of_Vigilance = Make_Craft(
 		name="of Vigilance",
 		grants={
 				"initiative": 2,
@@ -422,7 +422,7 @@ Of_Vigilance = Build_Craft(
 		description="The wearer is already moving when the ambush starts.",
 		)
 
-Of_the_Aegis = Build_Craft(
+Of_the_Aegis = Make_Craft(
 		name="of the Aegis",
 		grants={
 				"AC": 2,
@@ -432,7 +432,7 @@ Of_the_Aegis = Build_Craft(
 		description="A hush of force gathers wherever a strike would fall.",
 		)
 
-Of_Ruin = Build_Craft(
+Of_Ruin = Make_Craft(
 		name="of Ruin",
 		grants={
 				"attack": 2,
@@ -445,7 +445,7 @@ Of_Ruin = Build_Craft(
 		description="What it strikes tends not to be repaired.",
 		)
 
-Of_the_Paragon = Build_Craft(
+Of_the_Paragon = Make_Craft(
 		name="of the Paragon",
 		grants={
 				"AC": 3,
@@ -470,7 +470,7 @@ CRAFTS_BY_NAME: dict[str, type[Craft]] = {
 __all__ = (
 		"CRAFTS",
 		"CRAFTS_BY_NAME",
-		"Build_Craft",
+		"Make_Craft",
 		"Craft",
 		"TIERS",
 		"craft_name",
@@ -489,9 +489,9 @@ __all__ = (
 
 def _self_test():
 	from AtlasInventarium.Grimoire_of_Items import (
-			Build_Armour,
-			Build_Weapon,
-			Build_Worn,
+			Make_Armour,
+			Make_Weapon,
+			Make_Worn,
 			armour_class,
 			equip,
 			grant_total,
@@ -515,7 +515,7 @@ def _self_test():
 	novice = Hero(
 			1
 			)
-	mail = Build_Armour(
+	mail = Make_Armour(
 			name="Chain Mail",
 			base_ac=16,
 			kind="Heavy",
@@ -586,7 +586,7 @@ def _self_test():
 	# --- level gates -----------------------------------------------------
 	try:
 		forge(
-				Build_Armour(
+				Make_Armour(
 						name="Plate",
 						base_ac=18,
 						kind="Heavy",
@@ -614,7 +614,7 @@ def _self_test():
 			)
 
 	# --- item-kind gates -------------------------------------------------
-	boots = Build_Worn(
+	boots = Make_Worn(
 			name="Boots",
 			slot=Footwear,
 			value=5,
@@ -639,7 +639,7 @@ def _self_test():
 	assert boots.name == "Boots"
 	assert boots.title == "Boots of Swiftness"
 
-	blade = Build_Weapon(
+	blade = Make_Weapon(
 			name="Longsword",
 			damage="1d8",
 			category="Martial",

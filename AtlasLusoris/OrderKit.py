@@ -38,7 +38,7 @@ from AtlasActorLudi.CharactersKit import Report_Of
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.AtlasOfOrders.Map_of_Domains import DOMAINS
 from AtlasEpica.Charts_of_The_Monomyth import render
-from AtlasLusoris.AtlasOfOrders.Map_of_Myth import Myth as Build_Myth
+from AtlasLusoris.AtlasOfOrders.Map_of_Myth import Myth as Make_Myth
 from AtlasLusoris.AtlasOfOrders.Map_of_Traditions import (
 	COMMON_ORGANIZATIONS,
 	TRADITIONS,
@@ -462,7 +462,7 @@ class Order:
 		reads the same twice, and strips anything that failed to resolve
 		rather than leaking a brace.
 		"""
-		myth = Build_Myth(
+		myth = Make_Myth(
 			order
 			)
 		order._myth = myth
@@ -484,7 +484,7 @@ class Order:
 			order,
 			"_myth",
 			None,
-			) or Build_Myth(
+			) or Make_Myth(
 			order
 			)
 

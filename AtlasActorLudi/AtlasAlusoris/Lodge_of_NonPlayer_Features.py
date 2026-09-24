@@ -15,7 +15,7 @@ must enter with explicit provenance through :class:`Feature_Spec`.
 #--
 #-- Does this module own a domain axis (QST-0134)?  No.  It is a Lodge — a
 #-- list of entries, like every other Ledger and Lodge in the project.  The
-#-- Tags it publishes are minted by FeaturesKit.Build_Feature_Tag, which is
+#-- Tags it publishes are minted by FeaturesKit.Make_Feature_Tag, which is
 #-- where the axis lives.  A Lodge adds content, never structure.
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from __future__ import annotations
 from types import MappingProxyType
 
 from AtlasActorLudi.AtlasAlusoris.FeaturesKit import Activation
-from AtlasActorLudi.AtlasAlusoris.FeaturesKit import Build_Feature_Tag
+from AtlasActorLudi.AtlasAlusoris.FeaturesKit import Make_Feature_Tag
 from AtlasActorLudi.AtlasAlusoris.FeaturesKit import Chip_Spec
 from AtlasActorLudi.AtlasAlusoris.FeaturesKit import Feature_Spec
 from AtlasActorLudi.AtlasAlusoris.FeaturesKit import Tactical_Role
@@ -432,7 +432,7 @@ if len(
 
 FEATURE_TAGS = MappingProxyType(
 		{
-				spec.key: Build_Feature_Tag(
+				spec.key: Make_Feature_Tag(
 						spec
 						)
 				for spec in FEATURE_SPECS

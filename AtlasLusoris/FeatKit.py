@@ -331,7 +331,7 @@ def fighting_styles_known(
 	return need
 
 
-def Build_Fighting_Style(
+def Make_Fighting_Style(
 		*,
 		name: str,
 		description: str,
@@ -343,7 +343,7 @@ def Build_Fighting_Style(
 	"""Construct one Fighting Style feat Tag."""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_Fighting_Style: name is required."
+				"Make_Fighting_Style: name is required."
 				)
 	allowed = guilds
 	resolved_chips = tuple(
@@ -419,7 +419,7 @@ def Build_Fighting_Style(
 	return style_tag
 
 
-def Build_General_Feat(
+def Make_General_Feat(
 		*,
 		name: str,
 		description: str,
@@ -467,7 +467,7 @@ def Build_General_Feat(
 	"""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_General_Feat: name is required."
+				"Make_General_Feat: name is required."
 				)
 	feat_tag = None
 	resolved_training_record = (
@@ -715,7 +715,7 @@ def Build_General_Feat(
 	return feat_tag
 
 
-def Build_Epic_Boon(
+def Make_Epic_Boon(
 		*,
 		name: str,
 		description: str,
@@ -727,7 +727,7 @@ def Build_Epic_Boon(
 	"""Construct one Epic Boon feat Tag."""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_Epic_Boon: name is required."
+				"Make_Epic_Boon: name is required."
 				)
 	boon_tag = None
 

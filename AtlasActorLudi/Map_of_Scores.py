@@ -41,6 +41,30 @@ def Modifier(score: int) -> int:
 
 	return modifier
 
+def Ability_Modifier(
+		char,
+		ability: str,
+		) -> int:
+	"""
+	The Character's modifier in one ability ("DEX", "CHA", …).
+
+	A Character whose scores are not rolled yet reads as 10 in every
+	ability, so the modifier is 0.
+	"""
+	scores = getattr(
+			char,
+			"AS",
+			None,
+			)
+	score = getattr(
+			scores,
+			ability,
+			10,
+			)
+	return Modifier(
+			score
+			)
+
 def Proficiency(AS: int) -> int:
 	"""
 	Example function to calculate proficiency based on ability score.

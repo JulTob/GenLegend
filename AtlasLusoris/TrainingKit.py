@@ -170,7 +170,7 @@ def level_in_guild(
 	return 0
 
 
-def Build_Training(
+def Make_Training(
 		*,
 		name: str,
 		guild_name: str,
@@ -204,15 +204,15 @@ def Build_Training(
 	"""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_Training: name is required."
+				"Make_Training: name is required."
 				)
 	if not guild_name or not guild_name.strip():
 		raise ValueError(
-				"Build_Training: guild_name is required."
+				"Make_Training: guild_name is required."
 				)
 	if min_level < 1:
 		raise ValueError(
-				"Build_Training: min_level must be at least 1."
+				"Make_Training: min_level must be at least 1."
 				)
 	if (
 		path is not None
@@ -231,7 +231,7 @@ def Build_Training(
 				).strip()
 		):
 		raise ValueError(
-				"Build_Training: path, if set, must be a Tag or "
+				"Make_Training: path, if set, must be a Tag or "
 				"a non-empty legacy name."
 				)
 

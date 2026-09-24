@@ -6,7 +6,7 @@ Distinct from Guild Training (class features) and Feats.
 
 An Invocation is declared by what it *does*, not by prose about what it does.
 The twenty-eight published invocations are seven shapes wearing different
-spell names, so ``Build_Invocation`` takes those shapes as fields:
+spell names, so ``Make_Invocation`` takes those shapes as fields:
 
         at_will=MageArmor          cast it without a slot, as often as you like
         free_cast=WaterBreathing   … once, then a Long Rest
@@ -165,7 +165,7 @@ def _collect(
 					)
 
 
-def Build_Invocation(
+def Make_Invocation(
 		*,
 		name: str,
 		min_level: int = 1,
@@ -185,11 +185,11 @@ def Build_Invocation(
 	"""Construct one Eldritch Invocation Tag."""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_Invocation: name is required."
+				"Make_Invocation: name is required."
 				)
 	if min_level < 1:
 		raise ValueError(
-				"Build_Invocation: min_level must be at least 1."
+				"Make_Invocation: min_level must be at least 1."
 				)
 	invocation_tag = None
 

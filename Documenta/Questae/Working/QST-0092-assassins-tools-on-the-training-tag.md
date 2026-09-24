@@ -23,7 +23,7 @@ A wide sweep of the Player path on 2026-09-06 (every Guild at levels 1 to 20, ev
 
 - Wide sweep: `DONE 1161/1164 ok; 1 distinct signature: summon AttributeError Training/Rogue.py:149 in features: 'Loadout' object has no attribute 'buy_item'`, requests `{'guild': 'Rogue', 'specialization': 'Assassin', 'level': 3|10|20}`.
 - `training_covers("Rogue", "Assassin's Tools")` → True: the TOP Tag owns the prose already.
-- `Build_Training(apply=...)` exists and the Bard training map already threads `apply` through its helpers; the Rogue map's `_path` and `_assassin` did not.
+- `Make_Training(apply=...)` exists and the Bard training map already threads `apply` through its helpers; the Rogue map's `_path` and `_assassin` did not.
 - `GearKit.issue(char, prototype)` and `Ledger_of_Tools.TOOLS_BY_NAME` are the doors `_proficient_tools` already uses to put a tool in the bag.
 
 ## 🎯 Desired outcome

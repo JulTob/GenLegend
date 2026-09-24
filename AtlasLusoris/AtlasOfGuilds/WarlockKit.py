@@ -7,8 +7,8 @@ deliberately rare: a table that has never met one can play the published
 Warlock forever and never notice it exists.
 """
 
-from AtlasLusoris.GuildKit import Build_Casting_Variant
-from AtlasLusoris.GuildKit import Build_Specialization
+from AtlasLusoris.GuildKit import Make_Casting_Variant
+from AtlasLusoris.GuildKit import Make_Specialization
 from AtlasLusoris.GuildKit import Warlock
 
 
@@ -75,7 +75,7 @@ ARCHFEY_DESCRIPTION = (
 	"If we shadows have offended,<br>"
 	"nothing played shall be mended."
 	)
-Archfey = Build_Specialization(
+Archfey = Make_Specialization(
 	guild=Warlock,
 	name="Archfey",
 	module=__name__,
@@ -188,7 +188,7 @@ def CELESTIAL_DESCRIPTION(
 		)
 
 
-Celestial = Build_Specialization(
+Celestial = Make_Specialization(
 	guild=Warlock,
 	name="Celestial",
 	module=__name__,
@@ -229,7 +229,7 @@ FIEND_DESCRIPTION = (
 	"it. Maybe you finally deserve a long shot. But your crack is a "
 	"two-way street, slowly opening. And you still do not look."
 	)
-Fiend = Build_Specialization(
+Fiend = Make_Specialization(
 	guild=Warlock,
 	name="Fiend",
 	module=__name__,
@@ -281,7 +281,7 @@ GREAT_OLD_ONE_DESCRIPTION = (
 	'<span class="eldritch" data-eldritch-rate="10" '
 	'data-eldritch-hold="280">You, mine.</span>'
 	)
-GreatOldOne = Build_Specialization(
+GreatOldOne = Make_Specialization(
 	guild=Warlock,
 	name="Great Old One",
 	module=__name__,
@@ -295,14 +295,14 @@ GreatOldOne = Build_Specialization(
 # change, so a rules lawyer meets one Occultist in twenty rather than a new
 # subsystem.  Charisma needs no Variant of its own: the Guild already answers
 # it, and a Warlock of Charisma is simply a Warlock.
-Occultist = Build_Casting_Variant(
+Occultist = Make_Casting_Variant(
 	guild=Warlock,
 	name="Occultist",
 	ability="INT",
 	module=__name__,
 	weight=5,
 	)
-Covenantor = Build_Casting_Variant(
+Covenantor = Make_Casting_Variant(
 	guild=Warlock,
 	name="Covenantor",
 	ability="WIS",

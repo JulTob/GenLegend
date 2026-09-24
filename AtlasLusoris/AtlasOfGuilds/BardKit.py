@@ -14,7 +14,7 @@ these, and a renderer that inserted its own breaks would destroy the verses.
 """
 
 from AtlasLusoris.GuildKit import Bard
-from AtlasLusoris.GuildKit import Build_Specialization
+from AtlasLusoris.GuildKit import Make_Specialization
 
 
 # Julio's, from the wiki.  **Watching.**  "They watch you. You watch them.
@@ -39,7 +39,7 @@ DANCE_DESCRIPTION = (
 	"Let them think this is a party.<br>"
 	"Stay on the beat."
 	)
-Dance = Build_Specialization(
+Dance = Make_Specialization(
 	guild=Bard,
 	name="Dance",
 	module=__name__,
@@ -71,7 +71,7 @@ GLAMOUR_DESCRIPTION = (
 	"You are a bright light.<br>"
 	"Shining, glittering, just like gold."
 	)
-Glamour = Build_Specialization(
+Glamour = Make_Specialization(
 	guild=Bard,
 	name="Glamour",
 	module=__name__,
@@ -96,7 +96,7 @@ LORE_DESCRIPTION = (
 	"The song gets the ending wrong.<br>"
 	"You are what is left."
 	)
-Lore = Build_Specialization(
+Lore = Make_Specialization(
 	guild=Bard,
 	name="Lore",
 	module=__name__,
@@ -130,7 +130,7 @@ VALOR_DESCRIPTION = (
 	"Make it worth writing down.<br>"
 	"Even when you will not be the one writing it down."
 	)
-Valor = Build_Specialization(
+Valor = Make_Specialization(
 	guild=Bard,
 	name="Valor",
 	module=__name__,

@@ -11,7 +11,7 @@ grants as Entries and optional Chips; it performs no tactical selection.
 #--
 #-- Does this module own a domain axis (QST-0134)?  Yes — and it already says
 #-- so in TOP.  Tactical_Feature is a Tag, gated by @Pre to NonPlayers only,
-#-- and it keeps its own bags through @Imprint; Build_Feature_Tag mints one
+#-- and it keeps its own bags through @Imprint; Make_Feature_Tag mints one
 #-- concrete Tag per catalogue entry.  Nothing was added here, because nothing
 #-- was missing.
 #--
@@ -353,7 +353,7 @@ def Tag_Name_For(
 			)
 
 
-def Build_Feature_Tag(
+def Make_Feature_Tag(
 		spec: Feature_Spec,
 		) -> type[Tactical_Feature]:
 	"""Build one concrete TOP Tag around an immutable catalogue entry."""
@@ -423,7 +423,7 @@ def Carry_Feature_Grant(
 
 __all__ = (
 		"Activation",
-		"Build_Feature_Tag",
+		"Make_Feature_Tag",
 		"Carry_Feature_Grant",
 		"Chip_Grant",
 		"Chip_Spec",
@@ -570,7 +570,7 @@ def _test_the_minted_tag() -> None:
 	assert Tag_Name_For("aura") == "NPC_Feature_Aura"
 
 	spec = _a_spec()
-	minted = Build_Feature_Tag(spec)
+	minted = Make_Feature_Tag(spec)
 
 	assert minted.__name__ == "NPC_Feature_PackTactics"
 	assert minted.SPEC is spec, "The Tag carries the entry it was built from."

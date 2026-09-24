@@ -23,7 +23,8 @@ Public surface
 	weapon_pool(char)        — weapons this Character may wield
 	may_use_shield(char)     — shield training, and whether it fits the build
 	unarmoured_formula(char) — the natural no-armour AC (Unarmored Defense)
-	armour_voids_unarmoured  — worn armour would turn the formula off
+	unarmoured_refuses_armour / _shield — Unarmored Defense takes no armour,
+	                           and a Shield only when its source allows
 	starting_budget(char)    — gold for the initial kit
 """
 
@@ -67,11 +68,11 @@ from AtlasInventarium.Ledger_of_Gear import (
 from AtlasInventarium.Ledger_of_Tools import TOOLS_BY_NAME
 from AtlasInventarium.Map_of_Gear_Proficiency import (
 		armour_allowance,
-		armour_voids_unarmoured,
-		has_unarmoured_defence,
 		may_use_shield,
 		trained_for,
 		unarmoured_formula,
+		unarmoured_refuses_armour,
+		unarmoured_refuses_shield,
 		weapon_pool,
 		)
 
@@ -356,7 +357,7 @@ def _fit_armour(
 			)
 	if not allowance:
 		return None
-	if armour_voids_unarmoured(
+	if unarmoured_refuses_armour(
 			char,
 			):
 		return None
@@ -1477,10 +1478,8 @@ __all__ = (
 		"Loadout",
 		"Outfit_Player",
 		"armour_allowance",
-		"armour_voids_unarmoured",
 		"current_armour_class",
 		"gear_stream",
-		"has_unarmoured_defence",
 		"may_use_shield",
 		"starting_budget",
 		"unarmoured_formula",
@@ -1632,8 +1631,9 @@ def _self_test():
 			dancer
 			)
 
-	# --- Barbarian MAY carry a shield with Unarmored Defence -------------
+	# --- Barbarian: no armour, but MAY carry a shield ---------------------
 	barb, barb_report = results["Barbarian"]
+	assert barb_report["armour"] is None, "Barbarian should stay unarmoured"
 	assert may_use_shield(
 			barb
 			) is True
@@ -2008,18 +2008,20 @@ def _check_character(
 				f"wears {worn.armour_kind} armour, untrained for it"
 				)
 
-	# Unarmored Defence that armour would void stays unarmoured.
-	if armour_voids_unarmoured(
+	# Unarmored Defense is handed no armour, and a Shield only when its
+	# source allows one.
+	if worn is not None and unarmoured_refuses_armour(
 			char
 			):
-		if worn is not None:
-			fail(
-					f"{worn.called} worn, voiding Unarmored Defence"
-					)
-		if loadout.offhand is not None:
-			fail(
-					"shield carried, voiding Unarmored Defence"
-					)
+		fail(
+				f"{worn.called} worn over Unarmored Defense"
+				)
+	if loadout.offhand is not None and unarmoured_refuses_shield(
+			char
+			):
+		fail(
+				"shield carried, voiding Unarmored Defense"
+				)
 
 	# Everything equipped is owned.
 	holdings = owned(

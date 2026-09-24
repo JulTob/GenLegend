@@ -47,7 +47,7 @@ def _class_name(
 		)
 
 
-def Build_Catalogued_Origin_Feat(
+def Make_Catalogued_Origin_Feat(
 		*,
 		name: str,
 		source_title: str,
@@ -2073,7 +2073,7 @@ REAL_SETTING_FEATS = {
 
 OFFICIAL_ORIGIN_FEATS = {
 	**{
-		name: Build_Catalogued_Origin_Feat(
+		name: Make_Catalogued_Origin_Feat(
 			name=name,
 			source_title=source_title,
 			source_url=_SOURCE_URLS[
@@ -2100,6 +2100,6 @@ BACKGROUND_ORIGIN_FEATS = {
 
 __all__ = (
 	"BACKGROUND_ORIGIN_FEATS",
-	"Build_Catalogued_Origin_Feat",
+	"Make_Catalogued_Origin_Feat",
 	"OFFICIAL_ORIGIN_FEATS",
 	)

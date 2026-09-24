@@ -1,25 +1,25 @@
 """Druid Specializations."""
 
-from AtlasLusoris.GuildKit import Build_Specialization
+from AtlasLusoris.GuildKit import Make_Specialization
 from AtlasLusoris.GuildKit import Druid
 
 
-Land = Build_Specialization(
+Land = Make_Specialization(
 	guild=Druid,
 	name="Land",
 	module=__name__,
 	)
-Moon = Build_Specialization(
+Moon = Make_Specialization(
 	guild=Druid,
 	name="Moon",
 	module=__name__,
 	)
-Sea = Build_Specialization(
+Sea = Make_Specialization(
 	guild=Druid,
 	name="Sea",
 	module=__name__,
 	)
-Stars = Build_Specialization(
+Stars = Make_Specialization(
 	guild=Druid,
 	name="Stars",
 	module=__name__,

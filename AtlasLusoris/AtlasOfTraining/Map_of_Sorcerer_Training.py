@@ -10,7 +10,11 @@ Thought pattern
 
 from __future__ import annotations
 
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfFeatures.Draconic_Resilience import (
+		Draconic_Armour_Class,
+		Draconic_Resilience,
+		)
 
 
 GUILD = "Sorcerer"
@@ -61,7 +65,7 @@ def _core(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -79,13 +83,15 @@ def _origin(
 		min_level: int,
 		description,
 		chips=(),
+		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
 			description=description,
 			chips=chips,
+			apply=apply,
 			path=origin_name,
 			source=f"Training: {origin_name}",
 			)
@@ -395,6 +401,7 @@ def _draconic(
 		min_level: int,
 		description,
 		chips=(),
+		apply=None,
 		):
 	return _origin(
 			DRACONIC,
@@ -402,6 +409,7 @@ def _draconic(
 			min_level=min_level,
 			description=description,
 			chips=chips,
+			apply=apply,
 			)
 
 
@@ -411,20 +419,35 @@ def _draconic_resilience_entry(
 	level = _rank(
 			char
 			)
+	armour_class = Draconic_Armour_Class(
+			char
+			)
 	return (
 		"<b>Draconic Resilience.</b> Your hit point maximum increases by <b>"
-		f"{level}</b> (1 per Sorcerer level). When you aren't wearing "
-		"armor, your AC equals 13 + your Dexterity modifier."
+		f"{level}</b> (1 per Sorcerer level). Parts of your body are covered "
+		"by dragon-like scales: while you aren't wearing armor, your base "
+		f"Armor Class equals <b>{armour_class}</b> (10 + your Dexterity and "
+		"Charisma modifiers)."
 		)
 
 
-Draconic_Resilience = _draconic(
+def _apply_draconic_resilience(
+		char,
+		) -> None:
+	"""Grow the scales: the Armor Class rule is its own Tag."""
+	Draconic_Resilience(
+			char
+			)
+
+
+Draconic_Scales = _draconic(
 		name="Draconic Resilience",
 		min_level=3,
 		description=_draconic_resilience_entry,
 		chips=(
 				("HP Bonus", _rank),
 				),
+		apply=_apply_draconic_resilience,
 		)
 
 Draconic_Spells = _draconic(
