@@ -102,8 +102,8 @@ Measured on 2026-09-23 against TagKit 0.2.0a1. **(V)** marks a fact checked dire
 **Where the judges split: store the grants (C) or derive them (B)?**
 - *For B (the Principles judge):* a stored ledger can be rebuilt from membership plus declarations, so under Decree 0002 §3 it is a cache. It also outlives a Rip, so after one it disagrees with membership.
 - *For C (the Correctness and Migration judges):*
-  - About a quarter of today's entries have no Tag to declare them: ASI feats, Fighting Style picks, Invocations. B needs those turned into late-applied Tags, which TagKit forbids inside an Imprint (re-entrancy), and each late Tag re-runs every visible Precondition (about 5.6 ms on the finished Paladin).
-  - B's walk depends on TagKit internals (flattening `Forms()`, reading `__dict__`, unwrapping `Report`), and the a3 pin rewrites Report declarations.
+  - About a quarter of today's entries have no Tag to declare them: ASI feats, Fighting Style picks, Invocations. B needs those turned into late-applied Tags, and each late Tag re-runs every visible Precondition (about 5.6 ms on the finished Paladin, measured on 0.2.0a1). *(Corrected 2026-09-24: the panel also said TagKit forbids applying a Tag inside an Imprint. That is true only of the pinned 0.2.0a1. Upstream removed the guard in 0.2.0a2, and TopKit 0.2.0a3 and 0.2.0a4 allow it, verified by running a Fighter Imprint that applies a Fighting Style.)*
+  - B's walk depends on TagKit internals on 0.2.0a1 (flattening `Forms()`, reading `__dict__`, unwrapping `Report`), and the a3 pin rewrites Report declarations. *(Corrected 2026-09-24: TopKit's public `Tags(agent)` now returns the active leaf Tags in application order, so the walk no longer needs the internals. Reading each Tag's own declarations may still need care.)*
   - Per-character content (Magic Initiate's chosen spells) is a decision, not a derivation.
   - The `training` ledger is the ratified precedent: *"the ledger is the writer, the sheet its projection"* (Dialog 0025).
 
@@ -420,7 +420,7 @@ The NPC half waits for Decree 0004 to lift. Full NPC generation fails today; onl
 
 **R1. Store the grants, or derive them?**
 - *Proposal:* amend Decree 0002 §2 to add `grants` beside `dices`. The root already carries `training` the same way.
-- *Alternative:* keep the root as ratified and derive every sheet by walking Tags (Design B). This is purer, but it needs choice Tags applied late, and it depends on TagKit internals until upstream offers "every active Tag, in order".
+- *Alternative:* keep the root as ratified and derive every sheet by walking Tags (Design B). This is purer. On 0.2.0a1 it needed choice Tags applied late and TagKit internals. TopKit (0.2.0a2 onward) removes both obstacles: an Imprint may apply a choice Tag, and `Tags(agent)` lists active Tags in order. What remains against B is the cost of Preconditions re-run per Tag (unmeasured on TopKit) and per-character content such as chosen spells. **After the a3 pin, R1 is closer than the panel scored it, and should be re-judged on TopKit before it is ruled.**
 
 **R2. Where does the vocabulary live?**
 - *Proposal:* a domain-owned, types-only `Compass_of_Grants` that Venustas may import, as a narrow exception to QST-0021:63.
