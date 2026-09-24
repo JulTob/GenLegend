@@ -1,6 +1,6 @@
 """The shared 2024 Aasimar Species Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.Aasimar.traits import Celestial_Resistance
 from AtlasActorLudi.SpeciesKit.Aasimar.traits import Healing_Hands

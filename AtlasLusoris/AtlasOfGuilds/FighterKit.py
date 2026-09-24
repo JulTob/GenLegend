@@ -16,7 +16,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from types import MappingProxyType
 
-from TagKit import Pre, Report, Tag
+from TopKit import Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasInventarium.ToolsKit import (
@@ -295,9 +297,9 @@ FIGHTER_RESOURCES = (
 			),
 	)
 
-FEATURES = Report(FIGHTER_FEATURES)
-CHOICES = Report(FIGHTER_CHOICES)
-RESOURCES = Report(FIGHTER_RESOURCES)
+FEATURES = Report_Of(FIGHTER_FEATURES)
+CHOICES = Report_Of(FIGHTER_CHOICES)
+RESOURCES = Report_Of(FIGHTER_RESOURCES)
 Fighter.FEATURES = FEATURES
 Fighter.CHOICES = CHOICES
 Fighter.RESOURCES = RESOURCES

@@ -23,13 +23,14 @@ Farmer( charlie )
 
 these should return true:
 assert charlie in Player
-assert Has( charlie, Wizard )
+assert charlie in Wizard
+assert "Player" in charlie      # Player is a @Flag: it answers by name
 
 ```
 
 """
 
-from TagKit import Has, Pre, Tag, TagPreconditionError
+from TopKit import Flag, Pre, Report, Tag, TagPreconditionError
 
 
 def _tag_holds(
@@ -41,6 +42,29 @@ def _tag_holds(
 		return char in candidate
 	except TypeError:
 		return False
+
+
+def Report_Of(
+		value,
+		):
+	"""
+	A Report that always gives back one fixed value.
+
+	TopKit 0.2.0a3 builds Reports from functions (``@Report def X(tag)``) and
+	no longer accepts ``Report( value )``.  A factory that declares Tags from
+	data needs the value form, so this wraps the value in a builder.  A plain
+	value would mostly do, but a function stored as plain class data becomes
+	an Action on the Character; a Report keeps it a plain value on the Tag.
+	Proposed upstream in QST-0093.10.
+	"""
+	def Builder(
+			tag,
+			):
+		return value
+
+	return Report(
+		Builder
+		)
 
 
 # ---------------------------------------------------------------------------
@@ -455,8 +479,15 @@ class Character:
 # Character Tags
 # ---------------------------------------------------------------------------
 
+@Flag
 class Role(Tag):
-	"""Root Tag for a Character's play role."""
+	"""Root Tag for a Character's play role.
+
+	Role, Player and NonPlayer are Flags: ``"Player" in char`` answers by
+	name.  A Character's first Tag is its Role, and that matters today:
+	TopKit 0.2.0a3 installs name lookups only when a Character's first Tag is
+	a Flag (QST-0093.10, a Suggest-to-TopKit questa).
+	"""
 
 	@Pre
 	def is_Character(
@@ -469,6 +500,7 @@ class Role(Tag):
 			)
 
 
+@Flag
 class Player(Role):
 	"""Player-character role."""
 
@@ -480,6 +512,7 @@ class Player(Role):
 		assert target not in NonPlayer
 
 
+@Flag
 class NonPlayer(Role):
 	"""Non-player Character role."""
 
@@ -665,10 +698,7 @@ def _test_tag_queries():
 		)
 
 	assert character not in Player
-	assert not Has(
-		character,
-		Player,
-		)
+	assert character not in Role
 
 
 def _test_player_role():
@@ -683,23 +713,10 @@ def _test_player_role():
 
 	assert hero in Player and hero in Role
 	assert Player in hero and Role in hero
-	assert Has(
-		hero,
-		Player,
-		Role,
-		)
-	assert Has(
-		hero,
-		"Player",
-		"Role",
-		)
-	assert "Player" in hero
-	assert "player" in hero
+	assert "Player" in hero and "Role" in hero
+	assert "player" not in hero
+		#-- A Flag answers to its exact class name: case matters.
 	assert "Wizard" not in hero
-	assert not Has(
-		hero,
-		"Wizard",
-		)
 
 
 def _test_is_character_contract():
@@ -712,7 +729,10 @@ def _test_is_character_contract():
 			NotACharacter()
 			)
 	except Exception as error:
-		assert type(error).__name__ == "TagPreconditionError"
+		assert isinstance(
+			error,
+			TagPreconditionError,
+			)
 	else:
 		raise AssertionError(
 			"Player must reject a non-Character"
@@ -732,15 +752,12 @@ def _test_spaced_name():
 		)
 
 	assert knight in Eldritch_Knight and knight in Role
-	assert Has(
-		knight,
-		"Eldritch_Knight",
-		)
+	assert "Role" in knight
+	assert "Eldritch_Knight" not in knight
+		#-- Not a Flag, so it does not answer by name.
 	assert Eldritch_Knight.NAME == "Eldritch Knight"
-	assert not Has(
-		knight,
-		"Eldritch Knight",
-		)
+	assert "Eldritch Knight" not in knight
+		#-- NAME is for display only; it is never a lookup word.
 
 
 def _test_nonplayer_role():
@@ -754,15 +771,8 @@ def _test_nonplayer_role():
 
 	assert npc in NonPlayer
 	assert NonPlayer in npc and Player not in npc
-	assert Has(
-		npc,
-		NonPlayer,
-		"NonPlayer",
-		)
-	assert not Has(
-		npc,
-		"NPC",
-		)
+	assert "NonPlayer" in npc
+	assert "NPC" not in npc
 
 
 def _self_test():

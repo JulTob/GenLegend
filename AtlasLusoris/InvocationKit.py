@@ -32,7 +32,9 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-from TagKit import Imprint, Pre, Report, Tag
+from TopKit import Imprint, Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.FeaturesKit import (
@@ -383,17 +385,17 @@ def Build_Invocation(
 					),
 			{
 					"NAME": name,
-					"MIN_LEVEL": Report(
+					"MIN_LEVEL": Report_Of(
 							min_level
 							),
-					"REQUIRES": Report(
+					"REQUIRES": Report_Of(
 							getattr(
 									requires,
 									"NAME",
 									None,
 									)
 							),
-					"SOURCE": Report(
+					"SOURCE": Report_Of(
 							source
 							),
 					"Warlock_Only": Warlock_Only,

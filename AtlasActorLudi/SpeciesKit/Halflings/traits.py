@@ -1,6 +1,6 @@
 """The 2024 Halfling trait Tags."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasLusoris.FeaturesKit import Trait
 

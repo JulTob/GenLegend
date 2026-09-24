@@ -1,6 +1,6 @@
 """The 2024 Rock Gnome Heritage Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
 from AtlasActorLudi.SpeciesKit.Gnomes.base import Gnome

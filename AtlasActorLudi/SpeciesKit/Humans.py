@@ -1,6 +1,6 @@
 """The 2024 Human Species Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Humanoid
 from AtlasActorLudi.SpeciesKit.bases import Species

@@ -1,6 +1,7 @@
 """Run the SpeciesKit contract checks beside the package."""
 
-from TagKit import TagImprintError
+from TopKit import TagImprintError
+from TopKit import TagPreconditionError
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasActorLudi.Grimoire_of_AbilityScores import AbilityScores
@@ -611,7 +612,7 @@ def _test_aasimar_revelation_conflict_is_atomic() -> None:
 
 	try:
 		Inner_Radiance(character)
-	except TagImprintError:
+	except TagPreconditionError:
 		pass
 	else:
 		raise AssertionError(

@@ -18,7 +18,7 @@ from __future__ import annotations
 import hashlib
 import random
 
-from TagKit import Tag, Pre, Record
+from TopKit import Tag, Pre, Record
 
 
 """		Adventure — the Epica root    """
@@ -416,7 +416,7 @@ Adventure.TAG_ROOTS = (Adventure_Tag,)
 
 
 if __name__ == "__main__":
-	from TagKit import TagCompositionError, TagPreconditionError
+	from TopKit import TagCompositionError, TagPreconditionError
 
 	class StubBBEG:
 		def __init__(self):

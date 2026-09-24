@@ -6,7 +6,9 @@ mechanics remain deliberately catalogued, not guessed, until each receives a
 dedicated Feature implementation.
 """
 
-from TagKit import Imprint, Post, Record, Report
+from TopKit import Imprint, Post, Record
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.ProficiencyKit import (
 	Commit_Training_Gain,
@@ -77,16 +79,16 @@ def Build_Catalogued_Origin_Feat(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": Report(
+			"DESCRIPTION": Report_Of(
 				description
 				),
-			"SOURCE_TITLE": Report(
+			"SOURCE_TITLE": Report_Of(
 				source_title
 				),
-			"SOURCE_URL": Report(
+			"SOURCE_URL": Report_Of(
 				source_url
 				),
-			"MECHANICS_STATUS": Report(
+			"MECHANICS_STATUS": Report_Of(
 				"catalogued"
 				),
 			"Awaken": Awaken,
@@ -1092,7 +1094,7 @@ class Spared(Origin_Feat):
 class Dark_Gift(Origin_Feat):
 	"""A boon that arrived uninvited and kept a share of you."""
 
-	CATEGORY = Report(
+	CATEGORY = Report_Of(
 		"Dark Gift"
 		)
 

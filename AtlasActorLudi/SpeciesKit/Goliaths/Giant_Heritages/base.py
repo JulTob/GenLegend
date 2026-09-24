@@ -1,6 +1,6 @@
 """The internal Goliath Giant Heritage Geometry."""
 
-from TagKit import Pre
+from TopKit import Pre
 
 from AtlasLusoris.FeaturesKit import Trait
 

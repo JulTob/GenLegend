@@ -1,6 +1,6 @@
 """The Hill's Tumble Giant Heritage Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 	Giant_Heritage,

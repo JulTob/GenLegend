@@ -1,6 +1,6 @@
 """The 2024 Abyssal Tiefling Heritage Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
 from AtlasActorLudi.SpeciesKit.Tieflings.base import Tiefling

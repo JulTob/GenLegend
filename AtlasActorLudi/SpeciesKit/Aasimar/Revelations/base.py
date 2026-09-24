@@ -1,6 +1,6 @@
 """The internal Celestial Revelation Geometry."""
 
-from TagKit import Pre
+from TopKit import Pre
 
 from AtlasLusoris.FeaturesKit import Trait
 
@@ -65,6 +65,20 @@ def Current_Revelation(
 		if carried
 		else None
 		)
+
+
+def No_Revelation_Yet(
+	target,
+	) -> bool:
+	"""
+	The gate every Revelation Shape declares: an Aasimar holds one Revelation.
+
+	It lives on each Shape, not on ``Celestial_Revelation``, because TopKit
+	0.2.0a3 does not re-run a Base's Preconditions when a second Shape of an
+	active Base is applied.  Refusing at the gate keeps the conflict atomic:
+	since 0.2.0a2 a failed Imprint leaves its Tag behind.
+	"""
+	return Current_Revelation( target ) is None
 
 
 def Imprint_Revelation(

@@ -24,7 +24,9 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from typing import Any
 
-from TagKit import Imprint, Pre, Report, Tag
+from TopKit import Imprint, Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.FeaturesKit import grant
@@ -333,16 +335,16 @@ def Build_Training(
 
 	namespace = {
 			"NAME": name,
-			"GUILD_NAME": Report(
+			"GUILD_NAME": Report_Of(
 					guild_name
 					),
-			"MIN_LEVEL": Report(
+			"MIN_LEVEL": Report_Of(
 					min_level
 					),
-			"PATH": Report(
+			"PATH": Report_Of(
 					resolved_path
 					),
-			"SOURCE": Report(
+			"SOURCE": Report_Of(
 					resolved_source
 					),
 			"Trained_In_Guild": Trained_In_Guild,

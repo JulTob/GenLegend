@@ -7,7 +7,7 @@ crossings are not a plane's local variant, they are the branch that never came
 across.
 """
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage

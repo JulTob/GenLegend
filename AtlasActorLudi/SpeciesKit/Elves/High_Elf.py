@@ -1,6 +1,6 @@
 """The High Elf Heritage Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage
