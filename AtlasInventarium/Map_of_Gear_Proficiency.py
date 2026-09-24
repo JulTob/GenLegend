@@ -53,27 +53,30 @@ def armour_allowance(
 	return ()
 
 
-def has_unarmoured_defence(
-		char,
-		) -> bool:
-	"""True when the Character carries the Unarmored Defense Tag."""
-	from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
-			Has_Unarmored_Defense,
-			)
-	return Has_Unarmored_Defense(
-			char
-			)
-
-
-def armour_voids_unarmoured(
+def unarmoured_refuses_armour(
 		char,
 		) -> bool:
 	"""
-	True when worn armour or a shield turns the formula off.
+	True when the generator must hand this Character no armour.
 
-	The Tag knows whether its source allows a Shield: a Monk's and a
-	dancer's does not, a Barbarian's does (and Medium armour is still a
-	legal, worse, option for the Barbarian).
+	A Character with Unarmored Defense is never outfitted with armour,
+	whatever its armour training says (Julio, 2026-09-24; the reason is
+	in the Unarmored Defense Tag's docstring).
+	"""
+	from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+			Unarmored_Defense,
+			)
+	return char in Unarmored_Defense
+
+
+def unarmoured_refuses_shield(
+		char,
+		) -> bool:
+	"""
+	True when the generator must hand this Character no Shield.
+
+	The Tag knows whether its source allows one: a Barbarian's does, a
+	Monk's and a dancer's do not.
 	"""
 	from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 			Shield_Voids_Unarmored_Defense,
@@ -113,7 +116,7 @@ def may_use_shield(
 	"""
 	from AtlasLusoris.GuildKit import HeavilyArmored, ModeratelyArmored
 
-	if armour_voids_unarmoured(
+	if unarmoured_refuses_shield(
 			char,
 			):
 		return False
@@ -197,11 +200,11 @@ def trained_for(
 
 __all__ = (
 		"armour_allowance",
-		"armour_voids_unarmoured",
-		"has_unarmoured_defence",
 		"may_use_shield",
 		"trained_for",
 		"unarmoured_formula",
+		"unarmoured_refuses_armour",
+		"unarmoured_refuses_shield",
 		"weapon_pool",
 		)
 
@@ -238,6 +241,9 @@ def _self_test():
 			) == 12, unarmoured_formula(
 			plain
 			)
+	assert not unarmoured_refuses_armour(
+			plain
+			), "without the feature, armour training decides"
 
 	# --- Monk adds Wisdom, Barbarian adds Constitution ---------------------
 	monk = Dummy(
@@ -249,7 +255,7 @@ def _self_test():
 			) == 13, unarmoured_formula(
 			monk
 			)
-	assert has_unarmoured_defence(
+	assert unarmoured_refuses_armour(
 			monk
 			)
 	assert may_use_shield(
@@ -265,9 +271,12 @@ def _self_test():
 			) == 15, unarmoured_formula(
 			barb
 			)
-	assert has_unarmoured_defence(
+	assert unarmoured_refuses_armour(
 			barb
-			)
+			), "a Barbarian with Unarmored Defense is handed no armour"
+	assert unarmoured_refuses_shield(
+			barb
+			) is False
 
 	# --- College of Dance adds Charisma; armour and shields void it --------
 	dance = Dummy(
@@ -279,10 +288,10 @@ def _self_test():
 			) == 15, unarmoured_formula(
 			dance
 			)
-	assert has_unarmoured_defence(
+	assert unarmoured_refuses_armour(
 			dance
 			)
-	assert armour_voids_unarmoured(
+	assert unarmoured_refuses_shield(
 			dance
 			)
 	assert may_use_shield(

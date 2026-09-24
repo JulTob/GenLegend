@@ -24,10 +24,26 @@ Thought pattern (read this before the code)
 	   the feature from two Guilds.
 	4. Reading is pure (Decree 0009, point 7). The readers decide nothing
 	   and roll nothing.
+	5. Does the Character have it?  Ask TopKit: ``char in Unarmored_Defense``.
+	   No helper wraps that question.
+
+Gear policy (Julio, 2026-09-24): the generator hands out NO armour
+	The rules let a Character with Unarmored Defense put armour on; the
+	feature just stops working while it is worn. The generator does not
+	offer it anyway. A Monk or a Barbarian in plate breaks the fantasy the
+	feature is there to sell, and a player who wants armour can still buy
+	some during play. So, when the generator outfits a Character:
+
+	    armour     never, whatever the Guild's armour training says;
+	    a Shield   only when the source allows one (``shield_allowed``):
+	               yes for a Barbarian, no for a Monk or a dancer.
+
+	The gear rules that apply this live in
+	``AtlasInventarium/Map_of_Gear_Proficiency.py``
+	(``unarmoured_refuses_armour``, ``unarmoured_refuses_shield``).
 
 Public surface
 	Unarmored_Defense(char, ability=…, shield_allowed=…)  — the Tag
-	Has_Unarmored_Defense(char)          — does the Character carry it?
 	Unarmored_Ability(char)              — the extra ability, or None
 	Shield_Voids_Unarmored_Defense(char) — would a Shield turn it off?
 	Unarmored_Armour_Class(char)         — the Armor Class with nothing on
@@ -184,17 +200,11 @@ class Unarmored_Defense( Tag ):
 # Readers: everything the rest of the generator needs to know
 # ---------------------------------------------------------------------------
 
-def Has_Unarmored_Defense(
-		char,
-		) -> bool:
-	return char in Unarmored_Defense
-
-
 def Unarmored_Ability(
 		char,
 		) -> str | None:
 	"""The ability added to Dexterity, or None without the feature."""
-	if not Has_Unarmored_Defense( char ):
+	if char not in Unarmored_Defense:
 		return None
 	return char.unarmored_defense_ability
 
@@ -203,7 +213,7 @@ def Shield_Voids_Unarmored_Defense(
 		char,
 		) -> bool:
 	"""True when the Character has the feature and a Shield turns it off."""
-	if not Has_Unarmored_Defense( char ):
+	if char not in Unarmored_Defense:
 		return False
 	return not char.unarmored_defense_allows_shield
 
@@ -261,7 +271,6 @@ Unarmored_Defense.CHIPS = (
 
 
 __all__ = (
-		"Has_Unarmored_Defense",
 		"Shield_Voids_Unarmored_Defense",
 		"Unarmored_Ability",
 		"Unarmored_Armour_Class",
@@ -290,7 +299,7 @@ def _self_test() -> None:
 
 	#-- Nobody: plain 10 + Dexterity.
 	plain = Dummy()
-	assert not Has_Unarmored_Defense( plain )
+	assert plain not in Unarmored_Defense
 	assert Unarmored_Armour_Class( plain ) == 12
 	assert Shield_Voids_Unarmored_Defense( plain ) is False
 
@@ -301,7 +310,7 @@ def _self_test() -> None:
 			ability="CON",
 			shield_allowed=True,
 			)
-	assert Has_Unarmored_Defense( barbarian )
+	assert barbarian in Unarmored_Defense
 	assert Unarmored_Ability( barbarian ) == "CON"
 	assert Unarmored_Armour_Class( barbarian ) == 15
 	assert Shield_Voids_Unarmored_Defense( barbarian ) is False
@@ -352,7 +361,7 @@ def _self_test() -> None:
 			raise AssertionError(
 					f"Unarmored_Defense accepted {inputs}"
 					)
-		assert not Has_Unarmored_Defense( stranger )
+		assert stranger not in Unarmored_Defense
 
 	#-- The Chip reads the same function the gear rules read.
 	chip = Unarmored_Defense.CHIPS[0]
