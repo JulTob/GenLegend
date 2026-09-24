@@ -31,7 +31,9 @@ from __future__ import annotations
 
 from random import Random
 
-from TagKit import Imprint, Pre, Report, Tag
+from TopKit import Imprint, Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.AtlasOfOrders.Map_of_Domains import DOMAINS
@@ -645,13 +647,13 @@ def order_tag(
 			),
 		{
 			"NAME": key,
-			"TITLE": Report(
+			"TITLE": Report_Of(
 				order.title
 				),
-			"TRADITION": Report(
+			"TRADITION": Report_Of(
 				order.tradition.name
 				),
-			"DOMAINS": Report(
+			"DOMAINS": Report_Of(
 				tuple(
 					domain.name
 					for domain in order.domains
@@ -716,7 +718,7 @@ def order_feat(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": Report(
+			"DESCRIPTION": Report_Of(
 				description
 				),
 			"awaken": awaken,
@@ -744,7 +746,7 @@ class Sign_of_the_Order(Origin_Feat):
 	"""
 
 	NAME = "Sign of the Order"
-	DESCRIPTION = Report(
+	DESCRIPTION = Report_Of(
 		"An initiate's mark, conferred at swearing. What it grants depends "
 		"on which Order conferred it."
 		)

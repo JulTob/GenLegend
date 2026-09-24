@@ -21,10 +21,10 @@ These tags influence further decisions, like titles, story beats, and motivation
 
 from __future__ import annotations
 
-from TagKit import Action
-from TagKit import Pre
-from TagKit import Tag
-from TagKit import Underlay
+from TopKit import Action
+from TopKit import Pre
+from TopKit import Tag
+from TopKit import Underlay
 
 from AtlasActorLudi.CharactersKit import Character
 
@@ -347,7 +347,7 @@ def _test_membership_is_source(
 
 def _test_axis_conflicts(
 		):
-	from TagKit import TagPreconditionError
+	from TopKit import TagPreconditionError
 	character = Character(
 			seed=20,
 			)

@@ -1,9 +1,8 @@
 # Python 3.10+ (3.14 in production). Web app: Shiny only. `make setup` installs into .venv.
 shiny==1.6.3
 
-# Tag-Oriented Programming: the TagKit reference implementation, pinned to the commit
-# the code runs on: 0.2.0a1, "Establish modular TagKit 0.2 alpha" (2026-08-05), the
-# first commit of upstream branch codex/tagkit-0.2-alpha. Until 2026-09-07 this file
-# named c7bd376 (0.1.0), which a fresh install could not boot. The pin moves to
-# 0.2.0a3 deliberately, on its own questa (QST-0093.5).
-tagkit @ git+https://github.com/JulTob/Tag_Oriented_Programming.git@54d50dd2cb0b4c5517b2b87320020de1d19284c2
+# Tag-Oriented Programming: TopKit (formerly TagKit), the reference implementation,
+# pinned to its first PyPI release, 0.2.0a3 (2026-09-21). The distribution is
+# `topkit` and the module is `TopKit`. Moved from the TagKit 0.2.0a1 git pin by
+# QST-0093.5; the upstream issues found on the way are QST-0093.10.
+topkit==0.2.0a3

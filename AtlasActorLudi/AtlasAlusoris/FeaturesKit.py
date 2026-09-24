@@ -25,7 +25,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from TagKit import Imprint, Pre, Tag
+from TopKit import Imprint, Pre, Tag
 
 from AtlasActorLudi.CharactersKit import NonPlayer
 from AtlasActorLudi.Map_of_Scores import PB

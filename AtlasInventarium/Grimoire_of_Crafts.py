@@ -24,7 +24,9 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from TagKit import Pre, Report, Tag
+from TopKit import Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasInventarium.Grimoire_of_Items import (
 		Armour,
@@ -125,31 +127,31 @@ def Build_Craft(
 
 	namespace = {
 			"NAME": name,
-			"GRANTS": Report(
+			"GRANTS": Report_Of(
 					dict(
 							grants
 							)
 					),
-			"TIER": Report(
+			"TIER": Report_Of(
 					tier
 					),
-			"MIN_LEVEL": Report(
+			"MIN_LEVEL": Report_Of(
 					TIERS[tier]
 					),
-			"AFFIX": Report(
+			"AFFIX": Report_Of(
 					affix
 					),
-			"APPLIES_TO": Report(
+			"APPLIES_TO": Report_Of(
 					tuple(
 							applies_to
 							)
 					),
-			"REQUIRES": Report(
+			"REQUIRES": Report_Of(
 					tuple(
 							requires
 							)
 					),
-			"FORBIDS": Report(
+			"FORBIDS": Report_Of(
 					tuple(
 							forbids
 							)

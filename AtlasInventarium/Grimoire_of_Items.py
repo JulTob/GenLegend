@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import math
 
-from TagKit import Imprint, Pre, Report, Tag
+from TopKit import Imprint, Pre, Report, Tag
 
 
 def copper(
@@ -630,7 +630,10 @@ def instantiate(
 
 	for field, value in prototype.__dict__.items():
 		if field in (
-				"_TAGKIT_STATE",
+				"_TOPKIT_STATE",
+					#-- TopKit's own state: each copy must start its own.
+					#-- (TagKit 0.2.0a1 called it _TAGKIT_STATE; the old name
+					#-- silently shared one state between all copies.)
 				"name",
 				"value",
 				"weight",
@@ -858,9 +861,9 @@ def equip(
 			item,
 			)
 	if item in Carried:
-		Carried.Rip(
+		del Carried[
 				item
-				)
+				]
 	if item not in Equipped:
 		Equipped(
 				item
@@ -873,9 +876,9 @@ def unequip(
 		) -> Item:
 	"""Stop using an item. It stays owned, in the bag."""
 	if item in Equipped:
-		Equipped.Rip(
+		del Equipped[
 				item
-				)
+				]
 	return item
 
 
@@ -889,9 +892,9 @@ def carry(
 			item,
 			)
 	if item in Equipped:
-		Equipped.Rip(
+		del Equipped[
 				item
-				)
+				]
 	if item not in Carried:
 		Carried(
 				item
@@ -904,9 +907,9 @@ def stow(
 		) -> Item:
 	"""Put an at-hand item away into the pack. It stays owned."""
 	if item in Carried:
-		Carried.Rip(
+		del Carried[
 				item
-				)
+				]
 	return item
 
 

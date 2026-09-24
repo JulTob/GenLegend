@@ -1,8 +1,10 @@
 """The Necrotic Shroud Revelation Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
+from TopKit import Pre
 
 from AtlasActorLudi.SpeciesKit.Aasimar.Revelations.base import (
+	No_Revelation_Yet,
 	Imprint_Revelation,
 	)
 from AtlasActorLudi.SpeciesKit.Aasimar.Revelations.base import (
@@ -18,6 +20,12 @@ class Necrotic_Shroud(Celestial_Revelation):
 	SAVE_ABILITY = "CHA"
 	CONDITION = "Frightened"
 	EXCLUDES_ALLIES = True
+
+	@Pre
+	def Only_One_Revelation(
+		target,
+		):
+		return No_Revelation_Yet( target )
 
 	@Imprint
 	def Set_Revelation(

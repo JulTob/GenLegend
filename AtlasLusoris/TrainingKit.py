@@ -24,7 +24,9 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from typing import Any
 
-from TagKit import Imprint, Pre, Report, Tag
+from TopKit import Imprint, Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.FeaturesKit import grant
@@ -264,7 +266,14 @@ def Build_Training(
 			)
 		else resolved_path
 		)
-	if resolved_path and source is None:
+	has_path = (
+			resolved_path is not None
+			and resolved_path != ""
+			)
+		#-- Never `if resolved_path:`.  A path may be a Tag, and TopKit's
+		#-- ``bool( Tag )`` asks whether the Tag has members yet, which at
+		#-- import time is always no.
+	if has_path and source is None:
 		resolved_source = f"Training: {guild_name} ({path_name})"
 	else:
 		resolved_source = source or f"Training: {guild_name}"
@@ -333,16 +342,16 @@ def Build_Training(
 
 	namespace = {
 			"NAME": name,
-			"GUILD_NAME": Report(
+			"GUILD_NAME": Report_Of(
 					guild_name
 					),
-			"MIN_LEVEL": Report(
+			"MIN_LEVEL": Report_Of(
 					min_level
 					),
-			"PATH": Report(
+			"PATH": Report_Of(
 					resolved_path
 					),
-			"SOURCE": Report(
+			"SOURCE": Report_Of(
 					resolved_source
 					),
 			"Trained_In_Guild": Trained_In_Guild,

@@ -32,7 +32,7 @@ The Grimoire_of_Features factories are legacy; new grants live here.
 from contextlib import redirect_stdout
 from io import StringIO
 
-from TagKit import Action, Imprint, Post, Pre, Record, Tag
+from TopKit import Action, Imprint, Post, Pre, Record, Tag
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasActorLudi.ProficiencyKit import (

@@ -10,7 +10,9 @@ from __future__ import annotations
 import random
 from typing import Any
 
-from TagKit import Pre, Tag
+from TopKit import Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 
 class Weapon_Mastery(Tag):
@@ -38,7 +40,7 @@ class Weapon_Mastery(Tag):
 
 _MASTERY_TAGS: dict[str, type[Weapon_Mastery]] = {}
 
-from TagKit import Pre, Tag
+from TopKit import Pre, Tag
 
 
 class Weapon_Mastery(Tag):
@@ -332,7 +334,7 @@ def _mastery_tag(
 		weapon: str,
 	):
 	"""Get or mint the Tag that says "this hero has mastered a Longsword"."""
-	from TagKit import Report, Tag
+	from TopKit import Tag
 
 	class_name = "Mastery_Of_" + "".join(
 			part.capitalize()
@@ -358,10 +360,10 @@ def _mastery_tag(
 					),
 			{
 					"NAME": f"{weapon} Mastery",
-					"WEAPON": Report(
+					"WEAPON": Report_Of(
 							weapon
 							),
-					"MASTERY": Report(
+					"MASTERY": Report_Of(
 							WEAPON_MASTERIES[weapon]
 							),
 					"__module__": __name__,
@@ -440,7 +442,7 @@ def _mastery_tag(
 		weapon: str,
 	):
 	"""Get or mint the Tag that says "this hero has mastered a Longsword"."""
-	from TagKit import Report, Tag
+	from TopKit import Tag
 
 	class_name = "Mastery_Of_" + "".join(
 			part.capitalize()
@@ -466,10 +468,10 @@ def _mastery_tag(
 					),
 			{
 					"NAME": f"{weapon} Mastery",
-					"WEAPON": Report(
+					"WEAPON": Report_Of(
 							weapon
 							),
-					"MASTERY": Report(
+					"MASTERY": Report_Of(
 							WEAPON_MASTERIES[weapon]
 							),
 					"__module__": __name__,
