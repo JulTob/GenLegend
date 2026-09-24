@@ -12,7 +12,7 @@ more-specific Guild Shapes declared in AtlasOfGuilds.
 This module is the Ada spec. Construction lives in Grimoire_of_Guilds.
 
 The Guild libraries load last, and from here. Each kit in AtlasOfGuilds
-imports Build_Specialization off this spec, so the spec has to finish
+imports Make_Specialization off this spec, so the spec has to finish
 re-exporting the body before the first kit is read.
 """
 

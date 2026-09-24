@@ -90,28 +90,28 @@ Thought pattern
 
 IMPORTS = {
 		"Artificer": (
-			"from AtlasLusoris.TrainingKit import Build_Training\n"
+			"from AtlasLusoris.TrainingKit import Make_Training\n"
 			"from AtlasVenustas import Chip"
 			),
 		"Bard": (
-			"from AtlasLusoris.TrainingKit import Build_Training\n"
+			"from AtlasLusoris.TrainingKit import Make_Training\n"
 			"from AtlasVenustas import Chip"
 			),
 		"Monk": (
-			"from AtlasLusoris.TrainingKit import Build_Training\n"
+			"from AtlasLusoris.TrainingKit import Make_Training\n"
 			"from AtlasVenustas import Chip"
 			),
 		"Sorcerer": (
-			"from AtlasLusoris.TrainingKit import Build_Training\n"
+			"from AtlasLusoris.TrainingKit import Make_Training\n"
 			"from AtlasVenustas import Chip"
 			),
 		"Warlock": (
 			"from AtlasLusoris.FeaturesKit import Grant_Resistance\n"
-			"from AtlasLusoris.TrainingKit import Build_Training\n"
+			"from AtlasLusoris.TrainingKit import Make_Training\n"
 			"from AtlasVenustas import Chip"
 			),
 		"Wizard": (
-			"from AtlasLusoris.TrainingKit import Build_Training\n"
+			"from AtlasLusoris.TrainingKit import Make_Training\n"
 			"from AtlasVenustas import Chip"
 			),
 		}
@@ -451,7 +451,7 @@ def _core(
 {T}{T}chips=(),
 {T}{T}apply=None,
 {T}{T}):
-{T}return Build_Training(
+{T}return Make_Training(
 {T}{T}{T}name=name,
 {T}{T}{T}guild_name=GUILD,
 {T}{T}{T}min_level=min_level,
@@ -480,7 +480,7 @@ def {fn_name}(
 {T}{T}description,
 {T}{T}chips=(),{apply_arg}
 {T}{T}):
-{T}return Build_Training(
+{T}return Make_Training(
 {T}{T}{T}name=name,
 {T}{T}{T}guild_name=GUILD,
 {T}{T}{T}min_level=min_level,

@@ -13,7 +13,7 @@
 
 ## 🔍 Diagnosis (what & where)
 
-`Build_General_Feat` declares a feat's admission rules as `@Pre` gates:
+`Make_General_Feat` declares a feat's admission rules as `@Pre` gates:
 `Rank_Reached`, `Ability_Met`, `Spellcasting_Met`, `Prerequisite_Met`, and now
 `Not_Redundant`.
 
@@ -37,7 +37,7 @@ filter, and the failure is silent in one direction and fatal in the other:
 **It has already happened, twice, in one sitting.**
 
 1. `Not_Redundant` (the gate that stops Lightly Armored being handed to a
-   Character already trained in armour) was written into `Build_General_Feat`
+   Character already trained in armour) was written into `Make_General_Feat`
    but **never added to the Tag's `namespace` dict**, so it was dead code. It
    was reported as verified on the strength of a check that only restated the
    Character's armour training and never exercised the gate.

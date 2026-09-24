@@ -664,7 +664,7 @@ def _Tool_Proficiency_Clause(
 #
 # WHY NOT A @Pre.  Making the Feat decline when its pool is short was considered
 # and rejected.  _take_first_that_applies (FeatKit) only guards General feats;
-# an Origin feat reaches a Character through Tag inheritance in Build_Background
+# an Origin feat reaches a Character through Tag inheritance in Make_Background
 # and through Grant_Origin_Feat, neither of which catches TagPreconditionError.
 # A refusing @Pre would therefore trade one crash for another, and because a
 # Background's Origin feat is not optional (Artisan *is* Crafter) it would have

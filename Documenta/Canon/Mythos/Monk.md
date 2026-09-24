@@ -12,7 +12,7 @@ landed.*
 
 **Where the text lives.** Class and Warrior paragraphs: *nowhere yet*. Dialog
 0018's five texts are provisional and unwired; `AtlasOfGuilds/MonkKit.py` is four
-bare `Build_Specialization` calls. Lessons: `AtlasOfTraining/Map_of_Monk_Training.py`
+bare `Make_Specialization` calls. Lessons: `AtlasOfTraining/Map_of_Monk_Training.py`
 (rules only, no inspiration lines). A 2014-era blurb still leaks onto the sheet
 from `Map_of_Classes/Training/Monk.py:215` ("Warriors of Mercy manipulate the life
 force of others… faceless bringers of life and death"). Culture keys: the Monk

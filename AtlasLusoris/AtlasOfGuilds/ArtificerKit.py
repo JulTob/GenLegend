@@ -1,25 +1,25 @@
 """Artificer Specializations."""
 
 from AtlasLusoris.GuildKit import Artificer
-from AtlasLusoris.GuildKit import Build_Specialization
+from AtlasLusoris.GuildKit import Make_Specialization
 
 
-Alchemist = Build_Specialization(
+Alchemist = Make_Specialization(
 	guild=Artificer,
 	name="Alchemist",
 	module=__name__,
 	)
-Armorer = Build_Specialization(
+Armorer = Make_Specialization(
 	guild=Artificer,
 	name="Armorer",
 	module=__name__,
 	)
-Artillerist = Build_Specialization(
+Artillerist = Make_Specialization(
 	guild=Artificer,
 	name="Artillerist",
 	module=__name__,
 	)
-BattleSmith = Build_Specialization(
+BattleSmith = Make_Specialization(
 	guild=Artificer,
 	name="Battle Smith",
 	module=__name__,

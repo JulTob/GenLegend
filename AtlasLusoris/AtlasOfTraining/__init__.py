@@ -2,7 +2,7 @@
 AtlasOfTraining — Guild Training Tag catalogues.
 
 Each Map registers core (non-subclass) lessons for one Guild via
-``Build_Training``.  TrainingKit loads these Maps at import time;
+``Make_Training``.  TrainingKit loads these Maps at import time;
 import Maps from here only for explicit access, not for registration.
 """
 

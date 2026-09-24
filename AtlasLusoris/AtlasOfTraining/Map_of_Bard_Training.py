@@ -10,7 +10,7 @@ Thought pattern
 
 from __future__ import annotations
 
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
 from AtlasVenustas import Chip
 from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 		Unarmored_Armour_Class,
@@ -77,7 +77,7 @@ def _core(
 		apply=None,
 		on_sheet: bool = True,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -97,7 +97,7 @@ def _path(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,

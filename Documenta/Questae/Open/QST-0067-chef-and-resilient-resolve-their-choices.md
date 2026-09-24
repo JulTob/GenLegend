@@ -77,7 +77,7 @@ and for Chef, the resolved shape he wants:
   `FeaturesKit.py` because a feature that only *describes* a resistance reads
   correctly and plays wrong; that bug was found four times. A save proficiency
   is the same trap and wants the same treatment.
-- The unavailability half is now cheap: `Build_General_Feat` takes
+- The unavailability half is now cheap: `Make_General_Feat` takes
   `redundant_if`, and `_take_first_that_applies` drops a refused candidate and
   tries the next, so a Precondition is handled gracefully by the selector.
 - Resolved counts belong in the Entry **and** as Chips, per

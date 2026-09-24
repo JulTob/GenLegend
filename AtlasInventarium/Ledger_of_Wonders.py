@@ -14,10 +14,10 @@ on the sheet.
 from __future__ import annotations
 
 from AtlasInventarium.Grimoire_of_Items import (
-		Build_Consumable,
-		Build_Item,
-		Build_Weapon,
-		Build_Worn,
+		Make_Consumable,
+		Make_Item,
+		Make_Weapon,
+		Make_Worn,
 		Cloak,
 		Footwear,
 		Handwear,
@@ -31,7 +31,7 @@ from AtlasInventarium.Grimoire_of_Items import (
 # Worn wonders — bonuses live in `grants`, summed live
 # ---------------------------------------------------------------------------
 
-Cloak_of_Protection = Build_Worn(
+Cloak_of_Protection = Make_Worn(
 		name="Cloak of Protection",
 		slot=Cloak,
 		value=350,
@@ -44,7 +44,7 @@ Cloak_of_Protection = Build_Worn(
 			"the wearer against harm they never saw coming.",
 		)
 
-Ring_of_Protection = Build_Worn(
+Ring_of_Protection = Make_Worn(
 		name="Ring of Protection",
 		slot=Jewelry,
 		value=350,
@@ -56,7 +56,7 @@ Ring_of_Protection = Build_Worn(
 		description="A plain band that seems to tighten a moment before danger.",
 		)
 
-Bracers_of_Defense = Build_Worn(
+Bracers_of_Defense = Make_Worn(
 		name="Bracers of Defense",
 		slot=Handwear,
 		value=600,
@@ -68,7 +68,7 @@ Bracers_of_Defense = Build_Worn(
 			"nothing for someone already wearing armour or holding a shield.",
 		)
 
-Boots_of_Striding = Build_Worn(
+Boots_of_Striding = Make_Worn(
 		name="Boots of Striding",
 		slot=Footwear,
 		value=250,
@@ -79,7 +79,7 @@ Boots_of_Striding = Build_Worn(
 		description="Every step covers more ground than it has any right to.",
 		)
 
-Amulet_of_Health = Build_Worn(
+Amulet_of_Health = Make_Worn(
 		name="Amulet of Health",
 		slot=Jewelry,
 		value=800,
@@ -91,7 +91,7 @@ Amulet_of_Health = Build_Worn(
 			"whatever their natural frailty.",
 		)
 
-Circlet_of_Insight = Build_Worn(
+Circlet_of_Insight = Make_Worn(
 		name="Circlet of Insight",
 		slot=Headwear,
 		value=400,
@@ -102,7 +102,7 @@ Circlet_of_Insight = Build_Worn(
 		description="Thought arrives a half-second ahead of everyone else's.",
 		)
 
-Brooch_of_Shielding = Build_Worn(
+Brooch_of_Shielding = Make_Worn(
 		name="Brooch of Shielding",
 		slot=Jewelry,
 		value=300,
@@ -119,14 +119,14 @@ Brooch_of_Shielding = Build_Worn(
 # compete with rings for one.
 # Carries no mechanical bonus: encumbrance is not modelled, so there is no
 # capacity for this to raise.
-Bag_of_Holding = Build_Item(
+Bag_of_Holding = Make_Item(
 		name="Bag of Holding",
 		value=500,
 		weight=15,
 		description="The inside is far larger than the outside.",
 		)
 
-Goggles_of_Night = Build_Worn(
+Goggles_of_Night = Make_Worn(
 		name="Goggles of Night",
 		slot=Headwear,
 		value=250,
@@ -137,7 +137,7 @@ Goggles_of_Night = Build_Worn(
 			"already have it.",
 		)
 
-Gauntlets_of_Might = Build_Worn(
+Gauntlets_of_Might = Make_Worn(
 		name="Gauntlets of Might",
 		slot=Handwear,
 		value=700,
@@ -177,35 +177,35 @@ CARRIED_WONDERS: tuple[Item, ...] = (
 # Consumables — these are MEANT to repeat; they stack freely
 # ---------------------------------------------------------------------------
 
-Potion_of_Healing = Build_Consumable(
+Potion_of_Healing = Make_Consumable(
 		name="Potion of Healing",
 		value=50,
 		weight=0.5,
 		description="Drink as a Bonus Action to regain 2d4 + 2 Hit Points.",
 		)
 
-Potion_of_Greater_Healing = Build_Consumable(
+Potion_of_Greater_Healing = Make_Consumable(
 		name="Potion of Greater Healing",
 		value=150,
 		weight=0.5,
 		description="Drink as a Bonus Action to regain 4d4 + 4 Hit Points.",
 		)
 
-Antitoxin = Build_Consumable(
+Antitoxin = Make_Consumable(
 		name="Antitoxin",
 		value=50,
 		weight=0,
 		description="Advantage on saving throws against poison for 1 hour.",
 		)
 
-Oil_Flask = Build_Consumable(
+Oil_Flask = Make_Consumable(
 		name="Oil Flask",
 		value=0.1,
 		weight=1,
 		description="Thrown or poured, then lit. Burns for 2 rounds.",
 		)
 
-Scroll_of_Protection = Build_Consumable(
+Scroll_of_Protection = Make_Consumable(
 		name="Scroll of Protection",
 		value=180,
 		weight=0,
@@ -213,7 +213,7 @@ Scroll_of_Protection = Build_Consumable(
 			"creature for 5 minutes.",
 		)
 
-Spell_Scroll = Build_Consumable(
+Spell_Scroll = Make_Consumable(
 		name="Spell Scroll",
 		value=75,
 		weight=0,
@@ -243,7 +243,7 @@ CONSUMABLES: tuple[Item, ...] = (
 # They are Simple weapons on purpose: an implement makes a caster usable in
 # melee, it does not hand them martial training they never had.
 
-Runeblade = Build_Weapon(
+Runeblade = Make_Weapon(
 		name="Runeblade",
 		damage="1d8",
 		damage_type="Force",
@@ -260,7 +260,7 @@ Runeblade = Build_Weapon(
 		grants={},
 		)
 
-Oath_Mace = Build_Weapon(
+Oath_Mace = Make_Weapon(
 		name="Oath Mace",
 		damage="1d6",
 		damage_type="Radiant",
@@ -274,7 +274,7 @@ Oath_Mace = Build_Weapon(
 		grants={},
 		)
 
-Beguiler_Rapier = Build_Weapon(
+Beguiler_Rapier = Make_Weapon(
 		name="Beguiler's Rapier",
 		damage="1d6",
 		damage_type="Psychic",
@@ -291,7 +291,7 @@ Beguiler_Rapier = Build_Weapon(
 		grants={},
 		)
 
-Warden_Staff = Build_Weapon(
+Warden_Staff = Make_Weapon(
 		name="Warden's Staff",
 		damage="1d8",
 		damage_type="Bludgeoning",
@@ -308,7 +308,7 @@ Warden_Staff = Build_Weapon(
 		grants={},
 		)
 
-Hexbolt_Wand = Build_Weapon(
+Hexbolt_Wand = Make_Weapon(
 		name="Hexbolt Wand",
 		damage="1d6",
 		damage_type="Necrotic",

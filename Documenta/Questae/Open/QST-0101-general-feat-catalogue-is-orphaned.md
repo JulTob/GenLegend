@@ -13,7 +13,7 @@
 
 There are two General feat paths and the live one is not the good one.
 
-**The gated path.** `FeatKit` holds `Build_General_Feat`, real preconditions, a
+**The gated path.** `FeatKit` holds `Make_General_Feat`, real preconditions, a
 level-4 gate and prerequisite checking, over the 44 declarations in
 `Map_of_General_Feats.py`. `Apply_General_Feats` and `available_general_feats`
 are called by exactly one thing in the repository: `FeatKit`'s own self-test.

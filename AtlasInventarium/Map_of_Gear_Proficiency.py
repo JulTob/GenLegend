@@ -172,7 +172,7 @@ def trained_for(
 
 	``weapon_pool`` answers the shopping question — what is there to buy —
 	and is necessarily a catalogue. This answers the proficiency question,
-	and does it by Tag, so anything built with ``Build_Weapon`` gets a
+	and does it by Tag, so anything built with ``Make_Weapon`` gets a
 	truthful answer whether or not it lives in ``Ledger_of_Weapons``.
 	(Implements in ``Ledger_of_Wonders`` are the case that forced the split:
 	they are Simple weapons, and a Simple-trained caster is trained in them.)

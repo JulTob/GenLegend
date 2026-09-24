@@ -1,7 +1,7 @@
 """Barbarian Specializations."""
 
 from AtlasLusoris.GuildKit import Barbarian
-from AtlasLusoris.GuildKit import Build_Specialization
+from AtlasLusoris.GuildKit import Make_Specialization
 
 
 BERSERKER_DESCRIPTION = (
@@ -13,7 +13,7 @@ BERSERKER_DESCRIPTION = (
 	"Some find that unsettling. But you could not be any other way. You are "
 	"the eye of the storm."
 	)
-Berserker = Build_Specialization(
+Berserker = Make_Specialization(
 	guild=Barbarian,
 	name="Berserker",
 	module=__name__,
@@ -31,7 +31,7 @@ WILD_HEART_DESCRIPTION = (
 	"Now the world of civilization calls, and you carry the wild things "
 	"in your heart."
 	)
-WildHeart = Build_Specialization(
+WildHeart = Make_Specialization(
 	guild=Barbarian,
 	name="Wild Heart",
 	module=__name__,
@@ -48,7 +48,7 @@ WORLD_TREE_DESCRIPTION = (
 	"and space. It is beautiful. You are very small. You are part of it. "
 	"You are not alone. If you can see through the veil, you can cross them."
 	)
-WorldTree = Build_Specialization(
+WorldTree = Make_Specialization(
 	guild=Barbarian,
 	name="World Tree",
 	module=__name__,
@@ -64,7 +64,7 @@ ZEALOT_DESCRIPTION = (
 	"what the God wants of you, and you feel honored and moved. You are no "
 	"longer there, a God is. And facing you is blasphemous."
 	)
-Zealot = Build_Specialization(
+Zealot = Make_Specialization(
 	guild=Barbarian,
 	name="Zealot",
 	module=__name__,

@@ -11,7 +11,7 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.FeaturesKit import Grant_Resistance
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
 
 
 GUILD = "Warlock"
@@ -169,7 +169,7 @@ def _core(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -189,7 +189,7 @@ def _patron(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
