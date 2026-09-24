@@ -490,7 +490,7 @@ class Order:
 
 		return Entry(
 			title=order.name,
-			definition=_sentence_case(
+			rules=_sentence_case(
 				render(
 					"{Hook}",
 					myth,
@@ -498,7 +498,6 @@ class Order:
 					rng=order.dices,
 					)
 				),
-			kind="Hook",
 			)
 
 	# --- the feat -------------------------------------------------------
@@ -794,7 +793,7 @@ def Forge_Order(
 	grant(
 		char,
 		name=order.hook.title,
-		description=order.hook.definition,
+		description=order.hook.rules,
 		source="Order Hook",
 		)
 	grant(
@@ -899,7 +898,7 @@ def _test_shape():
 	assert order.spells_of_the_order, "spell list must never be empty"
 	assert order.organization in order.name
 	assert "{" not in order.description, "an unfilled slot escaped"
-	assert "{" not in order.hook.definition
+	assert "{" not in order.hook.rules
 
 
 def _test_variety():

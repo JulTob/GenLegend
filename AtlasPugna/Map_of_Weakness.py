@@ -12,12 +12,12 @@ def Extra_Weaknesses(npc):
 
 	# Definitions of extra weaknesses
 	freeze = f"\n- Freeze: If the {race} takes cold damage, it partially freezes; All its speed is reduced by 20 feet until the end of its next turn."
-	sunlight_sensitivity = Entry(f"Sunlight Sensitivity.",
+	sunlight_sensitivity = Entry_Text(f"Sunlight Sensitivity.",
 		f"While in sunlight, the {subrace} has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
 		)
 	aversion_to_fire = f"\n- Aversion of Fire:\n\t If the {race} takes fire damage, it has disadvantage on attack rolls and ability checks until the end of its next turn."
 	berserk = f"\n- Berserk:\n\t Whenever {title} starts its turn with {npc.HP//2} hit points or fewer, it gains the Bloodied condition. Roll a d6: On a 6, {title} goes berserk. On each of its turns while berserk, {title} attacks the nearest creature it can see. If no creature is near enough to move to and attack, {title} attacks an object, with preference for an object smaller than itself. Once {title} goes berserk, it continues to do so until it dies or is no longer bloodied. \n\t An ally of {title}, if within 60 feet of the berserk {race}, can try to calm it by speaking firmly and persuasively. {title} must be able to hear its ally, who must take an action to make a DC 15 Charisma (Persuasion) check. If the check succeeds, {title} ceases being berserk. If it takes damage while still at 40 hit points or fewer, {title} might go berserk again."
-	PowerItem = Entry(f"{subrace} Items.",
+	PowerItem = Entry_Text(f"{subrace} Items.",
 		(f"{title} carries a very rare magic item. If the object is lost, {title} will go to great lengths to retrieve it. Take a moment to think what object suits the character best. It can be a powerful artifact, a very personal item, or a piece of treasure they are magically bound to."
 		))
 	if Type == "Elemental" and Dice(D=6, N=1) == 1:     r += "\n - Water Susceptibility \n\t For every 5 feet the elemental moves in water, or for every gallon of water splashed on it, it takes 1 cold damage."

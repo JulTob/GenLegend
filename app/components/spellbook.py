@@ -250,7 +250,7 @@ def spellcasting_chips(
                 emoji,
                 label,
                 value,
-                extra_class="magic-chip",
+                kind="magic",
                 )
 
     class_name = safe_str(

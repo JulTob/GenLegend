@@ -3,6 +3,37 @@
 from AtlasVenustas import Entry
 
 
+def Entry_Text(
+		title: str,
+		rules: str = "",
+		flavor: str = "",
+		) -> str:
+	"""
+	An entry written straight into sheet HTML, for the NonPlayer maps.
+
+	The NonPlayer maps (``AtlasPugna``, the NonPlayer magic in
+	``Map_of_Magic``) do not keep Entries: they glue their text together
+	with ``+`` and ``join``, nest one entry inside another's text, and
+	write HTML tags into it. Until the NonPlayer station of QST-0142 ports
+	them to real Entries, they build text with this function, which
+	returns exactly the markup the old string-shaped ``Entry`` produced.
+
+	It is a text builder, not a second Entry: nothing here is Markdown,
+	and nothing reads it back as data.
+	"""
+	if not title:
+		return ""
+	if not rules:
+		return f"<b>{title}</b>"
+	if not flavor:
+		return f"<b>{title}:</b> <i>{rules}</i>"
+	return (
+			f"<b>{title}:</b>\n"
+			f'<div class="bc4">{flavor}</div>'
+			f"<i>{rules}</i>"
+			)
+
+
 def Type(npc) -> str:
 	#Initialized("<< Map of Formats: <Type<>")
 	""" Generate a description string

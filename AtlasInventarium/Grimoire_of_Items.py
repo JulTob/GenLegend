@@ -163,10 +163,11 @@ class Item:
 
 	def __str__(item) -> str:
 		from AtlasVenustas import Entry
-		return Entry(
+		entry = Entry(
 				item.called,
 				item.blurb(),
 				)
+		return f"{entry:html}"
 
 	def __repr__(item) -> str:
 		return (

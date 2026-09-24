@@ -3,7 +3,7 @@ try:
 	from AtlasMagia.Lodge_of_Spells import *
 	from AtlasLudus.Map_of_Dice import Dice
 	from AtlasActorLudi.Map_of_Scores import PB, Modifier
-	from AtlasScriptum.Map_of_Formats import Entry
+	from AtlasScriptum.Map_of_Formats import Entry, Entry_Text
 except ImportError:
 	raise
 
@@ -66,8 +66,10 @@ class Spell:
 		if self.concentration:  desc += f"⟨{self.concentration}"
 		if self.duration:       desc += f"⟨{self.duration}⟩"
 		if self.ranges:         desc += f"- {self.ranges}-"
-		string = Entry(title=name, definition="", description=desc)
-		return string
+		#-- Only the name ever printed: with no definition, the header line
+		#-- (school, time, range) was never shown.
+		entry = Entry(title=name)
+		return f"{entry:html}"
 
 
 
@@ -1744,18 +1746,18 @@ def rechargable(ludus,dif=6):
 
 	spells = []
 
-	Leadership = Entry(
+	Leadership = Entry_Text(
 		"Leadership",
 		f"{ludus.title} can utter a special command or warning whenever another creature that it can see within 30 feet of it makes an attack roll or a saving throw. The creature can add a d4 to its roll provided it can hear and understand {ludus.title}. A creature can benefit from only one Leadership die at a time. This effect ends if {ludus.title} is incapacitated.",
 		"Reaction.\n (Recharges after a Short or Long Rest) \n- V.")
 
-	ColdBreath = Entry(
+	ColdBreath = Entry_Text(
 		"Cold Breath",
 		f"{ludus.title}  exhales a blast of freezing wind in a 15-foot cone. Each creature in that area must make a DC{ludus.dc} Dexterity saving throw, taking {4*ludus.pb//2} ({ludus.pb//2}d8) cold damage on a failed save, or half as much damage on a successful one.",
 		f"Recharge 5–6")
 
 
-	Web = Entry(
+	Web = Entry_Text(
 	   "Web",
 	   """You conjure a mass of thick, sticky webbing at a point of your choice within range. The webs fill a 20-foot cube from that point for the duration. The webs are difficult terrain and lightly obscure their area.
 If the webs aren’t anchored between two solid masses (such as walls or trees) or layered across a floor, wall, or ceiling, the conjured web collapses on itself, and the spell ends at the start of your next turn. Webs layered over a flat surface have a depth of 5 feet.

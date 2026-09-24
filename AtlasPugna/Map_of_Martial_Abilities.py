@@ -3,7 +3,7 @@ try:
 	from AtlasLudus.Map_of_Useful_Functions import select1
 	from AtlasLudus.Map_of_Dice import Dice, Dizero, SelectDx
 	from AtlasActorLudi.Map_of_Scores import PB
-	from AtlasScriptum.Map_of_Formats import Entry
+	from AtlasScriptum.Map_of_Formats import Entry_Text
 except ModuleNotFoundError:
 	raise
 
@@ -59,20 +59,20 @@ def Skill(npc):
 	skills = []
 
 	# Definitions of extra martial skills
-	Siege = Entry("Siege",
+	Siege = Entry_Text("Siege",
 		f"{title} deals double damage to objects and structures."
 		)
-	WoundedFury = Entry(
+	WoundedFury = Entry_Text(
 		f"Wounded Fury",
 		f"While {title} has {npc.HP//2} hit points or fewer, {title} has advantage on attack rolls. In addition, {title} deals an extra {int(PB(pb)*3.5)} ({PB(pb)}d6) damage to any target {title} hits with a melee attack.")
-	PackTactics = Entry(
+	PackTactics = Entry_Text(
 		f"Pack Tactics",
 		f"{title} has advantage on an attack roll against a creature if at least one of {title}'s allies is within 5 feet of the creature and the ally isn't incapacitated.")
-	Pounce = Entry(
+	Pounce = Entry_Text(
 		f"Pounce",
 		f"If {title} moves at least {Dice(2)*Dice(2)*5} feet straight toward a creature and then hits the target with an attack on the same turn, that target must succeed on a DC {8 + pb + STR} Strength saving throw or be knocked prone. If the target is prone, {title} can make one attack against the target as a bonus action."
 		)
-	Charge =  Entry( f"Charge",
+	Charge =  Entry_Text( f"Charge",
 			(	f"If {title} moves at least" + \
 				f"{round(int(speed) // 10) * 5} feet straight toward a target and then hits the target with an attack on the same turn," + \
 				f"the target takes an extra {PB(pb)}" + \
@@ -90,18 +90,18 @@ def Skill(npc):
 					)
 				)
 			)
-	Grappler = Entry( "Grappler",
+	Grappler = Entry_Text( "Grappler",
 			f"On a hit on a melee attack, {title} can choose to do no damage to grapple a creature up to its size. The target is then grappled, with DC {8 + npc.pb + npc.AS.str_mod} to scape the grapple.\n" + \
 			random.choice([
-				Entry("Constrict",
+				Entry_Text("Constrict",
 					f"Until the grapple ends, the creature is restrained. {title} can't constrict another creature."),
-				Entry("Smother",
+				Entry_Text("Smother",
 					f"Until this grapple ends, the target is restrained, blinded, and at risk of suffocating, and {title} can't smother another target. In addition, at the start of each of the target's turns, the target takes {PB(pb) * 3 + STR} ({PB(pb)}d6 + {STR}) bludgeoning damage."),
 			]))
-	blinding_spittle = Entry(
+	blinding_spittle = Entry_Text(
 		f"Blinding Spittle",
 		f"(Recharge 5–6). {title} spits a chemical glob at a point {title} can see within 15 feet of it. The glob explodes in a blinding flash of light on impact. Each creature within 5 feet of the flash must succeed on a DC {dc} Dexterity saving throw or be blinded until the end of {title}'s next turn.")
-	body_thief = Entry(
+	body_thief = Entry_Text(
 		f"Body Thief" ,
 		f"{title} initiates an Intelligence contest with an incapacitated humanoid within 5 feet, that isn't protected by <i class= 'bc4'>Protection from Evil and Good</i>." + \
 		f"If {title} wins the contest, the {race}'s magically takes control of the target's body. " +\
@@ -110,34 +110,34 @@ def Skill(npc):
 		f"\n\t If the host body dies, the {race} must leave it. A protection from evil and good spell cast on the body drives {title} out. " +\
 		f"{title} is also forced out if the target regains control by means of a wish. " +\
 		f"By spending 5 feet of its movement, {title} can voluntarily leave the body within 5 feet of it.")
-	devour_intellect = Entry(
+	devour_intellect = Entry_Text(
 		f"Devour Intellect",
 		f"{title} targets one creature {gender} can see within 10 feet that has a brain. "+
 		f"The target must succeed on a DC {dc} Intelligence saving throw against this magic or take {5*pb//2} ({pb//2}{SelectDx(pb=pb)}) psychic damage. " +
 		f"Also on a failure, roll 3d6: If the total equals or exceeds the target's Intelligence score, that score is reduced to {1}. " +
 		"The target is stunned until it regains at least one point of Intelligence.")
-	Rampage = Entry(
+	Rampage = Entry_Text(
 		f"Rampage",
 		f"When {title} reduces a creature to 0 hit points with a melee attack on its turn, {title} can take a bonus action to move up to half its speed and make a simple attack.")
-	invisible_passage = Entry(
+	invisible_passage = Entry_Text(
 		f"Invisible Passage",
 		f"{title} magically turns invisible until they attack or cast a spell, or until their concentration ends (as if concentrating on a spell)." +\
 		 "While invisible, they leave no physical evidence of their passage, so they can be tracked only by magic. Any equipment they wear or carry is invisible with them.")
-	gibbering = Entry("Gibbering",
+	gibbering = Entry_Text("Gibbering",
 				f"{title} babbles incoherently while it can see any creature and isn't incapacitated. " +\
 				f"Each creature that starts its turn within 20 feet of {title} and can hear the gibbering must succeed on a DC {8+PB(lvl)+CON} Wisdom saving throw. " +\
 				"On a failure, the creature can't take reactions until the start of its next turn and rolls a d8 to determine what it does during its turn. " +\
 				"On a 1 to 4, the creature does nothing. " +\
 				"On a 5 or 6, the creature takes no action or bonus action and uses all its movement to move in a randomly determined direction. " +\
 				"On a 7 or 8, the creature makes a melee attack against a randomly determined creature within its reach or does nothing if it can't make such an attack.")
-	tentacles= Entry("Tentacles",
+	tentacles= Entry_Text("Tentacles",
 				f"Melee Weapon Attack. Reach 10 ft., one creature. Hit: {5 + STR} (1d10 + {STR}) piercing damage, and the target must succeed on a " +\
 			   f"DC {8+PB(lvl)+STR} Constitution saving throw or be poisoned for 1 minute. The poisoned target is paralyzed, and it can repeat the saving throw at the" +\
 			   f" start of each of its turns, ending the effect on a success. \n\t The target is also grappled (escape DC {8+PB(lvl)+STR}). If the target is Medium or " +\
 			   f"smaller, it is also restrained until this grapple ends. While grappling the target, {title} has advantage on attack rolls against it and can 't "+\
 			   f"use this attack against other targets. When {title} moves, any Medium or smaller target it is grappling moves with it.")
 	# Multiattack
-	multiattack = Entry("Multiattack" , (
+	multiattack = Entry_Text("Multiattack" , (
 			f"{title} makes " + \
 			select1(
 					[
@@ -173,41 +173,41 @@ def Skill(npc):
 						pb//3,
 					])
 			))
-	skewer = Entry(f"Skewer",
+	skewer = Entry_Text(f"Skewer",
 		f"Once per turn, when {title} makes a Melee attack and hits, the target takes an extra {pb//2*3} ({pb//2}d6) damage, and the {race} gains temporary hit points equal to the extra damage dealt.")
-	stench = Entry(
+	stench = Entry_Text(
 		f"Stench",
 		f"Any creature other than any {race} that starts its turn within 5 feet of {title} must succeed on a DC {8+npc.proficiency_bonus + npc.ability_scores.con_mod} Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving throw, the creature is immune to the stench of all {race}s for 1 hour.")
-	blood_frenzy = Entry(
+	blood_frenzy = Entry_Text(
 		f"Blood Frenzy",
 		f"{title} has advantage on melee attack rolls against any creature that doesn't have all its hit points.")
-	reckless = Entry(
+	reckless = Entry_Text(
 		f"Reckless",
 		f"At the start of its turn, {title} can gain advantage on all melee weapon attack rolls during that turn, but attack rolls against it have advantage until the start of its next turn.")
-	martial_advantage = Entry(
+	martial_advantage = Entry_Text(
 		f"Martial Advantage",
 		f"Once per turn, the {race} can deal an extra {npc.proficiency_bonus*3} ({npc.proficiency_bonus}d6) damage to a creature it hits with a weapon attack if that creature is within 5 feet of an ally of the {race} that isn't incapacitated.")
-	MagicWeapons = Entry(
+	MagicWeapons = Entry_Text(
 		f"Magic Weapons",
 		f"{title}'s attacks are magical.")
-	GrapplingAttack = Entry("Grappling Attack",
+	GrapplingAttack = Entry_Text("Grappling Attack",
 		f"When {title} makes a simple attack, it can grapple the creature instead of dealing damage (escape DC {8+pb+STR}).")
-	FrightfulPresence = Entry("Frightful Presence",
+	FrightfulPresence = Entry_Text("Frightful Presence",
 		f"Each creature of {title}'s choice that is within 120 feet of {title} and aware of it must succeed on a DC {dc} Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to {title}'s Frightful Presence for the next 24 hours."
 		)
-	WingAttack = Entry("Wing Attack",
+	WingAttack = Entry_Text("Wing Attack",
 		f"{title} beats its wings. Each creature within 10 ft. of {title} must succeed on a DC {8+pb+STR} Dexterity saving throw or take {pb*3//2 + STR} ({pb//2}d6 + {STR}) bludgeoning damage and be knocked prone. {title} can then fly up to half its flying speed."
 		)
-	HorrificAppearance = Entry("Horrific Appearance",
+	HorrificAppearance = Entry_Text("Horrific Appearance",
 		f"Any humanoid that starts its turn within 30 feet of {title} and can see the {race}'s true form must make a DC{dc} Wisdom saving throw. On a failed save, the creature is frightened for 1 minute. A creature can repeat the saving throw at the start of each of its turns, with disadvantage if the {race} is within line of sight, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to the {race}'s Horrific Appearance for the next 24 hours. \n\t Unless the target is surprised or the revelation of the {race}'s true form is sudden, the target can avert its eyes and avoid making the initial saving throw. Until the start of its next turn, a creature that averts its eyes has disadvantage on attack rolls against {title}."
 		)
-	DeathGlare= Entry("Death Glare.",
+	DeathGlare= Entry_Text("Death Glare.",
 		f"{title} targets one frightened creature {gender} can see within 30 feet of themselves. If the target can see the {race}, it must succeed on a DC {dc} Wisdom saving throw against this magic or drop to 0 hit points."
 		)
-	FireTouch = Entry("Fire Touch",
+	FireTouch = Entry_Text("Fire Touch",
 		f"Melee Weapon Attack \t Hit: {3*(PB(pb)-1)} ({(PB(pb)-1)}d6 + {MIGHT}) fire damage. If the target is a creature or a flammable object, it ignites. Until a creature takes an action to douse the fire, the target takes 5 (1d10) fire damage at the start of each of its turns."
 		)
-	Heated = Entry("Heated",
+	Heated = Entry_Text("Heated",
 		select1([
 		f"A creature that touches {title} or hits it with a melee attack while within 5 feet of it takes 3 (1d6) fire damage",
 		f"Any metal melee weapon {title} wields deals an extra 3 (1d6) fire damage on a hit (included in the attack).",

@@ -375,7 +375,7 @@ def _validate_background_construction(
 			Entry,
 			)
 		or not hook.title.strip()
-		or not hook.definition.strip()
+		or not hook.rules.strip()
 		):
 		raise ValueError(
 			f"Background {name!r} declares a Hook without a title and text."
@@ -808,7 +808,7 @@ def _grant_hook(
 		char,
 		name=hook.title,
 		description=_describe(
-			hook.definition
+			hook.rules
 			),
 		source="Background Hook",
 		narrative=True,
@@ -1039,7 +1039,7 @@ Acolyte = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Shelter of the Faithful",
-		definition=(
+		rules=(
 			"Anywhere your faith has taken root (a grand temple, a roadside shrine, "
 			"a few believers gathered in secret), you and your companions can count "
 			"on a welcome: a meal, a bed, care for your wounds, and sanctuary when "
@@ -1083,7 +1083,7 @@ Artisan = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="The Guild",
-		definition=(
+		rules=(
 			"Your trade opens doors that coin alone cannot. In most towns you can "
 			"find the guild, workshop, or craftsfolk of your art, and among them "
 			"your skill earns a fair hearing: a place to work, tools and materials "
@@ -1127,7 +1127,7 @@ Charlatan = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="False Identity",
-		definition=(
+		rules=(
 			"You are never only one person. You can be a grieving widow, a visiting "
 			"dignitary, a healer with a miracle cure, or a nobody not worth a "
 			"second glance, complete with the reputation, the papers, the quick "
@@ -1175,7 +1175,7 @@ Criminal = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Criminal Contact",
-		definition=(
+		rules=(
 			"You know how the underworld passes what it does not want overheard. "
 			"Wherever you go, you can find the local version of the people you used "
 			"to run with (a fence, a smuggler, a tavern that asks no questions) and "
@@ -1219,7 +1219,7 @@ Entertainer = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="By Popular Demand",
-		definition=(
+		rules=(
 			"Give you a stage, a crate, or a cleared corner of a common room, and "
 			"you can earn your keep: a meal, a bed, a few coins, and the goodwill "
 			"of a crowd that came in strangers and leaves knowing your name. A "
@@ -1265,7 +1265,7 @@ Farmer = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Rustic Hospitality",
-		definition=(
+		rules=(
 			"Working people know one of their own. In any village, farmstead, or "
 			"waystation, you can find a dry barn to sleep in, a plain meal, and "
 			"hands willing to help someone who has clearly done a day's labor in "
@@ -1312,7 +1312,7 @@ Guard = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Network of Favors",
-		definition=(
+		rules=(
 			"You never worked alone, and you never worked clean. The years left you "
 			"names on both sides of the lamplight: a sergeant who owes you for a "
 			"night that never made it into the report, a clerk who lets you read "
@@ -1360,7 +1360,7 @@ Guide = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="The Ways Between",
-		definition=(
+		rules=(
 			"There is a whole country of people who live off the roads: trappers, "
 			"hermits, herders, border-runners, the last family on the last farm "
 			"before the trees. You know how to find them, and how to be welcome: a "
@@ -1406,7 +1406,7 @@ Hermit = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="What You Found Out There",
-		definition=(
+		rules=(
 			"In your solitude you came to know one thing the world does not (the "
 			"meaning of a symbol nobody can read, where something old was buried "
 			"and why, a heresy that happens to be true, the cure for a sickness "
@@ -1454,7 +1454,7 @@ Merchant = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="I Know Where to Get It",
-		definition=(
+		rules=(
 			"You do not need to own a thing to sell it. Put an object in your hands "
 			"and you can tell what it is worth, whose workshop or century it came "
 			"out of, and who in this world would pay stupid money to own it. Better "
@@ -1516,7 +1516,7 @@ Noble = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="The Weight of the Crown",
-		definition=(
+		rules=(
 			"*Crown, throne, seat, baton, council, the right to speak first: "
 			"whatever your people call it, you bear a recognized claim to "
 			"authority. Your name is not only a key. It is a blade hanging over "
@@ -1576,7 +1576,7 @@ Sage = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Working Hypothesis",
-		definition=(
+		rules=(
 			"You may not have the answer, but you always know where it might be "
 			"kept, and who to ask. Archives, temple libraries, private collections, "
 			"a retired scholar who has not spoken to anyone about her life's work "
@@ -1628,7 +1628,7 @@ Sailor = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Ship's Passage",
-		definition=(
+		rules=(
 			"You speak the language of decks and harbors, and it opens the water to "
 			"you. In any port you can find a berth: work your passage, or trade on "
 			"a name that some captain in the crowd will recognize, and bring your "
@@ -1678,7 +1678,7 @@ Scribe = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Alumni",
-		definition=(
+		rules=(
 			"There is a bond unique to learning together. You made friends, you "
 			"made rivals, you even made enemies. All of them, you know them better "
 			"than their families do. You helped a classmate prepare for a "
@@ -1732,7 +1732,7 @@ Soldier = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Old Company",
-		definition=(
+		rules=(
 			"You were baptized into an army with your first blood, and that stain "
 			"cannot be washed away. You know the ranks and the courtesies, how to "
 			"talk to a quartermaster, and which requests get answered and which get "
@@ -1782,7 +1782,7 @@ Wayfarer = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="The Overlooked",
-		definition=(
+		rules=(
 			"There is a second nation inside every city, and no map shows it. "
 			"Beggars, urchins, day laborers, the woman who sweeps the temple steps, "
 			"the drifters under the bridge: no crown, no captain, no borders, and "
@@ -2892,7 +2892,7 @@ def _test_hook_and_slots():
 		character,
 		Entry(
 			title="Alumni",
-			definition="Your {guild} classmates remember you.",
+			rules="Your {guild} classmates remember you.",
 			),
 		)
 	background, hook = character.features[ -2: ]
@@ -2936,7 +2936,7 @@ def _test_hook_and_slots():
 			title="Untitled Hook",
 			description="A life.",
 			hook=Entry(
-				definition="A price with no name.",
+				rules="A price with no name.",
 				),
 			origin_feat_options=Soldier.ORIGIN_FEAT_OPTIONS,
 			source_title="Test",
@@ -2978,7 +2978,7 @@ def _test_official_hooks():
 	for tag, hook_title in hooks.items():
 		assert tag.TITLE == tag.NAME, tag.NAME
 		assert tag.HOOK.title == hook_title, tag.NAME
-		assert tag.HOOK.definition.strip(), tag.NAME
+		assert tag.HOOK.rules.strip(), tag.NAME
 
 	assert "the {guild} School" in Scribe.DESCRIPTION
 
