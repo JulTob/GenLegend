@@ -215,11 +215,9 @@ def _monks_focus_entry(
 		) -> str:
 	fp = _focus_points(char)
 	return (
-		"Your training has let you harness your psionic energy. You have <b>"
+		"Your training and discipline have given you a well of focus. You have <b>"
 		f"{fp} Focus Points</b> that fuel your special actions. "
-		"You regain all spent points when you finish a Long Rest. "
-		"On a Short Rest you also regain Focus Points equal to "
-		"half your Monk level (rounded up)."
+		"You regain all spent points when you finish a Short or Long Rest."
 		"<br>You can spend Focus Points on:"
 		"<ul>"
 		"<li><b>Flurry of Blows (1 point).</b> After the Attack "
@@ -462,9 +460,10 @@ Heightened_Focus = _core(
 			"Your Flurry of Blows, Patient Defense, and Step of the Wind "
 			"gain the following upgrades (in addition to their Empowered "
 			"Strikes benefits):"
-			"<br><b>Flurry of Blows.</b> A creature you hit must succeed "
-			"on a Constitution save (DC 8 + proficiency bonus + Wisdom "
-			"modifier) or be Stunned until the start of your next turn."
+			"<br><b>Flurry of Blows.</b> Once per turn, a creature you hit "
+			"with one of the attacks must succeed on a Constitution save "
+			"(DC 8 + proficiency bonus + Wisdom modifier) or be Stunned "
+			"until the start of your next turn."
 			"<br><b>Patient Defense.</b> When you expend a Focus Point, "
 			"you gain both the Dodge benefit and Temporary Hit Points."
 			"<br><b>Step of the Wind.</b> When you expend a Focus Point, "
@@ -569,7 +568,7 @@ def _hand_of_healing_entry(
 	cure_note = (
 		"<br>When you use your Flurry of Blows, you can also end "
 		"one of the following conditions on the creature you heal "
-		"(Blinded, Deafened, Paralyzed, Poisoned, or Stunned)."
+		"(Charmed, Frightened, Paralyzed, Poisoned, or Stunned)."
 		if level >= 6
 		else ""
 		)
@@ -589,7 +588,7 @@ Implements_of_Mercy = _mercy(
 		min_level=3,
 		description=(
 			"You gain proficiency in Insight, Medicine, and Herbalism "
-			"Kit. You also gain a special mask — a symbol of your "
+			"Kit. You also gain a special mask. It is a symbol of your "
 			"tradition's philosophy."
 			),
 		)
@@ -726,7 +725,7 @@ Shadow_Arts = _shadow(
 		name="Shadow Arts",
 		min_level=3,
 		description=(
-			"You can use your psionic energy to create illusions and "
+			"You can use your discipline to create illusions and "
 			"harness shadows.<br><b>Darkness.</b> Expend 1 Focus Point "
 			"to cast <i>Darkness</i> without components. You can see "
 			"within the spell's area. While active, you can move the "
