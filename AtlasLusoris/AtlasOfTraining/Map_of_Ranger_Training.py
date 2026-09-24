@@ -15,6 +15,7 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasVenustas import Chip
 
 
 GUILD = "Ranger"
@@ -613,7 +614,11 @@ Favored_Enemy = _core(
 		min_level=1,
 		description=_favored_entry,
 		chips=(
-				("Favored Enemy Uses", _favored_uses),
+				Chip(
+					"🎯",
+					"Favored Enemy Uses",
+					_favored_uses,
+					),
 				),
 		)
 
@@ -622,7 +627,11 @@ Weapon_Mastery = _core(
 		min_level=1,
 		description=_weapon_mastery_entry,
 		chips=(
-				("Weapon Masteries", _weapon_mastery_chip),
+				Chip(
+					"⚔️",
+					"Weapon Masteries",
+					_weapon_mastery_chip,
+					),
 				),
 		)
 
@@ -669,7 +678,11 @@ Tireless = _core(
 		min_level=10,
 		description=_tireless_entry,
 		chips=(
-				("Tireless Uses", _tireless_uses),
+				Chip(
+					"💤",
+					"Tireless Uses",
+					_tireless_uses,
+					),
 				),
 		)
 
@@ -687,7 +700,11 @@ Natures_Veil = _core(
 		min_level=14,
 		description=_natures_veil_entry,
 		chips=(
-				("Nature's Veil Uses", _natures_veil_uses),
+				Chip(
+					"🌿",
+					"Nature's Veil Uses",
+					_natures_veil_uses,
+					),
 				),
 		)
 
@@ -707,7 +724,11 @@ Feral_Senses = _core(
 			"Your connection to the natural world gives you preternatural senses."
 			),
 		chips=(
-				("Blindsight", "30 feet"),
+				Chip(
+					"👁️",
+					"Blindsight",
+					"30 feet",
+					),
 				),
 		)
 
@@ -785,7 +806,11 @@ Dreadful_Strikes = _fey_wanderer(
 		min_level=3,
 		description=_dreadful_strikes_entry,
 		chips=(
-				("Dreadful Strikes", _dreadful_strikes_die),
+				Chip(
+					"👻",
+					"Dreadful Strikes",
+					_dreadful_strikes_die,
+					),
 				),
 		)
 

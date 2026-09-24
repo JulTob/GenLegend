@@ -30,6 +30,7 @@ from AtlasLusoris.AtlasOfGuilds.FighterKit import (
 	)
 from AtlasLusoris.TrainingKit import Make_Training
 from AtlasLusoris.FeaturesKit import grant
+from AtlasVenustas import Chip
 
 
 GUILD = "Fighter"
@@ -755,7 +756,11 @@ Second_Wind = _core(
 		min_level=1,
 		description=_second_wind_entry,
 		chips=(
-				("2nd Wind Uses", _second_wind_uses),
+				Chip(
+					"💨",
+					"2nd Wind Uses",
+					_second_wind_uses,
+					),
 				),
 		apply=_apply_second_wind,
 		)
@@ -765,7 +770,11 @@ Weapon_Mastery = _core(
 		min_level=1,
 		description=_weapon_mastery_entry,
 		chips=(
-				("Weapon Masteries", _weapon_mastery_chip),
+				Chip(
+					"⚔️",
+					"Weapon Masteries",
+					_weapon_mastery_chip,
+					),
 				),
 		)
 
@@ -774,7 +783,8 @@ Action_Surge = _core(
 		min_level=2,
 		description=_action_surge_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Action Surge Uses",
 					_action_surge_uses,
 					),
@@ -818,7 +828,8 @@ Indomitable = _core(
 		min_level=9,
 		description=_indomitable_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Indomitable Uses",
 					_indomitable_uses,
 					),
@@ -859,7 +870,8 @@ Combat_Superiority = _battle_master(
 		min_level=3,
 		description=_combat_superiority_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Superiority Dice",
 					_superiority_dice,
 					),
@@ -1213,10 +1225,10 @@ Group_Recovery = _banneret(
 		min_level=3,
 		description=_group_recovery_entry,
 		chips=(
-				(
+				Chip(
+					"\U0001F6E1",
 					"Rallied Allies",
 					_rallied_allies,
-					"\U0001F6E1",
 					),
 				),
 		)
@@ -1458,7 +1470,8 @@ Psionic_Power = _psi_warrior(
 		min_level=3,
 		description=_psionic_power_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Psionic Energy Dice",
 					_psionic_energy_dice,
 					),
@@ -1489,7 +1502,8 @@ Telekinetic_Adept = _psi_warrior(
 		min_level=7,
 		description=_telekinetic_adept_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Psionic Save DC",
 					_psionic_save_dc,
 					),

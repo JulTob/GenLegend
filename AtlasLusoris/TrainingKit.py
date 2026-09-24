@@ -176,13 +176,7 @@ def Make_Training(
 		guild_name: str,
 		min_level: int = 1,
 		description: str | Callable[[Any], str] = "",
-		chips: Iterable[
-				tuple[
-						str,
-						str | Callable[[Any], Any],
-						]
-				| Chip
-				] = (),
+		chips: Iterable[Chip] = (),
 		source: str | None = None,
 		apply: Callable[[Any], None] | None = None,
 		path: str | type[Tag] | None = None,
@@ -809,8 +803,8 @@ def _self_test():
 			if feat.name == "Second Wind"
 			)
 	assert second.chips
-	assert second.chips[0][0] == "2nd Wind Uses"
-	assert second.chips[0][1] == "2"
+	assert second.chips[0].label == "2nd Wind Uses"
+	assert second.chips[0].value == "2"
 
 	char.level = 4
 	Apply_Guild_Trainings(
@@ -870,8 +864,12 @@ def _self_test():
 			for feat in barb.features
 			if feat.name == "Rage"
 			)
-	assert ("Rage Uses", "4") in rage_feat.chips
-	assert ("Rage Damage", "2") in rage_feat.chips
+	rage_chips = {
+			chip.label: chip.value
+			for chip in rage_feat.chips
+			}
+	assert rage_chips["Rage Uses"] == "4", rage_chips
+	assert rage_chips["Rage Damage"] == "2", rage_chips
 
 	other = Character(
 			seed=3

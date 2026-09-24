@@ -1,6 +1,7 @@
 """Resolve Goliath rules onto a completed Character sheet."""
 
 from AtlasActorLudi.SpeciesKit.presentation import Project_Species_Feature
+from AtlasVenustas import Chip
 
 
 def _proficiency_bonus(
@@ -160,15 +161,15 @@ def _project_giant_heritage(
 			f"when you finish a {heritage.RECOVERY}."
 			),
 		chips=(
-			(
+			Chip(
+				"🗿",
 				"Giant Ancestry Uses",
 				proficiency,
-				"🗿",
 				),
-			(
+			Chip(
+				heritage.CHIP_ICON,
 				heritage.CHIP_LABEL,
 				chip_value,
-				heritage.CHIP_ICON,
 				),
 			),
 		level=heritage.LEVEL,
@@ -190,10 +191,10 @@ def _project_powerful_build(
 			"your carrying capacity."
 			),
 		chips=(
-			(
+			Chip(
+				"💪",
 				"Carrying Size",
 				"+1 category",
-				"💪",
 				),
 			),
 		level=1,
@@ -237,15 +238,15 @@ def _project_large_form(
 			f"{Large_Form.RECOVERY}."
 			),
 		chips=(
-			(
+			Chip(
+				"🗿",
 				"Large Form Uses",
 				Large_Form.USES,
-				"🗿",
 				),
-			(
+			Chip(
+				"💨",
 				"Large Form Speed",
 				transformed_speed,
-				"💨",
 				),
 			),
 		level=Large_Form.LEVEL,

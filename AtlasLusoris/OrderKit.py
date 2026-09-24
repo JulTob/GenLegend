@@ -45,6 +45,7 @@ from AtlasLusoris.AtlasOfOrders.Map_of_Traditions import (
 	)
 from AtlasLusoris.FeaturesKit import Origin_Feat, grant
 from AtlasVenustas import Entry
+from AtlasVenustas import Chip
 
 
 # ---------------------------------------------------------------------------
@@ -696,14 +697,14 @@ def order_feat(
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"🕯",
 					getattr(
 						order.prepared,
 						"name",
 						"Signature",
 						),
 					"1/LR",
-					"🕯",
 					),
 				),
 			)

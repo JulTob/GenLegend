@@ -634,12 +634,12 @@ Bardic_Inspiration = _core(
 	description=_bardic_entry,
 	chips=(
 		Chip(
-			"",
+			"✦",
 			"Bardic Die",
 			_bardic_die,
 			),
 		Chip(
-			"",
+			"✦",
 			"Bardic Uses",
 			_bardic_uses,
 			),

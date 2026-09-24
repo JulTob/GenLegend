@@ -10,6 +10,7 @@ from __future__ import annotations
 import random
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasVenustas import Chip
 
 
 GUILD = "Cleric"
@@ -449,7 +450,11 @@ Channel_Divinity = _core(
 		min_level=2,
 		description=_channel_entry,
 		chips=(
-				("Channel Divinity Uses", _channel_uses, "🕊️"),
+				Chip(
+					"🕊️",
+					"Channel Divinity Uses",
+					_channel_uses,
+					),
 				),
 		)
 

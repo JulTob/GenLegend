@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from AtlasLusoris.FeatKit import Make_Fighting_Style
+from AtlasVenustas import Chip
 
 
 Archery = Make_Fighting_Style(
@@ -14,7 +15,11 @@ BlindFighting = Make_Fighting_Style(
 	name='Blind Fighting',
 	description='You trained to fight without sight.',
 	chips=(
-			('Blindsight', '10 feet'),
+			Chip(
+				"👁️",
+				'Blindsight',
+				'10 feet',
+				),
 			),
 	)
 

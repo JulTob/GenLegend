@@ -12,6 +12,7 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasVenustas import Chip
 
 
 GUILD = "Rogue"
@@ -188,7 +189,11 @@ Sneak_Attack = _core(
 		min_level=1,
 		description=_sneak_attack_entry,
 		chips=(
-				("Sneak Attack", _sneak_dice, "🕷️"),
+				Chip(
+					"🕷️",
+					"Sneak Attack",
+					_sneak_dice,
+					),
 				),
 		)
 
@@ -254,7 +259,11 @@ Weapon_Mastery = _core(
 		min_level=1,
 		description=_weapon_mastery_entry,
 		chips=(
-				("Weapon Masteries", _weapon_mastery_chip),
+				Chip(
+					"⚔️",
+					"Weapon Masteries",
+					_weapon_mastery_chip,
+					),
 				),
 		)
 

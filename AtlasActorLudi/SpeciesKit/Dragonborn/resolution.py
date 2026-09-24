@@ -4,6 +4,7 @@ from AtlasActorLudi.SpeciesKit.Dragonborn.traits import Breath_Weapon
 from AtlasActorLudi.SpeciesKit.Dragonborn.traits import Darkvision
 from AtlasActorLudi.SpeciesKit.Dragonborn.traits import Draconic_Flight
 from AtlasActorLudi.SpeciesKit.presentation import Project_Species_Feature
+from AtlasVenustas import Chip
 
 
 def _proficiency_bonus(
@@ -75,10 +76,10 @@ def Resolve_Dragonborn_Features(
 		"Darkvision",
 		"",
 		chips=(
-			(
+			Chip(
+				"👁️",
 				"Darkvision",
 				f"{int(getattr(target, 'darkvision', Darkvision.RANGE))} ft",
-				"👁️",
 				),
 			),
 		level=1,
@@ -92,15 +93,15 @@ def Resolve_Dragonborn_Features(
 			"your other draconic traits."
 			),
 		chips=(
-			(
+			Chip(
+				"🐉",
 				"Draconic Ancestry",
 				ancestor,
-				"🐉",
 				),
-			(
+			Chip(
+				"🛡️",
 				"Resistances",
 				damage,
-				"🛡️",
 				),
 			),
 		level=1,
@@ -128,20 +129,20 @@ def Resolve_Dragonborn_Features(
 			f"{Breath_Weapon.RECOVERY}."
 			),
 		chips=(
-			(
+			Chip(
+				"🔥",
 				"Breath Weapon",
 				f"{dice}d{Breath_Weapon.DIE} {damage}",
-				"🔥",
 				),
-			(
+			Chip(
+				"🎯",
 				"Breath Save DC",
 				save_dc,
-				"🎯",
 				),
-			(
+			Chip(
+				"💨",
 				"Breath Uses",
 				proficiency,
-				"💨",
 				),
 			),
 		level=1,
@@ -171,10 +172,10 @@ def Resolve_Dragonborn_Features(
 			f"finish a {Draconic_Flight.RECOVERY}."
 			),
 		chips=(
-			(
+			Chip(
+				"🪽",
 				"Draconic Flight",
 				f"{fly_speed} ft",
-				"🪽",
 				),
 			),
 		level=Draconic_Flight.LEVEL,
