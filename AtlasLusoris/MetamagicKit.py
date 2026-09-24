@@ -22,10 +22,11 @@ the ``Metamagic`` root.  A Character carries the options it knows as Tag
 memberships: ``character in Quickened_Spell`` is the whole question, and the
 sheet names exactly the options the Dice Bag chose.
 
-Applying an option is a Tagging, so it must happen outside every other Tag's
-Imprint.  TagKit refuses to Tag a Target that is still mid-application, which
-is why ``Apply_Metamagic`` is called from a Specialization's ``after`` rite
-and never from inside a Training's ``apply``.
+Applying an option is a Tagging.  ``Apply_Metamagic`` is called from each
+Origin's ``after`` rite, once the Origin's own Imprint has finished.  TopKit
+0.2.0a2 onward also allows an Imprint to apply another Tag (Decree 0009,
+point 4), so the call may move inside the Tag that offers the choice when the
+Sorcerer is ported to the build walk.
 """
 
 from __future__ import annotations
@@ -34,9 +35,9 @@ from collections.abc import Callable
 from types import MappingProxyType
 from typing import Any
 
-from TagKit import Pre, Report, Tag
+from TopKit import Pre, Tag
 
-from AtlasActorLudi.CharactersKit import Character
+from AtlasActorLudi.CharactersKit import Character, Report_Of
 
 
 # ---------------------------------------------------------------------------
@@ -126,13 +127,13 @@ def Build_Metamagic(
 					"__doc__": f"{name}, a Metamagic option.",
 					"__module__": __name__,
 					"NAME": name,
-					"COST": Report(
+					"COST": Report_Of(
 							cost
 							),
-					"RULE": Report(
+					"RULE": Report_Of(
 							rule
 							),
-					"STACKS": Report(
+					"STACKS": Report_Of(
 							stacks
 							),
 					},

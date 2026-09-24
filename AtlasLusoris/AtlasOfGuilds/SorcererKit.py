@@ -20,10 +20,12 @@ Choices the generator makes for a Sorcerer, and where each one lands:
 	Elemental Affinity    a Record            drawn by the level 6 lesson
 	Manifestation of Order  a Record          drawn by the level 3 lesson
 
-The first is a Tagging, and TagKit refuses to Tag a Target mid-application,
-so it rides the Origin's ``after`` rite instead of a Training's ``apply``.
-The other two only write Records, so they stay with the lesson that names
-them, as the Bard's and the Barbarian's choices do.
+The first is a Tagging, and it rides the Origin's ``after`` rite, which runs
+once the Origin's Imprint has finished.  TopKit now also lets an Imprint
+apply another Tag (Decree 0009, point 4), so it may move into the Tag that
+offers the choice when the Sorcerer is ported to the build walk.  The other
+two only write Records, so they stay with the lesson that names them, as the
+Bard's and the Barbarian's choices do.
 
 The class and Origin descriptions are not written yet.  The fantasy is being
 settled with Julio first; the prose lands on these Tags once it is.
@@ -33,8 +35,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from TagKit import Report
-
+from AtlasActorLudi.CharactersKit import Report_Of
 from AtlasLusoris.Compass_of_Progression import (
 	Always_Prepared,
 	Choice_Progression,
@@ -178,10 +179,10 @@ SLOT_CREATION = (
 	Slot_Creation(5, 7, 9),
 	)
 
-Sorcerer.FEATURES = Report(SORCERER_FEATURES)
-Sorcerer.CHOICES = Report(SORCERER_CHOICES)
-Sorcerer.RESOURCES = Report(SORCERER_RESOURCES)
-Sorcerer.SLOT_CREATION = Report(SLOT_CREATION)
+Sorcerer.FEATURES = Report_Of(SORCERER_FEATURES)
+Sorcerer.CHOICES = Report_Of(SORCERER_CHOICES)
+Sorcerer.RESOURCES = Report_Of(SORCERER_RESOURCES)
+Sorcerer.SLOT_CREATION = Report_Of(SLOT_CREATION)
 
 
 # ---------------------------------------------------------------------------
@@ -405,11 +406,10 @@ def Settle_Sorcerer_Choices(
 	"""
 	Carry the Metamagic options this Sorcerer has learned.
 
-	Runs as every Origin's ``after`` rite, once the Origin has committed and
-	no Tag is mid-application.  Every Sorcerer carries an Origin from their
-	first level (the Origin's lessons wait for level 3 on their own), so this
-	reaches every Sorcerer.  Below level 2 the count is zero and nothing is
-	applied.
+	Runs as every Origin's ``after`` rite, once the Origin's Imprint has
+	finished.  Every Sorcerer carries an Origin from their first level (the
+	Origin's lessons wait for level 3 on their own), so this reaches every
+	Sorcerer.  Below level 2 the count is zero and nothing is applied.
 	"""
 	Apply_Metamagic(
 		char,
