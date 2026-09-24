@@ -272,6 +272,16 @@ def _weapon_mastery_chip(
 			)
 
 
+def _apply_weapon_mastery(
+		char,
+		) -> None:
+	"""Decide the drills once, when the lesson awakens; readers only read them."""
+	from AtlasLusoris.Map_of_Weapon_Masteries import plan_masteries
+	plan_masteries(
+			char
+			)
+
+
 Weapon_Mastery = _core(
 		name="Weapon Mastery",
 		min_level=1,
@@ -283,6 +293,7 @@ Weapon_Mastery = _core(
 					_weapon_mastery_chip,
 					),
 				),
+		apply=_apply_weapon_mastery,
 		)
 
 Fighting_Style = _core(

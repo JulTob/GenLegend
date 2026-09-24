@@ -17,6 +17,8 @@ Thought pattern (read this before the code)
 	   states its own formula.
 	4. The rule says nothing about Shields, so a Shield is allowed.
 	5. Reading is pure (Decree 0009, point 7).
+	6. The Tag prints nothing itself: the Draconic Sorcery Training prints
+	   the rule and a "Scaled AC" Chip beside it, reading this module.
 
 Public surface
 	Draconic_Resilience(char)     — the Tag
@@ -28,7 +30,6 @@ from __future__ import annotations
 from TopKit import Tag
 
 from AtlasActorLudi.Map_of_Scores import Ability_Modifier
-from AtlasVenustas import Chip
 
 
 class Draconic_Resilience( Tag ):
@@ -52,16 +53,6 @@ def Draconic_Armour_Class(
 			"CHA",
 			)
 	return 10 + dexterity + charisma
-
-
-Draconic_Resilience.CHIPS = (
-		Chip(
-				"🐉",
-				"Scaled AC",
-				Draconic_Armour_Class,
-				),
-		)
-	#-- Set after the class, because the Chip's value is the reader above.
 
 
 __all__ = (

@@ -157,6 +157,7 @@ def _choose_named(
 		key: str,
 		options: dict[str, str],
 		) -> tuple[str, str]:
+	"""Decide one named option, once. Called only from a Training's apply."""
 	bag = _picks(
 			char
 			)
@@ -170,6 +171,39 @@ def _choose_named(
 			)
 	bag[key] = name
 	return name, options[name]
+
+
+def _chosen_named(
+		char,
+		key: str,
+		options: dict[str, str],
+		) -> tuple[str, str]:
+	"""
+	Read the option already chosen for ``key``: never chooses.
+
+	Readers call this. The choice is made by the Training's apply when it
+	awakens (Decree 0009, point 7: reading is pure).
+	"""
+	name = _picks(
+			char
+			)[ key ]
+	return name, options[ name ]
+
+
+def _choose_on_awaken(
+		key: str,
+		options: dict[str, str],
+		):
+	"""An apply step that makes this Training's one named choice."""
+	def apply(
+			char,
+			) -> None:
+		_choose_named(
+				char,
+				key,
+				options,
+				)
+	return apply
 
 
 def _core(
@@ -523,7 +557,7 @@ def _natures_veil_uses(
 def _hunters_prey_entry(
 		char,
 		) -> str:
-	name, text = _choose_named(
+	name, text = _chosen_named(
 			char,
 			"Hunter's Prey",
 			_HUNTERS_PREY,
@@ -538,7 +572,7 @@ def _hunters_prey_entry(
 def _defensive_tactics_entry(
 		char,
 		) -> str:
-	name, text = _choose_named(
+	name, text = _chosen_named(
 			char,
 			"Defensive Tactics",
 			_DEFENSIVE_TACTICS,
@@ -553,7 +587,7 @@ def _defensive_tactics_entry(
 def _superior_prey_entry(
 		char,
 		) -> str:
-	name, text = _choose_named(
+	name, text = _chosen_named(
 			char,
 			"Superior Hunter's Prey",
 			_SUPERIOR_PREY,
@@ -567,7 +601,7 @@ def _superior_prey_entry(
 def _superior_defense_entry(
 		char,
 		) -> str:
-	name, text = _choose_named(
+	name, text = _chosen_named(
 			char,
 			"Superior Hunter's Defense",
 			_SUPERIOR_DEFENSE,
@@ -622,6 +656,16 @@ Favored_Enemy = _core(
 				),
 		)
 
+def _apply_weapon_mastery(
+		char,
+		) -> None:
+	"""Decide the drills once, when the lesson awakens; readers only read them."""
+	from AtlasLusoris.Map_of_Weapon_Masteries import plan_masteries
+	plan_masteries(
+			char
+			)
+
+
 Weapon_Mastery = _core(
 		name="Weapon Mastery",
 		min_level=1,
@@ -633,6 +677,7 @@ Weapon_Mastery = _core(
 					_weapon_mastery_chip,
 					),
 				),
+		apply=_apply_weapon_mastery,
 		)
 
 Deft_Explorer = _core(
@@ -984,22 +1029,38 @@ Hunters_Prey = _hunter(
 		name="Hunter's Prey",
 		min_level=3,
 		description=_hunters_prey_entry,
+		apply=_choose_on_awaken(
+				"Hunter's Prey",
+				_HUNTERS_PREY,
+				),
 		)
 
 Defensive_Tactics = _hunter(
 		name="Defensive Tactics",
 		min_level=7,
 		description=_defensive_tactics_entry,
+		apply=_choose_on_awaken(
+				"Defensive Tactics",
+				_DEFENSIVE_TACTICS,
+				),
 		)
 
 Superior_Hunters_Prey = _hunter(
 		name="Superior Hunter's Prey",
 		min_level=11,
 		description=_superior_prey_entry,
+		apply=_choose_on_awaken(
+				"Superior Hunter's Prey",
+				_SUPERIOR_PREY,
+				),
 		)
 
 Superior_Hunters_Defense = _hunter(
 		name="Superior Hunter's Defense",
 		min_level=15,
 		description=_superior_defense_entry,
+		apply=_choose_on_awaken(
+				"Superior Hunter's Defense",
+				_SUPERIOR_DEFENSE,
+				),
 		)

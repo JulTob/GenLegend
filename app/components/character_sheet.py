@@ -9,6 +9,7 @@ from typing import Any
 from shiny import ui
 
 from AtlasVenustas import Chip
+from AtlasVenustas import Section
 
 from app.components.shared import Feature_Chip_Triples
 from app.components.shared import attack_rolls_html
@@ -110,25 +111,90 @@ def _creature_type_label(
     return default
 
 
+def _build_chips(
+        build: Any,
+        ) -> list[Chip]:
+    """The Chips the Character's Tags declare, read now (``Find_Build``)."""
+    if build is None:
+        return []
+    return [
+            built.chip
+            for built in build.chips
+            ]
+
+
+def _chip_groups_in_rail_order(
+        features: Any,
+        build: Any,
+        ) -> list[Any]:
+    """
+    The rail's chip groups, in order: Features before the Class section,
+    then the Chips the build declares (the ported families), then the rest.
+
+    That is where the Training chips stood while Training still wrote
+    Features, so moving a family onto the build does not move its chips.
+    """
+    features = list(
+            features or []
+            )
+    first_class = next(
+            (
+                    index
+                    for index, current_feature in enumerate(
+                            features
+                            )
+                    if _feature_place(
+                            current_feature
+                            )[ 0 ] == _SECTION_CLASS
+                    ),
+            len(
+                    features
+                    ),
+            )
+    before = [
+            _feature_chips(
+                    current_feature
+                    )
+            for current_feature in features[ :first_class ]
+            ]
+    after = [
+            _feature_chips(
+                    current_feature
+                    )
+            for current_feature in features[ first_class: ]
+            ]
+    return before + [ _build_chips( build ) ] + after
+
+
+def _feature_chips(
+        current_feature: Any,
+        ) -> Any:
+    chips = getattr(
+            current_feature,
+            "chips",
+            None,
+            )
+    if chips is None and isinstance(
+            current_feature,
+            dict,
+            ):
+        chips = current_feature.get(
+                "chips",
+                )
+    return chips
+
+
 def _iter_feature_chips(
         features: Any,
+        build: Any = None,
         ) -> list[tuple[str, str, str]]:
-    """Collect Feature chips for the left rail (not the Entry body)."""
+    """Collect Feature and build chips for the left rail (not the Entry body)."""
     pairs: list[tuple[str, str, str]] = []
     seen: set[tuple[str, str, str]] = set()
-    for current_feature in features or []:
-        chips = getattr(
-                current_feature,
-                "chips",
-                None,
-                )
-        if chips is None and isinstance(
-                current_feature,
-                dict,
-                ):
-            chips = current_feature.get(
-                    "chips",
-                    )
+    for chips in _chip_groups_in_rail_order(
+            features,
+            build,
+            ):
         for key in Feature_Chip_Triples(
                 chips
                 ):
@@ -828,8 +894,14 @@ def _feature_tree(
             "class_invocations": [],
             }
 
-    for current_feature in _ordered_features(
-            features
+    class_levels: list[tuple[tuple[int, int, int], int, int, Any]] = []
+        #-- (place, rank, order, rendered): Features and build Entries meet
+        #-- here and are sorted together by level.
+
+    for order, current_feature in enumerate(
+            _ordered_features(
+                    features
+                    )
             ):
         source = _feature_source(
                 current_feature
@@ -916,11 +988,95 @@ def _feature_tree(
         if rendered is None:
             continue
 
+        if bucket == "class_levels":
+            class_levels.append(
+                    (
+                            _feature_place(
+                                    current_feature
+                                    ),
+                            FEATURE_RANK,
+                            order,
+                            rendered,
+                            )
+                    )
+            continue
+
         tree[ bucket ].append(
                 rendered
                 )
 
+    class_levels.extend(
+            _guild_build_items(
+                    data.get(
+                            "build"
+                            )
+                    )
+            )
+    class_levels.sort(
+            key=lambda item: item[ :3 ]
+            )
+    tree[ "class_levels" ] = [
+            item[ 3 ]
+            for item in class_levels
+            ]
+
     return tree
+
+
+BUILD_RANK = 0
+FEATURE_RANK = 1
+    #-- At the same level, what the build declares prints before the
+    #-- Features still written the old way: Guild Training was always granted
+    #-- before the legacy class Progression filled its gaps.
+
+
+def _guild_build_items(
+        build: Any,
+        ) -> list[tuple[tuple[int, int, int], int, int, Any]]:
+    """The Guild section's Entries from the build, placed by level."""
+    if build is None:
+        return []
+    items = []
+    for order, built in enumerate(
+            build.entries
+            ):
+        entry = built.entry
+        if entry.section is not Section.GUILD:
+            continue
+        rendered = _render_entry(
+                entry
+                )
+        if rendered is None:
+            continue
+        items.append(
+                (
+                        (
+                                _SECTION_CLASS,
+                                1,
+                                entry.level or 0,
+                                ),
+                        BUILD_RANK,
+                        order,
+                        rendered,
+                        )
+                )
+    return items
+
+
+def _render_entry(
+        entry: Any,
+        ) -> Any | None:
+    """One read Entry as sheet UI, or None when it has no rules to print."""
+    if not entry.rules.strip():
+        return None
+    return feature_item(
+            safe_str(
+                    entry.title
+                    ),
+            entry.rules,
+            chips=None,
+            narrative=False,
+            )
 
 
 def _grouped_feature_entries(
@@ -1242,7 +1398,10 @@ def _character_stat_chips(
     for symbol, label, value in _iter_feature_chips(
             data.get(
                     "features"
-                    )
+                    ),
+            data.get(
+                    "build"
+                    ),
             ):
         if _is_spellcasting_parameter_chip(
                 label

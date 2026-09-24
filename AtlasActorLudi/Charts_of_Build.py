@@ -379,16 +379,13 @@ def _self_test() -> None:
 	else:
 		raise AssertionError( "a broken Chip was read in silence" )
 
-	#-- A real Character: the Unarmored Defense Tag's Chip agrees with the
-	#-- number the gear rules use.
+	#-- A real Character: Guild Training prints through the build. A level 3
+	#-- Barbarian's Rage Tag declares one Guild Entry and its two Chips.
 	import contextlib
 	import io
 
 	from AtlasActorLudi.Map_of_Character_Generation import summon_player
-	from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
-			Unarmored_Armour_Class,
-			Unarmored_Defense,
-			)
+	from AtlasLusoris.AtlasOfTraining.Map_of_Barbarian_Training import Rage
 
 	quiet = io.StringIO()
 	with contextlib.redirect_stdout( quiet ), contextlib.redirect_stderr( quiet ):
@@ -397,13 +394,22 @@ def _self_test() -> None:
 				level=3,
 				guild="Barbarian",
 				)
-	unarmored = [
-			built.chip
-			for built in Find_Build( barbarian ).chips
-			if built.tag is Unarmored_Defense
+	build = Find_Build( barbarian )
+	rage_entries = [
+			built.entry
+			for built in build.entries
+			if built.tag is Rage
 			]
-	assert len( unarmored ) == 1, unarmored
-	assert unarmored[0].value == Unarmored_Armour_Class( barbarian )
+	assert len( rage_entries ) == 1, rage_entries
+	assert rage_entries[0].section is Section.GUILD
+	assert rage_entries[0].level == 1
+	assert rage_entries[0].rules.strip()
+	rage_chips = {
+			built.chip.label
+			for built in build.chips
+			if built.tag is Rage
+			}
+	assert rage_chips == { "Rage Uses", "Rage Damage" }, rage_chips
 
 	print( "Charts_of_Build: all checks passed." )
 

@@ -517,6 +517,7 @@ class Character(Character_Skeleton):
 	@minion
 	def to_dict(char):
 		""" Convert character details to dictionary format. """
+		from AtlasActorLudi.Charts_of_Build import Find_Build
 		from AtlasActorLudi.SpeciesKit import (
 				Current_Creature_Type,
 				Current_Heritage,
@@ -581,6 +582,9 @@ class Character(Character_Skeleton):
 			'other_proficiencies':		char.other_proficiencies,
 			'Practices':	practices,
 			'features':		char.features,
+			'build':		Find_Build( char ),
+				#-- What the Tags declare, read now (Decree 0009); the sheet
+				#-- prints the ported families from it (QST-0142).
 			'equipment': 	char.equipment,
 			'SavingThrow':  char.saving_throws,
 			'AttackRolls':	char.attack_rolls,

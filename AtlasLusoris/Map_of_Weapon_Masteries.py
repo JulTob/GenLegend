@@ -752,6 +752,27 @@ def plan_masteries(
 			)
 
 
+def planned_masteries(
+		char: Any,
+		n: int,
+		) -> list[tuple[str, str]]:
+	"""
+	The drills already decided, read only: never picks, never stamps.
+
+	Readers (sheet text and Chips) call this. The decision is
+	``plan_masteries``, made once by the Weapon Mastery Training when it
+	awakens (Decree 0009, point 7: reading is pure).
+	"""
+	picks = list(
+			getattr(
+					char,
+					"weapon_mastery_picks",
+					None,
+					) or []
+			)
+	return picks[ :n ] if n else picks
+
+
 def weapon_mastery_chip(
 		char: Any,
 		n: int | None = None,
@@ -760,7 +781,7 @@ def weapon_mastery_chip(
 	count = mastery_count(
 			char
 			) if n is None else n
-	picks = pick_weapon_masteries(
+	picks = planned_masteries(
 			char,
 			count,
 			)
@@ -782,7 +803,7 @@ def weapon_mastery_entry(
 	count = mastery_count(
 			char
 			) if n is None else n
-	picks = pick_weapon_masteries(
+	picks = planned_masteries(
 			char,
 			count,
 			)

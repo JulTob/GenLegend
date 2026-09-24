@@ -165,10 +165,21 @@ Rebuilding a lost book costs an hour and 10 GP per spell level, so this is
 the number both figures are struck from. Cantrips cost nothing to set down
 again and are not counted.
 """
-	try:
-		known = char.get_spellcaster().spells_known
-	except Exception:
+	caster = getattr(
+			char,
+			"spellcaster",
+			None,
+			)
+		#-- The spellcaster already built for this Character.  Never
+		#-- ``get_spellcaster()`` here: that builds a new one, and a reader
+		#-- must not build or choose anything (Decree 0009, point 7).
+	if caster is None:
 		return 0
+	known = getattr(
+			caster,
+			"spells_known",
+			(),
+			) or ()
 	total = 0
 	for spell in known:
 		if "Cantrip" in type(

@@ -16,7 +16,7 @@ Thought pattern (read this before the code)
 	       Unarmored_Defense( char, ability="CON", shield_allowed=True )
 
 	   The Tag keeps them as two Records on the Character. Every reader
-	   below (the gear rules, the Armor Class, the sheet's Chip) asks the
+	   below (the gear rules, the Armor Class, each source's Chip) asks the
 	   Tag; nobody computes the formula a second time.
 	3. A Character has Unarmored Defense once. TopKit does nothing when an
 	   active Tag is applied again, so the first source wins and a second
@@ -57,7 +57,6 @@ from TopKit import Record
 from TopKit import Tag
 
 from AtlasActorLudi.Map_of_Scores import Ability_Modifier
-from AtlasVenustas import Chip
 
 
 ABILITIES = (
@@ -221,22 +220,10 @@ def Unarmored_Armour_Class(
 			)
 
 
-# ---------------------------------------------------------------------------
-# What the Tag gives the sheet (Decree 0009, point 1): a Chip, no prose.
-# The prose stays with each source, because each source words it its own way.
-# ---------------------------------------------------------------------------
-
-Unarmored_Defense.CHIPS = (
-		Chip(
-				"🛡️",
-				"Unarmored AC",
-				Unarmored_Armour_Class,
-				),
-		)
-	#-- Set after the class, because the Chip's value is a reader defined
-	#-- below the Tag.  It is plain class data all the same.
-	#-- The shape is ``AtlasVenustas.Chip( symbol, label, value )``, the one
-	#-- QST-0141 recommends; the value is resolved when the build is read.
+# The sheet: this Tag declares no Entry and no Chip. Each source prints its
+# own words and its own "Unarmored AC" Chip (Barbarian 🛡️, Monk 🥋, Dance 🩰)
+# beside them, reading Unarmored_Armour_Class. A feature's Chip lives where
+# its prose lives.
 
 
 __all__ = (
@@ -331,10 +318,6 @@ def _self_test() -> None:
 					f"Unarmored_Defense accepted {inputs}"
 					)
 		assert stranger not in Unarmored_Defense
-
-	#-- The Chip reads the same function the gear rules read.
-	chip = Unarmored_Defense.CHIPS[0]
-	assert chip.value( dancer ) == Unarmored_Armour_Class( dancer )
 
 	print( "Unarmored_Defense: all checks passed." )
 

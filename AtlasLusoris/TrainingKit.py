@@ -7,8 +7,11 @@ in a Guild.  Distinct from Origin Feats, Species Traits, and Invocations.
 Thought pattern (read this before the code)
 	1. You join a Guild (GuildKit chassis + helpers).
 	2. As you gain levels in that Guild, Training Tags awaken.
-	3. Each Training is a Tag: semantic membership + sheet Entry
-	   (via FeaturesKit.grant), optional Chips for compact values.
+	3. Each Training is a Tag: semantic membership, plus what it prints
+	   as class data (Decree 0009, QST-0142 station 3): one ``ENTRIES``
+	   Entry in the Guild section at its ``MIN_LEVEL``, and its ``CHIPS``.
+	   The sheet reads them through ``Find_Build``; nothing is written to
+	   ``char.features``.
 	4. Subclass lessons stay out until a later pass — core Guild
 	   Trainings first (reference: Fighter Second Wind).
 
@@ -29,8 +32,9 @@ from TopKit import Imprint, Pre, Tag
 from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
-from AtlasLusoris.FeaturesKit import grant
 from AtlasVenustas import Chip
+from AtlasVenustas import Entry
+from AtlasVenustas import Section
 
 
 # ---------------------------------------------------------------------------
@@ -274,7 +278,6 @@ def Make_Training(
 	resolved_chips = tuple(
 			chips
 			)
-	training_tag = None
 
 	@Pre
 	def Trained_In_Guild(
@@ -326,16 +329,22 @@ def Make_Training(
 			):
 		_awaken_training(
 				target,
-				training_tag,
-				description=description,
-				chips=resolved_chips,
-				source=resolved_source,
-				apply=apply,
-				on_sheet=on_sheet,
+				apply,
 				)
 
 	namespace = {
 			"NAME": name,
+			"ENTRIES": Training_Entries(
+					name,
+					description,
+					min_level,
+					on_sheet,
+					),
+			"CHIPS": Training_Chips(
+					name,
+					resolved_chips,
+					on_sheet,
+					),
 			"GUILD_NAME": Report_Of(
 					guild_name
 					),
@@ -443,71 +452,64 @@ def _resolve(
 	return value
 
 
+OFF_SHEET_TRAININGS = frozenset(
+		(
+				"Spellcasting",
+				"Fighting Style",
+				"Additional Fighting Style",
+				"Pact Magic",
+				)
+		)
+	#-- These Tags awaken for identity and gates, but another surface owns
+	#-- their prose (the Spells section, the Fighting Style feat pick).
+
+
 def _awaken_training(
 		char,
-		tag: type[Training],
-		*,
-		description,
-		chips,
-		source: str,
 		apply,
-		on_sheet: bool = True,
 		) -> None:
-	"""Apply side effects, then resolve Entry + Chips onto the Character."""
-	# Avoid duplicate sheet lines if Training is re-applied.
-	existing = getattr(
-			char,
-			"features",
-			None,
-			) or []
-	already = any(
-			getattr(
-					feat,
-					"name",
-					None,
-					) == tag.NAME
-			and getattr(
-					feat,
-					"source",
-					None,
-					) == source
-			for feat in existing
-			)
-	if already:
-		return
-
-	# Mutate first so callable Entries can describe what was chosen.
+	"""Run the lesson's side effects once, when its Tag is applied."""
 	if apply is not None:
 		apply(
 				char
 				)
 
-	# These Tags still awaken for identity / Pre gates, but another
-	# surface owns the prose (Spells section, Fighting Style feat pick).
-	if tag.NAME in {
-			"Spellcasting",
-			"Fighting Style",
-			"Additional Fighting Style",
-			"Pact Magic",
-			}:
-		on_sheet = False
 
-	if not on_sheet:
-		return
+def Training_Entries(
+		name: str,
+		description,
+		min_level: int,
+		on_sheet: bool,
+		) -> tuple[Entry, ...]:
+	"""
+	What a Training prints in the Guild section: one Entry, or none.
 
-	# Handed over unresolved on purpose.  Feature projects an Entry when the
-	# sheet is read, not when the Training awakens, because Trainings awaken in
-	# level order and a level-20 capstone can still change the numbers a
-	# level-14 Entry quotes.  See FeaturesKit.Feature.
-	grant(
-			char,
-			name=tag.NAME,
-			description=description,
-			source=source,
-			level=tag.MIN_LEVEL,
-			apply=None,
-			chips=chips,
+	``description`` may be a reader of the Character. The build resolves
+	it when the sheet is read, not when the Training awakens, because
+	Trainings awaken in level order and a level-20 capstone can still change
+	the numbers a level-14 Entry quotes.
+	"""
+	if not on_sheet or name in OFF_SHEET_TRAININGS:
+		return ()
+	return (
+			Entry(
+					name,
+					description,
+					section=Section.GUILD,
+					level=min_level,
+					),
 			)
+
+
+def Training_Chips(
+		name: str,
+		chips: tuple[Chip, ...],
+		on_sheet: bool,
+		) -> tuple[Chip, ...]:
+	"""What a Training puts on the rail: its Chips, unless it is off the sheet."""
+	if not on_sheet or name in OFF_SHEET_TRAININGS:
+		return ()
+	return chips
 
 
 def trainings_for(
@@ -762,6 +764,31 @@ def _load_training_maps() -> None:
 # ---------------------------------------------------------------------------
 
 
+def Built_Titles(
+		char,
+		) -> list[str]:
+	"""The titles of the Guild Entries the Character's build prints."""
+	from AtlasActorLudi.Charts_of_Build import Find_Build
+	return [
+			built.entry.title
+			for built in Find_Build( char ).entries
+			if built.entry.section is Section.GUILD
+			]
+
+
+def Built_Chip_Values(
+		char,
+		tag: type[Training],
+		) -> dict:
+	"""One Training's Chips, read now, as label → value."""
+	from AtlasActorLudi.Charts_of_Build import Find_Build
+	return {
+			built.chip.label: built.chip.value
+			for built in Find_Build( char ).chips
+			if built.tag is tag
+			}
+
+
 def _self_test():
 	from AtlasLusoris.GuildKit import (
 			Apply_Guild,
@@ -791,43 +818,53 @@ def _self_test():
 	assert Second_Wind in applied
 	assert char in Second_Wind and char in Weapon_Mastery
 	assert char in Training
-	names = [
-			feat.name
-			for feat in char.features
-			]
+	names = Built_Titles(
+			char
+			)
 	assert "Second Wind" in names
 	assert "Weapon Mastery" in names
-	second = next(
-			feat
-			for feat in char.features
-			if feat.name == "Second Wind"
+	second_wind_chips = Built_Chip_Values(
+			char,
+			Second_Wind,
 			)
-	assert second.chips
-	assert second.chips[0].label == "2nd Wind Uses"
-	assert second.chips[0].value == "2"
+	assert second_wind_chips == { "2nd Wind Uses": 2 }, second_wind_chips
 
 	char.level = 4
 	Apply_Guild_Trainings(
 			char
 			)
-	names = [
-			feat.name
-			for feat in char.features
-			]
+	names = Built_Titles(
+			char
+			)
 	assert "Action Surge" in names
 	assert names.count(
 			"Second Wind"
 			) == 1
-	# Same rank again should not duplicate sheet lines.
-	before = len(
-			char.features
+	#-- Same rank again: nothing new, and nothing printed twice.
+	before = Built_Titles(
+			char
 			)
 	Apply_Guild_Trainings(
 			char
 			)
-	assert len(
-			char.features
+	assert Built_Titles(
+			char
 			) == before
+	#-- Training writes nothing to char.features any more.
+	assert not any(
+			getattr(
+					feat,
+					"source",
+					"",
+					).startswith(
+					"Training"
+					)
+			for feat in getattr(
+					char,
+					"features",
+					[],
+					) or []
+			)
 
 	assert training_covers(
 			"Fighter",
@@ -859,17 +896,12 @@ def _self_test():
 			barb
 			)
 	assert Rage in barb_applied and Frenzy in barb_applied
-	rage_feat = next(
-			feat
-			for feat in barb.features
-			if feat.name == "Rage"
+	rage_chips = Built_Chip_Values(
+			barb,
+			Rage,
 			)
-	rage_chips = {
-			chip.label: chip.value
-			for chip in rage_feat.chips
-			}
-	assert rage_chips["Rage Uses"] == "4", rage_chips
-	assert rage_chips["Rage Damage"] == "2", rage_chips
+	assert rage_chips[ "Rage Uses" ] == 4, rage_chips
+	assert rage_chips[ "Rage Damage" ] == 2, rage_chips
 
 	other = Character(
 			seed=3

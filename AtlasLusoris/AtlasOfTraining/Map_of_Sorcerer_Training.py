@@ -459,6 +459,11 @@ Draconic_Scales = _draconic(
 					"HP Bonus",
 					_rank,
 					),
+				Chip(
+					"🐉",
+					"Scaled AC",
+					Draconic_Armour_Class,
+					),
 				),
 		apply=_apply_draconic_resilience,
 		)
