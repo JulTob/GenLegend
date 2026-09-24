@@ -1507,46 +1507,54 @@ class Ranger(Spellcaster):
 
 class Sorcerer(Spellcaster):
 	"""
-	Full-PHB sorcerer spellcasting:
-	  • CHA-based
-	  • Full-caster slot table (identical to Wizard)
-	  • Cantrips known progression 4→5→6→7→8
-	  • Spells-known progression 2→3→…→15
-	  • Sorcery Points = level
+	2024 PHB Sorcerer spellcasting (Charisma).
+
+	  • Full-caster slot table, identical to the Wizard's
+	  • Cantrips 4 → 5 at level 4 → 6 at level 10
+	  • Prepared spells 2 → 22, changed only on gaining a level
+	  • Origin spells and any spells the Character carries in
+	    ``known_spells`` (an Origin feat, say) are always prepared and never
+	    count against the number prepared
+
+	Sorcery Points are read from SorcererKit's RESOURCES, which is where the
+	Font of Magic lesson reads them too, so the two boxes on the sheet can't
+	disagree.
 	"""
 
 	# ---------- tables ----------
 	_TABLE = {
-		# lvl : (cantrips, spells-known, slot tuple L1-9)
+		# lvl : (cantrips, prepared, slot tuple L1-9)
 		1:  (4, 2,  (2,0,0,0,0,0,0,0,0)),
-		2:  (4, 3,  (3,0,0,0,0,0,0,0,0)),
-		3:  (4, 4,  (4,2,0,0,0,0,0,0,0)),
-		4:  (5, 5,  (4,3,0,0,0,0,0,0,0)),
-		5:  (5, 6,  (4,3,2,0,0,0,0,0,0)),
-		6:  (5, 7,  (4,3,3,0,0,0,0,0,0)),
-		7:  (5, 8,  (4,3,3,1,0,0,0,0,0)),
-		8:  (5, 9,  (4,3,3,2,0,0,0,0,0)),
-		9:  (5,10, (4,3,3,3,1,0,0,0,0)),
-		10: (6,11, (4,3,3,3,2,0,0,0,0)),
-		11: (6,12, (4,3,3,3,2,1,0,0,0)),
-		12: (6,12, (4,3,3,3,2,1,0,0,0)),
-		13: (6,13, (4,3,3,3,2,1,1,0,0)),
-		14: (7,13, (4,3,3,3,2,1,1,0,0)),
-		15: (7,14, (4,3,3,3,2,1,1,1,0)),
-		16: (7,14, (4,3,3,3,2,1,1,1,0)),
-		17: (7,15, (4,3,3,3,2,1,1,1,1)),
-		18: (8,15, (4,3,3,3,3,1,1,1,1)),
-		19: (8,15, (4,3,3,3,3,2,1,1,1)),
-		20: (8,15, (4,3,3,3,3,2,2,1,1)),
+		2:  (4, 4,  (3,0,0,0,0,0,0,0,0)),
+		3:  (4, 6,  (4,2,0,0,0,0,0,0,0)),
+		4:  (5, 7,  (4,3,0,0,0,0,0,0,0)),
+		5:  (5, 9,  (4,3,2,0,0,0,0,0,0)),
+		6:  (5,10,  (4,3,3,0,0,0,0,0,0)),
+		7:  (5,11,  (4,3,3,1,0,0,0,0,0)),
+		8:  (5,12,  (4,3,3,2,0,0,0,0,0)),
+		9:  (5,14,  (4,3,3,3,1,0,0,0,0)),
+		10: (6,15,  (4,3,3,3,2,0,0,0,0)),
+		11: (6,16,  (4,3,3,3,2,1,0,0,0)),
+		12: (6,16,  (4,3,3,3,2,1,0,0,0)),
+		13: (6,17,  (4,3,3,3,2,1,1,0,0)),
+		14: (6,17,  (4,3,3,3,2,1,1,0,0)),
+		15: (6,18,  (4,3,3,3,2,1,1,1,0)),
+		16: (6,18,  (4,3,3,3,2,1,1,1,0)),
+		17: (6,19,  (4,3,3,3,2,1,1,1,1)),
+		18: (6,20,  (4,3,3,3,3,1,1,1,1)),
+		19: (6,21,  (4,3,3,3,3,2,1,1,1)),
+		20: (6,22,  (4,3,3,3,3,2,2,1,1)),
 	}
 
 	# ---------- constructor ----------
 	def __init__(self, character, known: list | None = None):
+		from AtlasLusoris.AtlasOfGuilds.SorcererKit import Find_Sorcery_Points
+
 		super().__init__(character, known or [])
 		self.class_name        = "Sorcerer"
-		self.sorcery_points    = self.level  # RAW
-		# cantrips/spells get overwritten below
-		self.prepare_spells()               # refresh spell lists
+		self.sorcery_points    = Find_Sorcery_Points(
+			character
+			)
 
 	# ---------- core helpers ----------
 	def get_casting_stat(self):
@@ -1554,34 +1562,72 @@ class Sorcerer(Spellcaster):
 
 	def get_stats(self, key):
 		lvl = min(self.level, 20)
-		can, spells, slots = Sorcerer._TABLE[lvl]
+		can, prepared, slots = Sorcerer._TABLE[lvl]
 		match key:
 			case "cantrips": return can
-			case "spells":   return spells
+			case "prepared": return prepared
 			case "slots":   return {i + 1: n for i, n in enumerate(slots) if n}
 
 	def get_spell_slots(self):
 		return self.get_stats("slots")
 
 	# ---------- spell selection ----------
+	def _always_prepared(self):
+		"""Origin spells, then whatever the Character already carries, once each."""
+		from AtlasLusoris.AtlasOfGuilds.SorcererKit import Find_Always_Prepared
+
+		carried = (
+			list(
+				Find_Always_Prepared(
+					self.character
+					)
+				)
+			+ list(
+				getattr(
+					self.character,
+					"known_spells",
+					None,
+					) or []
+				)
+			)
+		unique = {}
+		for spell in carried:
+			unique.setdefault(
+				spell.name,
+				spell,
+				)
+		return list(
+			unique.values()
+			)
+
 	def prepare_spells(self):
 		"""
-		Sorcerers *know* a fixed list that expands at each level.
-		We roll them randomly here (can easily swap for user-choice UI).
-		"""
-		cantrips_needed = self.get_stats("cantrips")
-		spells_needed   = self.get_stats("spells")
+		Keep the always-prepared spells, then draw the rest from the list.
 
-		pool = self.available_spells()
+		The drawn cantrips and spells fill the table's counts in full: an
+		always-prepared spell is never one of them.
+		"""
+		self.always_prepared = self._always_prepared()
+		held = {
+			spell.name
+			for spell in self.always_prepared
+			}
+
+		pool = [
+			spell
+			for spell in self.available_spells()
+			if spell.name not in held
+			]
 		cantrip_pool   = [s for s in pool if s.level == 0]
 		leveled_pool   = [s for s in pool if s.level > 0]
 
 		self.spells_known = (
-			_pick_distinct(
+			self.always_prepared
+			+ _pick_distinct(
 				self.character,
 				cantrip_pool,
 				min(
-					cantrips_needed,
+					self.get_stats("cantrips"),
 					len(
 						cantrip_pool
 						),
@@ -1591,7 +1637,7 @@ class Sorcerer(Spellcaster):
 				self.character,
 				leveled_pool,
 				min(
-					spells_needed,
+					self.get_stats("prepared"),
 					len(
 						leveled_pool
 						),
@@ -1604,16 +1650,25 @@ class Sorcerer(Spellcaster):
 		return (getattr(self.character.AS, "CHA") - 10) // 2
 
 	# ---------- fancy output ----------
-	def html(self) -> str:          # ← new
+	def html(self) -> str:
 		return str(self)
+
 	def __str__(self):
 		# split cantrips vs others
 		cantrips = [s for s in self.spells_known if s.level == 0]
 		spells   = sorted([s for s in self.spells_known if s.level > 0],
 						  key=lambda sp: (sp.level, sp.name))
+		always   = {
+			spell.name
+			for spell in getattr(self, "always_prepared", [])
+			}
 
-		# mark everything (no “prepared” distinction for sorcerer)
-		spell_li = "".join(f"<li>{s.name}</li>" for s in cantrips + spells)
+		def _item(spell):
+			if spell.name in always:
+				return f"<li>{spell.name} <i>(always prepared)</i></li>"
+			return f"<li>{spell.name}</li>"
+
+		spell_li = "".join(_item(s) for s in cantrips + spells)
 
 		# slot display
 		slots_html = "<br>".join(
@@ -1625,11 +1680,18 @@ class Sorcerer(Spellcaster):
 		# individual spell blurbs
 		blurbs = "".join(f'<div class="spell">{s:html}</div>' for s in cantrips + spells)
 
+		# Sorcery Points open at level 2, with Font of Magic.
+		points_html = (
+			f"<br>\n\t\t\t<h2>Sorcery Points</h2> {self.sorcery_points}"
+			if self.sorcery_points
+			else ""
+			)
+
 		return f"""
 		<div class="npc-textbox--full" >
 			<h1 style="font-family:{title_font('Sorcerer')}; font-size:3.1em;">Sorcerer Spellcasting</h1>
 			<p>Your innate magic flows from within, allowing you to impose your Will through the Arcane. You cast spells using <b>Charisma</b>.
-			   You know {self.get_stats('cantrips')} cantrips and {self.get_stats('spells')} spells.</p>
+			   You know {self.get_stats('cantrips')} cantrips and prepare {self.get_stats('prepared')} spells.</p>
 		</div>
 
 		<div class="npc-textbox">
@@ -1640,8 +1702,7 @@ class Sorcerer(Spellcaster):
 
 		<div class="npc-textbox">
 			<h2>Spell Save DC</h2> {self.spell_save_dc()}<br>
-			<h2>Spell Attack Bonus</h2> +{self.spell_attack_bonus()}<br>
-			<h2>Sorcery Points</h2> {self.sorcery_points}
+			<h2>Spell Attack Bonus</h2> +{self.spell_attack_bonus()}{points_html}
 		</div>
 
 		<div class="npc-textbox" style="grid-column: span 1;">

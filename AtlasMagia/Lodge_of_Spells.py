@@ -4999,6 +4999,14 @@ The creature is an ally to you and your allies. In combat, the creature shares y
 The creature is an ally to you and your companions. In combat, the creature shares your initiative count, but it takes its turn immediately after yours. It obeys your verbal commands (no action required by you). If you don't issue any, it takes the Dodge action and uses its move to avoid danger.
 <br>
 <b>At Higher Levels.</b> When you cast this spell using a spell slot of 6th level or higher, use the higher level wherever the spell's level appears in the stat block.""")
+	# The 2024 Player's Handbook replaces Summon Draconic Spirit with this
+	# spell: one Draconic Spirit, no family chosen on casting.  The Draconic
+	# Sorcerer's always-prepared list and Dragon Companion both name it.
+	SummonDragon = 			Spell("Summon Dragon", 5, "Conjuration ", "1 Action ", "60 feet ", "Concentration, up to 1 hour ", "Verbal, Somatic, Material", definition="""You call forth a Dragon spirit. It appears in an unoccupied space you can see within range and uses the Draconic Spirit stat block. It disappears when it drops to 0 Hit Points or when the spell ends.
+<br>
+The creature is an ally to you and your allies. In combat it shares your Initiative count and takes its turn immediately after yours. It obeys your verbal commands (no action required by you). If you give none, it takes the Dodge action and uses its movement to avoid danger.
+<br>
+<b>Using a Higher-Level Spell Slot.</b> Use the spell slot's level for the spell's level in the stat block.""")
 	SwiftQuiver = 			Spell("Swift Quiver", 5, "Transmutation ", "1 Bonus Action ", "Touch ", "Concentration, up to 1 minute ", "Verbal, Somatic, Material", definition="""When you cast the spell and as a Bonus Action until it ends, you can make two attacks with a weapon that fires Arrows or Bolts, such as a Longbow or a Light Crossbow. The spell magically creates the ammunition needed for each attack. Each Arrow or Bolt created by the spell deals damage like a nonmagical piece of ammunition of its kind and disintegrates immediately after it hits or misses.""")
 	TemporalShunt = 	Spell("Temporal Shunt", 5, "Transmutation DC ", "1 Reaction ", "120 feet ", "1 round ", "Verbal, Somatic", definition="""You target the triggering creature, which must succeed on a Wisdom saving throw or vanish, being thrown to another point in time and causing the attack to miss or the spell to be wasted. At the start of its next turn, the target reappears where it was or in the closest unoccupied space. The target doesn't remember you casting the spell or being affected by it.
 <br>

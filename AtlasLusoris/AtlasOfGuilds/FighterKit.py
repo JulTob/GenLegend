@@ -24,113 +24,21 @@ from AtlasActorLudi.CharactersKit import Character
 from AtlasInventarium.ToolsKit import (
 	ARTISAN_TOOLS as _ARTISAN_TOOL_DEFINITIONS,
 	)
+from AtlasLusoris.Compass_of_Progression import (
+	Choice_Progression,
+	Feature_Grant,
+	Resource_Progression,
+	)
 from AtlasLusoris.GuildKit import Build_Specialization, Fighter
 
 
 # ---------------------------------------------------------------------------
 # Declaration types
+#
+# Feature_Grant, Choice_Progression and Resource_Progression now live in
+# Compass_of_Progression, shared with every Guild; the spellcasting shapes
+# below are still the Fighter's alone.
 # ---------------------------------------------------------------------------
-
-
-@dataclass(frozen=True, slots=True)
-class Feature_Grant:
-	"""One feature earned at a Fighter level."""
-
-	level: int
-	name: str
-
-	def __post_init__(self) -> None:
-		if self.level < 1:
-			raise ValueError(
-				"Feature_Grant level must be at least 1."
-				)
-		if not self.name:
-			raise ValueError(
-				"Feature_Grant name is required."
-				)
-
-
-@dataclass(frozen=True, slots=True)
-class Choice_Progression:
-	"""A stable choice whose total grows at specified Fighter levels."""
-
-	name: str
-	gains: tuple[tuple[int, int], ...] = ()
-	options: tuple[str, ...] = ()
-
-	def __post_init__(self) -> None:
-		if not self.name:
-			raise ValueError(
-				"Choice_Progression name is required."
-				)
-		if not all(
-				level > 0 and count > 0
-				for level, count in self.gains
-				):
-			raise ValueError(
-				"Choice_Progression gains require positive levels and counts."
-				)
-		if list(
-				level
-				for level, _ in self.gains
-				) != sorted(
-				level
-				for level, _ in self.gains
-				):
-			raise ValueError(
-				"Choice_Progression gains must be ordered by level."
-				)
-
-	def total_at(
-			self,
-			level: int,
-			) -> int:
-		return sum(
-			count
-			for gained, count in self.gains
-			if gained <= level
-			)
-
-
-@dataclass(frozen=True, slots=True)
-class Resource_Progression:
-	"""A level-indexed mutable resource maximum."""
-
-	name: str
-	values: tuple[tuple[int, str], ...]
-
-	def __post_init__(self) -> None:
-		if not self.name or not self.values:
-			raise ValueError(
-				"Resource_Progression requires a name and values."
-				)
-		if not all(
-				level > 0 and value
-				for level, value in self.values
-				):
-			raise ValueError(
-				"Resource_Progression values require positive levels and non-empty values."
-				)
-		if list(
-				level
-				for level, _ in self.values
-				) != sorted(
-				level
-				for level, _ in self.values
-				):
-			raise ValueError(
-				"Resource_Progression values must be ordered by level."
-				)
-
-	def at(
-			self,
-			level: int,
-			) -> str | None:
-		current = None
-		for gained, value in self.values:
-			if gained <= level:
-				current = value
-		return current
 
 
 @dataclass(frozen=True, slots=True)

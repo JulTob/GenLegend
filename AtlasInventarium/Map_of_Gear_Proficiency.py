@@ -109,6 +109,10 @@ def has_unarmoured_defence(
 					skills,
 					"Unarmed_Dance",
 					)
+			or _unarmed_proficient(
+					skills,
+					"Unarmed_Draconic",
+					)
 			)
 
 
@@ -147,10 +151,10 @@ def unarmoured_formula(
 	"""
 	The Character's own no-armour AC.
 
-	Monk adds Wisdom, Barbarian adds Constitution, College of Dance adds
-	Charisma; everyone else is the plain 10 + Dexterity. Returned as a
-	number so ``armour_class`` can simply take the better of it and any
-	worn armour — no special-casing downstream.
+	Monk adds Wisdom, Barbarian adds Constitution, College of Dance and
+	Draconic Sorcery add Charisma; everyone else is the plain 10 +
+	Dexterity. Returned as a number so ``armour_class`` can simply take
+	the better of it and any worn armour — no special-casing downstream.
 	"""
 	scores = getattr(
 			char,
@@ -185,6 +189,10 @@ def unarmoured_formula(
 					),
 			(
 					"Unarmed_Dance",
+					"CHA",
+					),
+			(
+					"Unarmed_Draconic",
 					"CHA",
 					),
 			)
