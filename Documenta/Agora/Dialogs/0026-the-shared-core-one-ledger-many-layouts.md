@@ -5,7 +5,7 @@
 - **Related Questae:** QST-0016 · QST-0016.5 (one sheet renderer) · QST-0020 (features with TOP) · QST-0021 (Venustas) · QST-0077 (sheet order, Solved) · QST-0078 · QST-0069 · QST-0081.1 · QST-0081.2 · QST-0081.4 · QST-0093.5 (the a3 pin)
 - **Related Decrees and Dialogs:** Decree 0002 (the Character root) · Decree 0004 (player first) · Decree 0007 (every change is a proposal) · Dialog 0024 (TOP as a paradigm) · Dialog 0025 (the ledger is the writer, the sheet its projection)
 - **Consuls called:** none convened. An agent panel stood in (six readers, three designers, three judges); see Deliberation. Julio may convene the Agora on any open ruling below.
-- **Status:** 🔵 R1, R2, R3, R5 decided by Julio 2026-09-24 (R1 → Decree 0009) · R4 and R6 open
+- **Status:** 🔵 decided by Julio 2026-09-24: Design B, the sheet is read from the Tags (Decree 0009) · R6 open
 
 ---
 
@@ -445,8 +445,13 @@ Whichever is chosen, each Chip keeps one stable key and one writer, and the rail
 
 ## ✅ Julio's decision (2026-09-24, in chat)
 
-**R1. Decided: store them.** *"Add a `features` ledger to the core. This amends Decree 0002. Confirmed."* Recorded as **Decree 0009**. The ledger is named `features`, not `grants`; read "grant ledger" in this Dialog as the `features` ledger.
-- *Consequence to handle:* `char.features` already exists today as the legacy list of Feature objects. The new ledger cannot share the name while the old list lives. A behaviour-neutral first step renames the legacy list (for example to `legacy_features`) and re-points its readers, so `features` is free for the ledger.
+**R1. Decided: derive them. The sheet is read from the Tags (Design B, Decree 0009).** Julio first ruled for a `features` ledger on the root, then, the same day, after the walk was demonstrated on TopKit: *"I like the library card (B) design. It is elegant. Why don't we apply it along the app?... the project is a flagship of Tag Oriented Programming, so it is the TOP solution. Well, decided. I don't care how hard it is, we are going this route."* The ledger ruling is withdrawn and Decree 0002 stays unamended. His answers to the panel's objections:
+- *Cost:* "5.6 ms per Tag is a veeeery affordable price for a single character per user click... Speed without control means crashing even harder."
+- *Per-character content:* it is "the name of the game". It is handled in TOP by overlays, action-underlays and Records; choices are Tags, and a choice pool must respect what other Tags already grant (an Aasimar Wizard already knows Light; a Fiend's granted Command must not spend a Warlock's choice).
+- *Stable choices:* a level-5 Character must respect its level-4 choices; each batch of choices draws from its own named Dice Bag, built level by level.
+- *Adapter:* none. "We don't need an adapter, we need to port into the TOP paradigm."
+
+This also answers **R4**: the walk needs TopKit's nested Imprints (0.2.0a2 onward), so the work follows the pin (QST-0093.5).
 
 **R2. Decided: `Compass_of_Features`.** *"Isn't this describing the old Map of Features? I'd approve a compass of Features, then."* The shared vocabulary (Entry, Chip, Origin, Kind, Activation, the ledger type) lives in one types-only module, `Compass_of_Features`, in place of the `Compass_of_Grants` named above. Venustas may import that one module. Note: no module named `Map_of_Features` exists in the repository or the recovery vault. The nearest are `Grimoire_of_Features` (the legacy Feature classes) and the `AtlasOfFeatures` package, and the Compass succeeds them as the Feature model.
 
@@ -454,5 +459,5 @@ Whichever is chosen, each Chip keeps one stable key and one writer, and the rail
 
 **R5. Decided: Flags are TopKit's `@Flag`.** *"Flags are also a new Tag modifier with the 'Flag Name' in char behaviour. It is supposed to be out already."* So a flag is a Tag marked `@Flag`, and `"Wizard" in char` answers by name. It is released in TopKit 0.2.0a3 (on PyPI as `topkit`), verified 2026-09-24: `"Wizard" in char` is True for a `@Flag` Tag. It matches the class name exactly (case-sensitive, not the display `NAME`), while the pinned 0.2.0a1 matches every Tag's name case-insensitively. That behaviour change travels with the pin (QST-0093.5). So: **tags = flags (`@Flag` membership) + chips + entries**, with nothing stored for the flag.
 
-**Still open:** **R4** (sequence the work after the a3 pin) and **R6** (where a Chip lives).
+**Still open:** **R6** (where a Chip lives). Under Decree 0009 each Tag declares its own Chips and Entries, so the remaining question is whether a Tag's Chips stand on their own or attach to one of its Entries.
 

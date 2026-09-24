@@ -2,7 +2,7 @@
 
 - **Ratified by:** Julio, 2026-06-23
 - **Source:** Dialog 0003 (Q-0006) + Julio's arbitration
-- **Status:** active · §2 amended by Decree 0009 (2026-09-24): the root also stores the `features` ledger (`Documenta/Agora/Decrees/0009-the-features-ledger-on-the-character-root.md`)
+- **Status:** active · see Decree 0009 (2026-09-24): the sheet is read from the Tags, so the root stays as ratified here (`Documenta/Agora/Decrees/0009-the-sheet-is-read-from-the-tags.md`)
 
 ## Decision
 

@@ -18,7 +18,7 @@ A **Decree** is a decision **ratified by Julio**. Once recorded here, it is bind
 | [0004](0004-first-publish-player-only.md) | First publish is the Player Character generator | 2026-08-31 | Julio, this session |
 | [0007](0007-every-change-is-a-proposal.md) | Every change is a proposal | 2026-09-01 | Julio, in chat |
 | [0008](0008-safety-safepoints-and-branch-discipline.md) | Safety first, safepoints, branch discipline | 2026-09-01 | Dialog 0010, Julio in chat |
-| [0009](../../../Documenta/Agora/Decrees/0009-the-features-ledger-on-the-character-root.md) | The `features` ledger joins the Character root (amends 0002 §2) | 2026-09-24 | Dialog 0026 |
+| [0009](../../../Documenta/Agora/Decrees/0009-the-sheet-is-read-from-the-tags.md) | The sheet is read from the Tags | 2026-09-24 | Dialog 0026 |
 
 ---
 
