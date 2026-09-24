@@ -44,7 +44,7 @@ Membership reads as TagKit intends:
 
 import re
 
-from TagKit import Tag, Pre, Record
+from TopKit import Tag, Pre, Record
 
 try:
 	from AtlasScriptum.Map_of_Formats import Entry
@@ -594,7 +594,7 @@ Spell.TAG_ROOTS = (Spell_Tag,)
 
 if __name__ == "__main__":
 	# Self-test / usage demo. Run:  python AtlasMagia/SpellsKit.py
-	from TagKit import TagPreconditionError
+	from TopKit import TagPreconditionError
 
 	bolt = Spell(name="Test Bolt", level=1, school="Evocation", definition="zap")
 

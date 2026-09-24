@@ -40,7 +40,9 @@ from collections.abc import Iterable
 from collections.abc import Mapping
 from types import MappingProxyType
 
-from TagKit import Action, Has, Imprint, Pre, Report, Tag, Tags, Underlay
+from TopKit import Action, Flag, Imprint, Pin, Pre, Tag, Tags, Underlay
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasActorLudi.ProficiencyKit import (
@@ -85,6 +87,7 @@ PARITY_BONUS = 1.25
 # ---------------------------------------------------------------------------
 
 
+@Flag
 class Guild(Tag):
 	"""
 	Root Tag for character guilds (D&D 2024 classes / vocations).
@@ -1059,7 +1062,7 @@ def Build_Guild(
 							),
 					"PRIMARY": primary,
 					"SECONDARY": secondary,
-					"ABILITY_PREFERENCE": Report(
+					"ABILITY_PREFERENCE": Report_Of(
 							tuple(
 									dict.fromkeys(
 											key
@@ -1072,39 +1075,39 @@ def Build_Guild(
 											)
 									)
 							),
-					"HIT_DIE": Report(
+					"HIT_DIE": Report_Of(
 							hit_die
 							),
-					"SAVES": Report(
+					"SAVES": Report_Of(
 							resolved_saves
 							),
-					"SKILL_PICKS": Report(
+					"SKILL_PICKS": Report_Of(
 							skill_picks
 							),
-					"TOOLS": Report(
+					"TOOLS": Report_Of(
 							resolved_tools
 							),
-					"TOOL_PICKS": Report(
+					"TOOL_PICKS": Report_Of(
 							tool_picks
 							),
-					"MULTICLASS_TOOL_PICKS": Report(
+					"MULTICLASS_TOOL_PICKS": Report_Of(
 							multiclass_tool_picks
 							),
-					"MULTICLASS_GAINS": Report(
+					"MULTICLASS_GAINS": Report_Of(
 							tuple(
 									multiclass_gains
 									)
 							),
-					"EDITION": Report(
+					"EDITION": Report_Of(
 							edition
 							),
-					"HELPERS": Report(
+					"HELPERS": Report_Of(
 							helpers
 							),
-					"SOURCE_TITLE": Report(
+					"SOURCE_TITLE": Report_Of(
 							source_title
 							),
-					"SOURCE_KIND": Report(
+					"SOURCE_KIND": Report_Of(
 							source_kind
 							),
 					"Awaken": Awaken,
@@ -1113,6 +1116,10 @@ def Build_Guild(
 					},
 			)
 
+	Flag(
+			guild_tag
+			)
+		#-- A Guild is a word: ``"Wizard" in char`` answers by its name.
 	_GUILD_DECLARATIONS.append(
 			guild_tag
 			)
@@ -1666,7 +1673,7 @@ def Build_Specialization(
 					)
 		namespace[
 			report_name
-			] = Report(
+			] = Report_Of(
 				report_value
 				)
 
@@ -1694,6 +1701,7 @@ def Build_Specialization(
 	return tag
 
 
+@Pin
 class Casting_Variant(Tag):
 	"""
 	Classifies the Guild layers that answer to a different ability.
@@ -2925,11 +2933,7 @@ def _self_test():
 	assert char in FinesseArms
 	assert Rogue.SKILL_PICKS == 4
 	assert Rogue.EDITION == "2024"
-	assert Has(
-			char,
-			Rogue,
-			Guild,
-			)
+	assert char in Rogue and char in Guild
 	assert guild_ability_prefs(
 			char
 			) == (

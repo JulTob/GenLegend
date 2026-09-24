@@ -1,6 +1,6 @@
 """The shared 2024 Tiefling trait Tags."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage
 from AtlasLusoris.FeaturesKit import Grant_Resistance

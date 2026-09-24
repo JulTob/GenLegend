@@ -11,7 +11,9 @@ import re
 from collections.abc import Callable
 from typing import Any
 
-from TagKit import Imprint, Post, Pre, Record, Report, Tag
+from TopKit import Imprint, Post, Pre, Record, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasActorLudi.ProficiencyKit import (
@@ -399,10 +401,10 @@ def Build_Fighting_Style(
 					),
 			{
 					"NAME": name,
-					"GUILDS": Report(
+					"GUILDS": Report_Of(
 							allowed
 							),
-					"SOURCE": Report(
+					"SOURCE": Report_Of(
 							source
 							),
 					"Fighting_Style_Feature": Fighting_Style_Feature,
@@ -639,28 +641,28 @@ def Build_General_Feat(
 
 	namespace = {
 		"NAME": name,
-		"MIN_LEVEL": Report(
+		"MIN_LEVEL": Report_Of(
 			min_level
 			),
-		"REPEATABLE": Report(
+		"REPEATABLE": Report_Of(
 			repeatable
 			),
-		"ABILITY_ANY": Report(
+		"ABILITY_ANY": Report_Of(
 			ability_any
 			),
-		"ABILITY_MIN": Report(
+		"ABILITY_MIN": Report_Of(
 			ability_min
 			),
-		"REQUIRES_SPELLCASTING": Report(
+		"REQUIRES_SPELLCASTING": Report_Of(
 			requires_spellcasting
 			),
-		"REQUIRES_FEAT_ANY": Report(
+		"REQUIRES_FEAT_ANY": Report_Of(
 			requires_feat_any
 			),
-		"REQUIRES_WEAPON_MASTERY": Report(
+		"REQUIRES_WEAPON_MASTERY": Report_Of(
 			requires_weapon_mastery
 			),
-		"SOURCE": Report(
+		"SOURCE": Report_Of(
 			source
 			),
 		"Rank_Reached": Rank_Reached,
@@ -820,10 +822,10 @@ def Build_Epic_Boon(
 					),
 			{
 					"NAME": name,
-					"REQUIRES_SPELLCASTING": Report(
+					"REQUIRES_SPELLCASTING": Report_Of(
 							requires_spellcasting
 							),
-					"SOURCE": Report(
+					"SOURCE": Report_Of(
 							source
 							),
 					"Rank_Reached": Rank_Reached,

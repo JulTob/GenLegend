@@ -1,6 +1,6 @@
 """The shared 2024 Tiefling Species Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Humanoid
 from AtlasActorLudi.SpeciesKit.kinship import Fiend as Kin_Fiend
@@ -10,6 +10,8 @@ from AtlasActorLudi.SpeciesKit.Tieflings.traits import Otherworldly_Presence
 
 # The common Darkvision, at its shared 60-foot range: no Heritage extends it.
 from AtlasActorLudi.SpeciesKit.traits import Darkvision
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
 class Tiefling(
@@ -20,6 +22,12 @@ class Tiefling(
 	Otherworldly_Presence,
 	):
 	"""A Humanoid carrying a fiendish legacy."""
+
+	@Pre
+	def Only_One_Species(
+		target,
+		):
+		return No_Species_Yet( target )
 
 	@Imprint
 	def Set_Physiology(

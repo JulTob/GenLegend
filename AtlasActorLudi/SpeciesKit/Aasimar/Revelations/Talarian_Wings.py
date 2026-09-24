@@ -1,8 +1,10 @@
 """The Talarian Wings Revelation Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
+from TopKit import Pre
 
 from AtlasActorLudi.SpeciesKit.Aasimar.Revelations.base import (
+	No_Revelation_Yet,
 	Imprint_Revelation,
 	)
 from AtlasActorLudi.SpeciesKit.Aasimar.Revelations.base import (
@@ -15,6 +17,12 @@ class Talarian_Wings(Celestial_Revelation):
 
 	DAMAGE_TYPE = "Radiant"
 	FLY_SPEED = "Speed"
+
+	@Pre
+	def Only_One_Revelation(
+		target,
+		):
+		return No_Revelation_Yet( target )
 
 	@Imprint
 	def Set_Revelation(

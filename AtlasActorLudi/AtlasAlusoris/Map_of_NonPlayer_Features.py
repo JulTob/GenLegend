@@ -25,7 +25,7 @@ from random import Random
 from re import split
 from typing import Iterable
 
-from TagKit import Tags
+from TopKit import Form, Tags
 
 from AtlasActorLudi.CharactersKit import NonPlayer
 from AtlasActorLudi.Map_of_Scores import PB
@@ -122,7 +122,7 @@ def _tag_names(
 	for leaf in Tags(
 			character
 			):
-		for tag in leaf.Form():
+		for tag in Form( leaf ):
 			if tag in seen:
 				continue
 

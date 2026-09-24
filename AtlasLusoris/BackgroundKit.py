@@ -19,7 +19,9 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping
 from typing import Iterable
 
-from TagKit import Action, Imprint, Pre, Report, Tag, Underlay
+from TopKit import Action, Imprint, Pin, Pre, Tag, Underlay
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import (
 	Character,
@@ -146,6 +148,7 @@ class Background(Tag):
 # ---------------------------------------------------------------------------
 
 
+@Pin
 class Background_Audience(Tag):
 	"""Root Pin classifying Background Tags by Character Role."""
 
@@ -936,40 +939,40 @@ def Build_Background(
 			),
 		{
 			"NAME": name,
-			"TITLE": Report(
+			"TITLE": Report_Of(
 				title
 				),
-			"DESCRIPTION": Report(
+			"DESCRIPTION": Report_Of(
 				description
 				),
-			"HOOK": Report(
+			"HOOK": Report_Of(
 				hook
 				),
-			"ABILITIES": Report(
+			"ABILITIES": Report_Of(
 				resolved_abilities
 				),
-			"SKILLS": Report(
+			"SKILLS": Report_Of(
 				resolved_skills
 				),
-			"TOOLS": Report(
+			"TOOLS": Report_Of(
 				resolved_tools
 				),
-			"ORIGIN_FEAT": Report(
+			"ORIGIN_FEAT": Report_Of(
 				origin_feat
 				),
-			"ORIGIN_FEAT_OPTIONS": Report(
+			"ORIGIN_FEAT_OPTIONS": Report_Of(
 				resolved_origin_feat_options
 				),
-			"SOURCE_TITLE": Report(
+			"SOURCE_TITLE": Report_Of(
 				source_title
 				),
-			"SOURCE_URL": Report(
+			"SOURCE_URL": Report_Of(
 				source_url
 				),
-			"SOURCE_LOCATOR": Report(
+			"SOURCE_LOCATOR": Report_Of(
 				source_locator
 				),
-			"SOURCE_KIND": Report(
+			"SOURCE_KIND": Report_Of(
 				source_kind
 				),
 			"Eligible_Role": Eligible_Role,
