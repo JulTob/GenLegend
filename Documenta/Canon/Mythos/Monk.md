@@ -3,12 +3,25 @@
 > 📖 **In flow.** 2 of 10 chapters are still proposals. 📜 1 · 📚 2 · 📔 5 · 📖 2
 
 *Mythos analysis, 2026-09-08. Design and literary criticism, not page text. Builds
-on Dialog 0018 (core fantasy settled as the shonen ninja: training arcs, named
-techniques, speed as freedom, the body as the one weapon nobody can take). This
-page does not re-litigate that. It asks what the Monk becomes inside this
-setting's peoples, backgrounds and metaphysics, flags what is singular and what
-is stock, and drafts the feature lines the sheet lacks entirely. Nothing here is
-landed.*
+on Dialog 0018 (core fantasy settled as the shonen ninja: named techniques,
+speed as freedom, and the body as the one weapon nobody can take). This page
+does not re-litigate that. It asks what the Monk becomes inside this setting's
+peoples, backgrounds and metaphysics, flags what is singular and what is stock,
+and drafts the feature lines the sheet lacks entirely. Nothing here is landed.*
+
+**The key correction.** Training is the Fighter's theme. The Monk's theme is
+**discipline**: the command of attention that lets the body act without being
+dragged around by fear, pain, noise, or the need to prove itself. Focus is the
+rules word for that discipline. Its grammar is release, subtraction, empty
+hands, and the stilling of the self until the right action is the only thing
+left. The Monk is not the class that accumulates technique; it is the class
+that makes technique available on demand.
+
+This keeps discipline distinct from the Fighter's training. The Fighter proves
+mastery through repetition and breadth; the Monk narrows attention until
+movement, breath, and intention arrive as one act. Anime and ninja fiction
+share this fantasy even when their settings disagree: the named technique is
+not a spell or inheritance, but a moment of complete commitment.
 
 **Where the text lives.** Class and Warrior paragraphs: *nowhere yet*. Dialog
 0018's five texts are provisional and unwired; `AtlasOfGuilds/MonkKit.py` is four
@@ -83,11 +96,11 @@ each is a doctrine, not a style:
 
 | Book | Doctrine (Musashi) | Monk | Why it fits |
 |---|---|---|---|
-| **Earth** | The fundamentals; the ground everything stands on; "the Way is in training" | **Open Hand** | The oldest school and the plainest. True distance, true tempo, no flame and no venom. |
+| **Earth** | The fundamentals; the ground everything stands on; the stance that does not need the world to lean on it | **Open Hand** | The oldest school and the plainest. True distance, true tempo, no flame and no venom. |
 | **Water** | Adaptability; the mind that takes any shape; fluid, exact | **Mercy** | The same hand as balm or blade, decided at the moment. Water is the healer's book. |
 | **Fire** | Combat itself; timing, decisiveness, the big release | **Elements** | The forms end in fire, frost and storm. Fire is Musashi's book of the fight, and Elements is the Warrior whose forms are all release. |
 | **Wind** | Other schools; knowing what the others do so as not to be caught by it | **Shadow** | The sibling art that trains at night. Wind is the book about what is *not* you, and Shadow is the Warrior that exists only where it allows the fight to. |
-| **Void** | "That which has no beginning and no end"; the state past technique | **Body and Mind** (level 20) | Not a Warrior: the class capstone. Dexterity and Wisdom past the mortal cap, the list of limits finished. |
+| **Void** | "That which has no beginning and no end"; the state in which discipline no longer feels like effort | **Body and Mind** (level 20) | Not a Warrior: the class capstone. Dexterity and Wisdom past the mortal cap, the list of limits finished. |
 
 Two things this buys. The four Warriors are four of Musashi's five, and the
 fifth is what every Monk becomes at 20 regardless of Warrior, which is the
@@ -339,7 +352,95 @@ they disagree (Aasimar, Dwarf) the disagreement is the character.
 
 ---
 
-## 📖 9. Feature lines: drafts
+## 📖 9. Working prose draft: discipline of the Way
+
+This is the third rewrite of the class and Warrior prose after separating the
+Monk's discipline from the Fighter's training. The previous version made the
+Monk too reasonable. The fantasy is the impossible concentration that makes
+distraction irrelevant: pain becomes information, fear becomes distance, and
+the body's limits become suggestions. This prose aims at the 100000% archetype.
+It is unrealistic on purpose.
+
+### Class description
+
+> Empty your mind. Focus. Concentrate. When you concentrate, you have no
+> weakness. When your mind is perfectly still, you have no pain. There is only
+> discipline. You arrive with empty hands, and you have never once been
+> unarmed. As long as you focus, you see the weak point, the unbalanced moment
+> before it arrives, the retraction before the fist launches.
+>
+> You flow with the inertia of the wind, watch the shadows for a hidden
+> marksman, and breathe out with every hit. All because you focus. There is no
+> ego, no plan, no past: only the present moment. Only presence. No pain in
+> your limbs. No fire in your soul. Your mind has only one element, and you
+> follow the Way.
+
+**Class flavor line:** *Your focus is the weapon that cannot be taken from
+you.*
+
+### Warrior of Mercy
+
+> You know the ways of life and death: where blood flows, where muscle bends,
+> where a nerve answers, and where a body gives way. You focus, and you see
+> through your mask. Some say it keeps bad airs away. Others say it brings the
+> spirit of death itself. You know only that it helps hide your face from the
+> patient.
+>
+> You have mastered the disciplines of healing and containment. You have seen
+> fates worse than death, and king and peasant brought low by the same fever.
+> The suffering ends, one way or the other. Both gifts live in the same hand.
+> Yours. Always steady.
+
+**Flavor line:** *The same hand can close a wound or close a life. Keep it
+steady.*
+
+### Warrior of the Open Hand
+
+> You learnt the art of combat. No blade. No weapon. An open hand, and the art
+> itself. That is the Way. Focused on your body, disciplined through combat.
+> Every opponent is a mirror. Every challenge is a chance to feel your lungs
+> fill, your heart beat, and your mind become still.
+>
+> You do not call pain a failure. You listen to it. You do not call defeat a
+> verdict. You listen to that too. Breathe out. There is no wasted motion, no
+> wasted lesson, and no need to make a fist to prove what an open hand can do.
+
+**Flavor line:** *An open hand is a courtesy. It lets everyone see you need no
+weapon.*
+
+### Warrior of Shadow
+
+> You know the disciplines of absence. Not being there. Not being seen. Not
+> being heard. Then you are, for a moment, and stop being again. Shadow is not
+> evil, and it is not merely darkness. It is the space left open. Absence. A
+> way through.
+>
+> You look into the dark until the dark looks back, welcoming you. There are
+> nightmares in that reflection, and there are roads. Your Way does not ask
+> you to defeat the night. It asks you to move through it without fear. When
+> you focus on your darkness, you are the one who stares from the shadows.
+
+**Flavor line:** *The best place to stand is the place they have stopped
+looking.*
+
+### Warrior of the Elements
+
+> The Elements teach patience before they teach power. Fire does not become
+> strong by rushing, but by breathing. Water does not become mighty by fighting
+> the rock, but by flowing through. Wind does not ask permission to move the
+> storm, and stone does not hurry to form a mountain. You watch long enough to
+> learn what each one is already doing.
+>
+> Then you place your body inside that motion. We all carry the elements. They
+> shape us. You move the air in your lungs to laugh, or the water in your tears
+> to cry. You do not command the elements by standing above them. You meet them
+> with enough discipline to listen, and enough courage to let them answer. That
+> is the Way of the Warrior of the Elements.
+
+**Flavor line:** *The element does not obey the hand. It recognizes the hand
+that has learned to listen.*
+
+## 📖 10. Feature lines: drafts
 
 *Italic inspiration line only, house shape: second person, an image before the
 rule, no proper nouns, no dice, no em-dashes. Rule text untouched except the two
@@ -349,64 +450,64 @@ sweep items. Proposals for the project's hand, not landed.*
 
 | Lesson | Draft |
 |---|---|
-| **Martial Arts** (1) | *Nobody can confiscate a fist. You made sure that was enough.* |
-| **Unarmored Defense** (1) | *Armor is a wall you carry. You would rather not be where the blow lands.* |
-| **Monk's Focus** (2) | *Breathe in. Name it. Release. The name is half the technique, and you have never once said it wrong.* (and "psionic energy" becomes "your discipline") |
-| **Unarmored Movement** (2) | *The ground is a suggestion. Distance is a habit other people keep.* |
-| **Uncanny Metabolism** (2) | *You have stood back up in the middle of a fight so many times that your body now does it without you.* |
-| **Deflect Attacks** (3) | *An arrow is a thing that used to hit you. Now it is a thing you catch, and sometimes return.* |
-| **Slow Fall** (4) | *A fall is a stretch of air with a floor at the end. You learned to arrive rather than land.* |
-| **Extra Attack** (5) | *The exchange doubles. You were already counting in twos.* |
-| **Stunning Strike** (5) | *There is a place on every body where the whole fight stops. Find it once and you can find it again.* |
-| **Empowered Strikes** (6) | *Ten thousand mornings did what no spell did. Your bare hands stopped being ordinary.* |
-| **Evasion** (7) | *The fire went where it was aimed. You were not there. You were never going to be there.* |
-| **Acrobatic Movement** (9) | *Walls are floors that stand up. Water is a floor in a hurry.* |
-| **Heightened Focus** (10) | *Every technique had a second form. It was waiting for someone who could hold it.* |
-| **Self-Restoration** (10) | *A mind that stops on fear is caught by it. Yours does not stop. It does not stop for hunger, either.* |
-| **Deflect Energy** (13) | *Fire and lightning are only faster arrows.* |
-| **Disciplined Survivor** (14) | *Nothing lands cleanly on you any more. Not poison, not lies, not the ground.* |
-| **Perfect Focus** (15) | *The well refills when the fight starts. It stopped waiting for you to rest.* |
-| **Superior Defense** (18) | *For one minute the world can still touch you. It cannot make it count.* |
-| **Body and Mind** (20) | *The list is finished. There is nothing left on it.* |
+| **Martial Arts** (1) | *Your focus and your fists are the only weapon that cannot be taken from you.* |
+| **Unarmored Defense** (1) | *When you see the hit coming, you do not need to block it.* |
+| **Monk's Focus** (2) | *Breathe in. Hold. Release.* |
+| **Unarmored Movement** (2) | *Focus on running, and you will fly.* |
+| **Uncanny Metabolism** (2) | *It is amazing what meditation can do.* |
+| **Deflect Attacks** (3) | *You see the shot. You see a way back. It is easy.* |
+| **Slow Fall** (4) | *The leaf focuses on flowing, not on falling. So it floats.* |
+| **Extra Attack** (5) | *The aim is certain. The hand is steady.* |
+| **Stunning Strike** (5) | *Your opponents do not meditate enough. They probably should.* |
+| **Empowered Strikes** (6) | *Just focus on where you want to hit, and hit hard.* |
+| **Evasion** (7) | *Your body flows without a thought.* |
+| **Acrobatic Movement** (9) | *It is not so hard if you know how.* |
+| **Heightened Focus** (10) | *The Way of the warrior has to be walked, not merely pondered.* |
+| **Self-Restoration** (10) | *A mind that stops on fear is caged by it.* |
+| **Deflect Energy** (13) | *A free mind cannot be harmed.* |
+| **Disciplined Survivor** (14) | *Nothing lands cleanly on you anymore. Not poison, not lies, not the ground.* |
+| **Perfect Focus** (15) | *The body is weak. The mind is unstoppable.* |
+| **Superior Defense** (18) | *Untouchable. Unbreakable.* |
+| **Body and Mind** (20) | *The warrior becomes the master. The butterfly's dream has begun.* |
 
 ### Warrior of Mercy
 
 | Feature | Draft |
 |---|---|
-| **Hand of Harm** (3) | *A knuckle's width from the place that heals is the place that does not.* |
-| **Hand of Healing** (3) | *The same map, read the other way.* |
-| **Implements of Mercy** (3) | *The mask is not for them. It is so that you can decide without your face being consulted.* (and the rule's em-dash becomes a full stop: "You also gain a special mask. It is a symbol of your tradition.") |
-| **Physician's Touch** (6) | *Both gifts grew. They always grow together. That is the price of learning the whole map.* |
-| **Flurry of Healing and Harm** (11) | *Mercy at fighting speed: a hand for each of them, and no time to explain which was which.* |
-| **Hand of Ultimate Mercy** (17) | *There is one door the map does not show. You found it. It opens once a day, and only from this side.* |
+| **Hand of Harm** (3) | *There is a delicate balance on life. So easy to break.* |
+| **Hand of Healing** (3) | *There is strength in life. It finds a way.* |
+| **Implements of Mercy** (3) | *Your mask hides your focus. A serious physician is a bad omen.* |
+| **Physician's Touch** (6) | *The deeper you read the body, the closer healing and harm become.* |
+| **Flurry of Healing and Harm** (11) | *Balance is fragile. It needs pushing.* |
+| **Hand of Ultimate Mercy** (17) | *Even death has a threshold.* |
 
 ### Warrior of the Open Hand
 
 | Feature | Draft |
 |---|---|
-| **Open Hand Technique** (3) | *Stand exactly here. Move exactly now. Where your palm lands, the fight goes.* |
-| **Wholeness of Body** (6) | *The instrument keeps itself in repair. Nobody else was ever going to.* |
-| **Fleet Step** (11) | *One technique opens into the next. You stopped noticing the seams years ago.* |
-| **Quivering Palm** (17) | *The touch that waits. You have already used it. What you have not decided is whether it ends.* |
+| **Open Hand Technique** (3) | *Stand where the moment is: present.* |
+| **Wholeness of Body** (6) | *The body is the first thing you got, and you learnt to care for it.* |
+| **Fleet Step** (11) | *There are no moves. One movement becomes the next before the mind names either.* |
+| **Quivering Palm** (17) | *One hit can end a fight. Do not hold back.* |
 
 ### Warrior of Shadow
 
 | Feature | Draft |
 |---|---|
-| **Shadow Arts** (3) | *You stopped keeping the dark out. Now you carry some with you, and you can see through it.* (and "psionic energy" becomes "your discipline") |
-| **Shadow Step** (6) | *Out of one shadow and into another. Between the two, there is no you anywhere at all.* |
-| **Improved Shadow Step** (11) | *The dark stopped being a requirement. It was only ever a courtesy you paid it.* |
-| **Cloak of Shadows** (17) | *The night is no longer hiding you. It has started to take your side.* |
+| **Shadow Arts** (3) | *Shadows hold secrets some call unnatural.* |
+| **Shadow Step** (6) | *You saw a shadow passing by? Do not worry. It is done already.* |
+| **Improved Shadow Step** (11) | *The shadows made you an ally. Now you are a friend.* |
+| **Cloak of Shadows** (17) | *The night is yours, or maybe the other way around.* |
 
 ### Warrior of the Elements
 
 | Feature | Draft |
 |---|---|
-| **Elemental Attunement** (3) | *The punch arrives as flame, ten feet on. The world moves with your wrist.* |
-| **Manipulate Elements** (3) | *A small conversation with the weather. It answers in kind.* |
-| **Elemental Burst** (6) | *The form's big release. You have been holding it since the first stance.* |
-| **Stride of the Elements** (11) | *The element carries you now: up through the air, down through the sea.* |
-| **Elemental Epitome** (17) | *Everything you touch is touched by the element. Everything that touches you learns why.* |
+| **Elemental Attunement** (3) | *The hand does not become fire. It gives fire a direction.* |
+| **Manipulate Elements** (3) | *Listen to the wind. It is always telling you where it wants to go.* |
+| **Elemental Burst** (6) | *A breath becomes a wave, a flame, a crack of thunder. You are the conduit.* |
+| **Stride of the Elements** (11) | *When the body stops resisting, air and water become roads.* |
+| **Elemental Epitome** (17) | *The elements are your motion.* |
 
 ---
 
@@ -425,4 +526,3 @@ sweep items. Proposals for the project's hand, not landed.*
   gear theme. Count the sites before the Rogue page.
 - **Dragonborn**: the jaguar knight is unspent Aztec vocabulary, and it belongs
   to the Monk before the Barbarian.
-
