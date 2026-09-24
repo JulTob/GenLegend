@@ -8,6 +8,7 @@ from AtlasActorLudi.SpeciesKit.magic import Species_Spellcasting_Chips
 from AtlasActorLudi.SpeciesKit.presentation import Project_Species_Feature
 from AtlasActorLudi.SpeciesKit.traits import Darkvision
 from AtlasActorLudi.SpeciesKit.traits import Darkvision_Rules
+from AtlasVenustas import Chip
 
 
 def _forest_lineage(
@@ -56,10 +57,10 @@ def _forest_lineage(
 			*Species_Spellcasting_Chips(
 				target
 				),
-			(
+			Chip(
+				"🐿️",
 				f"{free_spell} Uses",
 				free_casts,
-				"🐿️",
 				),
 			),
 		level=1,
@@ -107,10 +108,10 @@ def _rock_lineage(
 			*Species_Spellcasting_Chips(
 				target
 				),
-			(
+			Chip(
+				"⚙️",
 				"Clockwork Devices",
 				heritage.DEVICE_LIMIT,
-				"⚙️",
 				),
 			),
 		level=1,

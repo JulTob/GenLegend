@@ -15,6 +15,7 @@ from AtlasLusoris.AtlasOfFeatures.Draconic_Resilience import (
 		Draconic_Armour_Class,
 		Draconic_Resilience,
 		)
+from AtlasVenustas import Chip
 
 
 GUILD = "Sorcerer"
@@ -165,7 +166,11 @@ Font_of_Magic = _core(
 		min_level=2,
 		description=_font_of_magic_entry,
 		chips=(
-				("Sorcery Points", _sorcery_points),
+				Chip(
+					"✦",
+					"Sorcery Points",
+					_sorcery_points,
+					),
 				),
 		)
 
@@ -174,7 +179,11 @@ Metamagic = _core(
 		min_level=2,
 		description=_metamagic_entry,
 		chips=(
-				("Metamagic Options", _metamagic_count),
+				Chip(
+					"✦",
+					"Metamagic Options",
+					_metamagic_count,
+					),
 				),
 		)
 
@@ -445,7 +454,11 @@ Draconic_Scales = _draconic(
 		min_level=3,
 		description=_draconic_resilience_entry,
 		chips=(
-				("HP Bonus", _rank),
+				Chip(
+					"✦",
+					"HP Bonus",
+					_rank,
+					),
 				),
 		apply=_apply_draconic_resilience,
 		)

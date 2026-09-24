@@ -6,6 +6,8 @@ import re
 from html import escape
 from typing import Any
 
+from AtlasVenustas import Chip
+
 from shiny import ui
 
 
@@ -159,68 +161,56 @@ def attack_rolls_html(
             )
 
 
-def _feature_chips(
+def Feature_Chip_Triples(
         chips: Any,
         ) -> list[tuple[str, str, str]]:
-    """Normalize Feature chips to ``(symbol, label, value)`` triples."""
+    """
+    Feature chips as ``(symbol, label, value)`` triples, for both sheets.
+
+    Three shapes arrive here, each named:
+
+    - a ``Chip`` (QST-0142: the one shape a Player feature declares);
+    - the same three fields as a dictionary, after ``Feature.to_dict``;
+    - an NPC ``Chip_Grant`` (label, value, icon), until the NonPlayer
+      station of QST-0142 moves NonPlayer features to ``Chip`` too.
+
+    Anything else is refused by name rather than skipped in silence.
+    """
+    from AtlasActorLudi.AtlasAlusoris.FeaturesKit import Chip_Grant
+
     if not chips:
         return []
 
     triples: list[tuple[str, str, str]] = []
     for item in chips:
-        symbol = ""
-        if hasattr(
+        if isinstance(
                 item,
-                "label",
-                ) and hasattr(
-                item,
-                "value",
-                ) and not isinstance(
-                item,
-                (
-                        tuple,
-                        list,
-                        dict,
-                        ),
+                Chip,
                 ):
-            label = item.label
-            value = item.value
-            symbol = getattr(
-                    item,
-                    "symbol",
-                    "",
-                    ) or getattr(
-                    item,
-                    "icon",
-                    "",
-                    ) or ""
+            symbol, label, value = item.symbol, item.label, item.value
+        elif isinstance(
+                item,
+                Chip_Grant,
+                ):
+            symbol, label, value = item.icon, item.label, item.value
         elif isinstance(
                 item,
                 dict,
                 ):
+            symbol = item.get(
+                    "symbol",
+                    "",
+                    )
             label = item.get(
                     "label",
                     )
             value = item.get(
                     "value",
                     )
-            symbol = item.get(
-                    "symbol",
-                    "",
-                    ) or ""
-        elif (
-                isinstance(
-                        item,
-                        (tuple, list),
-                        )
-                and len(
-                        item
-                        ) >= 2
-                ):
-            label, value = item[0], item[1]
-            symbol = item[2] if len(item) > 2 else ""
         else:
-            continue
+            raise TypeError(
+                    f"{item!r} is not a Chip; write Chip( symbol, label, value )."
+                    )
         if label is None or value is None:
             continue
         triples.append(
@@ -299,7 +289,7 @@ def feature_item(
                 ),
         ]
 
-    chip_triples = _feature_chips(
+    chip_triples = Feature_Chip_Triples(
             chips
             )
     if chip_triples:

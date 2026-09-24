@@ -11,6 +11,7 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasVenustas import Chip
 
 
 GUILD = "Artificer"
@@ -135,7 +136,11 @@ Replicate_Magic_Item = _core(
 			"level. Creating an item requires the tools named in the plan."
 			),
 		chips=(
-				("Infusions Known", _infusions_known),
+				Chip(
+					"✦",
+					"Infusions Known",
+					_infusions_known,
+					),
 				),
 		)
 

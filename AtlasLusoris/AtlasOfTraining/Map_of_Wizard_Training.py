@@ -11,6 +11,7 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasVenustas import Chip
 
 
 GUILD = "Wizard"
@@ -253,7 +254,11 @@ Arcane_Recovery = _core(
 		min_level=1,
 		description=_arcane_recovery_entry,
 		chips=(
-				("Recovery Levels", _recovery_slots),
+				Chip(
+					"✦",
+					"Recovery Levels",
+					_recovery_slots,
+					),
 				),
 		)
 
@@ -432,7 +437,11 @@ Portent = _diviner(
 			"one foretold result — you must choose before the roll."
 			),
 		chips=(
-				("Portent Dice", _portent_dice),
+				Chip(
+					"✦",
+					"Portent Dice",
+					_portent_dice,
+					),
 				),
 		)
 
@@ -683,14 +692,16 @@ Bladesong = _bladesinger(
 		min_level=3,
 		description=_bladesong_entry,
 		chips=(
-				(
-						"Bladesong Uses",
-						_bladesong_uses,
-						),
-				(
-						"Bladesong AC",
-						_bladesong_ac,
-						),
+				Chip(
+					"✦",
+					"Bladesong Uses",
+					_bladesong_uses,
+					),
+				Chip(
+					"✦",
+					"Bladesong AC",
+					_bladesong_ac,
+					),
 				),
 		)
 

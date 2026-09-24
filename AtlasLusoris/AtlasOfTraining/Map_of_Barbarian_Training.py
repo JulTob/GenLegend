@@ -15,6 +15,7 @@ from AtlasLusoris.TrainingKit import Make_Training
 from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 		Unarmored_Armour_Class,
 		)
+from AtlasVenustas import Chip
 
 
 GUILD = "Barbarian"
@@ -356,8 +357,16 @@ Rage = _core(
 		min_level=1,
 		description=_rage_entry,
 		chips=(
-				("Rage Uses", _rage_uses),
-				("Rage Damage", _rage_damage),
+				Chip(
+					"🔥",
+					"Rage Uses",
+					_rage_uses,
+					),
+				Chip(
+					"💢",
+					"Rage Damage",
+					_rage_damage,
+					),
 				),
 		)
 
@@ -380,7 +389,11 @@ Unarmored_Defense = _core(
 		min_level=1,
 		description=_unarmored_defense_entry,
 		chips=(
-				("Unarmored AC", Unarmored_Armour_Class, "🛡️"),
+				Chip(
+					"🛡️",
+					"Unarmored AC",
+					Unarmored_Armour_Class,
+					),
 				),
 		)
 
@@ -389,7 +402,11 @@ Weapon_Mastery = _core(
 		min_level=1,
 		description=_weapon_mastery_entry,
 		chips=(
-				("Weapon Masteries", _weapon_mastery_chip),
+				Chip(
+					"⚔️",
+					"Weapon Masteries",
+					_weapon_mastery_chip,
+					),
 				),
 		)
 
@@ -584,7 +601,11 @@ Brutal_Strike = _core(
 		min_level=9,
 		description=_brutal_strike_entry,
 		chips=(
-				("Brutal Strike", lambda c: "2d10" if _rank(c) >= 17 else "1d10"),
+				Chip(
+					"✦",
+					"Brutal Strike",
+					lambda c: "2d10" if _rank(c) >= 17 else "1d10",
+					),
 				),
 		)
 
@@ -655,7 +676,11 @@ Frenzy = _berserker(
 		min_level=3,
 		description=_frenzy_entry,
 		chips=(
-				("Frenzy Dice", lambda c: f"{_rage_damage(c)}d6"),
+				Chip(
+					"✦",
+					"Frenzy Dice",
+					lambda c: f"{_rage_damage(c)}d6",
+					),
 				),
 		)
 
@@ -817,7 +842,11 @@ Vitality_of_the_Tree = _path(
 		min_level=3,
 		description=_vitality_entry,
 		chips=(
-				("Life-Giving Force", lambda c: f"{_rage_damage(c)}d6"),
+				Chip(
+					"✦",
+					"Life-Giving Force",
+					lambda c: f"{_rage_damage(c)}d6",
+					),
 				),
 		)
 
@@ -925,7 +954,11 @@ Divine_Fury = _path(
 		min_level=3,
 		description=_divine_fury_entry,
 		chips=(
-				("Divine Fury", lambda c: f"1d6+{max(1, _rank(c)//2)}"),
+				Chip(
+					"✦",
+					"Divine Fury",
+					lambda c: f"1d6+{max(1, _rank(c)//2)}",
+					),
 				),
 		)
 
@@ -942,7 +975,11 @@ Warrior_of_the_Gods = _path(
 			"Rest."
 			),
 		chips=(
-				("Warrior Dice", _warrior_dice),
+				Chip(
+					"✦",
+					"Warrior Dice",
+					_warrior_dice,
+					),
 				),
 		)
 

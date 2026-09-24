@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from AtlasLusoris.FeaturesKit import Grant_Resistance
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasVenustas import Chip
 
 
 GUILD = "Warlock"
@@ -217,7 +218,11 @@ Eldritch_Invocations = _core(
 			"invocation more than once unless its description says otherwise."
 			),
 		chips=(
-				("Invocations Known", _invocations_known, "🧿"),
+				Chip(
+					"🧿",
+					"Invocations Known",
+					_invocations_known,
+					),
 				),
 		)
 
@@ -226,8 +231,16 @@ Pact_Magic = _core(
 		min_level=1,
 		description=_pact_magic_entry,
 		chips=(
-				("Pact Slots", _pact_slots, "🕯️"),
-				("Pact Slot Level", _pact_slot_level, "💠"),
+				Chip(
+					"🕯️",
+					"Pact Slots",
+					_pact_slots,
+					),
+				Chip(
+					"💠",
+					"Pact Slot Level",
+					_pact_slot_level,
+					),
 				),
 		)
 
@@ -455,8 +468,16 @@ Healing_Light = _celestial(
 		min_level=3,
 		description=_healing_light_entry,
 		chips=(
-				("Healing Light Dice", _healing_light_dice, "🪶"),
-				("Healing Light Spend", _charisma_modifier, "💛"),
+				Chip(
+					"🪶",
+					"Healing Light Dice",
+					_healing_light_dice,
+					),
+				Chip(
+					"💛",
+					"Healing Light Spend",
+					_charisma_modifier,
+					),
 				),
 		)
 

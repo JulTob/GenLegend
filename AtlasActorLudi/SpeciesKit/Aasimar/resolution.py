@@ -7,6 +7,7 @@ from AtlasActorLudi.SpeciesKit.magic import Resolve_Species_Spells
 from AtlasActorLudi.SpeciesKit.presentation import Project_Species_Feature
 from AtlasActorLudi.SpeciesKit.traits import Darkvision
 from AtlasActorLudi.SpeciesKit.traits import Darkvision_Rules
+from AtlasVenustas import Chip
 
 
 def _proficiency_bonus(
@@ -102,25 +103,25 @@ def _revelation_options(
 			"until the end of your next turn. Your extra damage is Necrotic."
 			),
 		(
-			(
+			Chip(
+				"🌟",
 				"Revelation Uses",
 				Talarian_Wings.USES,
-				"🌟",
 				),
-			(
+			Chip(
+				"✨",
 				"Revelation Damage",
 				f"+{proficiency}",
-				"✨",
 				),
-			(
+			Chip(
+				"🪽",
 				"Revelation Fly Speed",
 				fly_speed,
-				"🪽",
 				),
-			(
+			Chip(
+				"🌑",
 				"Shroud Save DC",
 				save_dc,
-				"🌑",
 				),
 			),
 		)
@@ -218,10 +219,10 @@ def Resolve_Aasimar_Features(
 				)
 			),
 		chips=(
-			(
+			Chip(
+				"👁️",
 				"Darkvision",
 				f"{darkvision_range} ft",
-				"👁️",
 				),
 			),
 		level=1,
@@ -234,10 +235,10 @@ def Resolve_Aasimar_Features(
 			"You have Resistance to Necrotic damage and Radiant damage."
 			),
 		chips=(
-			(
+			Chip(
+				"🛡️",
 				"Resistances",
 				"Necrotic, Radiant",
-				"🛡️",
 				),
 			),
 		level=1,
@@ -259,15 +260,15 @@ def Resolve_Aasimar_Features(
 			f"{Healing_Hands.RECOVERY}."
 			),
 		chips=(
-			(
+			Chip(
+				"🫴",
 				"Healing Hands",
 				f"{proficiency}d{Healing_Hands.DIE}",
-				"🫴",
 				),
-			(
+			Chip(
+				"💛",
 				"Healing Hands Uses",
 				Healing_Hands.USES,
-				"💛",
 				),
 			),
 		level=1,
@@ -287,10 +288,10 @@ def Resolve_Aasimar_Features(
 			"ability for it."
 			),
 		chips=(
-			(
+			Chip(
+				"🪄",
 				"Spellcasting Ability",
 				"Charisma",
-				"🪄",
 				),
 			),
 		level=1,

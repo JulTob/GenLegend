@@ -10,6 +10,7 @@ from shiny import ui
 
 from AtlasVenustas import Chip
 
+from app.components.shared import Feature_Chip_Triples
 from app.components.shared import attack_rolls_html
 from app.components.shared import feature_item
 from app.components.shared import html_prose
@@ -109,86 +110,6 @@ def _creature_type_label(
     return default
 
 
-def _normalize_chip_pairs(
-        chips: Any,
-        ) -> list[tuple[str, str, str]]:
-    """Normalize Feature chips to ``(symbol, label, value)`` triples."""
-    if not chips:
-        return []
-    triples: list[tuple[str, str, str]] = []
-    for item in chips:
-        symbol = ""
-        if hasattr(
-                item,
-                "label",
-                ) and hasattr(
-                item,
-                "value",
-                ) and not isinstance(
-                item,
-                (
-                        tuple,
-                        list,
-                        dict,
-                        ),
-                ):
-            label = item.label
-            value = item.value
-            symbol = getattr(
-                    item,
-                    "symbol",
-                    "",
-                    ) or getattr(
-                    item,
-                    "icon",
-                    "",
-                    ) or ""
-        elif isinstance(
-                item,
-                dict,
-                ):
-            label = item.get(
-                    "label"
-                    )
-            value = item.get(
-                    "value"
-                    )
-            symbol = item.get(
-                    "symbol",
-                    "",
-                    ) or ""
-        elif (
-                isinstance(
-                        item,
-                        (tuple, list),
-                        )
-                and len(
-                        item
-                        ) >= 2
-                ):
-            label, value = item[0], item[1]
-            symbol = item[2] if len(item) > 2 else ""
-        else:
-            continue
-        if label is None or value is None:
-            continue
-        triples.append(
-                (
-                        safe_str(
-                                symbol,
-                                "",
-                                ),
-                        safe_str(
-                                label
-                                ),
-                        safe_str(
-                                value
-                                ),
-                        )
-                )
-    return triples
-
-
 def _iter_feature_chips(
         features: Any,
         ) -> list[tuple[str, str, str]]:
@@ -208,7 +129,7 @@ def _iter_feature_chips(
             chips = current_feature.get(
                     "chips",
                     )
-        for key in _normalize_chip_pairs(
+        for key in Feature_Chip_Triples(
                 chips
                 ):
             if key in seen:
@@ -1204,20 +1125,6 @@ def _saving_throw_html(
             )
 
 
-_FEATURE_CHIP_EMOJI = {
-        "Favored Enemy Uses": "🎯",
-        "Weapon Masteries": "⚔️",
-        "Tireless Uses": "💤",
-        "Nature's Veil Uses": "🌿",
-        "Dreadful Strikes": "👻",
-        "Blindsight": "👁️",
-        "2nd Wind Uses": "💨",
-        "Rage Uses": "🔥",
-        "Rage Damage": "💢",
-        "Spellfire Flame": "🔥",
-        }
-
-
 def _is_spellcasting_parameter_chip(
         label: str,
         ) -> bool:
@@ -1344,10 +1251,7 @@ def _character_stat_chips(
 
         chips.append(
                 Chip(
-                        symbol or _FEATURE_CHIP_EMOJI.get(
-                                label,
-                                "✦",
-                                ),
+                        symbol,
                         label,
                         value,
                         )

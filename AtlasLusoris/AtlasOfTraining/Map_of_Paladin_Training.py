@@ -12,6 +12,7 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasVenustas import Chip
 
 
 GUILD = "Paladin"
@@ -234,7 +235,11 @@ Lay_on_Hands = _core(
 		min_level=1,
 		description=_lay_entry,
 		chips=(
-				("Lay on Hands HP", _lay_pool),
+				Chip(
+					"✦",
+					"Lay on Hands HP",
+					_lay_pool,
+					),
 				),
 		)
 
@@ -272,7 +277,11 @@ Weapon_Mastery = _core(
 		min_level=1,
 		description=_weapon_mastery_entry,
 		chips=(
-				("Weapon Masteries", _weapon_mastery_chip),
+				Chip(
+					"⚔️",
+					"Weapon Masteries",
+					_weapon_mastery_chip,
+					),
 				),
 		)
 
@@ -302,7 +311,11 @@ Channel_Divinity = _core(
 		min_level=3,
 		description=_channel_entry,
 		chips=(
-				("Channel Divinity Uses", _channel_uses),
+				Chip(
+					"✦",
+					"Channel Divinity Uses",
+					_channel_uses,
+					),
 				),
 		)
 
@@ -334,7 +347,11 @@ Aura_of_Protection = _core(
 		min_level=6,
 		description=_aura_protection_entry,
 		chips=(
-				("Aura Range (ft)", _aura_range),
+				Chip(
+					"✦",
+					"Aura Range (ft)",
+					_aura_range,
+					),
 				),
 		)
 

@@ -14,6 +14,7 @@ from typing import Any
 from TopKit import Imprint, Post, Pre, Record, Tag
 
 from AtlasActorLudi.CharactersKit import Report_Of
+from AtlasVenustas import Chip
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasActorLudi.ProficiencyKit import (
@@ -338,7 +339,7 @@ def Make_Fighting_Style(
 		guilds: tuple[str, ...] | None = None,
 		source: str = "Fighting Style",
 		apply: Callable[[Any], None] | None = None,
-		chips: tuple[tuple[str, str], ...] = (),
+		chips: tuple[Chip, ...] = (),
 		) -> type[Fighting_Style_Feat]:
 	"""Construct one Fighting Style feat Tag."""
 	if not name or not name.strip():

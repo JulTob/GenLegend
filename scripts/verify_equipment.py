@@ -86,19 +86,6 @@ def check_records(failures):
 				)
 
 
-def chip_label(chip):
-	"""
-	A chip's label: a Chip names it; a leftover (label, value…) tuple
-	holds it first. The tuple branch goes when every chip is a Chip
-	(QST-0142 station 2).
-	"""
-	from AtlasVenustas import Chip
-
-	if isinstance(chip, Chip):
-		return chip.label
-	return chip[0]
-
-
 def check_character(char, guild, level, seed, failures):
 	from AtlasInventarium.GearKit import (
 			armour_allowance,
@@ -302,7 +289,7 @@ def check_character(char, guild, level, seed, failures):
 
 	# --- no duplicate chip labels on the sheet ------------------------------
 	chip_labels = [
-			chip_label(chip)
+			chip.label
 			for feature in char.features
 			for chip in getattr(feature, "chips", ())
 			]

@@ -2092,28 +2092,9 @@ def _check_character(
 					f"only {far} of {len(picks)} masteries reach far"
 					)
 
-	# No duplicate chip labels on the sheet.
-	#
-	# A rail chip comes in two shapes while QST-0081.4 is open: the Venustas
-	# ``Chip`` (the named model, which carries ``.label``) and the legacy
-	# ``(label, value)`` tuple. Reading ``chip[0]`` works only for the tuple —
-	# on a Chip, which subclasses ``str``, it silently returns the first
-	# CHARACTER of the rendered HTML, so every Chip-bearing feature reported a
-	# duplicate label of ``'<'``. Ask for the label; fall back to the tuple.
-	def chip_label(
-			chip,
-			):
-		if hasattr(
-				chip,
-				"label",
-				):
-			return chip.label
-		return chip[0]
-
+	# No duplicate chip labels on the sheet. Every chip is a Chip (QST-0142).
 	chip_labels = [
-			chip_label(
-					chip
-					)
+			chip.label
 			for feature in char.features
 			for chip in getattr(
 					feature,

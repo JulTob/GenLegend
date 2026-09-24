@@ -16,6 +16,7 @@ from AtlasLusoris.TrainingKit import Make_Training
 from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 		Unarmored_Armour_Class,
 		)
+from AtlasVenustas import Chip
 
 
 GUILD = "Monk"
@@ -268,7 +269,11 @@ Martial_Arts = _core(
 		min_level=1,
 		description=_martial_arts_entry,
 		chips=(
-				("Martial Arts Die", _martial_die, "🥋"),
+				Chip(
+					"🥋",
+					"Martial Arts Die",
+					_martial_die,
+					),
 				),
 		)
 
@@ -290,7 +295,11 @@ Unarmored_Defense = _core(
 		min_level=1,
 		description=_unarmored_defense_entry,
 		chips=(
-				("Unarmored AC", Unarmored_Armour_Class, "🥋"),
+				Chip(
+					"🥋",
+					"Unarmored AC",
+					Unarmored_Armour_Class,
+					),
 				),
 		)
 
@@ -299,7 +308,11 @@ Monks_Focus = _core(
 		min_level=2,
 		description=_monks_focus_entry,
 		chips=(
-				("Focus Points", _focus_points, "☯"),
+				Chip(
+					"☯",
+					"Focus Points",
+					_focus_points,
+					),
 				),
 		)
 
@@ -308,7 +321,11 @@ Unarmored_Movement = _core(
 		min_level=2,
 		description=_unarmored_movement_entry,
 		chips=(
-				("Speed Bonus", _unarmored_speed_bonus, "👞"),
+				Chip(
+					"👞",
+					"Speed Bonus",
+					_unarmored_speed_bonus,
+					),
 				),
 		)
 

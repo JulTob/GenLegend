@@ -8,6 +8,7 @@ from AtlasActorLudi.SpeciesKit.magic import Species_Spellcasting_Chips
 from AtlasActorLudi.SpeciesKit.presentation import Project_Species_Feature
 from AtlasActorLudi.SpeciesKit.traits import Darkvision
 from AtlasActorLudi.SpeciesKit.traits import Darkvision_Rules
+from AtlasVenustas import Chip
 
 
 def _project_darkvision(
@@ -27,10 +28,10 @@ def _project_darkvision(
 			darkvision_range
 			),
 		chips=(
-			(
+			Chip(
+				"👁️",
 				"Darkvision",
 				f"{darkvision_range} ft",
-				"👁️",
 				),
 			),
 		level=1,
@@ -56,10 +57,10 @@ def _legacy_free_cast_chips(
 	free_casts,
 	) -> tuple:
 	return tuple(
-		(
+		Chip(
+			"✨",
 			f"{spell_name} Free Cast",
 			uses,
-			"✨",
 			)
 		for spell_name, uses in free_casts.items()
 		)
@@ -107,10 +108,10 @@ def _project_fiendish_legacy(
 		f"Fiendish Legacy: {heritage.__name__}",
 		description,
 		chips=(
-			(
+			Chip(
+				"🛡️",
 				"Damage Resistance",
 				heritage.DAMAGE_RESISTANCE,
-				"🛡️",
 				),
 			*Species_Spellcasting_Chips(
 				target

@@ -54,7 +54,7 @@ Scale, for the record: about 350 `Feature(...)`, 354 `Entry(...)`, 284 `chips=` 
 | # | Family | What it does | Deletes |
 |---|---|---|---|
 | 1 | **Foundation** | `Entry( title, rules, flavor, *, section, level )` and `Chip( symbol, label, value )` as plain data, with Markdown text and readers (functions of the Character). `__format__` prints `html`, `md`, `json`. `Section` in the approved order. `Find_Build` reads `ENTRIES` and `CHIPS`. The **sheet snapshot gate**: every Character on the wide grid printed to Markdown, saved and compared. | The HTML-string `Entry` and `Chip`, and the duplicate in `VenustasKit`. Every existing `Entry(...)` site moves to the new class in this station. |
-| 2 | **Chips, one shape** | Every `(label, value[, symbol])` tuple becomes a `Chip`. | `_normalize_chip_pairs`' duck-typing, `chip_label` in `verify_equipment` (closes QST-0141 part B). |
+| 2 | **Chips, one shape** ✅ | Every `(label, value[, symbol])` tuple becomes a `Chip`. | `_normalize_chip_pairs`' duck-typing, `chip_label` in `verify_equipment` (closes QST-0141 part B). |
 | 3 | **Guild Training** | Training Tags declare `ENTRIES` and `CHIPS` in Markdown. The Guild section prints from the build. | Training's `grant(...)` into `char.features`. |
 | 4 | **Species** | The same, for Species and Heritage. | Species `Trait` features. |
 | 5 | **Background** | *Background* and *Hook* as two Entries; Origin Feats. | Background features. |
@@ -116,6 +116,14 @@ Open as of 2026-09-24:
 **Found on the way (not this station's to fix):**
 - `verify_equipment`'s 195 known failures were 100 fake "duplicate chip `<`" findings, from reading an HTML string's first character, plus **95 real ones hidden among them**: Monks, Bards, Rangers, Druids and Clerics "wield untrained" implements (Oath Mace, Warden's Staff, Hexbolt Wand, Beguiler's Rapier). The same 95 fail on the base. Station 10 (Inventarium) owns them.
 - **NonPlayer text is not reproducible.** Some NonPlayer text draws from Python's shared generator and from `app.random`'s private one, not from the Character's own Dice. The gate pins both.
+
+## 🛠️ Station 2, Chips in one shape (branch `julio_cl/qst-0142-chips`)
+
+- **118 chip tuples** in 23 modules (Training maps, Species, Origin Feats, Fighting Styles, OrderKit, the species spellcasting chips) became `Chip( symbol, label, value )`. They were rewritten through Python's syntax tree, not by text search.
+- **Symbols move to the source.** The symbols the sheet used to add at print time (`_FEATURE_CHIP_EMOJI`, with `✦` for the rest) are now written in each declaration, and the table is deleted. The two Bard chips that declared an empty symbol now say `✦`.
+- **One reader.** `FeaturesKit` stores and projects a Chip and refuses anything else by name (`Not_A_Chip`). The two copies of the sheet's chip normalizer become one, `shared.Feature_Chip_Triples`, which reads a Chip, its dictionary form after `to_dict`, and, until the NonPlayer station, the NonPlayer `Chip_Grant`.
+- **The checks read `chip.label`:** `GearKit` and `verify_equipment` read the label directly, with no tuple branch.
+- **Result:** all 343 sheets read the same, and the fingerprint is identical. Closes QST-0141 part B and QST-0081.4.
 
 ## 🎯 Desired outcome
 
