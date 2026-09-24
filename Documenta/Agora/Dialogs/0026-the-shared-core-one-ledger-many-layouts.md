@@ -5,7 +5,7 @@
 - **Related Questae:** QST-0016 · QST-0016.5 (one sheet renderer) · QST-0020 (features with TOP) · QST-0021 (Venustas) · QST-0077 (sheet order, Solved) · QST-0078 · QST-0069 · QST-0081.1 · QST-0081.2 · QST-0081.4 · QST-0093.5 (the a3 pin)
 - **Related Decrees and Dialogs:** Decree 0002 (the Character root) · Decree 0004 (player first) · Decree 0007 (every change is a proposal) · Dialog 0024 (TOP as a paradigm) · Dialog 0025 (the ledger is the writer, the sheet its projection)
 - **Consuls called:** none convened. An agent panel stood in (six readers, three designers, three judges); see Deliberation. Julio may convene the Agora on any open ruling below.
-- **Status:** 🔵 decided by Julio 2026-09-24: Design B, the sheet is read from the Tags (Decree 0009) · R6 open
+- **Status:** 🔵 decided by Julio 2026-09-24: Design B, the sheet is read from the Tags (Decree 0009)
 
 ---
 
@@ -459,5 +459,9 @@ This also answers **R4**: the walk needs TopKit's nested Imprints (0.2.0a2 onwar
 
 **R5. Decided: Flags are TopKit's `@Flag`.** *"Flags are also a new Tag modifier with the 'Flag Name' in char behaviour. It is supposed to be out already."* So a flag is a Tag marked `@Flag`, and `"Wizard" in char` answers by name. It is released in TopKit 0.2.0a3 (on PyPI as `topkit`), verified 2026-09-24: `"Wizard" in char` is True for a `@Flag` Tag. It matches the class name exactly (case-sensitive, not the display `NAME`), while the pinned 0.2.0a1 matches every Tag's name case-insensitively. That behaviour change travels with the pin (QST-0093.5). So: **tags = flags (`@Flag` membership) + chips + entries**, with nothing stored for the flag.
 
-**Still open:** **R6** (where a Chip lives). Under Decree 0009 each Tag declares its own Chips and Entries, so the remaining question is whether a Tag's Chips stand on their own or attach to one of its Entries.
+**R6. Decided: Chips are declared separately on the Tag.** Each Tag declares `CHIPS` and `ENTRIES` side by side and independently; a Tag may carry Chips with no prose (an Orc's Speed).
+
+**Naming (2026-09-24).** *"Build makes sense as the walk. It separates the character layer and the sheet layer."* `Find_Build( char )` returns the build; `Print_Sheet` prints it. *"I would also change the Build_ prefix to Make_."* The Tag factories are renamed `Make_*` after the TopKit upgrade.
+
+All rulings are settled.
 

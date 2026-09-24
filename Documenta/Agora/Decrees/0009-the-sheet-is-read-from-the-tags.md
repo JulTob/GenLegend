@@ -7,9 +7,9 @@
 
 ## Decision
 
-**1. A Character's features are its Tags.** Each Tag declares what it gives (its Entries and Chips) as plain class data in its own module. Nothing about the sheet is stored on the Character.
+**1. A Character's features are its Tags.** Each Tag declares what it gives as plain class data in its own module: its `ENTRIES` (prose) and its `CHIPS` (rail values), side by side and independent (R6). A Tag may declare Chips with no prose (an Orc's Speed) or prose with no Chips. Nothing about the sheet is stored on the Character. So: **tags = flags + chips + entries.**
 
-**2. The sheet is a walk.** To print a Character, ask TopKit which Tags it carries (`Tags( char )`, in application order). For each Tag, visit its Form, meaning the Tag and the Bases it specializes, Base first. Read only what each Tag itself declared (its own `__dict__`, never inherited). Resolve every value at that moment against the Character. A layout in the visual package groups and orders the result.
+**2. The build is a walk.** `Find_Build( char )` returns the Character's **build**: everything its Tags declare, read now. It belongs to the character layer. The **sheet** belongs to the sheet layer: a layout in the visual package that prints a build (`Print_Sheet( build, layout, form )`). To find the build, ask TopKit which Tags it carries (`Tags( char )`, in application order). For each Tag, visit its Form, meaning the Tag and the Bases it specializes, Base first. Read only what each Tag itself declared (its own `__dict__`, never inherited). Resolve every value at that moment against the Character. A layout in the visual package groups and orders the result.
 
 **3. Applying a Shape applies its Bases.** `Necromancer( charlie )` makes Charlie a Wizard and a Guild member too. The walk prints Guild, then Wizard, then Necromancer, because Bases come first.
 
@@ -23,7 +23,9 @@
 
 **8. Port, don't adapt.** Legacy features are ported into Tags, family by family. No adapter keeps the old shapes alive.
 
-**9. Vocabulary, sections and flags** follow Dialog 0026 R2, R3 and R5: `Compass_of_Features`; sections Species, Background, Guild, Feats, Proficiencies, Equipment, Backstory, Magic (spells, focus, special resources), Others; flags are TopKit `@Flag` Tags.
+**9. Naming.** "Build" names the walk's result. The Tag factories now spelled `Build_Guild`, `Build_Training`, `Build_Item` and the like are renamed with the prefix `Make_` (`Make_Guild`), so a reader never confuses making a Tag with reading a build. The rename is its own step, after the TopKit upgrade.
+
+**10. Vocabulary, sections and flags** follow Dialog 0026 R2, R3 and R5: `Compass_of_Features`; sections Species, Background, Guild, Feats, Proficiencies, Equipment, Backstory, Magic (spells, focus, special resources), Others; flags are TopKit `@Flag` Tags.
 
 ## Reasoning
 
