@@ -90,19 +90,40 @@ def unarmoured_formula(
 		char,
 		) -> int:
 	"""
-	The Character's own no-armour AC, as the Unarmored Defense Tag reads it.
+	The Character's own no-armour AC: the best formula it has.
+
+	Everyone has 10 + Dexterity (the Unarmored Defense Tag's reader returns
+	that when the Character lacks the feature). Draconic Resilience is a
+	second, independent formula. When several apply, the Character uses the
+	best one.
 
 	Returned as a number so ``armour_class`` can simply take the better of
 	it and any worn armour — no special-casing downstream.
 	"""
+	from AtlasLusoris.AtlasOfFeatures.Draconic_Resilience import (
+			Draconic_Armour_Class,
+			)
 	from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 			Unarmored_Armour_Class,
 			)
-	return Unarmored_Armour_Class(
+		#-- The Tags live with the Features.  Imported here, at the call, so
+		#-- this Map stays importable before the Feature catalogues load.
+
+	formulas = [
+			Unarmored_Armour_Class(
+					char
+					),
+			]
+	scaled = Draconic_Armour_Class(
 			char
 			)
-		#-- The Tag lives with the Features.  Imported here, at the call, so
-		#-- this Map stays importable before the Feature catalogues load.
+	if scaled is not None:
+		formulas.append(
+				scaled
+				)
+	return max(
+			formulas
+			)
 
 
 def may_use_shield(

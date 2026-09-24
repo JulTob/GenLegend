@@ -56,6 +56,7 @@ from TopKit import Pre
 from TopKit import Record
 from TopKit import Tag
 
+from AtlasActorLudi.Map_of_Scores import Ability_Modifier
 from AtlasVenustas import Chip
 
 
@@ -85,33 +86,6 @@ LEGACY_SKILL_FOR_ABILITY = {
 # ---------------------------------------------------------------------------
 # Small readers of the Character (one step each)
 # ---------------------------------------------------------------------------
-
-def _score(
-		char,
-		ability: str,
-		) -> int:
-	"""The Character's score in one ability, or 10 when it has none yet."""
-	scores = getattr(
-			char,
-			"AS",
-			None,
-			)
-	if scores is None:
-		return 10
-	return int(
-			getattr(
-					scores,
-					ability,
-					10,
-					)
-			)
-
-
-def _modifier(
-		score: int,
-		) -> int:
-	return ( score - 10 ) // 2
-
 
 def _mark_legacy_skill(
 		char,
@@ -228,23 +202,18 @@ def Unarmored_Armour_Class(
 	10 + Dexterity + the Tag's ability instead, and takes the better of the
 	two: a low score never makes the feature a penalty.
 	"""
-	dexterity = _modifier(
-			_score(
-					char,
-					"DEX",
-					)
+	plain = 10 + Ability_Modifier(
+			char,
+			"DEX",
 			)
-	plain = 10 + dexterity
 
 	ability = Unarmored_Ability( char )
 	if ability is None:
 		return plain
 
-	bonus = _modifier(
-			_score(
-					char,
-					ability,
-					)
+	bonus = Ability_Modifier(
+			char,
+			ability,
 			)
 	return max(
 			plain,
