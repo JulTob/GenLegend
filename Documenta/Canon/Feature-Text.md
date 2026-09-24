@@ -99,8 +99,7 @@ transformation. Those stay open because the rules keep them open.
 
 **Chips are lookups, prose is the entry.** A chip is what a player reaches for
 mid-combat: one label, one value. Anything that needs a sentence belongs in the
-description. A Feature with a chip and no prose is a record and renders as the
-chip alone.
+description.
 
 ---
 
