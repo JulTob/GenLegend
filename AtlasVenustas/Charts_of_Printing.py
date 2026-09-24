@@ -145,8 +145,10 @@ def Entry_As_Markdown(
 		entry: Entry,
 		) -> str:
 	lines = [
-			f"**{entry.title}.**",
+			f"### {entry.title}",
 			]
+		#-- Level three: the sheet's name is ``#`` and its sections ``##``,
+		#-- so an Entry sits one step under its section (Julio, 2026-09-24).
 	if entry.flavor:
 		lines.append(
 				f"*{entry.flavor}*"
@@ -333,7 +335,7 @@ def _self_test() -> None:
 			"<i>Advantage on <strong>Perception</strong> checks that rely on smell.</i>"
 			), f"{keen:html}"
 	assert f"{keen:md}" == (
-			"**Keen Smell.**\n\n"
+			"### Keen Smell\n\n"
 			"*Nose to the wind.*\n\n"
 			"Advantage on **Perception** checks that rely on smell."
 			), f"{keen:md}"

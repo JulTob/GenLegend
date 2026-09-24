@@ -40,6 +40,15 @@ Scale, for the record: about 350 `Feature(...)`, 354 `Entry(...)`, 284 `chips=` 
 9. **Draconic Resilience:** its own Tag, 2024 formula (landed in PR #92).
 10. **Player sheet first;** NPCs when we get there.
 
+## 🗣️ Julio's answers, second round (2026-09-24)
+
+- **Markdown title of an Entry is `###`.** The sheet's name is `#` and its sections are `##`, so an Entry sits one step below its section.
+- **Inventarium layout: A, the ledger.** It fits the project's style. Rings are capped at 10 **inside the generator only**, never printed as "1/10". Attunement stays a separate tick, 3 at most.
+- **Focus by tool proficiency: approved.** For casters who also fight, the focus goes on equipment they already carry, so it never costs a fighting-style slot: a holy symbol on the Shield, runes carved in the sword, or a ring that needs no attunement.
+- **Weapon properties are Bases** of the weapon kind: `Two_Handed`, `Heavy`, `Martial`, `Weapon`, and so on.
+- **Proposed by Julio, under evaluation:** fighting archetypes (Blade and Board, Hard Hitter, Infiltrator, Tank, Magician, Spellsword…). An archetype is drawn at random among the ones the build can use, and it decides the hands and the ready weapon. The Fighting Style and feats must agree with it: Great Weapon Fighting → a great weapon; Dueling or Defense → a Shield; Pact of the Blade → a one-handed martial weapon without Thrown. Styles and feats that conflict exclude each other. The specific weapon stays random within the archetype (the "constellation effect").
+- **Open:** how the sheet shows where the AC comes from, so a new player does not add a Ring of Protection twice.
+
 ## 🧭 The stations (one PR each, in order)
 
 | # | Family | What it does | Deletes |

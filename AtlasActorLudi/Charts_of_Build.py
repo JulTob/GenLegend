@@ -367,7 +367,7 @@ def _self_test() -> None:
 	assert lesson.rules == "You have learned **5** lessons.", lesson.rules
 	assert lesson.level == 3
 	assert lesson.section is Section.GUILD
-	assert f"{lesson:md}".startswith( "**Lessons.**" ), f"{lesson:md}"
+	assert f"{lesson:md}".startswith( "### Lessons" ), f"{lesson:md}"
 
 	#-- A Chip that cannot be read names its Tag and its label.
 	other = Dummy()
