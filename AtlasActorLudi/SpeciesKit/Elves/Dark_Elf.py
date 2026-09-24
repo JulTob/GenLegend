@@ -7,6 +7,8 @@ from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage
 from AtlasActorLudi.SpeciesKit.Elves.traits import Elven_Lineage
 
 from AtlasActorLudi.SpeciesKit.Elves.base import Elf
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
 class Dark_Elf(
@@ -15,6 +17,12 @@ class Dark_Elf(
 	Elven_Lineage,
 	):
 	"""An Elf Heritage with deeper Darkvision and dark-elf magic."""
+
+	@Pre
+	def Only_One_Heritage(
+		target,
+		):
+		return No_Heritage_Yet( target )
 
 	DARKVISION_RANGE = 120
 

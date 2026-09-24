@@ -14,6 +14,8 @@ from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage
 from AtlasActorLudi.SpeciesKit.Elves.traits import Elven_Lineage
 
 from AtlasActorLudi.SpeciesKit.Elves.base import Elf
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
 class Fae_Elf(
@@ -22,6 +24,12 @@ class Fae_Elf(
 	Elven_Lineage,
 	):
 	"""An Elf Heritage carrying the magic of the Feywild crossings."""
+
+	@Pre
+	def Only_One_Heritage(
+		target,
+		):
+		return No_Heritage_Yet( target )
 
 	HERITAGE_DESCRIPTION = (
 		"""Our kind is a bridge between the Courts of the Fae and the mortal world. Our people stayed close to the crossings into the Feywild, and we remain touched by their magic. Fae Elves are usually polite, friendly, and more open to emotion than other elves. Our ears are exquisitely long, sometimes as long as our arms, and we are the most beautiful of all elvenkind, even with our charms off and terrible morning hair. We consult the Archfey and their Warlocks in dire times."""

@@ -266,7 +266,14 @@ def Build_Training(
 			)
 		else resolved_path
 		)
-	if resolved_path and source is None:
+	has_path = (
+			resolved_path is not None
+			and resolved_path != ""
+			)
+		#-- Never `if resolved_path:`.  A path may be a Tag, and TopKit's
+		#-- ``bool( Tag )`` asks whether the Tag has members yet, which at
+		#-- import time is always no.
+	if has_path and source is None:
 		resolved_source = f"Training: {guild_name} ({path_name})"
 	else:
 		resolved_source = source or f"Training: {guild_name}"

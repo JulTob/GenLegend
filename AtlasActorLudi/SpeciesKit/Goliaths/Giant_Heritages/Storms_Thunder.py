@@ -8,10 +8,18 @@ from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 	Imprint_Giant_Heritage,
 	)
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import No_Giant_Heritage_Yet
 
 
 class Storms_Thunder(Giant_Heritage):
 	"""A Storm Giant boon carrying reactive Thunder damage."""
+
+	@Pre
+	def Only_One_Giant_Heritage(
+		target,
+		):
+		return No_Giant_Heritage_Yet( target )
 
 	DISPLAY = "Storm's Thunder"
 	GIANT_KIND = "Storm Giant"

@@ -10,6 +10,8 @@ from AtlasActorLudi.SpeciesKit.Elves.traits import Darkvision
 from AtlasActorLudi.SpeciesKit.Elves.traits import Fey_Ancestry
 from AtlasActorLudi.SpeciesKit.Elves.traits import Keen_Senses
 from AtlasActorLudi.SpeciesKit.Elves.traits import Trance
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
 class Elf(
@@ -22,6 +24,12 @@ class Elf(
 	Trance,
 	):
 	"""A 2024 Elf with fey ancestry."""
+
+	@Pre
+	def Only_One_Species(
+		target,
+		):
+		return No_Species_Yet( target )
 
 	@Imprint
 	def Set_Physiology(

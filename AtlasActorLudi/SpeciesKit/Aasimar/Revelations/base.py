@@ -78,7 +78,7 @@ def No_Revelation_Yet(
 	active Base is applied.  Refusing at the gate keeps the conflict atomic:
 	since 0.2.0a2 a failed Imprint leaves its Tag behind.
 	"""
-	return Current_Revelation( target ) is None
+	return target not in Celestial_Revelation
 
 
 def Imprint_Revelation(

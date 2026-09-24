@@ -8,10 +8,18 @@ from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 	Imprint_Giant_Heritage,
 	)
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import No_Giant_Heritage_Yet
 
 
 class Stones_Endurance(Giant_Heritage):
 	"""A Stone Giant boon carrying reactive damage reduction."""
+
+	@Pre
+	def Only_One_Giant_Heritage(
+		target,
+		):
+		return No_Giant_Heritage_Yet( target )
 
 	DISPLAY = "Stone's Endurance"
 	GIANT_KIND = "Stone Giant"

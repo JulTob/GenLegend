@@ -8,6 +8,8 @@ from AtlasActorLudi.SpeciesKit.Tieflings.traits import Fiendish_Legacy
 from AtlasActorLudi.SpeciesKit.Tieflings.traits import (
 	Imprint_Fiendish_Heritage,
 	)
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
 class Abyssal(
@@ -16,6 +18,12 @@ class Abyssal(
 	Fiendish_Legacy,
 	):
 	"""A Tiefling Heritage carrying poisonous magic."""
+
+	@Pre
+	def Only_One_Heritage(
+		target,
+		):
+		return No_Heritage_Yet( target )
 
 	DAMAGE_RESISTANCE = "Poison"
 	HERITAGE_DESCRIPTION = (

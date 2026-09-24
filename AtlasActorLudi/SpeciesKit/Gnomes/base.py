@@ -8,6 +8,8 @@ from AtlasActorLudi.SpeciesKit.bases import Species
 from AtlasActorLudi.SpeciesKit.Gnomes.traits import Gnomish_Cunning
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Species
 from AtlasActorLudi.SpeciesKit.traits import Darkvision
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
 class Gnome(
@@ -18,6 +20,12 @@ class Gnome(
 	Gnomish_Cunning,
 	):
 	"""A small magical Humanoid."""
+
+	@Pre
+	def Only_One_Species(
+		target,
+		):
+		return No_Species_Yet( target )
 
 	@Imprint
 	def Set_Physiology(

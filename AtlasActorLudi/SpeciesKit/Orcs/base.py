@@ -8,6 +8,8 @@ from AtlasActorLudi.SpeciesKit.Orcs.traits import Adrenaline_Rush
 from AtlasActorLudi.SpeciesKit.Orcs.traits import Darkvision
 from AtlasActorLudi.SpeciesKit.Orcs.traits import Relentless_Endurance
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Species
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
 class Orc(
@@ -18,6 +20,12 @@ class Orc(
 	Relentless_Endurance,
 	):
 	"""A determined Humanoid shaped for endurance."""
+
+	@Pre
+	def Only_One_Species(
+		target,
+		):
+		return No_Species_Yet( target )
 
 	@Imprint
 	def Set_Physiology(
