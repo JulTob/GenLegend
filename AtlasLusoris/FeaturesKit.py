@@ -134,26 +134,13 @@ def _store_rail_chip(
 			):
 		from AtlasVenustas import Chip
 		return Chip(
-				getattr(
-						chip,
-						"symbol",
-						"",
-						) or "",
+				chip.symbol,
 				chip.label,
 				live(
 						chip.value,
 						f"chip {chip.label!r}",
 						),
-				extra_class=getattr(
-						chip,
-						"extra_class",
-						"",
-						) or "",
-				kind=getattr(
-						chip,
-						"kind",
-						"Attribute",
-						) or "Attribute",
+				kind=chip.kind,
 				)
 	label = chip[
 			0
@@ -192,23 +179,10 @@ def _project_rail_chip(
 			):
 		from AtlasVenustas import Chip
 		return Chip(
-				getattr(
-						chip,
-						"symbol",
-						"",
-						) or "",
+				chip.symbol,
 				chip.label,
 				projected,
-				extra_class=getattr(
-						chip,
-						"extra_class",
-						"",
-						) or "",
-				kind=getattr(
-						chip,
-						"kind",
-						"Attribute",
-						) or "Attribute",
+				kind=chip.kind,
 				)
 	return (
 			chip[

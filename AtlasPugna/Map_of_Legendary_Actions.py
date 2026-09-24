@@ -7,7 +7,7 @@ try:
 	from AtlasActorLudi.Map_of_Scores import PB
 	from AtlasAlusoris.Grimoire_of_NPC import NPC
 	import AtlasPugna.Map_of_Attacks as attacks
-	from AtlasScriptum.Map_of_Formats import Entry
+	from AtlasScriptum.Map_of_Formats import Entry_Text
 except ModuleNotFoundError:
 	raise
 
@@ -98,7 +98,7 @@ def LegendaryActions(npc, num) -> str:
 	return result
 
 def LegendaryAction(npc = None) -> str:
-	from AtlasScriptum.Map_of_Formats import Entry
+	from AtlasScriptum.Map_of_Formats import Entry_Text
 	from AtlasAlusoris.Map_of_Archetypes import Archetype
 	from AtlasAlusoris.Map_of_Races import Race, Subrace
 
@@ -128,300 +128,300 @@ def LegendaryAction(npc = None) -> str:
 	roll = f"{intensity}D{dice_size}"
 
 	# General actions
-	Detect = Entry(
+	Detect = Entry_Text(
 			"Detect",
 			f"{title} makes a Wisdom (Perception) check. {title} can use this check to find a hidden creature, spot, hear, or otherwise detect the presence of something."
 			)
-	Attack = Entry(
+	Attack = Entry_Text(
 		f"Attack",
 		f"{title} can do one simple attack to any creature")
-	Move = Entry(
+	Move = Entry_Text(
 		f"Move",
 		f"{title} can move half their movement")
-	WingAttack = Entry(
+	WingAttack = Entry_Text(
 		f"Wing Attack",
 		random.choice([
 			f"{title} beats its wings. Each creature within 10 feet of {title} must succeed on a DC{power_dc + STR} DEX saving throw or take {3*2 + STR} (2d6{STR:+}) bludgeoning damage and be knocked prone.",
 			f"Each creature within 10 feet must succeed on a DC {power_dc+STR} DEX save or take {Dice(intensity)}d6 + {STR} bludgeoning damage and be knocked prone."]),
 		f"(Costs 2 Actions)")
-	CommandAlly = Entry(
+	CommandAlly = Entry_Text(
 		f"Command Ally",
 		f"{title} issues a command to one of its allies, allowing the ally to immediately take an extra action on {title}'s turn.")
-	RadiantBlast = Entry(
+	RadiantBlast = Entry_Text(
 		f"Radiant Blast",
 		f"{title} releases a burst of radiant energy, targeting one creature it can see within 60 feet. The target must succeed on a Wisdom saving throw DC {dc} or take {Dice(intensity)}d6 radiant damage and be blinded until the end of {title}'s next turn.")
-	TailSweep = Entry(
+	TailSweep = Entry_Text(
 		"Tail Sweep",
 		f"{title} makes a tail attack against all creatures within 10 feet. Each must succeed on a DC {power_dc+STR} Dexterity saving throw or take {Dice(intensity)}d6 bludgeoning damage and be knocked prone.")
-	FrightfulPresence = Entry(
+	FrightfulPresence = Entry_Text(
 		"Frightful Presence",
 		f"Each creature of {title}'s choice within {5*Dice(2)*Dice(3)} feet and aware of it must succeed on a Wisdom saving throw or become frightened for 1 minute."        )
-	MindWarp = Entry(
+	MindWarp = Entry_Text(
 		"Mind Warp",
 		f"{title}  targets one creature it can see within 60 feet, assaulting its mind. The target must make a DC {dc} Intelligence saving throw or take {Dice(intensity)}d6 psychic damage and be stunned until the end of {title}'s next turn."        )
-	WarpReality = Entry(
+	WarpReality = Entry_Text(
 		"Warp Reality",
 		f"{title} alters reality in a small area, creating difficult terrain within {5*Dice(2)*Dice(3)} feet."        )
-	DeathlyTouch = Entry(
+	DeathlyTouch = Entry_Text(
 		"Deathly Touch",
 		f"{title} touches one creature, forcing it to make a DC {dc} Constitution saving throw or take {Dice(intensity)}d4 necrotic damage."        )
-	BattleCry = Entry(
+	BattleCry = Entry_Text(
 		f"Battle Cry",
 		f"{title} rallies their allies, granting them courage. All allies that can hear, within {Dice(2)*Dice(2)*Dice(3)*5} feet, become immune to the Frightened condition for 1 minute."        )
-	DeadlyGaze = Entry(
+	DeadlyGaze = Entry_Text(
 		f"Deadly Gaze",
 		f"The target becomes frightened on a failed DC{dc} Wisdom saving throw.")
-	DeathTouch = Entry(
+	DeathTouch = Entry_Text(
 		f"Death Touch",
 		f"{title} delivers a chilling touch, causing {Dice(intensity)}d4 necrotic damage on a successful attack.",        )
-	TerrifyingVisage = Entry(
+	TerrifyingVisage = Entry_Text(
 		f"Terrifying Visage",
 		f"{title} reveals its horrifying true form, causing all nearby enemies to make a DC{dc} Wisdom saving throw or become frightened."        )
-	TacticalManeuver = Entry(
+	TacticalManeuver = Entry_Text(
 		f"Tactical Maneuver",
 		f"{title} directs an ally, granting advantage to their next attack.")
-	InspiringDisplay = Entry(
+	InspiringDisplay = Entry_Text(
 		f"Inspiring Display",
 		f"{title} coordinates a stunning display, inspiring an ally within sight to take an extra action.")
-	SwarmTactics = Entry(
+	SwarmTactics = Entry_Text(
 			f"Swarm Tactics",
 			f"{title} directs its allies in a coordinated attack, all allies within {Dice(2)*Dice(3)*10} feet of {title} can move up to half their speed.")
-	SwiftMovement = Entry(
+	SwiftMovement = Entry_Text(
 		"Swift Movement",
 		f"{title} uses their knowledge of the terrain to move quickly or create an escape route. {title} moves up to their speed without provoquing opportunity attacks.")
-	LuckyBreak = Entry(
+	LuckyBreak = Entry_Text(
 		f"Lucky Break",
 		f"{title} provoques disadvantage to the next attack targeted at them.",)
-	SneakyStrike = Entry(
+	SneakyStrike = Entry_Text(
 		f"Sneaky Strike",
 		f"{title} makes a stealthy attack, gaining advantage if the target has an enemy within 5 feet of them.")
-	NimbleDodge = Entry(
+	NimbleDodge = Entry_Text(
 		f"Nimble Dodge",
 		f"{title} moves quickly, gaining a +2 AC until the start of their turn.")
-	SerpentineGrace = Entry(
+	SerpentineGrace = Entry_Text(
 		f"Serpentine Grace",
 		f"{title} slithers quickly, avoiding attacks and repositioning itself. {title} moves half his speed without provoking opportunity attacks")
-	VenomousBite = Entry(
+	VenomousBite = Entry_Text(
 	   f"Venomous Bite",
 	   f"{title} delivers a poisonous bite to a creature it can reach within 5 feet. On a hit of a melee weapon attack the target receives {Dice(PB(intensity))}d4 poison damage, and becomes poisoned")
-	QuickFix = Entry(
+	QuickFix = Entry_Text(
 		f"Quick Fix",
 		f"{title} can use a cantrip that takes 1 Action.")
-	DeceptiveManeuver = Entry (
+	DeceptiveManeuver = Entry_Text(
 		f"Deceptive Maneuver",
 		f"{title} confuses an enemy, causing it to have disadvantage on its next attack.")
-	ProtectiveShift = Entry (
+	ProtectiveShift = Entry_Text(
 		f"{race} Shift",
 		f"{title} alters their body, gaining resistance to a damage type of its choice until its next turn.")
-	ElementalBlast = Entry (
+	ElementalBlast = Entry_Text(
 		f"Elemental Blast",
 		random.choice([
 			f"{title} sends out a burst of elemental energy in a line, requiring a DC{dc} Dexterity saving throw from affected creatures or take {Dice(intensity)}d6 {attacks.Damage()} damage."
 			f"{title} sends out a burst of elemental energy in a cone, requiring a DC{dc} Dexterity saving throw from affected creatures or take {Dice(intensity)}d4 {attacks.Damage()} damage.",
 			]))
-	BeguilingGaze = Entry(
+	BeguilingGaze = Entry_Text(
 		f"Beguiling Gaze",
 		random.choice([
 			f"{title} targets one creature it can see, charming it, unless the target succeeds on a DC{dc} Wisdom saving throw.",
 			f"{title} targets one creature it can see, putting it to sleep, unless the target succeeds on a DC{dc} Wisdom saving throw."
 			]))
-	NaturesWrath = Entry(
+	NaturesWrath = Entry_Text(
 		f"Nature's Wrath",
 		f"{title} summons vines or thorns in an area within {5*Dice(2)*Dice(2)*Dice(2)*Dice(3)}, making it difficult terrain. Every creature that starts its turn within the area takes 1d4 damage."
 		)
-	HellfireBlast = Entry (
+	HellfireBlast = Entry_Text(
 		f"Hellfire Blast",
 		f"{title} releases a burst of hellfire, causing {Dice(intensity)}d4 fire damage to all creatures within {5*Dice(2)*Dice(2)*Dice(3)} area."        )
-	MinionCommand = Entry (
+	MinionCommand = Entry_Text(
 		f"Infernal Command",
 		f"{title} commands his minions to attack a target creature, allowing them to attack immediately, using their reaction to do an attack to that target.")
-	MightyThrow = Entry (
+	MightyThrow = Entry_Text(
 		f"Mighty Throw",
 		f"{title} throws a large rock or similar object at a target, causing {Dice(intensity)}d6 damage on impact.")
-	Stomp = Entry (
+	Stomp = Entry_Text(
 		f"Stomp",
 		f"{title} stomps the ground, creating a shockwave within {5*Dice(2)*Dice(3)} feet that knocks nearby creatures prone unless they succeed on a DC{power_dc+STR} Strength saving throw.")
-	IngeniousTrap = Entry (
+	IngeniousTrap = Entry_Text(
 		f"Ingenious Trap",
 		random.choice([
 			f"{title} quickly assembles and sets a trap, which can ensnare a creature within 5 feet of it, making it prone, unless the target succeeds on a DC{dc} Dexterity saving throw.",
 			f"{title} quickly assembles and sets a trap, which can damage a creature within 5 feet of it, making 1d6 of {attacks.Damage()} damage, unless the target succeeds on a DC{dc} Dexterity saving throw.",
 			]))
-	SmallEscape = Entry (
+	SmallEscape = Entry_Text(
 		f"{race}'s Escape",
 		random.choice([
 			f"{title} teleports up to {Dice(2)*Dice(3)*5} feet.",
 			f"{title} becomes temporarily invisible until the start of their turn."
 			]))
-	SneakyStab = Entry(
+	SneakyStab = Entry_Text(
 		f"Sneaky Stab",
 		f"{title} makes a sudden simple melee attack with advantage on its attack roll."),
-	Disappear = Entry(
+	Disappear = Entry_Text(
 		f"Disappear",
 		f"{title} blends into its surroundings, becoming hidden to its enemies. Any wisdomm check to discern his location and Ranged attack rolls have disadvantage.")
-	QuickTinkerer = Entry(
+	QuickTinkerer = Entry_Text(
 		f"Quick Tinkerer",
 		f"{title} quickly activates a tinkered device that, on a failed Dexterity saving throw DC{dc}, blinds an enemy within 5ft of {title} until the end ot the next creature's turn.")
-	ScaledDefense = Entry (
+	ScaledDefense = Entry_Text(
 		f"Scaled Defense",
 		f"{title} hardens its scales, gaining +2 AC until the start of their turn.")
-	SwiftReptile = Entry (
+	SwiftReptile = Entry_Text(
 		f"Swift Reptile",
 		f"{title} scapes swiftly, moving up to their speed without provoking opportunity attacks.")
-	TerrifyingRoar = Entry (
+	TerrifyingRoar = Entry_Text(
 		f"Terrifying Roar",
 		f"{title} emits a fearsome roar, causing an enemy within 5 feet to become frightened on a failed DC{power_dc+CHA} Wisdom saving throw.")
-	RendNTear = Entry (
+	RendNTear = Entry_Text(
 		f"Rend and Tear",
 		f"{title} makes a special or normal attack against a single target.")
-	Engulf = Entry(
+	Engulf = Entry_Text(
 		f"Engulf",
 		f"{title} attempts to engulf a nearby smaller creature, trapping it inside its body, unless the creature succeeds a DC {power_dc+STR} Dexterity Saving Throw, being restrained on a fail.")
-	CorrosiveTouch = Entry (
+	CorrosiveTouch = Entry_Text(
 		f"Corrosive Touch",
 		f"{title} makes a simple melee attack, dealing an extra {Dice(intensity)}d6 acid damage on a hit.")
-	WarCry = Entry (
+	WarCry = Entry_Text(
 		f"War Cry",
 		f"{title} lets out a powerful cry, bolstering the morale of allies and intimidating enemies. Within {Dice(2)*Dice(2)*Dice(3)*5} feet, all allies of {title} become immune to the Frightened condition, and enemies within the range make a DC {dc} Wisdom saving throw or become Frightened")
-	BrutalStrike = Entry(
+	BrutalStrike = Entry_Text(
 		f"Brutal Strike",
 		f"{title} makes a simple attack. On a hit, the target becomes Prone.")
-	EntanglingRoots = Entry(
+	EntanglingRoots = Entry_Text(
 		f"Entangling Roots",
 		f"{title} causes roots to burst from the ground, attempting to entangle nearby creatures. The terrain within {Dice(2)*Dice(3)*5} feet becomes difficult terrain. {title} is immune to this effect.")
-	HealSelf = Entry(
+	HealSelf = Entry_Text(
 		f"Heal Self",
 		f"{title} magically regains {2*4+CON} (2d8 + {CON}) hit points.",
 		"(Costs 3 Actions)")
-	HealingFlux = Entry (
+	HealingFlux = Entry_Text(
 		f"Healing Flux",
 		f"{title} exudes restorative energy, healing itself or an ally within 5 feet. The target heals 1d4{WIS:+}")
-	TacticalAmbush = Entry (
+	TacticalAmbush = Entry_Text(
 		f"Tactical Ambush",
 		f"{title} uses his cunning and gains a tactical advantage, gaining advantage on its first attack roll against a target.")
-	Shimmering_shield = Entry(
+	Shimmering_shield = Entry_Text(
 		f"Shimmering Shield",
 		f"{title} creates a shimmering, magical field around itself or another creature it can see within 60 feet of it. The target gains a +2 bonus to AC until the end of {title}'s next turn.",
 		"(Costs 2 Actions)")
 	ShimmeringShield =	Shimmering_shield
-	BardicInspiration = Entry(
+	BardicInspiration = Entry_Text(
 		f"Bardic Inspiration",
 		f"{title} inspires an ally within earshot, granting them a bonus to their next ability check, attack roll, or saving throw of 1d{dice_size}.")
-	Rage = Entry(
+	Rage = Entry_Text(
 		f"Rage",
 		f"{title} enters a state of rage, gaining bonus of {Dice(intensity):+} to melee damage, and gains resistance to bludgeoning, piercing, and slashing damage.")
-	FrenziedAttack = Entry (
+	FrenziedAttack = Entry_Text(
 		f"Frenzied Attack",
 		f"{title} makes an attack with advantage against a single target. The next attack against {title} gains advantage.")
-	DivineInspiration = Entry(
+	DivineInspiration = Entry_Text(
 		f"Divine Inspiration",
 		f"{title} calls upon their deity for inspiration, healing an ally {Dice(intensity)}d4.")
-	UnexpectedCourage = Entry(
+	UnexpectedCourage = Entry_Text(
 		f"Unexpected Courage",
 		f"{title} rallies their inner strength, attacking with extraordinary bravery. It makes a simple attack. The attack is a Critical hit on a 19 or 20 on the atttack roll.",
 		"Costs 2 actions")
-	DarkRitual = Entry (
+	DarkRitual = Entry_Text(
 		f"Dark Ritual",
 		f"{title} quickly mutters a sinister chant, targeting one creature it can see within 30 feet. The target must succeed on a DC {dc} Wisdom saving throw or become cursed. While cursed, the target takes an additional 2 (1d4) necrotic damage whenever it takes damage from any source. The curse lasts for 1 minute or until {title} is incapacitated or dies.",
 		"Costs 2 Actions")
-	NaturesAid = Entry (
+	NaturesAid = Entry_Text(
 		f"Nature's Aid",
 		random.choice([
 			f"{title} calls upon nature to assist, by healing an ally {Dice(intensity)}d4.",
 			f"{title} calls upon nature to assist, entangling an enemy. On a failed DC{dc} Dexterity saving throw the enemy is restrained."
 			]))
-	Pathfinder = Entry (
+	Pathfinder = Entry_Text(
 		f"Pathfinder",
 		f"{title} can move their full speed without provoking opportunity attacks.")
-	ProtectiveStance = Entry (
+	ProtectiveStance = Entry_Text(
 		f"Protective Stance",
 		f"{title} takes a defensive position, granting increased {Dice(intensity):+} AC to themselves and one other creature within 5 feet.")
-	SwiftAid = Entry (
+	SwiftAid = Entry_Text(
 		f"Swift Aid",
 		f"{title} quickly tends to an ally's wounds, restoring {intensity}d6 hit points.")
-	HeroicSacrifice = Entry (
+	HeroicSacrifice = Entry_Text(
 		f"Heroic Sacrifice",
 		f"{title} finds the strength to keep fighting, gaining {roll} temporary hit points.",
 		"Costs 2 Actions")
-	PreciseShot = Entry (
+	PreciseShot = Entry_Text(
 		f"Precise Shot",
 		f"{title} makes a special attack.")
-	ChivalrousCharge = Entry (
+	ChivalrousCharge = Entry_Text(
 		f"Chivalrous Charge",
 		f"{title} charges an enemy, moving half their speed and doing a simple attack.")
-	ArcaneBurst= Entry (
+	ArcaneBurst= Entry_Text(
 		f"Arcane Burst",
 		f"{title} releases a burst of magical energy. All creatures within {Dice(3)*Dice(2)*5} feet receive {roll} {attacks.Damage()} damage")
-	KiStrike = Entry(
+	KiStrike = Entry_Text(
 		f"Ki Strike",
 		f"{title} channels their ki energy to make rapid strikes, making two simple attacks.")
-	CommandingPresence = Entry(
+	CommandingPresence = Entry_Text(
 		f"Commanding Presence",
 		f"{title} commands an ally, allowing them to move half their speed.")
-	Blessing = Entry(
+	Blessing = Entry_Text(
 		 f"Blessing",
 		 f"{title} blesses an ally, granting them a bonus {roll} to their next attack or saving throw.")
-	BoardingAction = Entry(
+	BoardingAction = Entry_Text(
 		f"Boarding Action",
 		f"{title} swiftly moves across the battlefield, engaging an enemy in close combat, moving their full speed and doing a simple attack.")
-	HuntersMark = Entry(
+	HuntersMark = Entry_Text(
 		f"Hunter's Mark",
 		f"{title} marks a target, granting a bonus {roll} to damage on their next attack against that target.")
-	CunningAction = Entry (
+	CunningAction = Entry_Text(
 		f"Cunning Action",
 		f"{title} uses their quick wits to gain advantage on their next action.")
-	MomentofClarity = Entry (
+	MomentofClarity = Entry_Text(
 		f"Moment of Clarity",
 		f"{title} provides critical information or advice, granting advantage to an ally's next check.")
-	TacticalManeuver = Entry(
+	TacticalManeuver = Entry_Text(
 		f"Tactical Maneuver",
 		f"{title} directs their allies, granting advantage to their next attack.")
-	InsightfulDiscovery = Entry(
+	InsightfulDiscovery = Entry_Text(
 		f"Insightful Discovery",
 		f"{title} uses their knowledge to reveal an immunity, resistance, or vulnerability, or provide crucial information about an enemy's defenses.")
-	SpiritCall  = Entry(
+	SpiritCall  = Entry_Text(
 		f"Spirit Call",
 		random.choice([
 			f"{title} calls upon the spirits to aid in battle, healing all allies within {5*Dice(2)*Dice(3)} feet {Dice(intensity)}d4 hit points.",
 			f"{title} calls upon the spirits to aid in battle, harming all enemies that start their turn within {5*Dice(2)*Dice(3)} feet {Dice(intensity)}d4 hit points.",
 			]))
-	CovertOperation = Entry(
+	CovertOperation = Entry_Text(
 		f"Covert Operation",
 		f"{title} sabotages an enemy, causing their next attack to be at disadvantage.")
-	StreetSmarts = Entry(
+	StreetSmarts = Entry_Text(
 		f"Street Smarts",
 		f"{title} uses their survival skills to disengage, hide, or dash.")
-	BattleFrenzy = Entry (
+	BattleFrenzy = Entry_Text(
 		f"Battle Frenzy",
 		f"{title} enters a state of frenzy, increasing their attack capability for a short time. He makes a simple attack at disadvantage. On a hit, the target recives an extra {roll} damage.")
-	Hex = Entry(
+	Hex = Entry_Text(
 		f"Hex",
 		f"{title} places a curse on an enemy, causing their saving throws to have disadvantage for 1 minute.")
-	HealingTouch = Entry(
+	HealingTouch = Entry_Text(
 		f"Healing Touch",
 		f"{title} touches another creature, healing it for {roll} of hit points.")
-	BattleCommand = Entry(
+	BattleCommand = Entry_Text(
 		"Battle Command.",
 		f"As a bonus action, {title} targets one ally he can see within 30 feet of them. If the target can see or hear {title}, the target can use its reaction to make one melee attack or to take the Dodge or Hide action.")
-	PsychicDrain = Entry(
+	PsychicDrain = Entry_Text(
 		f"Psychic Drain",
 		f"One creature {title} can see takes {int(intensity*3.5)} ({intensity}d6) psychic damage, and {title} regains hit points equal to the damage the creature takes.",
 		"(Costs 2 Actions)")
-	Teleport = Entry(
+	Teleport = Entry_Text(
 		"Teleport",
 		f"{title} magically teleports, along with any equipment it is wearing or carrying, up to {Dice(2)*Dice(2)*Dice(3)*10} feet to an unoccupied space it can see."
 		"(Costs 2 Actions)")
-	CastASpell = Entry(
+	CastASpell = Entry_Text(
 		"Cast A Spell",
 		f"{title} casts a spell from its list of prepared spells, using a spell slot (or a daily use) as normal. "
 		)
-	ParalyzingTouch = Entry("Paralyzing Touch",
+	ParalyzingTouch = Entry_Text("Paralyzing Touch",
 		f"{title} touches one creature within 5 feet of it. The target must succeed on a DC {dc} Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the start of each of its turns, ending the effect on itself on a success.",
 		"(Costs 2 Actions)")
-	PsionicBlast =  Entry("Psionic Blast",
+	PsionicBlast =  Entry_Text("Psionic Blast",
 		f"{title} emits a wave of psionic energy. Each creature in a 30-foot cone must succeed on a DC {magic_dc} Intelligence saving throw or take {intensity*4} ({intensity}D8) psychic damage and be stunned for 1 minute. A stunned target can repeat the saving throw at the start of each of its turns, ending the effect on itself on a success.",
 		"(Costs 3 Actions)")
-	DragonBreath =  Entry("Dragon Breath",
+	DragonBreath =  Entry_Text("Dragon Breath",
 		f"{title} exhales a torrent of destructive energy. Each creature in a 60-foot cone must make a DC {dc} Dexterity saving throw, taking {intensity*4} ({intensity}D8) {attacks.Damage()} damage on a failed save, or half as much damage on a successful one.",
 		"(Costs 3 Actions)")
 
@@ -555,49 +555,49 @@ def Lair(npc):
 	result += f"Unless otherwise noted, any lair action that demands a saving throw uses the spellsave DC {dc}."
 	result += "\n On initiative count 20 (losing initiative ties), the creature can take a lair action to cause one of the following effects, but can't use the same effect two rounds in a row:\n"
 
-	ElementalShift = Entry(
+	ElementalShift = Entry_Text(
 		"Elemental Shift",
 		f"{title} can choose a section up to 20x20 feet or less of a wall within its lair to become ethereal for one round. Other creatures passing through the affected area must succeed on a Dexterity saving throw or become restrained until the end of their next turn as they struggle against the elements.")
-	GraspingPlants = Entry(
+	GraspingPlants = Entry_Text(
 		"Grasping Plants",
 		f"The lair causes roots and vines to temporarily grow. until initiative count 20 on the next round, the ground within 20 feet of {title} is difficult terrain. {title} is immune to this effect.")
-	InkSplash = Entry("Ink Splash",
+	InkSplash = Entry_Text("Ink Splash",
 		f"{title} splashes magical ink that spreads across the floor in a 20-foot radius centered on a point within the lair. The area becomes difficult terrain, and any creature that starts its turn in the area or enters it for the first time on a turn must succeed on a DC{dc} Dexterity saving throw or be restrained by the sticky ink until the end of its next turn. ")
-	AnimatingArt = Entry("Animating Art",
+	AnimatingArt = Entry_Text("Animating Art",
 		f"{title} can animate one of its artworks as an action, bringing to life a shadowy creature (use the stats for a shadow or another appropriate creature, but with an artistic flair in its appearance). This creature acts on its own initiative and follows the commands of {title}. Only one animated artwork can be active at a time.")
-	ChaoticAura = Entry("Chaotic Aura",
+	ChaoticAura = Entry_Text("Chaotic Aura",
 		f"{title} creates misdirecting currents of air and magic around itself. Until initiative count 20 on the next round, whenever a ranged attack roll misses {title}, reroll the attack against a random creature within 30 feet of {title} that doesn't have total cover against the attack.")
-	Earthquake = Entry("Earthquake",
+	Earthquake = Entry_Text("Earthquake",
 		f"{title} causes an earthquake in its lair. All other creature on the ground must succeed on a DC {dc} Dexterity saving throw or be knocked prone.")
 
-	VolcanicEruption = Entry("Volcanic Eruption",
+	VolcanicEruption = Entry_Text("Volcanic Eruption",
 		f"{title} causes magma to burst from the ground at three different points it can see within the lair. Each creature in a 10-foot radius must succeed on a DC {npc.spell_save_dc} Dexterity saving throw or take {3*pb} ({pb}D6) fire damage.")
 
-	PsionicPulse = Entry(
+	PsionicPulse = Entry_Text(
 		"Psionic Pulse",
 		f"{title} emits a pulse of psychic energy. Each creature of its choice within 120 feet must succeed on a DC {npc.spell_save_dc} Intelligence saving throw or take {pb*3} ({pb}D6) psychic damage and have disadvantage on attack rolls until the end of their next turn.")
 
-	MentalManipulation= Entry("Mental Manipulation",
+	MentalManipulation= Entry_Text("Mental Manipulation",
 	 f"{title} attempts to dominate one creature it can see within its lair. The target must succeed on a DC {npc.spell_save_dc - 2} Wisdom saving throw or be charmed by the {npc.title} until initiative count 20 on the next round.")
 
-	NecroticFog = Entry("Necrotic Fog",
+	NecroticFog = Entry_Text("Necrotic Fog",
 	  f"{title} creates a cloud of necrotic fog in a 20-foot radius. Each creature in the area must succeed on a DC {npc.spell_save_dc} Constitution saving throw or take {pb*3} ({pb}D6) necrotic damage and be blinded until the end of its next turn.")
 
-	GhostlyApparitions = Entry("Ghostly Apparitions",
+	GhostlyApparitions = Entry_Text("Ghostly Apparitions",
 	f"{title} summons ghostly apparitions that attack creatures in the lair. Each creature must succeed on a DC {npc.spell_save_dc} Wisdom saving throw or be frightened until the end of its next turn.")
 
-	EntanglingVines = Entry("Entangling Vines",
+	EntanglingVines = Entry_Text("Entangling Vines",
 	 f"{title} causes vines to sprout from the ground and entangle creatures in the area. Each creature must succeed on a DC {npc.spell_save_dc} Strength saving throw or be restrained until the end of its next turn.")
 
-	CallLightning = Entry("Call Lightning",
+	CallLightning = Entry_Text("Call Lightning",
 	 f"{title} calls down a bolt of lightning at a point it can see within 60 feet. Each creature within 5 feet must succeed on a DC {npc.spell_save_dc} Dexterity saving throw or take {4*pb} ({pb}D8) lightning damage.")
 
-	SummonBats = Entry("Summon Bats",
+	SummonBats = Entry_Text("Summon Bats",
 	f"{title} summons a swarm of bats to harass enemies. Each creature within 30 feet must succeed on a DC {npc.spell_save_dc} Dexterity saving throw or take {pb*3}({pb}D6) piercing damage and have disadvantage on attack rolls until the end of its next turn.")
 
-	BloodMist = Entry("Blood Mist",
+	BloodMist = Entry_Text("Blood Mist",
 	 f"{title} creates a mist of blood that obscures vision in a 20-foot radius. Creatures in the area are blinded until the end of their next turn.")
-	DarknessSurge = Entry("Darkness Surge",
+	DarknessSurge = Entry_Text("Darkness Surge",
 		f"{title} can cause a surge of shadowy energy to fill the lair, dimming light sources. For one round, areas of bright light become dim, and areas of dim light become darkness.")
 
 
@@ -731,215 +731,215 @@ def Region(npc):
 	pre += f"{npc.title} has an effect on its domains that may include any of the following magical effects:\n"
 	dissipation_note = f"\nIf {npc.title} dies, these effects dissipate during the next {Dice(6,2)} days."
 
-	wildlife = Entry(
+	wildlife = Entry_Text(
 		"Wildlife Frenzy",
 		"The wildlife in the area displays unnatural aggression and grotesque mutations, their behavior becoming erratic and dangerous to travelers."
 		)
-	volcan = Entry(
+	volcan = Entry_Text(
 		"Volcanic Unrest"
 		f"The ground trembles as volcanic activity intensifies within a mile of the lair, spewing ash, heat, and occasional jets of molten rock."
 		)
-	risen_dead = Entry(
+	risen_dead = Entry_Text(
 		"Risen Dead",
 		f"{npc.title}'s domain stir with unholy energy, waking the dead. The dead rise in nearby graveyards"
 		)
-	moving_shadows = Entry(
+	moving_shadows = Entry_Text(
 		"Restless Shadows",
 		f"Shadows twist and glide unnaturally, as if animated by an unseen will, stalking the edges of perception."
 		)
-	wither = Entry(
+	wither = Entry_Text(
 		"Blight",
 		f"Local plants wither and die, as if drained of life."
 		)
-	beast_guardians = Entry(
+	beast_guardians = Entry_Text(
 		"Beast Guardians",
 		f"The beasts of {npc.title}'s domain instinctively rally to its defense, drawn by an unshakable nexus with the {npc.race}. Beasts (appropiate to {title}) with an Intelligence score of 2 or lower will aggressively defend the territory from intruders, acting as loyal protectors."
 		)
-	no_flames = Entry(
+	no_flames = Entry_Text(
 		"Extinguished flames",
 		f"Open flames of a non magical nature are extinguished within {npc.title}'s domain. Torches and campfires refuse to burn. Enclosed lanterns remain eerily unaffected."
 		)
-	hider = Entry("Hidding in the Shadows",	f"The natural environment of the {npc.race}'s domain seems to conspire with its inhabitants, offering abundant cover and shadows. Creatures native to this area instinctively blend into their surroundings, making it almost impossible to spot them without careful scrutiny. All such creatures have advantage on Dexterity (Stealth) checks while within the domain.")
-	healing_aura = Entry(
+	hider = Entry_Text("Hidding in the Shadows",	f"The natural environment of the {npc.race}'s domain seems to conspire with its inhabitants, offering abundant cover and shadows. Creatures native to this area instinctively blend into their surroundings, making it almost impossible to spot them without careful scrutiny. All such creatures have advantage on Dexterity (Stealth) checks while within the domain.")
+	healing_aura = Entry_Text(
 		"Aura of Vitality",
 		f"Within {npc.title}'s domain, healing magic surges. When a creature casts a spell or uses a magical effect that causes another creature to regain hit points, the target regains the maximum number of hit points possible for the spell or effect."
 		)
-	anticursed = Entry(
+	anticursed = Entry_Text(
 		"Sanctuary",
 		f"A tranquil aura pervades {npc.title}'s domain, dispelling all lingering malice. All curses affecting good-aligned creatures are suppressed while within this domain."
 		)
-	compulsory_offering = Entry(
+	compulsory_offering = Entry_Text(
 		f"Compulsory Offering",
 		(	"An intangible presence weighs on the heart, compelling travelers to leave tribute for unseen forces."
 			f"The first time a creature enters the lair's domain (1 mile radius), it must succeed on a DC {dc} Wisdom saving throw or feel a strong compulsion to leave an offering worth at least 5 gp in a hidden location. The {npc.race} instantly senses the offering's position. Each creature can be affected by this compulsion only once."
 		))
-	malleable_time = Entry(
+	malleable_time = Entry_Text(
 		"Malleable Time",
 		f"Time is fluid within 1 mile of {npc.title}'s lair, flowing somewhere between half and twice its normal speed.")
-	pests = Entry("Pests",
+	pests = Entry_Text("Pests",
 		f"Birds, rodents, snakes, spiders, or toads (or some other creatures appropriate to the {npc.race}) are found in great profusion.")
-	eternal_twilight = Entry("Eternal Twilight",
+	eternal_twilight = Entry_Text("Eternal Twilight",
 		f"The sun seems to struggle in this region, never fully rising nor setting, casting an eternal twilight that blankets the area. Shadows cast within this zone are deeper and more pronounced, and natural light sources appear dimmer than usual. This effect unsettles locals and affects the behavior of wildlife, making nocturnal creatures more active during what should be daylight hours.")
-	shadow_whispers = Entry("Shadow Whispers",
+	shadow_whispers = Entry_Text("Shadow Whispers",
 		f"Shadows within a few miles of the lair seem to whisper when no one is looking directly at them. These whispers are unintelligible but carry with them a sense of foreboding and unease. This can unsettle travelers and make locals superstitious about venturing out without light, even during the day.")
-	artistic_hallucination = Entry("Artistic Hallucinations",
+	artistic_hallucination = Entry_Text("Artistic Hallucinations",
 		f"Individuals who spend more than a few hours in the region may start to see vivid, albeit brief, hallucinations. These visions are often artistic in nature, such as paintings coming to life or sculptures moving in the corner of one's eye.")
-	drained_creativity = Entry("Drained Creativity",
+	drained_creativity = Entry_Text("Drained Creativity",
 		f"Artists, crafters, and anyone trying to create within the region find their work frustratingly difficult. Colors seem less vibrant, inspiration harder to come by, and finished works often seem lacking, as {title} is siphoning creativity for itself. This effect could lead to tales of a curse that plagues artists, driving them either away from the region or mad with the inability to fulfill their creative desires.")
-	EternalBreeze = Entry(
+	EternalBreeze = Entry_Text(
 		"Eternal Breeze",
 		f"A constant, unnaturally strong wind blows across the region. Creatures can't fly, and fire, fog, smoke, and similar effects are extinguished at the end of any creature's turn. The Eternal Breeze doesn't affect {npc.title}")
-	inhospitable = Entry(
+	inhospitable = Entry_Text(
 		"Inhospitable",
 		f"The nearby land becomes scorched and inhospitable.")
-	BeastCharm = Entry(
+	BeastCharm = Entry_Text(
 		"Bestiality",
 		f"Beasts that have an Intelligence score of 2 or lower are charmed by the {race} and directed to be annoying toward intruders in the area.")
-	Figurines = Entry("Dolls","Strange carved figurines, twig fetishes, or rag dolls magically appear in trees.")
-	Slime = Entry("Slime", "Most surfaces are covered by a thin film of slime, which is slick and sticks to anything that touches it.")
-	VisionsOfBeyond= Entry("Visions of Beyond","Intelligent creatures see hallucinations of dead friends, family members, and even themselves, as figures from the realms of the dead. Any attempt to interact with a hallucinatory image causes it to disappear.")
-	Nightmares = Entry("Nighmares", "When sleeping, creatures are transported to a harmless but eerie demiplane filled with shadowy forms, waxy corpses, and cackling. ")
-	EldritchMists = Entry(
+	Figurines = Entry_Text("Dolls","Strange carved figurines, twig fetishes, or rag dolls magically appear in trees.")
+	Slime = Entry_Text("Slime", "Most surfaces are covered by a thin film of slime, which is slick and sticks to anything that touches it.")
+	VisionsOfBeyond= Entry_Text("Visions of Beyond","Intelligent creatures see hallucinations of dead friends, family members, and even themselves, as figures from the realms of the dead. Any attempt to interact with a hallucinatory image causes it to disappear.")
+	Nightmares = Entry_Text("Nighmares", "When sleeping, creatures are transported to a harmless but eerie demiplane filled with shadowy forms, waxy corpses, and cackling. ")
+	EldritchMists = Entry_Text(
 		"Eldritch Mists",
 		"A dense, greenish mist clings to the ground, reducing visibility to 30 feet. Voices, screams and whispers can be heard comming from the mist."
 		)
-	FungalBloom = Entry(
+	FungalBloom = Entry_Text(
 		"Fungal Bloom",
 		f"Massive fungal growths as tall as trees sprout. If eaten, the creature must make a DC {dc-1} Constitution saving throw or become poisoned for 1 hour."
 		)
-	AncestralGuidance = Entry(
+	AncestralGuidance = Entry_Text(
 		"Ancestral Guidance",
 		"The spirits of the ancestors can guide their champions on this sacred land. {alignment} creatures within the 1 mile feel an uplifting presence from ancestral entities. {alignment} creatures are under the Guidance spell while they stay in the area."
 		)
-	GravityDistortion = Entry(
+	GravityDistortion = Entry_Text(
 		"Gravity Distortion",
 		"Gravity warps within a mile of the lair. Creatures have their jump distances halved and the range of attacks with a range get halved."
 		)
-	GravityDistortion2 = Entry(
+	GravityDistortion2 = Entry_Text(
 		"Gravity Distortion",
 		"Gravity warps within a mile of the lair. Creatures have their jump distances doubled and the range of attacks with a range get doubled."
 		)
-	ArtistEffect = Entry(
+	ArtistEffect = Entry_Text(
 		"Eternal Masterpiece",
 		f"Within a mile of {npc.title}'s domain, every place seems to contain an hipnotic, absorving artwork (Melodies in the wind, colors in the shadows, or essences blooming in petals. Creatures pausing to admire the beauty find themselves enthralled (DC {dc} Wisdom saving throw), losing focus on their tasks for 1 minute. Creatures affected are drwan toward the source."
 		)
-	BanditEffect = Entry(
+	BanditEffect = Entry_Text(
 		"Ambush Grounds",
 		f"{title} is a master of ambushes. The roads within a mile of {title}'s domain are fraught with hidden dangers. Travelers have disadvantage on Wisdom (Perception) checks to spot ambushes or traps."
 		)
-	BarbarianEffect = Entry(
+	BarbarianEffect = Entry_Text(
 		"Howl of the Wild",
 		f"The land within a mile of {npc.title}'s domain trembles with overwhelming primal energy. Creatures have advantage on their Wisdom Saving Throws and disadvantage on Intelligence Saving Throws as instincts overpower reason."
 		)
-	BardEffect = Entry(
+	BardEffect = Entry_Text(
 		"Enchanted Melodies",
 		f"Distant music echoes faintly within a mile of {npc.title}'s lair. On a failed Charisma Saving Throw, the will of the creature gets affected by the melody, becoming Charmed by {title}."
 		)
-	CharlatanEffect = Entry(
+	CharlatanEffect = Entry_Text(
 		"Illusory Deals",
 		f"Shimmering mirages appear within a mile of {npc.title}'s domain. Creatures have disadvantage on detecting illusions."
 		)
-	ClericEffect = Entry(
+	ClericEffect = Entry_Text(
 		"Sanctuary",
 		f"This place holds the presence of divinity, marked with scent of incense lingering faintly. No mortal may fight within the sanctuary grounds (300 feet around the shrines) without angering the gods. Undeads gain a level of exhaustion while in the area."
 		)
-	CommonerEffect = Entry(
+	CommonerEffect = Entry_Text(
 		"Humble Prosperity",
 		f"At the edge of civilization stands a settlement under {npc.title}'s watch. Orchards are heavy with fruit, fields wave golden, and wildlife ventures close to the village's edge, yet an air of stillness suggests not all is as tranquil as it seems."
 		)
-	CrafterEffect = Entry(
+	CrafterEffect = Entry_Text(
 		"Blooming Industry",
 		f"{title}'s domain is expanding, taking over the surrounding nature. Forges puff plumes of smoke, rivers darken with runoff, and the distant clang of hammers echoes day and night. Within 1 mile, Nature is damaged or mutated."
 		)
-	MentorEffect = Entry(
+	MentorEffect = Entry_Text(
 		"Walking Library",
 		f"Legends about the knowledge and wisdom of {title} have reached wide and far, attracting pupils to {title}'s location. You may encounter students of this teachings within 1 mile."
 		)
-	MerchantEffect = Entry(
+	MerchantEffect = Entry_Text(
 		"Market Magnet",
 		f"The fame of {title}'s products has turned the region into a bustling hub. Vendors and caravans converge here, creating impromptu markets filled with rare goods and enticing bargains. You may find objects of remarkable rarity within shops in 1 mile."
 		)
-	MonkEffect = Entry(
+	MonkEffect = Entry_Text(
 		"The Enlightened Path",
 		f"The region near {title}'s domain hums with disciplined energy. Disciples, seekers of truth, and wanderers converge here to sharpen their skills and find balance. Training rings and serene meditation groves dot the area, exuding a calm yet powerful aura."
 		)
-	NinjaEffect = Entry(
+	NinjaEffect = Entry_Text(
 		"Shroud of Silence",
 		f"The presence of {title} cloaks the area in an eerie stillness. Villages nearby are distrustful and secretive, with people speaking in hushed tones. The forest around their lair seems to conspire, offering no clear paths to outsiders."
 		)
-	NobleEffect = Entry(
+	NobleEffect = Entry_Text(
 		"Courtly Domain",
 		f"The influence of {title} radiates throughout the land. Peasants bow lower, roads are cleaner, and the architecture exudes sophistication and grandeur. {title}'s will is law. Anyone entering this territory must ask for permision or carry a signed pass."
 		)
-	PaladinEffect = Entry(
+	PaladinEffect = Entry_Text(
 		"Sanctuary of Light",
 		f"The ground near {title}'s domain glows faintly, as if touched by divine favor. Travelers speak of feeling safer, their spirits lifted, and even their wounds mending faster under the radiant skies."
 		)
-	PirateEffect = Entry(
+	PirateEffect = Entry_Text(
 		"Rogue's Refuge",
 		f"The villages near {title}'s domain teems with tales of danger and adventure. Rumors of hidden treasures fill taverns, while locals trade in whispered rumors and half-forgotten maps."
 		)
-	RangerEffect = Entry(
+	RangerEffect = Entry_Text(
 		"Warden's Haven",
 		f"Nature thrives in perfect harmony around {title}'s domain. Rare beasts roam unafraid, and ancient trees form a cathedral of untouched wilderness. Travelers, tread lightly. Be aware of the protective eyes upon you."
 		)
-	SoldierEffect = Entry(
+	SoldierEffect = Entry_Text(
 		"Legacy of Valor",
 		f"Marching routes and fortified outposts define the lands near {title}'s domain. Veterans and recruits alike gather to train or reminisce, their camaraderie echoing in the cadence of disciplined drills."
 		)
-	RogueEffect = Entry(
+	RogueEffect = Entry_Text(
 		"Veil of Subterfuge",
 		f"Within {title}'s domain, nothing is as it seems. Markets teem with coded exchanges, and back alleys hide silent watchers. Those who enter may find themselves pawns in a game they never agreed to play."
 		)
-	SpyEffect = Entry(
+	SpyEffect = Entry_Text(
 		"Web of Secrets",
 		f"Around {title}'s domain, no word goes unnoticed. Every village hides an informant, and even the wind seems to whisper intrigue. Travelers feel watched, as though every step feeds into an unseen agenda."
 		)
-	TricksterEffect = Entry(
+	TricksterEffect = Entry_Text(
 		"Realm of Mirth",
 		f"The land surrounding {title}'s domain are confusing and mindbending. Roads twist unexpectedly, objects vanish only to reappear in improbable places, and distances and time seems random."
 		)
-	PaladinEffect = Entry(
+	PaladinEffect = Entry_Text(
 		"Inspiration",
 		f"The lands around {title}'s domain feel a strong inspiration and influence. Strongholds of idealistic and ardent followers rise like beacons. These followers rally under banners inspired by {title}'s unwavering ideals. Travelers speak of a calm yet unyielding authority that compels even the wayward to tread carefully."
 		)
-	PriestEffect = Entry(
+	PriestEffect = Entry_Text(
 		"Sacred Ascent",
 		f"Pilgrims flock to {title}'s domain, drawn by the whispered promises of divine blessings and miracles. The people hum with hymns of devotion, and the sick and weary often find unexplainable solace. Even nature seems to bow in reverence, as the land itself is blessed."
 		)
-	ScholarEffect = Entry(
+	ScholarEffect = Entry_Text(
 		"Field of Knowledge",
 		f"The region surrounding {title}'s domain is a haven for wisdom-seekers. Ancient runes, hidden libraries, and wandering sages dot the landscape, each a fragment of the grand tapestry of knowledge curated by {title}. The curious find themselves stumbling upon revelations as if they are obvious."
 		)
-	ShamanEffect = Entry(
+	ShamanEffect = Entry_Text(
 		"Spirit's Respite",
 		f"In {title}'s domain, the veil between worlds feels thin. The whispers of ancestors guide the living, and even the winds carry the faint echo of wisdom. Visitors often find themselves inexplicably rejuvenated, their burdens eased as the spirits of the land offer silent aid."
 		)
-	SorcererEffect = Entry(
+	SorcererEffect = Entry_Text(
 		"Tides of Chaos",
 		f"Within the domains of {title}, within 1 mile, reality seems pliable, as if bent by the weight of untamed magic. Flickers of light and strange distortions hint at currents of wild magic. Travelers often leave with tales of phenomena too bizarre to recount without skepticism. When any creature casts a spell, they should roll in the Wild Magic Table (Player Handbook)."
 		)
-	TravelerEffect = Entry(
+	TravelerEffect = Entry_Text(
 		"Gathering of Paths",
 		f"Campsites and bustling outposts spring up wherever {title}'s sets camp, drawing wanderers from every corner. Here, the air is alive with shared stories, and the mingling of cultures creates a tapestry of adventure that inspires all who pass through."
 		)
-	Circus = Entry(
+	Circus = Entry_Text(
 		"Wandering Carnival",
 		f"The region surrounding {title}'s domain is alive with vibrant tents and traveling performers. Music, laughter, and the scent of exotic foods create an air of festivity, attracting wanderers and adventurers alike. However, hidden beneath the revelry are whispers of secrets traded and schemes unfolding."
 		)
-	WarlockEffect = Entry(
+	WarlockEffect = Entry_Text(
 		"Shadowed Covenant",
 		f"An unnatural stillness pervades {title}'s domain, broken only by the faint whispers of distant entities. Symbols of eldritch origin mark the terrain, and an oppressive presence weighs heavily on the hearts of those who stray too close."
 		)
-	WarriorEffect = Entry(
+	WarriorEffect = Entry_Text(
 		"Field of Strife",
 		f"The land near {title}'s domain is marked by the echoes of a battle. Broken weapons and scattered armor litter the soil, while swords rust with no memory of their wielder."
 		)
-	WitchEffect = Entry(
+	WitchEffect = Entry_Text(
 		"Bewitched Swamp",
 		f"In the shadow of {title}'s domain, the forest pulses with a life of its own. Strange lights flicker among ancient trees, and the very air seems to hum with the power of forgotten spells. The brave and the foolish alike are drawn to its haunting allure."
 		)
-	WizardEffect = Entry(
+	WizardEffect = Entry_Text(
 		"Arcane Bastion",
 		f"Towering spires and intricate glyphs dominate {title}'s domain, a testament to unmatched magical mastery. The land feels alive with arcane energy, and bizarre phenomena offer a glimpse into experiments that push the boundaries of reality itself."
 		)

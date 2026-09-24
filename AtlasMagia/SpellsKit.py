@@ -148,14 +148,17 @@ class Spell:
 
 		name  = f"{spell.name}"
 		desc  = f"{spell.school}"
-		definition = ""
 		if spell.casting_time:   desc += f"({spell.casting_time})"
 		if spell.concentration:  desc += f"⟨{spell.concentration}"
 		if spell.duration:       desc += f"⟨{spell.duration}⟩"
 		if spell.ranges:         desc += f"-{spell.ranges}"
-		if spell.definition:     definition += f"\n\t{spell.definition}"
-		string = Entry(title=name, definition=definition, description=desc)
-		return string
+		#-- The header line (school, time, range) only ever printed beside a
+		#-- definition; a spell without one prints its name alone.
+		if spell.definition:
+			entry = Entry(title=name, rules=spell.definition, flavor=desc)
+		else:
+			entry = Entry(title=name)
+		return f"{entry:html}"
 
 
 def _html_to_md_lite(text):

@@ -84,7 +84,7 @@ class Background:
 				self.description,
 				self.roleplay,
 				(
-					f"**{self.hook.title}.** {self.hook.definition}"
+					f"**{self.hook.title}.** {self.hook.rules}"
 					if self.hook
 					else ""
 					),

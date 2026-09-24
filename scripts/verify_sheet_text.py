@@ -47,6 +47,8 @@ BLOCK_TAGS = re.compile(
         r"<\s*/?\s*(div|p|li|tr|td|th|h[1-6]|br|ul|ol|table|section|details|summary)\b[^>]*>",
         re.IGNORECASE,
         )
+BLOCK_BREAK = "\u2029"
+    #-- A paragraph separator no sheet text contains: marks where a block ends.
 ANY_TAG = re.compile(
         r"<[^>]+>",
         )
@@ -65,7 +67,7 @@ def Visible_Lines(
             page,
             )
     text = BLOCK_TAGS.sub(
-            "\n",
+            BLOCK_BREAK,
             text,
             )
     text = ANY_TAG.sub(
@@ -76,10 +78,12 @@ def Visible_Lines(
             text
             )
     lines = []
-    for raw in text.split("\n"):
+    for raw in text.split(BLOCK_BREAK):
         line = " ".join(
                 raw.split()
                 )
+            #-- As a browser does: newlines and tabs inside a block are
+            #-- plain spaces; only a block tag starts a new line.
         if line:
             lines.append(
                     line
