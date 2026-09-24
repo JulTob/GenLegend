@@ -724,6 +724,9 @@ class Character(Character_Skeleton):
 			Background skills and tools are granted by
 			``Apply_Background_Training`` after this builds the sheet.
 		"""
+		from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+				Unarmored_Defense,
+				)
 
 		char.skills = Char_Skills(
 			AS=char.AS,
@@ -872,9 +875,17 @@ class Character(Character_Skeleton):
 							) == "Dance"
 						and char.level >= 3
 						):
-					char.skills.Unarmed_Dance.set_proficiency()
+					Unarmored_Defense(
+							char,
+							ability="CHA",
+							shield_allowed=False,
+							)
 			elif char.character_class == "Monk":
-				char.skills.Unarmed_Monk.set_proficiency()
+				Unarmored_Defense(
+						char,
+						ability="WIS",
+						shield_allowed=False,
+						)
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Light_Weapons.set_proficiency()
 				char.skills.activate_proficiencies(2, [
@@ -981,7 +992,11 @@ class Character(Character_Skeleton):
 				char.skills.Light.set_proficiency()
 				char.skills.Medium.set_proficiency()
 				char.skills.Shields.set_proficiency()
-				char.skills.Unarmed_Barb.set_proficiency()
+				Unarmored_Defense(
+						char,
+						ability="CON",
+						shield_allowed=True,
+						)
 		return
 
 	@property

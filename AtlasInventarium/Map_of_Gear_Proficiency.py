@@ -25,16 +25,6 @@ from AtlasInventarium.Ledger_of_Weapons import (
 		)
 
 
-def _modifier(
-		score,
-		) -> int:
-	return (
-		int(
-				score
-				) - 10
-		) // 2
-
-
 def armour_allowance(
 		char,
 		) -> tuple[str, ...]:
@@ -63,52 +53,15 @@ def armour_allowance(
 	return ()
 
 
-def _unarmed_proficient(
-		skills,
-		name: str,
-		) -> bool:
-	skill = getattr(
-			skills,
-			name,
-			None,
-			)
-	if skill is None:
-		return False
-	check = getattr(
-			skill,
-			"is_proficient",
-			None,
-			)
-	return bool(
-			check
-			and check()
-			)
-
-
 def has_unarmoured_defence(
 		char,
 		) -> bool:
-	"""True when the Character's AC comes from a body-discipline formula."""
-	skills = getattr(
-			char,
-			"skills",
-			None,
+	"""True when the Character carries the Unarmored Defense Tag."""
+	from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+			Has_Unarmored_Defense,
 			)
-	if skills is None:
-		return False
-	return (
-			_unarmed_proficient(
-					skills,
-					"Unarmed_Monk",
-					)
-			or _unarmed_proficient(
-					skills,
-					"Unarmed_Barb",
-					)
-			or _unarmed_proficient(
-					skills,
-					"Unarmed_Dance",
-					)
+	return Has_Unarmored_Defense(
+			char
 			)
 
 
@@ -118,26 +71,15 @@ def armour_voids_unarmoured(
 	"""
 	True when worn armour or a shield turns the formula off.
 
-	Monk and College of Dance Unarmored Defense only apply while wearing
-	no armour and wielding no Shield. Barbarian Unarmored Defense does not
-	mind a shield, and Medium armour is still a legal (worse) option.
+	The Tag knows whether its source allows a Shield: a Monk's and a
+	dancer's does not, a Barbarian's does (and Medium armour is still a
+	legal, worse, option for the Barbarian).
 	"""
-	skills = getattr(
-			char,
-			"skills",
-			None,
+	from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+			Shield_Voids_Unarmored_Defense,
 			)
-	if skills is None:
-		return False
-	return (
-			_unarmed_proficient(
-					skills,
-					"Unarmed_Monk",
-					)
-			or _unarmed_proficient(
-					skills,
-					"Unarmed_Dance",
-					)
+	return Shield_Voids_Unarmored_Defense(
+			char
 			)
 
 
@@ -145,66 +87,19 @@ def unarmoured_formula(
 		char,
 		) -> int:
 	"""
-	The Character's own no-armour AC.
+	The Character's own no-armour AC, as the Unarmored Defense Tag reads it.
 
-	Monk adds Wisdom, Barbarian adds Constitution, College of Dance adds
-	Charisma; everyone else is the plain 10 + Dexterity. Returned as a
-	number so ``armour_class`` can simply take the better of it and any
-	worn armour — no special-casing downstream.
+	Returned as a number so ``armour_class`` can simply take the better of
+	it and any worn armour — no special-casing downstream.
 	"""
-	scores = getattr(
-			char,
-			"AS",
-			None,
+	from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+			Unarmored_Armour_Class,
 			)
-	dexterity = _modifier(
-			getattr(
-					scores,
-					"DEX",
-					10,
-					)
+	return Unarmored_Armour_Class(
+			char
 			)
-	base = 10 + dexterity
-
-	skills = getattr(
-			char,
-			"skills",
-			None,
-			)
-	if skills is None:
-		return base
-
-	bonuses = (
-			(
-					"Unarmed_Monk",
-					"WIS",
-					),
-			(
-					"Unarmed_Barb",
-					"CON",
-					),
-			(
-					"Unarmed_Dance",
-					"CHA",
-					),
-			)
-	for skill_name, ability in bonuses:
-		if not _unarmed_proficient(
-				skills,
-				skill_name,
-				):
-			continue
-		base = max(
-				base,
-				10 + dexterity + _modifier(
-						getattr(
-								scores,
-								ability,
-								10,
-								)
-						),
-				)
-	return base
+		#-- The Tag lives with the Features.  Imported here, at the call, so
+		#-- this Map stays importable before the Feature catalogues load.
 
 
 def may_use_shield(
@@ -312,51 +207,29 @@ __all__ = (
 
 
 def _self_test():
+	from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+			Unarmored_Defense,
+			)
+
 	class Scores:
 		DEX = 14
 		CON = 16
 		WIS = 12
 		CHA = 16
 
-	class Skill:
-		def __init__(
-				self,
-				proficient=False,
-				):
-			self._p = proficient
-
-		def is_proficient(
-				self,
-				):
-			return self._p
-
-	class Skills:
-		def __init__(
-				self,
-				*,
-				unarmed_monk=False,
-				unarmed_barb=False,
-				unarmed_dance=False,
-				):
-			self.Unarmed_Monk = Skill(
-					unarmed_monk
-					)
-			self.Unarmed_Barb = Skill(
-					unarmed_barb
-					)
-			self.Unarmed_Dance = Skill(
-					unarmed_dance
-					)
-
 	class Dummy:
 		def __init__(
 				self,
-				**kw,
+				ability=None,
+				shield_allowed=True,
 				):
 			self.AS = Scores()
-			self.skills = Skills(
-					**kw
-					)
+			if ability is not None:
+				Unarmored_Defense(
+						self,
+						ability=ability,
+						shield_allowed=shield_allowed,
+						)
 
 	# --- unarmoured_formula: everyone else is plain 10 + Dex --------------
 	plain = Dummy()
@@ -368,7 +241,8 @@ def _self_test():
 
 	# --- Monk adds Wisdom, Barbarian adds Constitution ---------------------
 	monk = Dummy(
-			unarmed_monk=True,
+			ability="WIS",
+			shield_allowed=False,
 			)
 	assert unarmoured_formula(
 			monk
@@ -383,7 +257,8 @@ def _self_test():
 			) is False, "a shield voids Monk Unarmored Defence"
 
 	barb = Dummy(
-			unarmed_barb=True,
+			ability="CON",
+			shield_allowed=True,
 			)
 	assert unarmoured_formula(
 			barb
@@ -396,7 +271,8 @@ def _self_test():
 
 	# --- College of Dance adds Charisma; armour and shields void it --------
 	dance = Dummy(
-			unarmed_dance=True,
+			ability="CHA",
+			shield_allowed=False,
 			)
 	assert unarmoured_formula(
 			dance

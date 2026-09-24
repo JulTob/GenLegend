@@ -12,6 +12,9 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+		Unarmored_Armour_Class,
+		)
 
 
 GUILD = "Barbarian"
@@ -358,40 +361,10 @@ Rage = _core(
 				),
 		)
 
-def _unarmored_armour_class(
-		char,
-		) -> int:
-	"""What this Character's AC would be with nothing on."""
-	from AtlasActorLudi.Map_of_Scores import Modifier
-
-	scores = getattr(
-			char,
-			"AS",
-			None,
-			)
-
-	if scores is None:
-		return 10
-
-	return 10 + Modifier(
-			getattr(
-					scores,
-					"DEX",
-					10,
-					)
-			) + Modifier(
-			getattr(
-					scores,
-					"CON",
-					10,
-					)
-			)
-
-
 def _unarmored_defense_entry(
 		char,
 		) -> str:
-	armour_class = _unarmored_armour_class( char )
+	armour_class = Unarmored_Armour_Class( char )
 
 	return (
 			"*You trust your reflexes more than any material.*\n\n"
@@ -407,7 +380,7 @@ Unarmored_Defense = _core(
 		min_level=1,
 		description=_unarmored_defense_entry,
 		chips=(
-				("Unarmored AC", _unarmored_armour_class, "🛡️"),
+				("Unarmored AC", Unarmored_Armour_Class, "🛡️"),
 				),
 		)
 
