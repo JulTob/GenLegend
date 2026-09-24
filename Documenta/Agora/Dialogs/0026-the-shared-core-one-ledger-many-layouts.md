@@ -5,7 +5,7 @@
 - **Related Questae:** QST-0016 · QST-0016.5 (one sheet renderer) · QST-0020 (features with TOP) · QST-0021 (Venustas) · QST-0077 (sheet order, Solved) · QST-0078 · QST-0069 · QST-0081.1 · QST-0081.2 · QST-0081.4 · QST-0093.5 (the a3 pin)
 - **Related Decrees and Dialogs:** Decree 0002 (the Character root) · Decree 0004 (player first) · Decree 0007 (every change is a proposal) · Dialog 0024 (TOP as a paradigm) · Dialog 0025 (the ledger is the writer, the sheet its projection)
 - **Consuls called:** none convened. An agent panel stood in (six readers, three designers, three judges); see Deliberation. Julio may convene the Agora on any open ruling below.
-- **Status:** 🟢 converged in the panel · awaiting Julio's rulings R1 to R5
+- **Status:** 🟢 converged in the panel · awaiting Julio's rulings R1 to R6
 
 ---
 
@@ -15,7 +15,7 @@
 
 **Constraints from Canon.**
 - Decree 0002 §2 to §3: the root stores name, title, scores, size, tier, seed and the Dice; "everything else is computed or tagged"; "a stored skill is a cache that drifts".
-- Feature-Text canon: "Chips are lookups, prose is the entry. A Feature with a chip and no prose is a record." And: "An Entry is a projection, not a snapshot"; an Entry callable must be a pure read.
+- Feature-Text canon: "Chips are lookups, prose is the entry." *(The canon also said "a Feature with a chip and no prose is a record". Julio ruled on 2026-09-24 that this was an agent's unratified addition, one solution among many, and it has been removed; see R6.)* And: "An Entry is a projection, not a snapshot"; an Entry callable must be a pure read.
 - TagKit Doctrine: domain axes as Tags, never string checks; one source of truth per type.
 - Code-Style: `narrative=True` is declared, "not an inference from the prose or source name"; presentation components do not own production rules.
 - QST-0021:63: Venustas does not import Atlas domain code.
@@ -96,7 +96,7 @@ Measured on 2026-09-23 against TagKit 0.2.0a1. **(V)** marks a fact checked dire
 
 **All three judges also agreed on the formula.** It is true of a **Tag**, not of the Character, and it is off by one term:
 - **Flags** need no store. Tag membership already is the flag.
-- **Chips** are not a separate list. Each Chip belongs to an Entry (Feature-Text: a chip with no prose is a record). A separate rail list would be a fourth rail producer, beside the three that already print Sorcery Points twice.
+- **Chips** need one writer and a stable key per value. The duplicate Sorcery Points chip comes from three producers with no shared key, not from where chips are stored. The panel proposed hanging every Chip from an Entry and relied on a canon line ("a chip with no prose is a record") that Julio has since withdrawn. Where a Chip lives is therefore open: see R6.
 - **Decisions** are missing. Choices drawn once from a named Dice Bag (weapon masteries, a Tiefling's spellcasting ability) are Records the Entry text reads.
 
 **Where the judges split: store the grants (C) or derive them (B)?**
@@ -134,7 +134,7 @@ Vox: The panel agrees with Julio's direction and changes three details of its sh
 
 ### The three changes
 
-1. **Chips live inside Entries.** One store, not two. The rail is every Chip of the placed Entries, in section order. Vitals (AC, HP, Speed …) become chip-only Entries, which Feature-Text already calls records.
+1. **Every Chip has a key and one writer.** That alone removes the duplicate rail chips. Whether a Chip hangs from an Entry, stands alone as its own grant, or both, is open (R6). The panel's version (chips inside Entries, vitals as chip-only Entries) is one option, not a rule.
 2. **The dictionary of sections is a layout, built when printing.** Each Entry stores its facts (origin, kind, activation, level). A layout says which facet makes the headings. The player sheet groups by origin, the stat block by activation, from the same Entries.
 3. **The objects do not print themselves.** Chip and Entry are plain frozen records in the model. Printer functions in Venustas turn them into HTML, Markdown or plain text. Printing on the object is what baked `<function …>` into today's Chip.
 
@@ -436,5 +436,11 @@ The NPC half waits for Decree 0004 to lift. Full NPC generation fails today; onl
 **R4. Sequence after the a3 pin?** The proposal says yes: steps 1 and 2 now, the rest after QST-0093.5.
 
 **R5. What does "flags" mean to you?** The panel read it as Tag membership, which needs no store. If you meant something else, such as conditions or statuses that change during play, those are TagKit Records, and this Dialog should say so.
+
+**R6. Where does a Chip live?** Options:
+- **(a) Inside its Entry**: the Entry carries its Chips; a Chip needs a prose Entry to exist. This was the panel's sketch.
+- **(b) Standalone**: a Chip is its own grant with its own key and facets (origin, order), as Julio first proposed; an Entry may refer to it.
+- **(c) Both**: a Chip may stand alone or be attached to an Entry.
+Whichever is chosen, each Chip keeps one stable key and one writer, and the rail order is declared by the layout.
 
 → Awaiting Julio's decision. To be recorded as a Decree amending Decree 0002 (if R1 is taken), with a Questa under QST-0020 and QST-0016.
