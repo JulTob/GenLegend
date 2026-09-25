@@ -337,67 +337,68 @@ touch on the page.
 
 ---
 
-## 📖 7. Feature lines: drafts
+## 📖 7. Feature lines: landed draft
 
-*Italic inspiration line only. Register: documentary natural history, concrete
-observation, active inquiry, no proper nouns, no dice, no em-dashes. Rule text
-untouched except the em-dashes. Proposals.*
+*Italic inspiration line before the rule. Register: documentary natural history,
+concrete observation, active inquiry, no proper nouns, no dice. The lines below
+are wired in `AtlasOfTraining/Map_of_Druid_Training.py`; the rule text remains
+separate from the flavor line.*
 
 ### Core lessons
 
 | Lesson | Draft |
 |---|---|
-| **Spellcasting** (1) | *You do not cast from memory. You test what the world is doing now.* |
-| **Druidic** (1) | *A symbol is not an answer. It is an instruction to look closer.* |
+| **Spellcasting** (1) | *You do not cast from memory. You study what the world is doing now.* |
+| **Druidic** (1) | *A mark is not an answer. It is a question left where the patient will find it.* |
 | **Primal Order: Magician** (1) | *You kept the question open long enough for it to become a method.* |
 | **Primal Order: Warden** (1) | *You studied the body until the body could answer back.* |
 | **Wild Shape** (2) | *The form is not a disguise. It is what the study looks like from inside.* |
-| **Wild Companion** (2) | *The experiment needs another living subject.* |
-| **Wild Resurgence** (5) | *A spell is a question. A shape is an answer you can walk around in.* |
+| **Wild Companion** (2) | *The world answers the experiment with another living participant.* |
+| **Wild Resurgence** (5) | *A spell becomes a shape. A shape becomes a spell. The inquiry continues.* |
 | **Elemental Fury** (7) | *The force was there before your hand. Study taught it where to go.* |
 | **Improved Elemental Fury** (15) | *The measurement has become exact.* |
 | **Beast Spells** (18) | *You changed bodies without losing the observer.* |
-| **Archdruid** (20) | *You have studied time long enough to stop aging at its pace.* |
+| **Archdruid** (20) | *You have studied life long enough for time to lose its authority over you.* |
 
 ### Circle of the Land
 
 | Feature | Draft |
 |---|---|
-| **Circle Spells** (3) | *Each country teaches its own way of answering.* |
+| **Circle Spells** (3) | *Every land keeps its own vocabulary. You learned how to listen.* |
 | **Land's Aid** (3) | *The ground feeds its own and turns on the rest, in one gesture.* |
-| **Natural Recovery** (6) | *Rest in a place you have learned and it gives you back your reach.* |
+| **Natural Recovery** (6) | *Rest in a place you have studied, and it gives your reach back.* |
 | **Nature's Ward** (10) | *Poison forgets your name. Fear finds nothing in you to hold. Green things part.* |
-| **Nature's Sanctuary** (14) | *Even the beast, even the briar, turns aside from the one who remembered the terms.* |
+| **Nature's Sanctuary** (14) | *The beast and the briar know the difference between an intruder and one who belongs.* |
 
 ### Circle of the Moon
 
 | Feature | Draft |
 |---|---|
-| **Circle Forms** (3) | *Not even flesh is the limit of the vocabulary.* |
-| **Moon Spells** (3) | *The night's whole company: silver, and teeth.* |
-| **Improved Circle Forms** (6) | *Moonlight in the claw.* |
-| **Moonlight Step** (10) | *You move the way light moves.* |
-| **Lunar Form** (14) | *Phases do not destroy the moon.* |
+| **Circle Forms** (3) | *The vocabulary of life is larger than any single body.* |
+| **Moon Spells** (3) | *The night has a whole company: silver, shadow, and teeth.* |
+| **Improved Circle Forms** (6) | *The study has entered the muscle.* |
+| **Moonlight Step** (10) | *You move through the world as moonlight does, arriving without crossing the distance.* |
+| **Lunar Form** (14) | *The phase changes. The moon remains.* |
 
 ### Circle of the Sea
 
 | Feature | Draft |
 |---|---|
-| **Sea Spells** (3) | *You came back with its weather in you.* |
-| **Wrath of the Sea** (3) | *You do not aim the sea. You stand in it, and it happens around you.* |
-| **Aquatic Affinity** (6) | *The border opened. Breath, and speed, and the cold not minding you.* |
-| **Stormborn** (10) | *A storm spares its own.* |
-| **Oceanic Gift** (14) | *One water. It feeds your people and breaks what stands against them, with no hatred in it anywhere.* |
+| **Sea Spells** (3) | *You came back with the sea's weather in you.* |
+| **Wrath of the Sea** (3) | *You do not aim the sea. You become one with it, and the water moves around you.* |
+| **Aquatic Affinity** (6) | *The border opens. Breath, speed, and cold no longer stop you.* |
+| **Stormborn** (10) | *A storm spares what it recognizes as its own.* |
+| **Oceanic Gift** (14) | *One water feeds your people and breaks what stands against them, without hatred in either act.* |
 
 ### Circle of Stars
 
 | Feature | Draft |
 |---|---|
 | **Star Map** (3) | *You watched until the watching became a map.* |
-| **Starry Form** (3) | *The sky lends its figures the way the forest lends its beasts: from a higher pasture, by the same friendship.* |
-| **Cosmic Omen** (6) | *Read the sky at rest. Then tell luck which way to lean, a breath before it lands.* |
-| **Twinkling Constellations** (10) | *The figures burn brighter for being read.* |
-| **Full of Stars** (14) | *Watch anything long enough, with enough love, and you take on its nature.* |
+| **Starry Form** (3) | *The heavens lend you their figures: archer, chalice, and dragon, each a pattern you can inhabit.* |
+| **Cosmic Omen** (6) | *Read the sky at rest, then tell fortune which way to lean before it lands.* |
+| **Twinkling Constellations** (10) | *The figures burn brighter because you have learned how to see them.* |
+| **Full of Stars** (14) | *Watch anything long enough, with enough wonder, and you begin to take on its nature.* |
 
 ---
 
