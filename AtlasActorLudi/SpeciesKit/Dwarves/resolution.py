@@ -117,7 +117,7 @@ def _project_stonecunning(
 			f"range of {Stonecunning.RANGE} feet for "
 			f"{Stonecunning.DURATION_MINUTES} minutes. You must be on a stone "
 			f"surface or touching a stone surface to use this "
-			f"{Stonecunning.SENSE}. The stone can be natural or worked. You can "
+			f"{Stonecunning.ACTION}. The stone can be natural or worked. You can "
 			f"use this {Stonecunning.ACTION} a number of times equal to your "
 			f"Proficiency Bonus ({proficiency}), and you regain all expended "
 			f"uses when you finish a {Stonecunning.RECOVERY}."
