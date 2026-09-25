@@ -130,12 +130,12 @@ def _primal_order_entry(
 			)
 	if order == "Magician":
 		return _Studied(
-			"You kept the question open long enough for it to become a method.",
+			"Watching brings forth real understanding.",
 			"<b>Primal Order: Magician.</b> You know one extra cantrip "
 			"from the Druid spell list and lean into primal spellcraft."
 			)
 	return _Studied(
-		"You studied the body until it could answer back.",
+		"Experience brings forth real understanding.",
 		"<b>Primal Order: Warden.</b> You gain proficiency with Martial "
 		"weapons and training in Medium armor."
 		)
@@ -162,7 +162,7 @@ def _wild_shape_entry(
 			else ""
 			)
 	return _Studied(
-		"The form is not a disguise. It is what the study looks like from inside.",
+		"You need to be to understand. Become, and see.",
 		"The power of nature allows you to assume the form of an animal. "
 		"As a <i>Bonus Action</i>, you shape-shift into a Beast form you "
 		"have learned. You stay in that form for a number of hours equal "
@@ -183,7 +183,7 @@ def _elemental_fury_entry(
 			)
 	die = "2d6" if level >= 15 else "1d6"
 	return _Studied(
-		"The force was there before your hand. Study taught it where to go.",
+		"The core concepts are the same. Application makes them differ.",
 		"The might of the elemental world infuses your Wild Shape and "
 		"spells. Once per turn, choose one option:"
 		"<br><b>Potent Spellcasting.</b> When you cast a Druid cantrip "
@@ -198,7 +198,7 @@ Spellcasting = _core(
 		name="Spellcasting",
 		min_level=1,
 		description=_Studied(
-			"You do not cast from memory. You study what the world is doing now.",
+			"Understanding the world gives you the power to affect it.",
 			"Drawing on the power of the natural world, you can cast spells. "
 			"Wisdom is your spellcasting ability for Druid spells. You can "
 			"use a Druidic Focus as your Spellcasting Focus. You prepare a "
@@ -210,7 +210,7 @@ Druidic = _core(
 		name="Druidic",
 		min_level=1,
 		description=_Studied(
-			"A mark is not an answer. It is a question left where the patient will find it.",
+			"Some symbols carry universal meaning. Any Druid can decipher them.",
 			"You know <b>Druidic</b>, the secret language of Druids. You can "
 			"speak it and use it to leave hidden messages. Creatures that "
 			"don't know Druidic automatically fail to detect these messages."
@@ -260,7 +260,7 @@ Wild_Companion = _core(
 		name="Wild Companion",
 		min_level=2,
 		description=_Studied(
-			"The world answers the experiment with another living participant.",
+			"The experiment of life claims another participant.",
 			"You learn <i>Find Familiar</i> and can cast it without preparing "
 			"it. As a <i>Magic action</i>, expend a spell slot or a use of "
 			"Wild Shape to cast it without Material components. The familiar "
@@ -273,7 +273,7 @@ Wild_Resurgence = _core(
 		name="Wild Resurgence",
 		min_level=5,
 		description=_Studied(
-			"A spell becomes a shape. A shape becomes a spell. The inquiry continues.",
+			"Life feeds life. The cycle continues.",
 			"Once on each of your turns, if you have no uses of Wild Shape "
 			"left, you can give yourself one use by expending a spell slot "
 			"(no action required). In addition, you can expend one use of "
@@ -292,8 +292,7 @@ Elemental_Fury = _core(
 Improved_Elemental_Fury = _core(
 		name="Improved Elemental Fury",
 		min_level=15,
-		description=_Studied(
-			"The force no longer scatters. It arrives exactly where you measured.",
+		description=(
 			"Your Elemental Fury grows more powerful."
 			"<br><b>Potent Spellcasting</b> now adds double your Wisdom "
 			"modifier to cantrip damage."
@@ -306,7 +305,7 @@ Beast_Spells = _core(
 		name="Beast Spells",
 		min_level=18,
 		description=_Studied(
-			"You changed bodies without losing the observer.",
+			"The observer affects the experiment. The experiment affects the observer.",
 			"You can perform the Somatic and Verbal components of a Druid "
 			"spell while in a Beast form, but you can't provide Material "
 			"components."
@@ -317,7 +316,7 @@ Archdruid = _core(
 		name="Archdruid",
 		min_level=20,
 		description=_Studied(
-			"You have studied life long enough for time to lose its authority over you.",
+			"You truly understand.",
 			"The title of Archdruid is yours. You can use Wild Shape an "
 			"unlimited number of times; whenever you roll Initiative with "
 			"no uses remaining, you regain one use. Moreover, for every "
@@ -351,7 +350,7 @@ Circle_Spells_Land = _land(
 		name="Circle Spells",
 		min_level=3,
 		description=_Studied(
-			"Every land keeps its own vocabulary. You learned how to listen.",
+			"This land keeps its own words. You learned how to listen.",
 			"Your mystical connection to the land infuses you with the "
 			"ability to cast certain spells. You always have prepared a set "
 			"of spells determined by your chosen land type (Arctic, Coast, "
@@ -364,7 +363,7 @@ Lands_Aid = _land(
 		name="Land's Aid",
 		min_level=3,
 		description=_Studied(
-			"The ground feeds its own and turns on the rest, in one gesture.",
+			"The land selects. You adapt.",
 			"As a <i>Magic action</i>, expend a use of Wild Shape to bolster "
 			"allies or drain a foe. Choose a point within 60 feet — each "
 			"creature of your choice within 30 feet regains Hit Points equal "
@@ -378,7 +377,7 @@ Natural_Recovery = _land(
 		name="Natural Recovery",
 		min_level=6,
 		description=_Studied(
-			"Rest in a place you have studied, and it gives your reach back.",
+			"This land provides.",
 			"When you finish a Short Rest, you can expend uses of Wild Shape "
 			"to recover spell slots. Each use of Wild Shape you expend "
 			"recovers one spell slot level; recovered slots can't exceed "
@@ -390,7 +389,7 @@ Natures_Ward = _land(
 		name="Nature's Ward",
 		min_level=10,
 		description=_Studied(
-			"Poison forgets your name. Fear finds nothing in you to hold. Green things part.",
+			"Evolve, adapt, or die.",
 			"You have Immunity to the Frightened and Poisoned conditions "
 			"and to disease. Difficult terrain caused by natural plants "
 			"doesn't impede your movement."
@@ -401,7 +400,7 @@ Natures_Sanctuary = _land(
 		name="Nature's Sanctuary",
 		min_level=14,
 		description=_Studied(
-			"The beast and the briar know the difference between an intruder and one who belongs.",
+			"Life finds you, and your land protects you.",
 			"When a Beast or Plant creature attacks you, it must make a "
 			"Wisdom saving throw against your spell save DC. On a failed "
 			"save, the creature must choose a different target, or the "
@@ -436,7 +435,7 @@ Circle_Forms = _moon(
 		name="Circle Forms",
 		min_level=3,
 		description=_Studied(
-			"The vocabulary of life is larger than any single body.",
+			"Life is larger than any single body.",
 			"Your Wild Shape forms grow more powerful. You can transform "
 			"into any Beast with a CR equal to your Druid level divided by 3 "
 			"(round down, minimum 1). Starting at level 10, you can also "
@@ -449,7 +448,7 @@ Moon_Spells = _moon(
 		name="Moon Spells",
 		min_level=3,
 		description=_Studied(
-			"The night has a whole company: silver, shadow, and teeth.",
+			"Who said beasts did not know spells?",
 			"Your connection to the moon grants extra spells always prepared: "
 			"<i>Faerie Fire, Moonbeam, Vampiric Touch, Greater Invisibility.</i> "
 			"These don't count against the number of spells you can prepare."
@@ -459,8 +458,7 @@ Moon_Spells = _moon(
 Improved_Circle_Forms = _moon(
 		name="Improved Circle Forms",
 		min_level=6,
-		description=_Studied(
-			"The study has entered the muscle.",
+		description=(
 			"While in a Wild Shape form, you can expend spell slots to deal "
 			"extra Radiant damage. As a Bonus Action, expend a spell slot; "
 			"the next time you hit a creature this turn, add 2d6 Radiant "
@@ -472,7 +470,7 @@ Moonlight_Step = _moon(
 		name="Moonlight Step",
 		min_level=10,
 		description=_Studied(
-			"You move through the world as moonlight does, arriving without crossing the distance.",
+			"Change comes, sometimes in just an instant.",
 			"As a Bonus Action, you teleport up to 30 feet to an unoccupied "
 			"space you can see. Uses equal your Wisdom modifier (minimum 1); "
 			"all uses regained on a Long Rest."
@@ -519,7 +517,7 @@ Sea_Spells = _sea(
 		name="Sea Spells",
 		min_level=3,
 		description=_Studied(
-			"You came back with the sea's weather in you.",
+			"The ocean around you caused an ocean inside you.",
 			"Your bond to the ocean grants extra spells always prepared: "
 			"<i>Fog Cloud, Thunderwave, Shatter, Misty Step.</i> "
 			"These don't count against the number of spells you can prepare."
@@ -530,7 +528,7 @@ Wrath_of_the_Sea = _sea(
 		name="Wrath of the Sea",
 		min_level=3,
 		description=_Studied(
-			"You do not aim the sea. You become one with it, and the water moves around you.",
+			"You came back from the storm with a storm in you.",
 			"As a Bonus Action, expend a use of Wild Shape to create a "
 			"watery aura for 10 minutes. Whenever a creature starts its turn "
 			"within 10 feet of you, it must make a Strength saving throw "
@@ -543,7 +541,7 @@ Aquatic_Affinity = _sea(
 		name="Aquatic Affinity",
 		min_level=6,
 		description=_Studied(
-			"The border opens. Breath, speed, and cold no longer stop you.",
+			"The mind opens. You belong to the sea.",
 			"You gain a Swim Speed equal to your Speed, can breathe "
 			"underwater, and have Advantage on Strength (Athletics) checks "
 			"while swimming. Wild Shape forms also gain your Swim Speed."
@@ -565,7 +563,7 @@ Stormborn = _sea(
 		name="Stormborn",
 		min_level=10,
 		description=_Studied(
-			"A storm spares what it recognizes as its own.",
+			"A storm cannot harm a storm.",
 			"You have Resistance to Cold, Lightning, and Thunder damage. "
 			"Once per turn when you deal Cold, Lightning, or Thunder damage "
 			"with a spell, you can push the target up to 10 feet away."
@@ -577,7 +575,7 @@ Oceanic_Gift = _sea(
 		name="Oceanic Gift",
 		min_level=14,
 		description=_Studied(
-			"One water feeds your people and breaks what stands against them, without hatred in either act.",
+			"Wherever your attention is, that is the eye of your storm.",
 			"As an action, unleash a surge of ocean energy. Each creature "
 			"of your choice within 60 feet must succeed on a Strength saving "
 			"throw or take 10d8 Cold damage and be knocked Prone; on a "
@@ -619,7 +617,7 @@ def _starry_form_entry(
 			)
 	die = "2d8" if level >= 10 else "1d8"
 	return _Studied(
-		"The heavens lend you their figures: archer, chalice, and dragon, each a pattern you can inhabit.",
+		"One night can chart many constellations, and so can you.",
 		"When you use Wild Shape, you can expend a use to adopt a luminous "
 		"Starry Form instead of a Beast form. You retain your statistics, "
 		"but gain one active constellation:"
@@ -655,7 +653,7 @@ Cosmic_Omen = _stars(
 		name="Cosmic Omen",
 		min_level=6,
 		description=_Studied(
-			"Read the sky at rest, then tell fortune which way to lean before it lands.",
+			"Read the sky, find the signs, walk the path.",
 			"When you finish a Long Rest, roll a die. Until your next Long "
 			"Rest, you can use a Reaction when a creature you can see within "
 			"30 feet makes a roll:"
@@ -670,7 +668,7 @@ Twinkling_Constellations = _stars(
 		name="Twinkling Constellations",
 		min_level=10,
 		description=_Studied(
-			"The figures burn brighter because you have learned how to see them.",
+			"The darker the night, the brighter the stars.",
 			"Your Starry Form constellations improve. Archer and Chalice "
 			"each deal or restore 2d8 instead of 1d8. While in Dragon form, "
 			"you have a Fly Speed of 20 feet and can hover."
@@ -681,7 +679,7 @@ Full_of_Stars = _stars(
 		name="Full of Stars",
 		min_level=14,
 		description=_Studied(
-			"Watch anything long enough, with enough wonder, and you begin to take on its nature.",
+			"The night hides the world, but reveals a universe.",
 			"While in your Starry Form, you become partially incorporeal, "
 			"gaining Resistance to Bludgeoning, Piercing, and Slashing damage."
 			),

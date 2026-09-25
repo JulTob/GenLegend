@@ -348,57 +348,57 @@ separate from the flavor line.*
 
 | Lesson | Draft |
 |---|---|
-| **Spellcasting** (1) | *You do not cast from memory. You study what the world is doing now.* |
-| **Druidic** (1) | *A mark is not an answer. It is a question left where the patient will find it.* |
-| **Primal Order: Magician** (1) | *You kept the question open long enough for it to become a method.* |
-| **Primal Order: Warden** (1) | *You studied the body until the body could answer back.* |
-| **Wild Shape** (2) | *The form is not a disguise. It is what the study looks like from inside.* |
-| **Wild Companion** (2) | *The world answers the experiment with another living participant.* |
-| **Wild Resurgence** (5) | *A spell becomes a shape. A shape becomes a spell. The inquiry continues.* |
-| **Elemental Fury** (7) | *The force was there before your hand. Study taught it where to go.* |
-| **Improved Elemental Fury** (15) | *The measurement has become exact.* |
-| **Beast Spells** (18) | *You changed bodies without losing the observer.* |
-| **Archdruid** (20) | *You have studied life long enough for time to lose its authority over you.* |
+| **Spellcasting** (1) | *Understanding the world gives you the power to affect it.* |
+| **Druidic** (1) | *Some symbols carry universal meaning. Any Druid can decipher them.* |
+| **Primal Order: Magician** (1) | *Watching brings forth real understanding.* |
+| **Primal Order: Warden** (1) | *Experience brings forth real understanding.* |
+| **Wild Shape** (2) | *You need to be to understand. Become, and see.* |
+| **Wild Companion** (2) | *The experiment of life claims another participant.* |
+| **Wild Resurgence** (5) | *Life feeds life. The cycle continues.* |
+| **Elemental Fury** (7) | *The core concepts are the same. Application makes them differ.* |
+| **Improved Elemental Fury** (15) | *(No separate line; this feature extends Elemental Fury.)* |
+| **Beast Spells** (18) | *The observer affects the experiment. The experiment affects the observer.* |
+| **Archdruid** (20) | *You truly understand.* |
 
 ### Circle of the Land
 
 | Feature | Draft |
 |---|---|
-| **Circle Spells** (3) | *Every land keeps its own vocabulary. You learned how to listen.* |
-| **Land's Aid** (3) | *The ground feeds its own and turns on the rest, in one gesture.* |
-| **Natural Recovery** (6) | *Rest in a place you have studied, and it gives your reach back.* |
-| **Nature's Ward** (10) | *Poison forgets your name. Fear finds nothing in you to hold. Green things part.* |
-| **Nature's Sanctuary** (14) | *The beast and the briar know the difference between an intruder and one who belongs.* |
+| **Circle Spells** (3) | *This land keeps its own words. You learned how to listen.* |
+| **Land's Aid** (3) | *The land selects. You adapt.* |
+| **Natural Recovery** (6) | *This land provides.* |
+| **Nature's Ward** (10) | *Evolve, adapt, or die.* |
+| **Nature's Sanctuary** (14) | *Life finds you, and your land protects you.* |
 
 ### Circle of the Moon
 
 | Feature | Draft |
 |---|---|
-| **Circle Forms** (3) | *The vocabulary of life is larger than any single body.* |
-| **Moon Spells** (3) | *The night has a whole company: silver, shadow, and teeth.* |
-| **Improved Circle Forms** (6) | *The study has entered the muscle.* |
-| **Moonlight Step** (10) | *You move through the world as moonlight does, arriving without crossing the distance.* |
+| **Circle Forms** (3) | *Life is larger than any single body.* |
+| **Moon Spells** (3) | *Who said beasts did not know spells?* |
+| **Improved Circle Forms** (6) | *(No separate line; this feature extends Circle Forms.)* |
+| **Moonlight Step** (10) | *Change comes, sometimes in just an instant.* |
 | **Lunar Form** (14) | *The phase changes. The moon remains.* |
 
 ### Circle of the Sea
 
 | Feature | Draft |
 |---|---|
-| **Sea Spells** (3) | *You came back with the sea's weather in you.* |
-| **Wrath of the Sea** (3) | *You do not aim the sea. You become one with it, and the water moves around you.* |
-| **Aquatic Affinity** (6) | *The border opens. Breath, speed, and cold no longer stop you.* |
-| **Stormborn** (10) | *A storm spares what it recognizes as its own.* |
-| **Oceanic Gift** (14) | *One water feeds your people and breaks what stands against them, without hatred in either act.* |
+| **Sea Spells** (3) | *The ocean around you caused an ocean inside you.* |
+| **Wrath of the Sea** (3) | *You came back from the storm with a storm in you.* |
+| **Aquatic Affinity** (6) | *The mind opens. You belong to the sea.* |
+| **Stormborn** (10) | *A storm cannot harm a storm.* |
+| **Oceanic Gift** (14) | *Wherever your attention is, that is the eye of your storm.* |
 
 ### Circle of Stars
 
 | Feature | Draft |
 |---|---|
 | **Star Map** (3) | *You watched until the watching became a map.* |
-| **Starry Form** (3) | *The heavens lend you their figures: archer, chalice, and dragon, each a pattern you can inhabit.* |
-| **Cosmic Omen** (6) | *Read the sky at rest, then tell fortune which way to lean before it lands.* |
-| **Twinkling Constellations** (10) | *The figures burn brighter because you have learned how to see them.* |
-| **Full of Stars** (14) | *Watch anything long enough, with enough wonder, and you begin to take on its nature.* |
+| **Starry Form** (3) | *One night can chart many constellations, and so can you.* |
+| **Cosmic Omen** (6) | *Read the sky, find the signs, walk the path.* |
+| **Twinkling Constellations** (10) | *The darker the night, the brighter the stars.* |
+| **Full of Stars** (14) | *The night hides the world, but reveals a universe.* |
 
 ---
 
