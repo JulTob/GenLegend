@@ -42,13 +42,6 @@ def _project_nimbleness(
 			"least one size larger than you, though you can't stop "
 			"there."
 			),
-		chips=(
-			(
-				"Creature Passage",
-				"+1 size",
-				"🦶",
-				),
-			),
 		level=1,
 		)
 
@@ -66,13 +59,6 @@ def _project_luck(
 			"so.*\n\n"
 			"When you roll a 1 on the d20 of a D20 Test, you can roll the "
 			"die again, and you must use the new roll."
-			),
-		chips=(
-			(
-				"Luck Reroll",
-				"Natural 1",
-				"🍀",
-				),
 			),
 		level=1,
 		)
@@ -92,13 +78,6 @@ def _project_natural_stealth(
 			"You can take the Hide action even when you are obscured only "
 			"by a creature that is at least one size larger than "
 			"you."
-			),
-		chips=(
-			(
-				"Hide Cover",
-				"+1 size creature",
-				"🥷",
-				),
 			),
 		level=1,
 		)

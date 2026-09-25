@@ -526,13 +526,6 @@ class Wildwarden(Origin_Feat):
 			Wildwarden.NAME,
 			description,
 			source="Origin Feat",
-			chips=(
-				(
-					"Speak with Animals",
-					"Ritual 8h",
-					"🦊",
-					),
-				),
 			)
 
 
