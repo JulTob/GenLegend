@@ -210,7 +210,7 @@ Druidic = _core(
 		name="Druidic",
 		min_level=1,
 		description=_Studied(
-			"Some symbols carry universal meaning. Any Druid can decipher them.",
+			"There is a universal language of symbols any Druid can decipher.",
 			"You know <b>Druidic</b>, the secret language of Druids. You can "
 			"speak it and use it to leave hidden messages. Creatures that "
 			"don't know Druidic automatically fail to detect these messages."

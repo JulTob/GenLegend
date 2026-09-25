@@ -349,7 +349,7 @@ separate from the flavor line.*
 | Lesson | Draft |
 |---|---|
 | **Spellcasting** (1) | *Understanding the world gives you the power to affect it.* |
-| **Druidic** (1) | *Some symbols carry universal meaning. Any Druid can decipher them.* |
+| **Druidic** (1) | *There is a universal language of symbols any Druid can decipher.* |
 | **Primal Order: Magician** (1) | *Watching brings forth real understanding.* |
 | **Primal Order: Warden** (1) | *Experience brings forth real understanding.* |
 | **Wild Shape** (2) | *You need to be to understand. Become, and see.* |
