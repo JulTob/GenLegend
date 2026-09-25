@@ -1252,8 +1252,14 @@ Cleric = _PHB_Guild(
 				),
 		)
 
+DRUID_DESCRIPTION = """To be a Druid is to see yourself as part of a greater thing. A Druid studies a cosmos made of order and chaos, experiences it, embodies it, and searches for what is not yet understood. You follow the air directing the storm. You put your hands in the soil and smell its nutrients. You feed the cub until it becomes a wolf. Life is not learned from a book. It is lived, entered, and learned through being there.
+
+You are not a watchful observer. You are an enthusiastic participant. Experiment and experience become one. Observer and observed become the same thing. The search changes you. You have glimpsed the connection among living things, and you have let the world fill you. You were the wolf feeding the cub, the eagle riding the storm, the warg smelling the ground, because you understood exactly what they are, and that made you aware of what you are. The world is not a catalogue. It is an experiment in progress, and you are part of the apparatus."""
+
+
 Druid = _PHB_Guild(
 		name="Druid",
+		description=DRUID_DESCRIPTION,
 		primary="WIS",
 		secondary="CON",
 		hit_die=8,
