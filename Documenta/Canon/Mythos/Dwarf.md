@@ -1,6 +1,6 @@
 # ⛏️ Dwarf
 
-> 📖 **In flow.** 1 of 11 chapters are still proposals. 📜 5 · 📚 3 · 📔 2 · 📖 1
+> 📖 **In flow.** 2 of 12 chapters are still proposals. 📚 4 · 📔 6 · 📖 2
 
 > - 📕 **inherited from the 2024 rules.** Moving it costs rules compatibility.
 > - 📙 **an aesthetic change.** The same rule wearing our name and look.
@@ -16,14 +16,13 @@ Compiled 2026-09-08 from the Dwarf kit, the species entry, `Cultural-Inspiration
 the old wiki's Dwarf paragraph, the class analyses, and QST-0094. Where the project owner
 has decided, the decision is stated as such; where this page proposes, it says so.*
 
-> **In one sentence.** Dwarves remember. They ruled the world once, the Great
-> Mountain fell, and they spread across it carrying their ledgers and their
-> grudges; metal is holy to them because a soul is a metal, given, and it must
-> be proven.
+> **In one sentence.** **Gold, Faith, and Clan:** dwarves once ruled the world,
+> until the Great Empire fell; now its scattered heirs carry their saints and
+> metals from mountain holds and bank-cathedrals to the buccaneer sea.
 
 ---
 
-## 📜 0. Rules
+## 📚 0. Rules
 
 *The fixed points, and what we made of them. The books are defined at the head
 of the page.*
@@ -43,7 +42,8 @@ summary and not a cross-reference.*
 > range you can see as if it were Dim Light: within that Darkness you have
 > Disadvantage on Wisdom (Perception) checks that rely on sight, and you discern
 > colors there only as shades of gray.
-> > 📘 _The mines taught our eyes to work where the lamps do not reach._ (authored, not wired)
+> > _Your eyes remember the mountain._ (recovered authored text, not wired;
+> > awaiting ratification in §9)
 >
 > 📕 **Dwarven Resilience.** You have Resistance to Poison damage (you take half
 > damage from it, rounded down, and the halving applies after all other modifiers
@@ -51,14 +51,18 @@ summary and not a cross-reference.*
 > end the Poisoned condition. The Advantage is on the condition, not on poison as
 > a damage type: it covers both the save to avoid becoming Poisoned and any save
 > to end it. No limit on uses, no recharge.
-> > 📘 _Every dwarf grows up tasting the mine air and the smelter's fumes. What did not kill your people taught them._ (authored, not wired)
+> > _What you consider spicy could kill an elf. A dwarven diet made your body
+> > hard to poison._ (recovered authored text, not wired; awaiting ratification
+> > in §9)
 >
 > 📕 **Dwarven Toughness.** Your Hit Point maximum increases by 1, and it
 > increases by 1 again whenever you gain a level. At Level N your Hit Point
 > maximum is therefore N higher than it would otherwise be (+1 at Level 1, +5 at
 > Level 5, +20 at Level 20). This stacks with, and is calculated separately from,
 > the Constitution modifier you add per level.
-> > 📘 _A dwarf is built like a ledger: every year adds a line, and none is ever struck out._ (authored, not wired)
+> > _Your Nana used to say: Dwarves eat beyond full, and work beyond exhaustion,
+> > so have another bowl._ (recovered authored text, not wired; awaiting
+> > ratification in §9)
 >
 > 📕 **Stonecunning.** As a Bonus Action, you gain Tremorsense with a range of 60
 > feet for 10 minutes. You must be on a stone surface or touching a stone surface
@@ -66,7 +70,8 @@ summary and not a cross-reference.*
 > Bonus Action a number of times equal to your Proficiency Bonus (2 at Levels
 > 1-4, 3 at 5-8, 4 at 9-12, 5 at 13-16, 6 at 17-20), and you regain all expended
 > uses when you finish a Long Rest.
-> > 📘 _Lay a hand on the stone and listen. The mountain still keeps our accounts._ (authored, not wired)
+> > _Your history is written in stone, so you read the stories stone tells._
+> > (recovered authored text, not wired; awaiting ratification in §9)
 
 No rule of the Dwarf has been changed, so this page carries no 📒. All four
 traits also keep their published names, so there is no 📙 either: the Dwarf is
@@ -152,135 +157,6 @@ wiki's Dwarf paragraph and this page's own decisions log. The canon documents ar
 explicitly outside the Questa / Agora / Decree system, so those claims carry no
 book until a Questa says otherwise.
 
-### Unratified, and what each one needs
-
-*Stated as design, not as law. Each line names the Questa that would ratify it.
-This is the work list, and it is long.*
-
-- **A soul is a metal, given, and it must be proven**, set against the
-  Celestial's fixed Ideal, the Elf's collective consent and the Dragon's
-  self-authorship. The organising idea rests on the peoples table in
-  `Dragons-and-the-Overcoming.md` and on the species docstring. QST-0094 uses the
-  word "soul-metals" for what the entry contains and QST-0050 speaks of "the
-  dwarven soul-metal", but neither states the given-and-proven doctrine or the
-  four-way contrast; QST-0053 points at that table as the register of organising
-  principles per people without ratifying a single row. Needs a Questa ratifying
-  that table row by row, with the Dwarf's formula as its own decided line.
-- **Sainthood as transcendence into one's own pure substance**, and the
-  goldsaints and silversaints of the old halls as Dwarves who proved the metal
-  all the way down. QST-0050 puts Saints with the Dwarves and says nothing about
-  what Sainthood is or that saints carry metal ranks. Needs a Questa downstream
-  of QST-0050.
-- **The history: the Great Mountain, the Guilded Era, the scattering.** Present
-  in the shipping entry (which spells it "Guilded Era", not "Gilded") and in the
-  old wiki's paragraph, and nowhere else: "Great Mountain", "Guilded Era",
-  "Gilded Era" and "grudge" all return nothing across the formal system. Needs a
-  history Questa, so the shape is canon rather than an unedited draft.
-- **The two surviving factions**: the Bank Templars with their vaults, and the
-  isolationist, Basque-inspired Mountain Dwarves. Old wiki only. The shipping
-  entry supplies the bank-cathedrals, the fleets and the long terrible
-  expeditions but names no faction, so the two names have one unratified source
-  between them. The same Questa must decide whether `basque` becomes its own
-  atomic key beside `iberia` (no such key exists in the map today), since
-  QST-0046.5 forbids blends.
-- **The Missing Crown and the Holy Gold** as the surviving religious politics.
-  Old wiki only, where the second is spelled "Holly Gold". Needs a Questa
-  deciding the split as canon, its spelling, and whether it is player-visible or
-  design-team lore.
-- **The entry's own doctrine**: that the clan absolves whoever comes home with
-  enough gold, so every Dwarf adventurer has a guaranteed homecoming and an
-  accountant at the end of the story; and that gold never corrupts, with the Life
-  prayers arguing the other side from inside the species. QST-0094 ratifies the
-  entry's voice and tense, never its content. Needs the content half: a Questa
-  that reads the species entry line by line.
-- **The prayers.** "Metal shapes in the forge. People in the challenge.", "A
-  saint is a sinner trying to be better." and "Forgetting is hard, but harder is
-  forgiving." in the species pool; "The real gold is in your soul." and "Gold
-  held is not living. Gold earned is gold spent." on Life; "There is no shortcut
-  without work." on War (the file carries *no hay atajo sin trabajo* beside it as
-  a source comment, and the Spanish is not what prints); "Traveller, there is no
-  road; you make the road by walking." on the `iberia` key; "This world is a
-  bridge. We all must cross." on the `andalus` key. Every one returns nothing in
-  the formal system; the prayer map is only ever named as a file there. Needs a
-  Questa ratifying the species-keyed and culture-keyed prayer pools as authored
-  canon, naming the Dwarf, `iberia` and `andalus` rows.
-- **Darkvision at 120 feet, and poison resistance as identity.** No Questa
-  attributes the range to the Dwarf or ranks it against the other species, and
-  the ranking the page has been making is wrong: 120 feet is the longest range on
-  the roster but not the Dwarf's alone, since the Orc has 120 and so do the Drow,
-  Dark Elf and Shadow Elf lineages. Whatever is written must say "as deep as
-  anyone's", never "the deepest". Needs a Questa tabling Darkvision ranges and
-  damage resistances per species, which QST-0094's open convention question would
-  naturally carry.
-- **That Darkvision prints as an entry rather than as a bare chip.** The
-  decisions log in §8 is wrong here and should be corrected now: QST-0094 records
-  the Aasimar as chip-only by design and lists the convention as still open (Elf,
-  Orc, Gnome, Dwarf and Tiefling print the rule; Aasimar and Dragonborn print the
-  chip), and QST-0051 is where "Darkvision is a record, not a paragraph" is
-  written. The Dwarf resolver prints both the rule and a range chip today, so the
-  Dwarf already sits on the printing side of a question nobody has answered.
-  QST-0094 settles it when the convention question is answered.
-- **That the four entries read in the rules' second person at all.** QST-0062 is
-  open and names the Dwarf as one of five kits written in a clipped, agentless
-  register, citing Stonecunning and Dwarven Toughness as its two examples of the
-  register to be replaced, with the Aasimar and the Dragonborn as the target.
-  QST-0094's rewrite landed that voice on the Dwarf, but QST-0062 was never
-  closed against it and still describes the old text. Needs QST-0062 re-read
-  against the shipping entries and resolved or narrowed.
-- **The obsession path to Ascension**: a Dwarf who spends ninety years on one gem
-  may Ascend through the obsession itself, Draconic Sorcery as the family's
-  curse, and a clan that cannot tell a Saint from a dragon from outside. Canon
-  only (`Dragons-and-the-Overcoming.md`). The Agora touches the Ascending once,
-  in the Druid Dialog 0017, and only to reserve it: nobody on the page explains
-  it or claims it. Nothing there is about the Dwarf. Needs the Dwarf row of that
-  table ratified.
-- **The mountain is owed**: the Dwarf and the land in a debt relationship, the
-  fall of the Great Mountain as the covenant's breach, and a Dwarf Druid as the
-  mountain's creditor among a people of debtors. This page and the Druid page
-  alone. Needs its own Questa, or the history Questa extended to cover the debt
-  frame.
-- **The Iberian and Andalus reference registers**, both sides of Roncevaux: the
-  Cid, the Song of Roland at a Dwarf pass, Santiago and Calatrava, the tercio's
-  *alférez* as the Banneret, Don Quixote as the Glory Paladin, Lazarillo and the
-  picaresque, the cantigas de escarnio and the romancero, the *Libro de la
-  montería*, Juanelo Turriano's *artificio*, the Cueva de Salamanca, Teresa of
-  Ávila, Quevedo, Machado, the Basajaun and Mari of Anboto; and on the other key
-  Abbas ibn Firnas, Andalusi falconry, and the *baratero*'s navaja. The standing
-  Iberian-and-Eastern ruling above is the only formal footing, and it settles the
-  well rather than the list: it says which traditions a martial or technique text
-  may draw on, not that these particular figures are the Dwarf's. Needs a Questa
-  ratifying the Dwarf's register and stating which class texts may draw on it.
-- **The class table of §6 and the background readings of §7.** No background line
-  quoted there appears anywhere in the formal system. Needs a Questa per
-  cross-axis (species × class, species × background), or one Questa declaring such
-  cross-readings wiki-only and never ratified.
-- **The legend markers and their vocabularies**: `tolkien_dwarves` for rune-axes,
-  delving and mithril mail, `folklore_dwarf` for knockers, nisse and the tapping
-  hammer, the second shared with the Gnomes. Both markers, both vocabularies and
-  the sharing are recorded, in the gear and materials maps and in the legend
-  table of `Cultural-Inspirations.md`; neither the code nor the canon is the
-  Questa system, and no Questa names `tolkien_dwarves` at all. Needs a Questa
-  enumerating each species' legend markers and their nouns, the half of the
-  double mapping QST-0046.5 describes but never lists.
-- **The name module's inspirations**: the Golden Age of Spain, Renaissance Italy,
-  Portuguese, and Carthage. Three of the four sit inside what the culture map
-  already gives the Dwarf (Portuguese and the Golden Age under `iberia`, Carthage
-  as a weighted neighbour of `iberia` in the reach map). Renaissance Italy is the
-  odd one: the culture map gives Italy and the Renaissance to the Gnome, so the
-  name draw claims a register the keys do not. Needs a Questa aligning the name
-  inspirations with the keys, and deciding whether names may hold inspirations the
-  culture map does not.
-- **The Zealot's god for a Dwarf is a Saint, and the draw should be
-  species-keyed.** This page's own proposal, correctly labelled. The Barbarian
-  Dialog 0014 treats the Zealot as vesselhood, a god riding a body, and never
-  mentions Saints. Needs a Questa routed through the Barbarian's texts.
-- **The biology carve-out**: "the species law permits biology; these are the mines
-  in the body." The taught-not-inherited law is used as a binding test inside the
-  Agora, but the *carve-out* for plainly physical traits is stated only on the
-  Mythos pages and in the folder's standing rules, which are not the Questa
-  system. Needs a Questa or a Decree restating the law with the carve-out written
-  in, so darkvision and size are not read as moral inheritance.
-
 ### What the rules force, and what we chose
 
 Stonecunning is the demanding one. It forces a body that senses through stone, on
@@ -355,7 +231,7 @@ map, so that draw is in tension with the keys until a Questa aligns them.
 
 ---
 
-## 📜 2. Origin: soul-metal
+## 📔 2. Origin: soul-metal
 
 Each people has one organising idea. The Dwarf's: **a soul is a metal, given,
 and it must be proven.** The Celestial's Ideal is fixed and cannot bend; the
@@ -375,7 +251,7 @@ red iron, silver, verdigris, bronze) and confirm nothing; the ambiguity is
 deliberate DM space. A Dwarf who notices would say the Celestials borrowed
 the idea. A Celestial would say nothing.
 
-**Physical traits.** Darkvision to 120 feet (the deepest on the roster),
+**Physical traits.** Darkvision to 120 feet (as deep as anyone on the roster),
 resistance to poison, one Hit Point per level, and Stonecunning (tremorsense
 on stone). The species law permits biology; these are the mines in the body.
 
@@ -419,7 +295,7 @@ side from inside (*"Gold held is not living. Gold earned is gold spent."*
 
 ---
 
-## 📜 4. Culture: Iberia and Andalus, two keys, one people
+## 📔 4. Culture: Iberia and Andalus, two keys, one people
 
 **The law:** one key, one culture; Iberia and al-Andalus are two keys, not a
 blend, and the overlap is modelled by influence, not by merging. The wiki names
@@ -462,7 +338,7 @@ the Tolkien register); gems lean to the Gnomes. "Leanings, not laws."
 
 ---
 
-## 📜 5. Metaphysics: given, proven, spent
+## 📔 5. Metaphysics: given, proven, spent
 
 **Against the Celestials.** Fixed against given-and-proven: an Aasimar cannot
 change the spark; a Dwarf must change the metal. The two peoples are the
@@ -542,7 +418,138 @@ Great Mountain as the covenant's breach.
 
 ---
 
-## 📜 8. Decisions log
+## 📖 8. Decisions and ratification queue
+
+### Unratified, and what each one needs
+
+*Stated as design, not as law. Each line names the Questa that would ratify it.
+This is the work list, and it is long.*
+
+- **A soul is a metal, given, and it must be proven**, set against the
+  Celestial's fixed Ideal, the Elf's collective consent and the Dragon's
+  self-authorship. The organising idea rests on the peoples table in
+  `Dragons-and-the-Overcoming.md` and on the species docstring. QST-0094 uses the
+  word "soul-metals" for what the entry contains and QST-0050 speaks of "the
+  dwarven soul-metal", but neither states the given-and-proven doctrine or the
+  four-way contrast; QST-0053 points at that table as the register of organising
+  principles per people without ratifying a single row. Needs a Questa ratifying
+  that table row by row, with the Dwarf's formula as its own decided line.
+- **Sainthood as transcendence into one's own pure substance**, and the
+  goldsaints and silversaints of the old halls as Dwarves who proved the metal
+  all the way down. QST-0050 puts Saints with the Dwarves and says nothing about
+  what Sainthood is or that saints carry metal ranks. Needs a Questa downstream
+  of QST-0050.
+- **The history: the Great Mountain, the Guilded Era, the scattering.** Present
+  in the shipping entry (which spells it "Guilded Era", not "Gilded") and in the
+  old wiki's paragraph, and nowhere else: "Great Mountain", "Guilded Era",
+  "Gilded Era" and "grudge" all return nothing across the formal system. Needs a
+  history Questa, so the shape is canon rather than an unedited draft.
+- **The two surviving factions**: the Bank Templars with their vaults, and the
+  isolationist, Basque-inspired Mountain Dwarves. Old wiki only. The shipping
+  entry supplies the bank-cathedrals, the fleets and the long terrible
+  expeditions but names no faction, so the two names have one unratified source
+  between them. The same Questa must decide whether `basque` becomes its own
+  atomic key beside `iberia` (no such key exists in the map today), since
+  QST-0046.5 forbids blends.
+- **The Missing Crown and the Holy Gold** as the surviving religious politics.
+  Old wiki only, where the second is spelled "Holly Gold". Needs a Questa
+  deciding the split as canon, its spelling, and whether it is player-visible or
+  design-team lore.
+- **The entry's own doctrine**: that the clan absolves whoever comes home with
+  enough gold, so every Dwarf adventurer has a guaranteed homecoming and an
+  accountant at the end of the story; and that gold never corrupts, with the Life
+  prayers arguing the other side from inside the species. QST-0094 ratifies the
+  entry's voice and tense, never its content. Needs the content half: a Questa
+  that reads the species entry line by line.
+- **The prayers.** "Metal shapes in the forge. People in the challenge.", "A
+  saint is a sinner trying to be better." and "Forgetting is hard, but harder is
+  forgiving." in the species pool; "The real gold is in your soul." and "Gold
+  held is not living. Gold earned is gold spent." on Life; "There is no shortcut
+  without work." on War (the file carries *no hay atajo sin trabajo* beside it as
+  a source comment, and the Spanish is not what prints); "Traveller, there is no
+  road; you make the road by walking." on the `iberia` key; "This world is a
+  bridge. We all must cross." on the `andalus` key. Every one returns nothing in
+  the formal system; the prayer map is only ever named as a file there. Needs a
+  Questa ratifying the species-keyed and culture-keyed prayer pools as authored
+  canon, naming the Dwarf, `iberia` and `andalus` rows.
+- **Darkvision at 120 feet, and poison resistance as identity.** No Questa
+  attributes the range to the Dwarf or ranks it against the other species, and
+  the ranking the page has been making is wrong: 120 feet is the longest range on
+  the roster but not the Dwarf's alone, since the Orc has 120 and so do the Drow,
+  Dark Elf and Shadow Elf lineages. Whatever is written must say "as deep as
+  anyone's", never "the deepest". Needs a Questa tabling Darkvision ranges and
+  damage resistances per species, which QST-0094's open convention question would
+  naturally carry.
+- **That Darkvision prints as an entry rather than as a bare chip.** The
+  earlier reading was wrong here: QST-0094 records
+  the Aasimar as chip-only by design and lists the convention as still open (Elf,
+  Orc, Gnome, Dwarf and Tiefling print the rule; Aasimar and Dragonborn print the
+  chip), and QST-0051 is where "Darkvision is a record, not a paragraph" is
+  written. The Dwarf resolver prints both the rule and a range chip today, so the
+  Dwarf already sits on the printing side of a question nobody has answered.
+  QST-0094 settles it when the convention question is answered.
+- **That the four entries read in the rules' second person at all.** QST-0062 is
+  open and names the Dwarf as one of five kits written in a clipped, agentless
+  register, citing Stonecunning and Dwarven Toughness as its two examples of the
+  register to be replaced, with the Aasimar and the Dragonborn as the target.
+  QST-0094's rewrite landed that voice on the Dwarf, but QST-0062 was never
+  closed against it and still describes the old text. Needs QST-0062 re-read
+  against the shipping entries and resolved or narrowed.
+- **The obsession path to Ascension**: a Dwarf who spends ninety years on one gem
+  may Ascend through the obsession itself, Draconic Sorcery as the family's
+  curse, and a clan that cannot tell a Saint from a dragon from outside. Canon
+  only (`Dragons-and-the-Overcoming.md`). The Agora touches the Ascending once,
+  in the Druid Dialog 0017, and only to reserve it: nobody on the page explains
+  it or claims it. Nothing there is about the Dwarf. Needs the Dwarf row of that
+  table ratified.
+- **The mountain is owed**: the Dwarf and the land in a debt relationship, the
+  fall of the Great Mountain as the covenant's breach, and a Dwarf Druid as the
+  mountain's creditor among a people of debtors. This page and the Druid page
+  alone. Needs its own Questa, or the history Questa extended to cover the debt
+  frame.
+- **The Iberian and Andalus reference registers**, both sides of Roncevaux: the
+  Cid, the Song of Roland at a Dwarf pass, Santiago and Calatrava, the tercio's
+  *alférez* as the Banneret, Don Quixote as the Glory Paladin, Lazarillo and the
+  picaresque, the cantigas de escarnio and the romancero, the *Libro de la
+  montería*, Juanelo Turriano's *artificio*, the Cueva de Salamanca, Teresa of
+  Ávila, Quevedo, Machado, the Basajaun and Mari of Anboto; and on the other key
+  Abbas ibn Firnas, Andalusi falconry, and the *baratero*'s navaja. The standing
+  Iberian-and-Eastern ruling above is the only formal footing, and it settles the
+  well rather than the list: it says which traditions a martial or technique text
+  may draw on, not that these particular figures are the Dwarf's. Needs a Questa
+  ratifying the Dwarf's register and stating which class texts may draw on it.
+- **The class table of §6 and the background readings of §7.** No background line
+  quoted there appears anywhere in the formal system. Needs a Questa per
+  cross-axis (species × class, species × background), or one Questa declaring such
+  cross-readings wiki-only and never ratified.
+- **The legend markers and their vocabularies**: `tolkien_dwarves` for rune-axes,
+  delving and mithril mail, `folklore_dwarf` for knockers, nisse and the tapping
+  hammer, the second shared with the Gnomes. Both markers, both vocabularies and
+  the sharing are recorded, in the gear and materials maps and in the legend
+  table of `Cultural-Inspirations.md`; neither the code nor the canon is the
+  Questa system, and no Questa names `tolkien_dwarves` at all. Needs a Questa
+  enumerating each species' legend markers and their nouns, the half of the
+  double mapping QST-0046.5 describes but never lists.
+- **The name module's inspirations**: the Golden Age of Spain, Renaissance Italy,
+  Portuguese, and Carthage. Three of the four sit inside what the culture map
+  already gives the Dwarf (Portuguese and the Golden Age under `iberia`, Carthage
+  as a weighted neighbour of `iberia` in the reach map). Renaissance Italy is the
+  odd one: the culture map gives Italy and the Renaissance to the Gnome, so the
+  name draw claims a register the keys do not. Needs a Questa aligning the name
+  inspirations with the keys, and deciding whether names may hold inspirations the
+  culture map does not.
+- **The Zealot's god for a Dwarf is a Saint, and the draw should be
+  species-keyed.** This page's own proposal, correctly labelled. The Barbarian
+  Dialog 0014 treats the Zealot as vesselhood, a god riding a body, and never
+  mentions Saints. Needs a Questa routed through the Barbarian's texts.
+- **The biology carve-out**: "the species law permits biology; these are the mines
+  in the body." The taught-not-inherited law is used as a binding test inside the
+  Agora, but the *carve-out* for plainly physical traits is stated only on the
+  Mythos pages and in the folder's standing rules, which are not the Questa
+  system. Needs a Questa or a Decree restating the law with the carve-out written
+  in, so darkvision and size are not read as moral inheritance.
+
+### Ratified decisions
 
 **Decided**
 
@@ -551,11 +558,12 @@ Great Mountain as the covenant's breach.
 - The species entry speaks as "we" (`a1221a1`).
 - Rule voice for the four traits (QST-0094).
 
-**Awaiting ratification (QST-0094)**
+**Unresolved after QST-0094**
 
-- The four inspiration lines proposed there (§9).
-- Whether Darkvision prints or is chip-only; settled *print, with a
-  line* for the Aasimar, which settles the convention if applied here.
+- The four inspiration lines proposed there (§9) still need ratification.
+- The cross-species Darkvision convention is open. The Dwarf currently prints
+  both its rule and its range chip; the locked Aasimar deliberately prints only
+  the chip. Neither implementation silently settles the other.
 
 **Open (this page proposes)**
 
@@ -570,18 +578,23 @@ Great Mountain as the covenant's breach.
 
 ## 📖 9. Lines
 
-*QST-0094's four proposals, in the taught-or-gifted register the Species traits
-use, awaiting ratification. Kept here so the page is the reference.*
+*The author's four recovered lines, found together in
+`.recovery-vault/AUTHORED-TEXT-ARCHIVE.md` and introduced to Git by `cd1a8b3`.
+They replace the later review's generic proposals. They are still not wired and
+await ratification through QST-0094; provenance establishes whose words they
+are, not their rules status.*
 
-| Entry | Proposed line (QST-0094) |
+| Entry | Recovered authored line |
 |---|---|
-| **Darkvision** | *The mines taught our eyes to work where the lamps do not reach.* |
-| **Dwarven Resilience** | *Every dwarf grows up tasting the mine air and the smelter's fumes. What did not kill our ancestors does not poison us.* |
-| **Dwarven Toughness** | *A dwarf is built like a ledger: every year adds a line, and none is ever struck out.* |
-| **Stonecunning** | *Lay a hand on the stone and listen. The mountain still keeps our accounts.* |
+| **Darkvision** | *Your eyes remember the mountain.* |
+| **Dwarven Resilience** | *What you consider spicy could kill an elf. A dwarven diet made your body hard to poison.* |
+| **Dwarven Toughness** | *Your Nana used to say: Dwarves eat beyond full, and work beyond exhaustion, so have another bowl.* |
+| **Stonecunning** | *Your history is written in stone, so you read the stories stone tells.* |
 
-The Toughness line is the best of the four and the species' voice exactly: the
-ledger as a body.
+These lines locate the traits in memory, food, family and history: the mountain
+is remembered rather than merely mined, resilience is cultural and domestic
+rather than industrial, Toughness arrives in Nana's voice, and stone holds
+stories rather than accounts.
 
 ---
 
@@ -594,3 +607,75 @@ ledger as a body.
 - **Artificer page**: Juanelo and Abbas ibn Firnas.
 - **Gnome page**: the Renaissance pair, one trade route.
 - **Celestials page**: Saints and Celestials, two systems that look like one.
+
+
+---
+
+## 📔 11. Design assessment: the strong spine and the load-bearing risks
+
+### What works
+
+The Dwarf has the strongest single verb among the unfinished peoples: **prove**.
+It turns the published rules into one argument rather than four decorations.
+Darkvision is the mine remembered by the body; Resilience is exposure survived;
+Toughness is proof accumulated; Stonecunning is an account the mountain can still
+be asked to read. The same verb also makes room for a Fighter, Cleric, Rogue or
+Artificer without declaring one of them the proper Dwarf. A Guild becomes an
+anvil, not a stereotype.
+
+The second strength is the contradiction inside the culture. The entry says gold
+never corrupts and promises absolution to whoever brings enough home; the Life
+prayers answer that hoarded gold is not living. Neither side needs to be made
+secretly correct. That argument is more useful to a player than generic greed,
+and it gives every Dwarf adventurer a homecoming with a price.
+
+The Iberian and Andalusi keys are also productive rather than cosmetic. They meet
+in Toledo steel, bank-cathedrals, expeditions, the *alférez*, the picaresque,
+Córdoba's artificers and both sides of Roncevaux. The code's long, compound names
+and forge surnames make the register audible before the lore is explained. This
+is exactly what a consulting wiki should preserve: a repeatable set of choices,
+not a paragraph of atmosphere.
+
+### What needs restraint
+
+**Soul-metal is not yet law.** It is the best organising idea on the page, but
+the ratification audit in §8 shows that most of its consequences are readings,
+not decisions. Until that queue closes, other pages may use it to test cohesion
+but should not silently turn Saints, metals or the Great Mountain into fixed
+setting facts. The chapter markers now reflect that distinction.
+
+**Iberia must remain a register, not an essence.** The two culture keys can shape
+objects, institutions, techniques, prayers and names. They must not imply that a
+Dwarf inherits a nationality, temperament or moral character. The existing
+weighted reach map is the correct mechanism: neighbouring vocabularies can enter
+a character without fusing real cultures into a fantasy composite.
+
+**Gold needs an economic consequence.** At present it is simultaneously sacrament,
+proof, family debt and adventuring reward. That density is a virtue, but only if
+future writing asks who owns the mines, who records a homecoming, whose labour
+makes absolution possible and what happens to the Dwarf who returns empty-handed.
+Without those answers, the Bank Temple risks becoming scenery and the clan's
+welcome risks becoming a joke.
+
+**The Great Mountain needs one decided failure.** Hubris, spiritual fervour and a
+broken covenant are three compatible readings, but they are not interchangeable.
+The history Questa should decide what the Dwarves believe happened, what the
+setting establishes happened, and whether those answers differ. That single
+difference can power the Missing Crown, the Holy Gold and the mountain's debt
+without requiring an encyclopedia of the fallen empire.
+
+### Recommended order of work
+
+1. Ratify the one-sentence doctrine: a soul is a metal, given and proven.
+2. Decide the Great Mountain's public history and the disputed religious reading.
+3. Define Sainthood just far enough to distinguish a Saint from a Celestial and
+   from a Dwarf who Ascends through obsession.
+4. Resolve the four trait lines and the cross-species Darkvision presentation
+   convention together, so the Dwarf follows the locked Aasimar's method without
+   copying its answer blindly.
+5. Audit the generated names by source pool. Keep the four-part ledger shape;
+   decide whether Renaissance Italian names are intentional cultural reach or a
+   leak from the Gnome register.
+6. Only then write Bank Templars, Mountain Dwarves, the Missing Crown and the
+   Holy Gold as player-facing material. Institutions should realize the doctrine,
+   not substitute for deciding it.
