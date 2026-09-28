@@ -62,6 +62,7 @@ Scale, for the record: about 350 `Feature(...)`, 354 `Entry(...)`, 284 `chips=` 
 | 7 | **Proficiencies** | Skills, tools, armour and weapon lines read from Tags. | The `Unarmed_*` skill bridge (QST-0093.12 question 4). |
 | 8 | **Progression** | Level-ups, Ability Score Improvements, hit points as Tags. | `Map_of_Classes`, `Codex_of_Progression`, `Grimoire_of_Features` (with QST-0093.7). |
 | 9 | **Magic** | Spellcasting, focus, spells section. | The old spell `Entry` use. |
+| 9b | **Combatant** | The fighting archetypes (Blade-and-Board, Hard-Hitter, Infiltrator, Tank, Magician, Spellsword…). Chosen after the Guild; Styles, Feats, Pact and Masteries follow it; the weapon is drawn at random from the overlap of every filter. The gates + weights matrix. | The per-Guild hand-written weapon picks. |
 | 10 | **Inventarium** | `char.inventarium`, `Map_of_Wearing`, grips (hands in pairs), attunement 3, rings 10, focus slot, the chosen print layout. | `char.belongings` and `Loadout`'s hand-written slots. |
 | 11 | **Retire `char.features`** | Nothing left writes to it. | `FeaturesKit.Feature`, `grant`. |
 | later | **NPC sheet** | NPC Entries already use the new class after station 1; their sheet is ported last. | — |
@@ -84,6 +85,10 @@ Open as of 2026-09-24:
 2. **Inventarium layout** (station 10): A ledger, B paper doll, C armed / worn / packed, or a mix?
 3. **Focus by tool proficiency** (station 10): keep the proposed table as the rule?
 4. **Spells' metadata line** (station 1 moves it, station 9 designs it). Today a spell's `Entry` carries its school and casting time in the `description` field. Station 1 moves that line to `flavor` so the sheet does not change. Should station 9 give spells their own card shape?
+5. **The weapon filter's algebra** (station 9b). Julio asked whether Feats belong in the filtering matrix, as a positive filter — and answered himself: that is weapon **proficiency**. Proposed (awaiting the ruling): two kinds of filter, never mixed.
+   - **Positive — what the Character MAY draw.** Weapon proficiencies form the pool: the Guild's training, plus every Feat, Species trait or Pact that grants more. Each source contributes an allowed set; the pool is their **union**. A weapon outside the pool is never drawn.
+   - **Negative — what the build WANTS.** The Combatant, the Fighting Style, the grips and the Masteries each narrow the pool by **intersection** (Great Weapon Fighting keeps two-handed weapons; Dueling keeps one-handed, non-thrown…).
+   - The draw is random inside `union of proficiencies ∩ every want`. When the overlap is empty, the narrowing filters yield one by one, in declared order, until it is not; proficiency never yields.
 
 ## 🛠️ Station 1, the foundation (branch `julio_cl/qst-0142-foundation`)
 
