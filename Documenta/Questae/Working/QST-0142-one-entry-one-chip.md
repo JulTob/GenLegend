@@ -81,7 +81,7 @@ Every difference in the fingerprint or the snapshot must be named in the PR as i
 
 Open as of 2026-09-24:
 
-1. **Hands policy** (station 10): 1 Shield first, 2 Weapon first, or 3 By build? See the mock-up page "The Inventarium".
+1. **Hands policy — RULED (Julio, 2026-09-28): by build.** The Combatant decides the hands: Blade-and-Board wants weapon + Shield, Hard-Hitter wants both hands on one weapon, Magician keeps a hand for the focus. The Affinity machine encodes it; no separate policy exists.
 2. **Inventarium layout** (station 10): A ledger, B paper doll, C armed / worn / packed, or a mix?
 3. **Focus by tool proficiency** (station 10): keep the proposed table as the rule?
 4. **Spells' metadata line** (station 1 moves it, station 9 designs it). Today a spell's `Entry` carries its school and casting time in the `description` field. Station 1 moves that line to `flavor` so the sheet does not change. Should station 9 give spells their own card shape?
@@ -91,7 +91,7 @@ Open as of 2026-09-24:
    - **Everything learnable starts at 0.5**, the no-opinion prior.
    - **Each feature is a witness, not a manager.** Its module declares only its own opinion table, option → opinion in [0,1]; silence is 0.5. This is the modularity Julio's matrices asked for: no god object, the combiner never knows which features exist.
    - **Opinions combine by Bayes' rule**: multiply the odds, `odds(a) = a / (1 − a)`, then back to an affinity. In log-odds space this is plain addition — "add or subtract" and "a matrix per feature" were the same answer. A pure 1 is as absorbing as a pure 0, so 1 is reserved for grants; enthusiasm caps near 0.9.
-   - **The draw**: keep options at affinity ≥ 0.5; none pass → halve the threshold (0.25, 0.125, …) until a non-zero option passes. All zero is a loud, named error. Among the passers the **Character's own dice** draw, weighted by affinity (default; Julio may rule uniform-above-threshold instead).
+   - **The draw**: keep options at affinity ≥ 0.5; none pass → halve the threshold (0.25, 0.125, …) until a non-zero option passes. All zero is a loud, named error. Among the passers the **Character's own dice** draw, **weighted by affinity** (RULED, Julio, 2026-09-28): an option at 0.9 is drawn more often than one at 0.55.
    - **When**: at creation, in **tagging order** (Julio, 2026-09-28) — a choice is drawn when the Tag that forces it applies; the weapon draw happens at outfitting, after every witness Tag is in place. Printing never draws (Decree 0009, point 7).
    - **Refined the same day — two verbs, two operations (Julio):** *"Knowing would be additions to the weapon vector ((a+b)/2 or a max operation) and wanting a bayesian update… the fact 1 is absorbing can also be used in favor… it could keep a weapon inside the choices or crunch other rules (pact weapons not needing proficiency?)."* Settled form:
      - **Knowing = `max`** (chosen over the average: averaging can forget — learning a weapon a second time, worse, must not lower it; max is monotone and idempotent, the same law as re-applying an active Tag). Knowing **can lift a 0**: Pact of the Blade simply *knows* the blade into the pool, no proficiency needed — the rule is crunched by the operation, not by an exception.
