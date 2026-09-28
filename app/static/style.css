@@ -494,7 +494,8 @@ u {
 
 
 .bc4 {
-    font-weight: italic;
+    font-style: italic; /* was font-weight: italic — an invalid value, so
+                           flavor was never italic. PR #94 review. */
     color: var(--third-color);
 	font-size:0.7em;
 

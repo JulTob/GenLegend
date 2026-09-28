@@ -328,10 +328,12 @@ def _self_test() -> None:
 				Entry(
 						"Lessons",
 						Lessons_Text,
-						"*Every scar a teacher.*",
+						"Every scar a teacher.",
 						section=Section.GUILD,
 						),
 				)
+					#-- Flavor carries no emphasis of its own: the printers
+					#-- add it (md wraps *…*, HTML styles it). PR #94 review.
 
 	class Broken( Tag ):
 		CHIPS = (

@@ -6,3 +6,8 @@ shiny==1.6.3
 # `topkit` and the module is `TopKit`. Moved from the TagKit 0.2.0a1 git pin by
 # QST-0093.5; the upstream issues found on the way are QST-0093.10.
 topkit==0.2.0a3
+
+# The Markdown renderer behind AtlasVenustas.Charts_of_Printing. Shiny already
+# installs it, but the sheet depends on it directly, so it is pinned directly
+# (PR #94 review).
+markdown-it-py==4.2.0
