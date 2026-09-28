@@ -500,6 +500,18 @@ u {
 
 }
 
+/* QST-0142: an Entry's rules body with more than one block (paragraphs,
+   a bullet list) prints inside this div. Same italics the one-line
+   <i> bodies get; tight margins so the blocks fit the entry's box. */
+.entry-rules {
+    font-style: italic;
+}
+.entry-rules p,
+.entry-rules ul,
+.entry-rules ol {
+    margin: 0.2em 0;
+}
+
 
 .fantasy-select {
     background-color: var(--black-color); /* black background */
