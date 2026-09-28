@@ -85,10 +85,16 @@ Open as of 2026-09-24:
 2. **Inventarium layout** (station 10): A ledger, B paper doll, C armed / worn / packed, or a mix?
 3. **Focus by tool proficiency** (station 10): keep the proposed table as the rule?
 4. **Spells' metadata line** (station 1 moves it, station 9 designs it). Today a spell's `Entry` carries its school and casting time in the `description` field. Station 1 moves that line to `flavor` so the sheet does not change. Should station 9 give spells their own card shape?
-5. **The weapon filter's algebra** (station 9b). Julio asked whether Feats belong in the filtering matrix, as a positive filter — and answered himself: that is weapon **proficiency**. Proposed (awaiting the ruling): two kinds of filter, never mixed.
-   - **Positive — what the Character MAY draw.** Weapon proficiencies form the pool: the Guild's training, plus every Feat, Species trait or Pact that grants more. Each source contributes an allowed set; the pool is their **union**. A weapon outside the pool is never drawn.
-   - **Negative — what the build WANTS.** The Combatant, the Fighting Style, the grips and the Masteries each narrow the pool by **intersection** (Great Weapon Fighting keeps two-handed weapons; Dueling keeps one-handed, non-thrown…).
-   - The draw is random inside `union of proficiencies ∩ every want`. When the overlap is empty, the narrowing filters yield one by one, in declared order, until it is not; proficiency never yields.
+5. **The choice algebra — RULED (Julio, 2026-09-28): the Affinity machine.** One mechanism for the Combatant pick, the weapon pick, and later picks of this kind. Julio chose Bayesian updating over hard filters, and one machine over bespoke code per draw.
+   - **Every option carries an affinity: a number from 0 to 1** — how strongly this build believes in the option.
+   - **A pure 0 is a hard fact and it is absorbing** (Julio: "a pure 0 is also a valid entry, for the ones you cannot learn at all"). No proficiency, gated out: affinity 0, forever. No witness and no threshold-lowering revives it. A zero prior stays zero whatever the evidence.
+   - **Everything learnable starts at 0.5**, the no-opinion prior.
+   - **Each feature is a witness, not a manager.** Its module declares only its own opinion table, option → opinion in [0,1]; silence is 0.5. This is the modularity Julio's matrices asked for: no god object, the combiner never knows which features exist.
+   - **Opinions combine by Bayes' rule**: multiply the odds, `odds(a) = a / (1 − a)`, then back to an affinity. In log-odds space this is plain addition — "add or subtract" and "a matrix per feature" were the same answer. A pure 1 is as absorbing as a pure 0, so 1 is reserved for grants; enthusiasm caps near 0.9.
+   - **The draw**: keep options at affinity ≥ 0.5; none pass → halve the threshold (0.25, 0.125, …) until a non-zero option passes. All zero is a loud, named error. Among the passers the **Character's own dice** draw, weighted by affinity (default; Julio may rule uniform-above-threshold instead).
+   - **When**: at creation, in **tagging order** (Julio, 2026-09-28) — a choice is drawn when the Tag that forces it applies; the weapon draw happens at outfitting, after every witness Tag is in place. Printing never draws (Decree 0009, point 7).
+6. **Spells — RULED (Julio, 2026-09-28): one global known-set per Character.** The same vocabulary as the weapons: a feature **allows** spells (affinity above 0 in the pool) or **grants** them (fixed, outside the draw). Grants resolve first; every pick draws from allowed minus already known, so a granted spell never wastes a pick — whichever feature is picking (a domain grant removes the spell from a later feat's picks too). Never a duplicate on the sheet.
+7. **Station 3's dice — RULED (Julio, 2026-09-28): accept the changed draws.** Making the readers pure moves dice rolls from print time to creation time, and 56 of the 273 grid Characters draw a different (equally legal) style or spell. Julio accepted the changes; each is named in the station's PR. No compatibility shim.
 
 ## 🛠️ Station 1, the foundation (branch `julio_cl/qst-0142-foundation`)
 
