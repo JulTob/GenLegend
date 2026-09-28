@@ -95,10 +95,11 @@ def Escaped(
 	"""
 	A plain field, made safe for HTML.
 
-	Titles, symbols, labels, values and kinds are plain text by design:
-	they never carry markup, so ``<``, ``&`` and quotes in them are
-	characters, not tags (PR #94 review). Only a rules or flavor body may
-	still carry old HTML, and only until its station ports it.
+	Titles, symbols, labels and kinds are plain text by design: they never
+	carry markup, so ``<``, ``&`` and quotes in them are characters, not
+	tags (PR #94 review). A rules or flavor body — and, for now, a Chip's
+	value (the spell-slot tables) — may still carry old HTML, and only
+	until its station ports it.
 	"""
 	return html_text.escape(
 			str( text ),
