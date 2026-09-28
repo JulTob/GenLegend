@@ -89,6 +89,23 @@ def Medium_Of(
 	return medium
 
 
+def Escaped(
+		text,
+		) -> str:
+	"""
+	A plain field, made safe for HTML.
+
+	Titles, symbols, labels, values and kinds are plain text by design:
+	they never carry markup, so ``<``, ``&`` and quotes in them are
+	characters, not tags (PR #94 review). Only a rules or flavor body may
+	still carry old HTML, and only until its station ports it.
+	"""
+	return html_text.escape(
+			str( text ),
+			quote=True,
+			)
+
+
 def Inline_Html(
 		markdown: str,
 		) -> str:
@@ -220,8 +237,10 @@ def Rules_As_Html(
 def Entry_As_Html(
 		entry: Entry,
 		) -> str:
-	head = entry.title
-	if not head:
+	head = Escaped(
+			entry.title
+			)
+	if not entry.title:
 		return ""
 	if not entry.rules and not entry.flavor:
 		return f"<b>{head}</b>"
@@ -245,11 +264,14 @@ def Entry_As_Html(
 def Entry_As_Markdown(
 		entry: Entry,
 		) -> str:
-	lines = [
-			f"### {entry.title}",
-			]
+	lines = []
+	if entry.title:
+		lines.append(
+				f"### {entry.title}"
+				)
 		#-- Level three: the sheet's name is ``#`` and its sections ``##``,
 		#-- so an Entry sits one step under its section (Julio, 2026-09-24).
+		#-- No title, no heading: a bare "### " is not a heading at all.
 	if entry.flavor:
 		lines.append(
 				f"*{entry.flavor}*"
@@ -334,12 +356,27 @@ def Chip_As_Html(
 		) -> str:
 	style = "npc-box stat-chip"
 	if chip.kind:
-		style = f"{style} {chip.kind}-chip"
+		kind = Escaped(
+				chip.kind
+				)
+		style = f"{style} {kind}-chip"
+	symbol = Escaped(
+			chip.symbol
+			)
+	label = Escaped(
+			chip.label
+			)
+	value = chip.value
+		#-- NOT escaped yet.  Some legacy values still ARE markup — the
+		#-- Artificer's spell-slot chip carries a whole <table> — and the
+		#-- sheet gate proves it: escaping values changes 201 sheets.  A
+		#-- value joins the escaped fields when its station ports it to
+		#-- plain text (QST-0142; found by the PR #94 review).
 	return (
 			f'<div class="{style}">'
-			f'<div class="symbol">{chip.symbol}</div>'
-			f'<div class="record">{chip.label}</div>'
-			f'<div class="value">{chip.value}</div>'
+			f'<div class="symbol">{symbol}</div>'
+			f'<div class="record">{label}</div>'
+			f'<div class="value">{value}</div>'
 			"</div>"
 			)
 
@@ -359,6 +396,7 @@ def Chip_As_Json(
 					"symbol": chip.symbol,
 					"label": chip.label,
 					"value": chip.value,
+					"kind": chip.kind,
 					},
 			ensure_ascii=False,
 			default=str,
@@ -501,6 +539,7 @@ def _self_test() -> None:
 			"symbol": "🛡️",
 			"label": "Armor Class",
 			"value": 16,
+			"kind": "",
 			}
 	assert 'class="npc-box stat-chip"' in f"{ac:html}"
 	magic = Chip(
@@ -510,6 +549,33 @@ def _self_test() -> None:
 			kind="magic",
 			)
 	assert 'class="npc-box stat-chip magic-chip"' in f"{magic:html}"
+
+	#-- Plain fields are text, never markup: < and & print as characters
+	#-- (PR #94 review), and a kind cannot break out of the class attribute.
+	sharp = Chip(
+			"<",
+			"AC & more",
+			"the value passes through",
+			kind='x" onload="y',
+			)
+	safe = f"{sharp:html}"
+	assert '<div class="symbol">&lt;</div>' in safe, safe
+	assert "AC &amp; more" in safe, safe
+	assert 'onload="y"' not in safe, safe
+	assert f"{Entry( 'A & B', '+1' ):html}".startswith( "<b>A &amp; B" )
+
+	#-- A reader that answers nothing prints nothing, never "None".
+	silent = Entry(
+			"Quiet",
+			lambda character: None,
+			).Read( 0 )
+	assert silent.rules == "", silent.rules
+	assert f"{silent:html}" == "<b>Quiet</b>", f"{silent:html}"
+
+	#-- No title, no heading: the Markdown of a titleless Entry has no "### ".
+	assert f"{Entry( '', 'Only rules.' ):md}" == "Only rules.", (
+			f"{Entry( '', 'Only rules.' ):md}"
+			)
 
 	#-- A reader must be read before it prints, and says so by name.
 	live = Entry(
