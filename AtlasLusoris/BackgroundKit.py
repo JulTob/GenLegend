@@ -2936,8 +2936,12 @@ def _test_hook_and_slots():
 			title="Untitled Hook",
 			description="A life.",
 			hook=Entry(
+				title="",
 				rules="A price with no name.",
 				),
+				#-- The new Entry requires a title by construction, so
+				#-- "absent" is impossible; the validator's own case is a
+				#-- BLANK title (line ~377), and that is what this tests.
 			origin_feat_options=Soldier.ORIGIN_FEAT_OPTIONS,
 			source_title="Test",
 			source_url="",
