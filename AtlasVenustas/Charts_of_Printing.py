@@ -19,6 +19,16 @@ Thought pattern (read this before the code)
 	   (bold title, flavor block, italic rules), so moving to this printer
 	   changes nothing a reader sees. The presentation is redesigned later,
 	   in one place: here.
+	   One exception, from the review of PR #94: a rules body with real
+	   block structure — two paragraphs, a bullet list — must keep its
+	   blocks, and a ``<p>`` may not sit inside ``<i>``. So a body that is
+	   one paragraph prints inline in ``<i>`` exactly as before, and a body
+	   of clean block Markdown prints whole, inside
+	   ``<div class="entry-rules">``; the stylesheet gives that class the
+	   same italics. The parser decides which is which, never a pattern
+	   match on the text — and a body the parser reads as code or raw HTML
+	   blocks (older text with Python indentation or tags in it) keeps the
+	   old inline path until its own station ports it.
 	4. Only read Entries and Chips print. One that still holds a reader
 	   raises ``Unread_Text`` naming it, instead of printing a function's
 	   name onto the sheet.
@@ -88,6 +98,64 @@ def Inline_Html(
 			)
 
 
+def Block_Html(
+		markdown: str,
+		) -> str:
+	"""Markdown as HTML blocks: paragraphs, lists and quotes survive."""
+	return MARKDOWN.render(
+			markdown
+			).strip()
+
+
+def Top_Block_Kinds(
+		markdown: str,
+		) -> tuple[str, ...]:
+	"""The kinds of top-level blocks Markdown parses the text into."""
+	return tuple(
+			token.type
+			for token in MARKDOWN.parse( markdown )
+			if token.level == 0
+			)
+
+
+def Is_One_Paragraph(
+		markdown: str,
+		) -> bool:
+	"""True when Markdown parses the whole text as a single paragraph."""
+	return Top_Block_Kinds( markdown ) == (
+			"paragraph_open",
+			"paragraph_close",
+			)
+
+
+CLEAN_BLOCK_KINDS = frozenset(
+		(
+				"paragraph_open",
+				"paragraph_close",
+				"bullet_list_open",
+				"bullet_list_close",
+				"ordered_list_open",
+				"ordered_list_close",
+				"blockquote_open",
+				"blockquote_close",
+				)
+		)
+	#-- The blocks a sheet's rules body may be made of.  Anything else the
+	#-- parser finds — a code block, a raw HTML block — is not written
+	#-- Markdown: it is older text whose Python indentation or tags leaked
+	#-- into the string, and that text keeps the old inline path unchanged.
+
+
+def Is_Clean_Block_Markdown(
+		markdown: str,
+		) -> bool:
+	"""True when every top-level block is a paragraph, a list or a quote."""
+	kinds = set(
+			Top_Block_Kinds( markdown )
+			)
+	return kinds <= CLEAN_BLOCK_KINDS
+
+
 def Plain_Text(
 		markdown: str,
 		) -> str:
@@ -118,6 +186,37 @@ def Require_Read(
 # Entries
 # ---------------------------------------------------------------------------
 
+def Rules_As_Html(
+		rules: str,
+		) -> str:
+	"""
+	The rules body as HTML.
+
+	One paragraph keeps the sheet's old shape: inline HTML inside
+	``<i>…</i>``. A body of clean block Markdown — two paragraphs, a
+	bullet list — keeps its blocks, and a ``<p>`` may not sit inside
+	``<i>``, so it prints whole, inside ``<div class="entry-rules">``; the
+	stylesheet gives that class the same italics. Older text whose Python
+	indentation or HTML tags would parse as code or raw blocks is not
+	written Markdown yet: it keeps the old inline path, byte for byte,
+	until its own QST-0142 station ports it.
+	"""
+	if Is_One_Paragraph( rules ):
+		inline = Inline_Html(
+				rules
+				)
+		return f"<i>{inline}</i>"
+	if Is_Clean_Block_Markdown( rules ):
+		blocks = Block_Html(
+				rules
+				)
+		return f'<div class="entry-rules">{blocks}</div>'
+	inline = Inline_Html(
+			rules
+			)
+	return f"<i>{inline}</i>"
+
+
 def Entry_As_Html(
 		entry: Entry,
 		) -> str:
@@ -126,18 +225,20 @@ def Entry_As_Html(
 		return ""
 	if not entry.rules and not entry.flavor:
 		return f"<b>{head}</b>"
-	rules = Inline_Html(
-			entry.rules
-			)
+	rules = ""
+	if entry.rules:
+		rules = Rules_As_Html(
+				entry.rules
+				)
 	if not entry.flavor:
-		return f"<b>{head}:</b> <i>{rules}</i>"
+		return f"<b>{head}:</b> {rules}"
 	flavor = Inline_Html(
 			entry.flavor
 			)
 	return (
 			f"<b>{head}:</b>\n"
 			f'<div class="bc4">{flavor}</div>'
-			f"<i>{rules}</i>"
+			f"{rules}"
 			)
 
 
@@ -304,6 +405,7 @@ __all__ = (
 		"Entry_As_Markdown",
 		"Entry_As_Plain",
 		"MEDIA",
+		"Rules_As_Html",
 		"Print_Chip",
 		"Print_Entry",
 		"Unknown_Medium",
@@ -355,6 +457,37 @@ def _self_test() -> None:
 	#-- A title alone, and a title with rules only.
 	assert f"{Entry( 'Shield' ):html}" == "<b>Shield</b>"
 	assert f"{Entry( 'Shield', '+2 AC' ):html}" == "<b>Shield:</b> <i>+2 AC</i>"
+
+	#-- A body with real blocks keeps them (review of PR #94): the two
+	#-- paragraphs and the bullet list survive, inside the styled div, and
+	#-- the flavor line stays inline in its own block.
+	smite = Entry(
+			"Smite",
+			"Spend a spell slot.\n\nThe extra damage is:\n\n- 2d8 at first level\n- 1d8 more per higher slot",
+			"Your weapon burns with judgement.",
+			)
+	blocks = f"{smite:html}"
+	assert '<div class="entry-rules">' in blocks, blocks
+	assert "<p>Spend a spell slot.</p>" in blocks, blocks
+	assert "<li>2d8 at first level</li>" in blocks, blocks
+	assert '<div class="bc4">Your weapon burns with judgement.</div>' in blocks, blocks
+	assert "<i>" not in blocks, blocks
+		#-- The italics of a block body come from the stylesheet, because
+		#-- a <p> may not sit inside <i>.
+
+	#-- Older text is not written Markdown: its Python indentation would
+	#-- parse as a code block.  It keeps the old inline path, unchanged.
+	legacy = Entry(
+			"Levitate",
+			"Rises vertically up to 20 feet.\n\t\tThe target can move only by pushing.\n\t\t<br>When the spell ends, it floats down.",
+			)
+	old_shape = f"{legacy:html}"
+	assert old_shape == (
+			"<b>Levitate:</b> <i>"
+			+ Inline_Html( legacy.rules )
+			+ "</i>"
+			), old_shape
+	assert "<pre>" not in old_shape and "&lt;" not in old_shape, old_shape
 
 	#-- One Chip, four media, and its style family.
 	ac = Chip(
