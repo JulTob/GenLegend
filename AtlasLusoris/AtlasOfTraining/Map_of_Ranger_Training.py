@@ -183,10 +183,21 @@ def _chosen_named(
 
 	Readers call this. The choice is made by the Training's apply when it
 	awakens (Decree 0009, point 7: reading is pure).
+
+	A missing pick is handled, not raised: a failed awakening can leave the
+	Tag behind with nothing recorded (TopKit keeps the Tag), and one lost
+	choice must not kill the whole sheet. The sheet then says so, visibly.
 	"""
 	name = _picks(
 			char
-			)[ key ]
+			).get(
+			key
+			)
+	if name is None or name not in options:
+		return (
+				"Unchosen",
+				"This choice was not recorded when the lesson awakened.",
+				)
 	return name, options[ name ]
 
 
