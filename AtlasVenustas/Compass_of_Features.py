@@ -89,10 +89,18 @@ def Read_Text(
 		text,
 		character,
 		):
-	"""A plain value as it is; a reader, called with the Character."""
+	"""
+	A plain value as it is; a reader, called with the Character.
+
+	None becomes the empty string: a reader that answers nothing prints
+	nothing, never the word "None" (PR #94 review).
+	"""
+	value = text
 	if Is_Reader( text ):
-		return text( character )
-	return text
+		value = text( character )
+	if value is None:
+		return ""
+	return value
 
 
 # ---------------------------------------------------------------------------

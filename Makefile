@@ -37,6 +37,8 @@ $(SHINY):
 
 smoke-player: setup
 	$(VENV_PYTHON) -c "import app.main; from AtlasActorLudi.Map_of_Character_Generation import summon_player; p = summon_player(seed=42, level=1); print('smoke-player OK', getattr(p, 'name', p))"
+	$(VENV_PYTHON) -m AtlasVenustas.Charts_of_Printing
+	$(VENV_PYTHON) -m AtlasActorLudi.Charts_of_Build
 
 replay-player: setup
 	$(VENV_PYTHON) scripts/verify_player_replay.py
