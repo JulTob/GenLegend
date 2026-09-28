@@ -523,16 +523,16 @@ def _bardic_entry(
 	rest = "Short or Long" if level >= 5 else "Long"
 	return _Sung(
 			"Believe in them. You will see.",
-			f"Your Bardic Inspiration die is a <b>{die}</b>. "
-			"<br><b>Bonus Action:</b> inspire a creature within 60 feet "
+			f"Your Bardic Inspiration die is a **{die}**. "
+			"\n\n**Bonus Action:** inspire a creature within 60 feet "
 			"that can see or hear you. That creature gains one Bardic "
 			"Inspiration die. A creature can have only one Bardic Inspiration "
 			"die at a time. "
-			"<br>Once within the next hour, when the creature fails a D20 Test, "
+			"\n\nOnce within the next hour, when the creature fails a D20 Test, "
 			"it can roll the die and add the number to the d20, potentially "
 			"turning failure into success. The die is expended when rolled. "
-			f"<br>You can confer a total of <b>{uses} Bardic Inspiration dice</b>. "
-			f"You regain all expended uses when you finish a <b>{rest} Rest</b>."
+			f"\n\nYou can confer a total of **{uses} Bardic Inspiration dice**. "
+			f"You regain all expended uses when you finish a **{rest} Rest**."
 			)
 
 
@@ -578,8 +578,8 @@ def _expertise_entry(
 			)
 	return _Sung(
 		"Learn your lines. Then we'll start.",
-		f"Your Proficiency Bonus is <b>doubled</b> on "
-		f"<b>{_Named(chosen)}</b>.",
+		f"Your Proficiency Bonus is **doubled** on "
+		f"**{_Named(chosen)}**.",
 		)
 
 
@@ -598,7 +598,7 @@ def _bonus_proficiencies_entry(
 			)
 	return _Sung(
 		"Knowledge dies unpractised.",
-		f"The College trained you in <b>{_Named(chosen)}</b>.",
+		f"The College trained you in **{_Named(chosen)}**.",
 		)
 
 
@@ -619,7 +619,7 @@ def _magical_discoveries_entry(
 			)
 	return _Sung(
 		"Everyone keeps secrets. I keep copies.",
-		f"<b>{_Named(chosen)}</b> are always prepared for you, and never "
+		f"**{_Named(chosen)}** are always prepared for you, and never "
 		"count against the number of spells you prepare.",
 		)
 
@@ -651,7 +651,7 @@ Spellcasting = _core(
 	min_level=1,
 	description=_Sung(
 		"Anyone can say the words. Few can play the role.",
-		"You cast Bard spells through performance and wit. <b>Charisma</b> is "
+		"You cast Bard spells through performance and wit. **Charisma** is "
 		"your spellcasting ability. You know a selection of Bard spells from the "
 		"Bard spell list, and you can replace one known spell when you gain a "
 		"Bard level."
@@ -681,7 +681,7 @@ Font_of_Inspiration = _core(
 	description=_Sung(
 		"Passion, nap, repeat.",
 		"You regain all your expended Bardic Inspiration uses when you finish a "
-		"Short or Long Rest. <br>"
+		"Short or Long Rest. \n\n"
 		"You can also expend a spell slot (no action required) to regain one "
 		"expended use."
 		),
@@ -692,10 +692,10 @@ Countercharm = _core(
 	min_level=7,
 	description=_Sung(
 		"Smoke and mirrors, sure, but transparent when you know the tricks.",
-		"<b>Reaction:</b> when you, or a creature within 30 feet of you, fails a "
-		"saving throw against an effect that applies the <b>Charmed</b> or "
-		"<b>Frightened</b> condition, that saving throw is rerolled with "
-		"Advantage. The new roll stands. <br>"
+		"**Reaction:** when you, or a creature within 30 feet of you, fails a "
+		"saving throw against an effect that applies the **Charmed** or "
+		"**Frightened** condition, that saving throw is rerolled with "
+		"Advantage. The new roll stands. \n\n"
 		"This spends no Bardic Inspiration, and there is no limit on how often "
 		"you can do it."
 		),
@@ -717,8 +717,8 @@ Magical_Secrets = _core(
 		"You have plundered magical knowledge from a wide spectrum of "
 		"disciplines. Whenever your number of prepared spells increases, and "
 		"whenever you replace one of them, you can take the spell from the "
-		"<b>Cleric</b>, <b>Druid</b> or <b>Wizard</b> list as readily as your "
-		"own. <br>"
+		"**Cleric**, **Druid** or **Wizard** list as readily as your "
+		"own. \n\n"
 		"A spell taken this way counts as a Bard spell for you."
 		),
 	)
@@ -729,7 +729,7 @@ Superior_Inspiration = _core(
 	description=_Sung(
 		"Breathe in. Breathe out. Easy.",
 		"When you roll Initiative, you regain expended uses of Bardic "
-		"Inspiration until you have <b>two</b>."
+		"Inspiration until you have **two**."
 		),
 	)
 
@@ -740,7 +740,7 @@ Words_of_Creation = _core(
 		"You are no longer an instrument. You are the conductor.",
 		"You have mastered two of the Words of Creation: <em>Power Word Heal</em> "
 		"and <em>Power Word Kill</em>. These spells are always prepared for you "
-		"and don't count against your number of prepared spells. <br>"
+		"and don't count against your number of prepared spells. \n\n"
 		"When you cast either spell, you can target a second creature with the "
 		"spell if that creature is within 10 feet of the first target."
 		),
@@ -756,19 +756,19 @@ Dazzling_Footwork = _dance(
 	min_level=3,
 	description=_Sung(
 		"Don't you dare look back. Just keep your eyes on me.",
-		"While you aren't wearing armor or wielding a Shield, you gain:<ul>"
-		"<li><b>Unarmored Defense.</b> Your base AC equals 10 + your Dexterity "
-		"modifier + your Charisma modifier.</li>"
-		"<li><b>Agile Strikes.</b> When you expend a use of your Bardic "
+		"While you aren't wearing armor or wielding a Shield, you gain:\n\n"
+		"\n- **Unarmored Defense.** Your base AC equals 10 + your Dexterity "
+		"modifier + your Charisma modifier."
+		"\n- **Agile Strikes.** When you expend a use of your Bardic "
 		"Inspiration as part of an action, Bonus Action, or Reaction, you can "
 		"make one Unarmed Strike as part of that same action, Bonus Action, or "
-		"Reaction.</li>"
-		"<li><b>Bardic Damage.</b> You can use Dexterity instead of Strength for "
+		"Reaction."
+		"\n- **Bardic Damage.** You can use Dexterity instead of Strength for "
 		"Unarmed Strike attack rolls. When you deal damage with an Unarmed "
 		"Strike, you can deal Bludgeoning damage equal to a roll of your Bardic "
 		"Inspiration die plus your Dexterity modifier (this roll doesn't expend "
-		"the die).</li>"
-		"</ul>"
+		"the die)."
+		"\n\n"
 		),
 	chips=(
 		Chip(
@@ -811,7 +811,7 @@ Leading_Evasion = _dance(
 		"Watch out!",
 		"When you are subjected to an effect that allows you to make a Dexterity "
 		"saving throw to take only half damage, you instead take no damage on a "
-		"success and only half damage on a failure. <br>"
+		"success and only half damage on a failure. \n\n"
 		"If any creatures within 5 feet of you are making the same Dexterity "
 		"saving throw, you can share this benefit with them for that save. You "
 		"can't use this feature if you have the Incapacitated condition."
@@ -829,12 +829,12 @@ Beguiling_Magic = _glamour(
 	description=_Sung(
 		"Adore me or dread me. Either way, you are mine.",
 		"You always have the <em>Charm Person</em> and <em>Mirror Image</em> "
-		"spells prepared. <br>"
+		"spells prepared. \n\n"
 		"Immediately after you cast an Enchantment or Illusion spell using a "
 		"spell slot, you can cause a creature you can see within 60 feet to make "
 		"a Wisdom saving throw (DC equals your spell save DC). On a failed save, "
 		"the target has the Charmed or Frightened condition (your choice) for 1 "
-		"minute. The target repeats the save at the end of each of its turns. <br>"
+		"minute. The target repeats the save at the end of each of its turns. \n\n"
 		"Once you use this benefit, you can't use it again until you finish a "
 		"Long Rest. You can also restore it by expending one use of your Bardic "
 		"Inspiration (no action required)."
@@ -846,10 +846,10 @@ Mantle_of_Inspiration = _glamour(
 	min_level=3,
 	description=_Sung(
 		"On your feet, darling. The night is young.",
-		"<b>Bonus Action:</b> expend a use of Bardic Inspiration and roll the "
+		"**Bonus Action:** expend a use of Bardic Inspiration and roll the "
 		"die. Choose a number of other creatures within 60 feet, up to your "
 		"Charisma modifier (minimum one). Each chosen creature gains Temporary "
-		"Hit Points equal to <b>2 × the number rolled</b> and can use its "
+		"Hit Points equal to **2 × the number rolled** and can use its "
 		"Reaction to move up to its Speed without provoking Opportunity Attacks."
 		),
 	)
@@ -859,13 +859,13 @@ Mantle_of_Majesty = _glamour(
 	min_level=6,
 	description=_Sung(
 		"Say no, then. I'll wait.",
-		"You always have the <em>Command</em> spell prepared. <br>"
-		"<b>Bonus Action:</b> cast <em>Command</em> without expending a spell "
+		"You always have the <em>Command</em> spell prepared. \n\n"
+		"**Bonus Action:** cast <em>Command</em> without expending a spell "
 		"slot and assume an unearthly appearance for 1 minute or until your "
 		"Concentration ends. While this lasts, you can cast Command as a Bonus "
-		"Action on each turn (no slot required). <br>"
+		"Action on each turn (no slot required). \n\n"
 		"Any creature Charmed by you automatically fails its saving throw against "
-		"the Command you cast with this feature. <br>"
+		"the Command you cast with this feature. \n\n"
 		"Once used, you can't use it again until you finish a Long Rest, or until "
 		"you expend a level-3+ spell slot (no action required)."
 		),
@@ -876,12 +876,12 @@ Unbreakable_Majesty = _glamour(
 	min_level=14,
 	description=_Sung(
 		"Go on, bite. Pure gold.",
-		"<b>Bonus Action:</b> assume a magically majestic presence for 1 minute "
-		"or until you have the Incapacitated condition. <br>"
+		"**Bonus Action:** assume a magically majestic presence for 1 minute "
+		"or until you have the Incapacitated condition. \n\n"
 		"For the duration, the first time each turn any creature hits you with an "
 		"attack roll, the attacker must succeed on a Charisma saving throw "
 		"against your spell save DC or the attack misses instead, as the creature "
-		"recoils from your majesty. <br>"
+		"recoils from your majesty. \n\n"
 		"Once used, you can't use it again until you finish a Short or Long Rest."
 		),
 	)
@@ -903,7 +903,7 @@ Cutting_Words = _lore(
 	min_level=3,
 	description=_Sung(
 		"I only cut them short. Truth is the best distraction.",
-		"<b>Reaction:</b> when a creature you can see within 60 feet makes a "
+		"**Reaction:** when a creature you can see within 60 feet makes a "
 		"damage roll or succeeds on an ability check or attack roll, you can "
 		"expend one use of Bardic Inspiration and roll the die. Subtract the "
 		"number rolled from the creature's roll, potentially turning success into "
@@ -941,14 +941,14 @@ Combat_Inspiration = _valor(
 	description=_Sung(
 		"Hold the line. I'll hold your back.",
 		"A creature that has a Bardic Inspiration die from you can use it for one "
-		"of the following effects:<ul>"
-		"<li><b>Defense.</b> When the creature is hit by an attack roll, it can "
+		"of the following effects:\n\n"
+		"\n- **Defense.** When the creature is hit by an attack roll, it can "
 		"use its Reaction to roll the die and add the number to its AC against "
-		"that attack, potentially causing the attack to miss.</li>"
-		"<li><b>Offense.</b> Immediately after the creature hits a target with an "
+		"that attack, potentially causing the attack to miss."
+		"\n- **Offense.** Immediately after the creature hits a target with an "
 		"attack roll, it can roll the die and add the number to the attack's "
-		"damage against the target.</li>"
-		"</ul>"
+		"damage against the target."
+		"\n\n"
 		),
 	)
 
@@ -958,7 +958,7 @@ Martial_Training = _valor(
 	description=_Sung(
 		"Blade and board. Some weights are worth holding onto.",
 		"You gain proficiency with Martial weapons and training with Medium Armor "
-		"and Shields. <br>"
+		"and Shields. \n\n"
 		"In addition, you can use a Simple or Martial weapon as a Spellcasting "
 		"Focus to cast spells from your Bard spell list."
 		),
@@ -971,7 +971,7 @@ Valor_Extra_Attack = _valor(
 	description=_Sung(
 		"Hold fast. Every strike is a refusal to be moved.",
 		"You can attack twice instead of once whenever you take the Attack action "
-		"on your turn. <br>"
+		"on your turn. \n\n"
 		"In addition, you can cast one of your cantrips that has a casting time "
 		"of an action in place of one of those attacks."
 		),

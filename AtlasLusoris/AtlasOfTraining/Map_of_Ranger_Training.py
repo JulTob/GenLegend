@@ -28,7 +28,7 @@ HUNTER = "Hunter"
 _HUNTERS_PREY = {
 		"Colossus Slayer": (
 			"Your tenacity can wear down the most potent foes. When you hit "
-			"a creature with a weapon, the creature takes an extra <b>1d8</b> "
+			"a creature with a weapon, the creature takes an extra **1d8** "
 			"damage if it is below its Hit Point maximum. You can deal this "
 			"extra damage only once per turn."
 			),
@@ -328,7 +328,7 @@ def _favored_entry(
 	return (
 		"You always have the <em>Hunter's Mark</em> spell prepared. "
 		f"You can cast it a number of times equal to your Favored Enemy uses "
-		f"(currently <b>{uses}</b>) without expending a spell slot. "
+		f"(currently **{uses}**) without expending a spell slot. "
 		"You regain all expended uses when you finish a Long Rest."
 		)
 
@@ -398,16 +398,16 @@ def _deft_explorer_entry(
 	if len(
 			langs
 			) >= 2:
-		lang_text = f"<b>{langs[0]}</b> and <b>{langs[1]}</b>"
+		lang_text = f"**{langs[0]}** and **{langs[1]}**"
 	elif len(
 			langs
 			) == 1:
-		lang_text = f"<b>{langs[0]}</b>"
+		lang_text = f"**{langs[0]}**"
 	else:
 		lang_text = "two languages"
 	if skill:
 		return (
-			f"You have Expertise in <b>{skill}</b>, and you know "
+			f"You have Expertise in **{skill}**, and you know "
 			f"{lang_text}."
 			)
 	return (
@@ -473,13 +473,13 @@ def _expertise_entry(
 			chosen
 			) >= 2:
 		return (
-			f"You have Expertise in <b>{chosen[0]}</b> and "
-			f"<b>{chosen[1]}</b>."
+			f"You have Expertise in **{chosen[0]}** and "
+			f"**{chosen[1]}**."
 			)
 	if len(
 			chosen
 			) == 1:
-		return f"You have Expertise in <b>{chosen[0]}</b>."
+		return f"You have Expertise in **{chosen[0]}**."
 	return "You have Expertise in two skills you are proficient in."
 
 
@@ -503,12 +503,12 @@ def _tireless_entry(
 			)
 	times = "1 time" if uses == 1 else f"{uses} times"
 	return (
-		f"<em>Magic action:</em><br>"
+		f"<em>Magic action:</em>\n\n"
 		f"You gain <em>Temporary Hit Points</em> equal to "
-		f"<b>1d8 {_signed_bonus(mod)}</b>. "
-		f"You can use this action <b>{times}</b>. "
-		f"You regain all expended uses when you finish a <b>Long Rest</b>."
-		f"<br>Additionally, whenever you finish a <b>Short Rest</b>, "
+		f"**1d8 {_signed_bonus(mod)}**. "
+		f"You can use this action **{times}**. "
+		f"You regain all expended uses when you finish a **Long Rest**."
+		f"\n\nAdditionally, whenever you finish a **Short Rest**, "
 		f"your Exhaustion level, if any, decreases by 1."
 		)
 
@@ -535,11 +535,11 @@ def _natures_veil_entry(
 			)
 	times = "1 time" if uses == 1 else f"{uses} times"
 	return (
-		"<em>Bonus Action:</em><br>"
+		"<em>Bonus Action:</em>\n\n"
 		"You draw on nature's power to become <em>Invisible</em> "
 		"until the end of your next turn. "
-		f"You can use this feature <b>{times}</b>. "
-		"You regain all expended uses when you finish a <b>Long Rest</b>."
+		f"You can use this feature **{times}**. "
+		"You regain all expended uses when you finish a **Long Rest**."
 		)
 
 
@@ -563,9 +563,9 @@ def _hunters_prey_entry(
 			_HUNTERS_PREY,
 			)
 	return (
-		f"You trained in <b>{name}</b>. Whenever you finish a Short or Long "
+		f"You trained in **{name}**. Whenever you finish a Short or Long "
 		f"Rest, you can replace it with the other Hunter's Prey option."
-		f"<br>{text}"
+		f"\n\n{text}"
 		)
 
 
@@ -578,9 +578,9 @@ def _defensive_tactics_entry(
 			_DEFENSIVE_TACTICS,
 			)
 	return (
-		f"You trained in <b>{name}</b>. Whenever you finish a Short or Long "
+		f"You trained in **{name}**. Whenever you finish a Short or Long "
 		f"Rest, you can replace it with another Defensive Tactics option."
-		f"<br>{text}"
+		f"\n\n{text}"
 		)
 
 
@@ -593,8 +593,8 @@ def _superior_prey_entry(
 			_SUPERIOR_PREY,
 			)
 	return (
-		f"Once per turn, you can apply <b>{name}</b>."
-		f"<br>{text}"
+		f"Once per turn, you can apply **{name}**."
+		f"\n\n{text}"
 		)
 
 
@@ -607,8 +607,8 @@ def _superior_defense_entry(
 			_SUPERIOR_DEFENSE,
 			)
 	return (
-		f"You trained in <b>{name}</b>."
-		f"<br>{text}"
+		f"You trained in **{name}**."
+		f"\n\n{text}"
 		)
 
 
@@ -626,7 +626,7 @@ def _dreadful_strikes_entry(
 			)
 	return (
 		f"Once per turn, when you damage a creature with a weapon attack, "
-		f"you deal an extra <b>{die}</b> Psychic damage to the target, "
+		f"you deal an extra **{die}** Psychic damage to the target, "
 		"which can't regain Hit Points until the start of your next turn. "
 		"The psychic damage increases to 1d6 at Ranger level 11."
 		)
@@ -782,7 +782,7 @@ Foe_Slayer = _core(
 		min_level=20,
 		description=(
 			"You become an unparalleled hunter. "
-			"Your <em>Hunter's Mark</em> deals <b>1d10</b> extra damage instead "
+			"Your <em>Hunter's Mark</em> deals **1d10** extra damage instead "
 			"of 1d6."
 			),
 		)
@@ -801,7 +801,7 @@ Primal_Companion = _beast_master(
 			"Choose a Beast of the Land, Beast of the Sea, or Beast of the Sky; "
 			"it obeys your commands, uses your Proficiency Bonus for its modifiers, "
 			"and acts on its own initiative count. "
-			"<br>If the beast is killed, you can return it to life with an 8-hour "
+			"\n\nIf the beast is killed, you can return it to life with an 8-hour "
 			"ritual. You can also expend a spell slot during a Short Rest to restore "
 			"it to its Hit Point maximum."
 			),
@@ -814,7 +814,7 @@ Exceptional_Training = _beast_master(
 			"On any of your turns when your Primal Companion beast doesn't attack, "
 			"you can use your Bonus Action to command it to take the Dash, "
 			"Disengage, Dodge, or Help action. "
-			"<br>In addition, the beast's attacks now count as Magical for the "
+			"\n\nIn addition, the beast's attacks now count as Magical for the "
 			"purpose of overcoming Resistance and Immunity."
 			),
 		)
@@ -825,7 +825,7 @@ Bestial_Fury = _beast_master(
 		description=(
 			"When you command your Primal Companion beast to take the Attack action, "
 			"the beast can make two attacks. "
-			"<br>In addition, the first time the beast hits on a turn, the target "
+			"\n\nIn addition, the first time the beast hits on a turn, the target "
 			"takes extra damage equal to your Hunter's Mark damage die if the "
 			"creature is marked."
 			),
@@ -864,13 +864,13 @@ Fey_Spells = _fey_wanderer(
 		min_level=3,
 		description=(
 			"You always have the following spells prepared:"
-			"<ul>"
-			"<li><b>3rd:</b> <em>Charm Person</em></li>"
-			"<li><b>5th:</b> <em>Misty Step</em></li>"
-			"<li><b>9th:</b> <em>Summon Fey</em></li>"
-			"<li><b>13th:</b> <em>Dimension Door</em></li>"
-			"<li><b>17th:</b> <em>Mislead</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** <em>Charm Person</em>"
+			"\n- **5th:** <em>Misty Step</em>"
+			"\n- **9th:** <em>Summon Fey</em>"
+			"\n- **13th:** <em>Dimension Door</em>"
+			"\n- **17th:** <em>Mislead</em>"
+			"\n\n"
 			),
 		)
 
@@ -880,7 +880,7 @@ Otherworldly_Glamour = _fey_wanderer(
 		description=(
 			"Whenever you make a Charisma check, you gain a bonus equal to your "
 			"Wisdom modifier (minimum +1). "
-			"<br>In addition, you gain proficiency in one of the following skills "
+			"\n\nIn addition, you gain proficiency in one of the following skills "
 			"of your choice: Deception, Performance, or Persuasion."
 			),
 		)
@@ -891,7 +891,7 @@ Beguiling_Twist = _fey_wanderer(
 		description=(
 			"The magic of the Feywild guards your mind. You have Advantage on "
 			"saving throws against the Charmed and Frightened conditions. "
-			"<br>In addition, whenever you or a creature you can see within 120 feet "
+			"\n\nIn addition, whenever you or a creature you can see within 120 feet "
 			"of you succeeds on a saving throw against a Charmed or Frightened effect, "
 			"you can use your Reaction to force a different creature you can see within "
 			"120 feet to make a Wisdom saving throw against your spell save DC. "
@@ -905,9 +905,9 @@ Fey_Reinforcements = _fey_wanderer(
 		min_level=11,
 		description=(
 			"You can cast <em>Summon Fey</em> without a material component. "
-			"<br>You can also cast it once without expending a spell slot, and "
+			"\n\nYou can also cast it once without expending a spell slot, and "
 			"you regain this use when you finish a Long Rest. "
-			"<br>Whenever you start casting the spell, you can modify it so that "
+			"\n\nWhenever you start casting the spell, you can modify it so that "
 			"it doesn't require Concentration; if you do, the spell's duration "
 			"becomes 1 minute for that casting."
 			),
@@ -920,7 +920,7 @@ Misty_Wanderer = _fey_wanderer(
 			"You can cast <em>Misty Step</em> without expending a spell slot a "
 			"number of times equal to your Wisdom modifier (minimum once). "
 			"You regain all expended uses when you finish a Long Rest. "
-			"<br>In addition, whenever you cast <em>Misty Step</em>, you can bring "
+			"\n\nIn addition, whenever you cast <em>Misty Step</em>, you can bring "
 			"one willing creature you can see within 5 feet of you to an unoccupied "
 			"space within 5 feet of your destination."
 			),
@@ -937,11 +937,11 @@ Dread_Ambusher = _gloom_stalker(
 		min_level=3,
 		description=(
 			"You master the art of the ambush. "
-			"<br><b>Initiative.</b> You add your Wisdom modifier to Initiative rolls. "
-			"<br><b>Dread Ambusher Attack.</b> On the first round of combat, your Speed "
+			"\n\n**Initiative.** You add your Wisdom modifier to Initiative rolls. "
+			"\n\n**Dread Ambusher Attack.** On the first round of combat, your Speed "
 			"increases by 10 feet, and if you take the Attack action, you can make "
 			"one additional attack as part of it. If that attack hits, the target "
-			"takes an extra <b>2d6</b> Psychic damage."
+			"takes an extra **2d6** Psychic damage."
 			),
 		)
 
@@ -950,13 +950,13 @@ Gloom_Spells = _gloom_stalker(
 		min_level=3,
 		description=(
 			"You always have the following spells prepared:"
-			"<ul>"
-			"<li><b>3rd:</b> <em>Disguise Self</em></li>"
-			"<li><b>5th:</b> <em>Rope Trick</em></li>"
-			"<li><b>9th:</b> <em>Fear</em></li>"
-			"<li><b>13th:</b> <em>Greater Invisibility</em></li>"
-			"<li><b>17th:</b> <em>Seeming</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** <em>Disguise Self</em>"
+			"\n- **5th:** <em>Rope Trick</em>"
+			"\n- **9th:** <em>Fear</em>"
+			"\n- **13th:** <em>Greater Invisibility</em>"
+			"\n- **17th:** <em>Seeming</em>"
+			"\n\n"
 			),
 		)
 
@@ -966,7 +966,7 @@ Umbral_Sight = _gloom_stalker(
 		description=(
 			"You gain Darkvision out to a range of 60 feet. "
 			"If you already have Darkvision, its range increases by 60 feet. "
-			"<br>You are also adept at evading creatures that rely on Darkvision. "
+			"\n\nYou are also adept at evading creatures that rely on Darkvision. "
 			"While entirely in Darkness, you are Invisible to any creature that "
 			"relies on Darkvision to see you in that darkness."
 			),

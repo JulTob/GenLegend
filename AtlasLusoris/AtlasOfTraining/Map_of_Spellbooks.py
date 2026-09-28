@@ -8,12 +8,12 @@ jeweller's are stones, a cook's are recipes.
 
 Two rules govern the pool.
 
-**It stays losable.** The book is always an object somebody could take, burn,
+\n\n**It stays losable.** The book is always an object somebody could take, burn,
 soak or steal. That vulnerability is written into the Wizard's own rules, which
 is why they are told to keep a spare, and a book made of memory or muscle would
 quietly hand one Wizard an immunity the others pay for.
 
-**A page is always a page.** Every form names its own unit, so the rules text
+\n\n**A page is always a page.** Every form names its own unit, so the rules text
 above it ("six level 1 spells", "add two spells") keeps meaning what it says
 whether a page is a stone, a stave or a sheet of papyrus.
 """

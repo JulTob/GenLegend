@@ -209,31 +209,31 @@ def _rage_entry(
 			char
 			)
 	return (
-		"You can imbue yourself with a primal power called <b>Rage</b>, "
+		"You can imbue yourself with a primal power called **Rage**, "
 		"a force that grants you extraordinary might and resilience. "
-		"You can enter it as a <i>Bonus Action</i> if you aren't wearing "
+		"You can enter it as a *Bonus Action* if you aren't wearing "
 		"Heavy armor."
-		f"<br>You can enter your Rage <b>{uses}</b> times. "
-		"You regain one expended use when you finish a <i>Short Rest</i>, "
-		"and you regain all expended uses when you finish a <i>Long Rest</i>."
-		"<br>While active, your Rage follows these rules:"
-		"<ul>"
-		"<li><b>Damage Resistance.</b> You have Resistance to Bludgeoning, "
-		"Piercing, and Slashing damage.</li>"
-		"<li><b>Rage Damage.</b> When you make an attack using Strength "
+		f"\n\nYou can enter your Rage **{uses}** times. "
+		"You regain one expended use when you finish a *Short Rest*, "
+		"and you regain all expended uses when you finish a *Long Rest*."
+		"\n\nWhile active, your Rage follows these rules:"
+		"\n\n"
+		"\n- **Damage Resistance.** You have Resistance to Bludgeoning, "
+		"Piercing, and Slashing damage."
+		"\n- **Rage Damage.** When you make an attack using Strength "
 		"— with a weapon or an Unarmed Strike — and deal damage, "
-		f"add <b>+{bonus}</b> to that damage.</li>"
-		"<li><b>Strength Advantage.</b> You have Advantage on Strength "
-		"checks and Strength saving throws.</li>"
-		"<li><b>No Concentration or Spells.</b> You can't maintain "
-		"Concentration, and you can't cast spells.</li>"
-		"<li><b>Duration.</b> The Rage lasts until the end of your next "
+		f"add **+{bonus}** to that damage."
+		"\n- **Strength Advantage.** You have Advantage on Strength "
+		"checks and Strength saving throws."
+		"\n- **No Concentration or Spells.** You can't maintain "
+		"Concentration, and you can't cast spells."
+		"\n- **Duration.** The Rage lasts until the end of your next "
 		"turn, and it ends early if you don Heavy armor or have the "
 		"Incapacitated condition. You can extend it for another round by "
 		"making an attack roll against an enemy, forcing an enemy to make "
 		"a saving throw, or taking a Bonus Action to extend the Rage. "
-		"You can maintain a Rage for up to 10 minutes.</li>"
-		"</ul>"
+		"You can maintain a Rage for up to 10 minutes."
+		"\n\n"
 		)
 
 
@@ -281,19 +281,19 @@ def _brutal_strike_entry(
 			else ""
 			)
 	options = (
-		"<br><b>Forceful Blow.</b> The target is pushed 15 feet straight "
+		"\n\n**Forceful Blow.** The target is pushed 15 feet straight "
 		"away from you. You can then move up to half your Speed straight "
 		"toward the target without provoking Opportunity Attacks."
-		"<br><b>Hamstring Blow.</b> The target's Speed is reduced by "
+		"\n\n**Hamstring Blow.** The target's Speed is reduced by "
 		"15 feet until the start of your next turn. A target can be "
 		"affected by only one Hamstring Blow at a time — the most recent one."
 		)
 	if level >= 13:
 		options += (
-			"<br><b>Staggering Blow.</b> The target has Disadvantage on "
+			"\n\n**Staggering Blow.** The target has Disadvantage on "
 			"the next saving throw it makes, and it can't make Opportunity "
 			"Attacks until the start of your next turn."
-			"<br><b>Sundering Blow.</b> Before the start of your next turn, "
+			"\n\n**Sundering Blow.** Before the start of your next turn, "
 			"the next attack roll made by another creature against the "
 			"target gains a +5 bonus to the roll. An attack roll can gain "
 			"only one Sundering Blow bonus."
@@ -303,10 +303,10 @@ def _brutal_strike_entry(
 		"If you use Reckless Attack, you can forgo any Advantage on one "
 		"Strength-based attack roll of your choice on your turn. The "
 		"chosen attack roll mustn't have Disadvantage. If it hits, the "
-		f"target takes an extra <b>{die}</b> damage of the same type dealt "
+		f"target takes an extra **{die}** damage of the same type dealt "
 		"by the weapon or Unarmed Strike, and you can cause one Brutal "
 		f"Strike effect of your choice.{two}"
-		f"<br>You have the following effect options:{options}"
+		f"\n\nYou have the following effect options:{options}"
 		)
 
 
@@ -347,7 +347,7 @@ def _frenzy_entry(
 		"If you use Reckless Attack while your Rage is active, you deal "
 		"extra damage to the first target you hit on your turn with a "
 		"Strength-based attack. To determine the extra damage, roll "
-		f"<b>{dice}d6</b> and add them together. The damage has the same "
+		f"**{dice}d6** and add them together. The damage has the same "
 		"type as the weapon or Unarmed Strike used for the attack."
 		)
 
@@ -378,7 +378,7 @@ def _unarmored_defense_entry(
 	return (
 			"*You trust your reflexes more than any material.*\n\n"
 			"While you aren't wearing any armor, your base Armor Class "
-			f"equals <b>{armour_class}</b> (10 + Dexterity modifier + "
+			f"equals **{armour_class}** (10 + Dexterity modifier + "
 			"Constitution modifier). You can use a Shield and still gain "
 			"this benefit."
 			)
@@ -539,7 +539,7 @@ def _primal_knowledge_entry(
 		)
 
 	if gained:
-		opening = f"You learnt <b>{gained}</b>. "
+		opening = f"You learnt **{gained}**. "
 	elif gained == "":
 		opening = (
 			"You were already trained in every skill a Barbarian learns, so "
@@ -630,7 +630,7 @@ Relentless_Rage = _core(
 			"don't die outright, you can make a DC 10 Constitution "
 			"saving throw. If you succeed, your Hit Points instead change "
 			"to a number equal to twice your Barbarian level."
-			"<br>Each time you use this feature after the first, the DC "
+			"\n\nEach time you use this feature after the first, the DC "
 			"increases by 5. When you finish a Short or Long Rest, the "
 			"DC resets to 10."
 			),
@@ -646,7 +646,7 @@ Persistent_Rage = _core(
 			"When you roll Initiative, you can regain all expended uses "
 			"of Rage. After you regain uses of Rage in this way, you "
 			"can't do so again until you finish a Long Rest."
-			"<br>In addition, your Rage now lasts for 10 minutes without "
+			"\n\nIn addition, your Rage now lasts for 10 minutes without "
 			"you needing to extend it from round to round. Your Rage ends "
 			"early if you have the Unconscious condition (not just "
 			"Incapacitated) or don Heavy armor."
@@ -732,7 +732,7 @@ Intimidating_Presence = _berserker(
 			"Frightened condition for 1 minute. At the end of each of the "
 			"Frightened creature's turns, the creature repeats the save, "
 			"ending the effect on itself on a success."
-			"<br>Once you use this feature, you can't use it again until "
+			"\n\nOnce you use this feature, you can't use it again until "
 			"you finish a Long Rest unless you expend a use of your Rage "
 			"(no action required) to restore your use of it."
 			),
@@ -750,8 +750,8 @@ Animal_Speaker = _path(
 		min_level=3,
 		description=(
 			"*Your spirit is present and listens to the wilds.*\n\n"
-			"You can cast the <i>Beast Sense</i> and "
-			"<i>Speak with Animals</i> spells but only as Rituals. "
+			"You can cast the *Beast Sense* and "
+			"*Speak with Animals* spells but only as Rituals. "
 			"Wisdom is your spellcasting ability for them."
 			),
 		)
@@ -764,13 +764,13 @@ Rage_of_the_Wilds = _path(
 			"*Your heart beats wilder, and you sense the presence of the "
 			"beast in you.*\n\n"
 			"Whenever you activate your Rage, choose one option:"
-			"<br><b>Bear.</b> While raging, you have Resistance to every "
+			"\n\n**Bear.** While raging, you have Resistance to every "
 			"damage type except Force, Necrotic, Psychic, and Radiant."
-			"<br><b>Eagle.</b> When you activate Rage, you can take the "
+			"\n\n**Eagle.** When you activate Rage, you can take the "
 			"Disengage and Dash actions as part of that Bonus Action. "
 			"While raging, you can take a Bonus Action to take both of "
 			"those actions."
-			"<br><b>Wolf.</b> While raging, your allies have Advantage on "
+			"\n\n**Wolf.** While raging, your allies have Advantage on "
 			"attack rolls against any enemy of yours within 5 feet of you."
 			),
 		)
@@ -783,10 +783,10 @@ Aspect_of_the_Wilds = _path(
 			"*Your movements become those of the wild, carried by your "
 			"untamed spirit.*\n\n"
 			"Choose one option whenever you finish a Long Rest:"
-			"<br><b>Owl.</b> Darkvision 60 feet (or +60 feet if you "
+			"\n\n**Owl.** Darkvision 60 feet (or +60 feet if you "
 			"already have Darkvision)."
-			"<br><b>Panther.</b> Climb Speed equal to your Speed."
-			"<br><b>Salmon.</b> Swim Speed equal to your Speed."
+			"\n\n**Panther.** Climb Speed equal to your Speed."
+			"\n\n**Salmon.** Swim Speed equal to your Speed."
 			),
 		)
 
@@ -796,7 +796,7 @@ Nature_Speaker = _path(
 		min_level=10,
 		description=(
 			"*Your heart opens to become one with nature.*\n\n"
-			"You can cast <i>Commune with Nature</i> but only as a Ritual. "
+			"You can cast *Commune with Nature* but only as a Ritual. "
 			"Wisdom is your spellcasting ability for it."
 			),
 		)
@@ -808,12 +808,12 @@ Power_of_the_Wilds = _path(
 		description=(
 			"*You are present. You are aware. You are the beast.*\n\n"
 			"Whenever you activate your Rage, choose one option:"
-			"<br><b>Falcon.</b> While raging, Fly Speed equal to your "
+			"\n\n**Falcon.** While raging, Fly Speed equal to your "
 			"Speed if you aren't wearing armor."
-			"<br><b>Lion.</b> While raging, enemies within 5 feet of you "
+			"\n\n**Lion.** While raging, enemies within 5 feet of you "
 			"have Disadvantage on attack rolls against targets other than "
 			"you or another Barbarian with this option active."
-			"<br><b>Ram.</b> While raging, when you hit a Large or "
+			"\n\n**Ram.** While raging, when you hit a Large or "
 			"smaller creature with a melee attack, you can force it to "
 			"have the Prone condition."
 			),
@@ -836,13 +836,13 @@ def _vitality_entry(
 			)
 	return (
 		"Your Rage taps into the life force of the World Tree."
-		f"<br><b>Vitality Surge.</b> When you activate your Rage, you "
+		f"\n\n**Vitality Surge.** When you activate your Rage, you "
 		f"gain Temporary Hit Points equal to your Barbarian level "
-		f"(<b>{level}</b>)."
-		f"<br><b>Life-Giving Force.</b> At the start of each of your "
+		f"(**{level}**)."
+		f"\n\n**Life-Giving Force.** At the start of each of your "
 		f"turns while raging, you can choose another creature within "
 		f"10 feet to gain Temporary Hit Points equal to "
-		f"<b>{dice}d6</b>. Those Temporary Hit Points vanish when your "
+		f"**{dice}d6**. Those Temporary Hit Points vanish when your "
 		f"Rage ends."
 		)
 
@@ -895,9 +895,9 @@ Battering_Roots = _path(
 			# which weapons the Character actually drilled: a Barbarian who
 			# never trained a Topple weapon still gets Topple here, and would
 			# otherwise have no way to know what it does.
-			"<br><b>Push.</b> "
+			"\n\n**Push.** "
 			+ _mastery_text( "Push", char )
-			+ "<br><b>Topple.</b> "
+			+ "\n\n**Topple.** "
 			+ _mastery_text( "Topple", char )
 			),
 		)
@@ -912,7 +912,7 @@ Travel_along_the_Tree = _path(
 			"When you activate your Rage and as a Bonus Action while "
 			"raging, you can teleport up to 60 feet to an unoccupied "
 			"space you can see."
-			"<br>Once per Rage, you can increase that teleport to "
+			"\n\nOnce per Rage, you can increase that teleport to "
 			"150 feet and bring up to six willing creatures within "
 			"10 feet of you, each to an unoccupied space within 10 feet "
 			"of your destination."
@@ -954,7 +954,7 @@ def _divine_fury_entry(
 			"hells in your hands.*\n\n"
 			"On each of your turns while your Rage is active, the first "
 		"creature you hit with a weapon or an Unarmed Strike takes "
-		f"extra damage equal to <b>1d6 + {half}</b>. Choose Necrotic "
+		f"extra damage equal to **1d6 + {half}**. Choose Necrotic "
 		"or Radiant each time you deal the damage."
 		)
 
@@ -1018,7 +1018,7 @@ Zealous_Presence = _path(
 			"other creatures of your choice within 60 feet gain Advantage "
 			"on attack rolls and saving throws until the start of your "
 			"next turn."
-			"<br>Once you use this feature, you can't use it again until "
+			"\n\nOnce you use this feature, you can't use it again until "
 			"you finish a Long Rest unless you expend a use of your Rage "
 			"(no action required) to restore your use of it."
 			),
@@ -1035,10 +1035,10 @@ Rage_of_the_Gods = _path(
 			"form for 1 minute or until you drop to 0 Hit Points. Once "
 			"you use this feature, you can't do so again until you finish "
 			"a Long Rest."
-			"<br><b>Flight.</b> Fly Speed equal to your Speed; you can hover."
-			"<br><b>Resistance.</b> Resistance to Necrotic, Psychic, and "
+			"\n\n**Flight.** Fly Speed equal to your Speed; you can hover."
+			"\n\n**Resistance.** Resistance to Necrotic, Psychic, and "
 			"Radiant damage."
-			"<br><b>Revivification.</b> When a creature within 30 feet "
+			"\n\n**Revivification.** When a creature within 30 feet "
 			"would drop to 0 Hit Points, you can take a Reaction and "
 			"expend a use of Rage to change that creature's Hit Points "
 			f"to {_rank( char )} instead."

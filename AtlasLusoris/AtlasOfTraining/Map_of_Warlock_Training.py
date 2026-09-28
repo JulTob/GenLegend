@@ -96,9 +96,9 @@ def _pact_magic_entry(
 	plural = "" if slots == 1 else "s"
 	return (
 		"Through occult ceremony you have formed a pact with a "
-		"mysterious entity. You have <b>"
-		f"{slots} Pact Magic slot{plural}</b> of spell level <b>"
-		f"{row['slot_level']}</b>. All of your slots are of that level, "
+		"mysterious entity. You have **"
+		f"{slots} Pact Magic slot{plural}** of spell level **"
+		f"{row['slot_level']}**. All of your slots are of that level, "
 		"and you regain all expended Pact Magic slots when you finish "
 		"a Short or Long Rest."
 		)
@@ -126,8 +126,8 @@ def _mystic_arcanum_entry(
 			)
 	return (
 		"Your patron grants you a magical secret called an arcanum. You "
-		"choose one Warlock spell at each of these levels as an arcanum: <b>"
-		f"{known}</b>. You can cast each of them once without a spell "
+		"choose one Warlock spell at each of these levels as an arcanum: **"
+		f"{known}**. You can cast each of them once without a spell "
 		"slot, and you regain all uses when you finish a Long Rest."
 		)
 
@@ -154,8 +154,8 @@ round, and no closer to surviving.
 
 	return (
 		"You keep a line open, and it answers when you are about to "
-		"need it. <b>When you roll Initiative, you regain all expended "
-		f"Pact Magic spell slots</b>: {slots} slot{plural} at spell level "
+		"need it. **When you roll Initiative, you regain all expended "
+		f"Pact Magic spell slots**: {slots} slot{plural} at spell level "
 		f"{_pact_slot_level(char)}, with no limit on how often. What "
 		"comes back is power, not rescue. Your wounds stay exactly "
 		"where they are."
@@ -255,8 +255,8 @@ Contact_Patron = _core(
 		min_level=9,
 		description=(
 			"In the past you contacted your patron through intermediaries. "
-			"Now you can communicate directly: you always have <i>Contact "
-			"Other Plane</i> prepared. With this feature you can cast the "
+			"Now you can communicate directly: you always have *Contact "
+			"Other Plane* prepared. With this feature you can cast the "
 			"spell without expending a spell slot to contact your patron, "
 			"and you automatically succeed on the spell's saving throw. "
 			"Once you cast it this way, you can't do so again until you "
@@ -307,9 +307,9 @@ Archfey_Spells = _archfey(
 		name="Archfey Spells",
 		min_level=3,
 		description=(
-			"The magic of your patron ensures you always have certain spells prepared. <b>Level 3.</b> <i>Calm Emotions, Faerie Fire, Misty Step, Phantasmal Force, Sleep.</i>"
-			"<br><b>Level 5.</b> <i>Blink, Plant Growth.</i><br><b>Level 7.</b> <i>Dominate Beast, Greater Invisibility.</i>"
-			"<br><b>Level 9.</b> <i>Dominate Person, Seeming.</i> These don't count against the number of spells you prepare."
+			"The magic of your patron ensures you always have certain spells prepared.\n\n**Level 3.** *Calm Emotions, Faerie Fire, Misty Step, Phantasmal Force, Sleep.*"
+			"\n\n**Level 5.** *Blink, Plant Growth.*\n\n**Level 7.** *Dominate Beast, Greater Invisibility.*"
+			"\n\n**Level 9.** *Dominate Person, Seeming.* These don't count against the number of spells you prepare."
 			),
 		)
 
@@ -318,15 +318,15 @@ Steps_of_the_Fey = _archfey(
 		min_level=3,
 		description=(
 			"Your patron bestowed on you the ability to move between the "
-			"boundaries of the planes. You can cast <i>Misty Step</i> "
+			"boundaries of the planes. You can cast *Misty Step* "
 			"without expending a spell slot a number of times equal to "
 			"your Charisma modifier (minimum of once), and you regain all "
 			"expended uses when you finish a Long Rest. Whenever you cast "
 			"that spell, you can choose one of the following additional "
-			"effects. <br><b>Refreshing Step.</b> Immediately after you "
+			"effects. \n\n**Refreshing Step.** Immediately after you "
 			"teleport, you or one creature you can see within 10 feet of "
-			"yourself gains 1d10 Temporary Hit Points. <br><b>Taunting "
-			"Step.</b> Creatures within 5 feet of the space you left must "
+			"yourself gains 1d10 Temporary Hit Points. \n\n**Taunting "
+			"Step.** Creatures within 5 feet of the space you left must "
 			"succeed on a Wisdom saving throw against your spell save DC "
 			"or have Disadvantage on attack rolls against creatures other "
 			"than you until the start of your next turn."
@@ -337,13 +337,13 @@ Misty_Escape = _archfey(
 		name="Misty Escape",
 		min_level=6,
 		description=(
-			"You can cast <i>Misty Step</i> as a Reaction in response to "
+			"You can cast *Misty Step* as a Reaction in response to "
 			"taking damage. In addition, the following effects are now "
-			"among your Steps of the Fey options. <br><b>Disappearing "
-			"Step.</b> You have the Invisible condition until the start "
+			"among your Steps of the Fey options. \n\n**Disappearing "
+			"Step.** You have the Invisible condition until the start "
 			"of your next turn or until immediately after you make an "
-			"attack roll, deal damage, or cast a spell. <br><b>Dreadful "
-			"Step.</b> Creatures within 5 feet of the space you left or "
+			"attack roll, deal damage, or cast a spell. \n\n**Dreadful "
+			"Step.** Creatures within 5 feet of the space you left or "
 			"the space you appear in (your choice) must succeed on a "
 			"Wisdom saving throw against your spell save DC or take 2d10 "
 			"Psychic damage."
@@ -374,7 +374,7 @@ Bewitching_Magic = _archfey(
 			"Your patron granted you the ability to weave your magic with "
 			"teleportation. Immediately after you cast an Enchantment or "
 			"Illusion spell using an action and a spell slot, you can cast "
-			"<i>Misty Step</i> as part of the same action and without expending a spell slot."
+			"*Misty Step* as part of the same action and without expending a spell slot."
 			),
 		)
 
@@ -441,9 +441,9 @@ Celestial_Spells = _celestial(
 		name="Celestial Spells",
 		min_level=3,
 		description=(
-			"The magic of your patron ensures you always have certain spells prepared. <b>Level 3.</b> <i>Aid, Cure Wounds, Guiding Bolt, Lesser Restoration, Light, Sacred Flame.</i>"
-			"<br><b>Level 5.</b> <i>Daylight, Revivify.</i><br><b>Level 7.</b> <i>Guardian of Faith, Wall of Fire.</i>"
-			"<br><b>Level 9.</b> <i>Greater Restoration, Summon Celestial.</i> These don't count against the number of spells you prepare."
+			"The magic of your patron ensures you always have certain spells prepared.\n\n**Level 3.** *Aid, Cure Wounds, Guiding Bolt, Lesser Restoration, Light, Sacred Flame.*"
+			"\n\n**Level 5.** *Daylight, Revivify.*\n\n**Level 7.** *Guardian of Faith, Wall of Fire.*"
+			"\n\n**Level 9.** *Greater Restoration, Summon Celestial.* These don't count against the number of spells you prepare."
 			),
 		)
 
@@ -454,11 +454,11 @@ def _healing_light_entry(
 	spend = _charisma_modifier(char)
 
 	return (
-		"You channel celestial energy to heal wounds, drawing on a pool of <b>"
-		f"{pool}d6</b>. As a Bonus Action you can heal yourself or one "
+		"You channel celestial energy to heal wounds, drawing on a pool of **"
+		f"{pool}d6**. As a Bonus Action you can heal yourself or one "
 		"creature you can see within 60 feet, expending dice from the "
 		"pool and restoring Hit Points equal to the total rolled. "
-		f"You can spend at most <b>{spend}</b> dice at once. Your pool "
+		f"You can spend at most **{spend}** dice at once. Your pool "
 		"regains all expended dice when you finish a Long Rest."
 		)
 
@@ -566,8 +566,8 @@ def _dark_ones_blessing_entry(
 			)
 
 	return (
-		"When you reduce an enemy to 0 Hit Points, you gain <b>"
-		f"{gained} Temporary Hit Points</b>. You also gain this benefit "
+		"When you reduce an enemy to 0 Hit Points, you gain **"
+		f"{gained} Temporary Hit Points**. You also gain this benefit "
 		"if someone else reduces an enemy within 10 feet of you to 0 "
 		"Hit Points."
 		)
@@ -583,9 +583,9 @@ Fiend_Spells = _fiend(
 		name="Fiend Spells",
 		min_level=3,
 		description=(
-			"The magic of your patron ensures you always have certain spells prepared. <b>Level 3.</b> <i>Burning Hands, Command, Scorching Ray, Suggestion.</i>"
-			"<br><b>Level 5.</b> <i>Fireball, Stinking Cloud.</i><br><b>Level 7.</b> <i>Fire Shield, Wall of Fire.</i>"
-			"<br><b>Level 9.</b> <i>Geas, Insect Plague.</i> These don't count against the number of spells you prepare."
+			"The magic of your patron ensures you always have certain spells prepared.\n\n**Level 3.** *Burning Hands, Command, Scorching Ray, Suggestion.*"
+			"\n\n**Level 5.** *Fireball, Stinking Cloud.*\n\n**Level 7.** *Fire Shield, Wall of Fire.*"
+			"\n\n**Level 9.** *Geas, Insect Plague.* These don't count against the number of spells you prepare."
 			),
 		)
 
@@ -602,7 +602,7 @@ def _dark_ones_own_luck_entry(
 		"favour. When you make an ability check or a saving throw, you "
 		"can use this feature to add 1d10 to your roll. You can do so "
 		"after seeing the roll but before any of its effects occur. "
-		f"You have <b>{uses}</b> use{'' if uses == 1 else 's'}, no more "
+		f"You have **{uses}** use{'' if uses == 1 else 's'}, no more "
 		"than one per roll, and you regain all expended uses when you "
 		"finish a Long Rest."
 		)
@@ -682,10 +682,10 @@ def _awakened_mind_entry(
 	return (
 		"Your patron left a door open in your mind. As a Bonus Action "
 		"you can choose one creature you can see within 30 feet, and "
-		"the two of you can speak telepathically while you are within <b>"
-		f"{miles} mile{'' if miles == 1 else 's'}</b> of each other. To "
+		"the two of you can speak telepathically while you are within **"
+		f"{miles} mile{'' if miles == 1 else 's'}** of each other. To "
 		"understand each other you must each mentally use a language the "
-		f"other knows. The connection lasts <b>{minutes} minutes</b>, "
+		f"other knows. The connection lasts **{minutes} minutes**, "
 		"and ends early if you use this feature on someone else."
 		)
 
@@ -700,9 +700,9 @@ Great_Old_One_Spells = _goo(
 		name="Great Old One Spells",
 		min_level=3,
 		description=(
-			"The magic of your patron ensures you always have certain spells prepared. <b>Level 3.</b> <i>Detect Thoughts, Dissonant Whispers, Phantasmal Force, Tasha's Hideous Laughter.</i>"
-			"<br><b>Level 5.</b> <i>Clairvoyance, Hunger of Hadar.</i><br><b>Level 7.</b> <i>Confusion, Summon Aberration.</i>"
-			"<br><b>Level 9.</b> <i>Modify Memory, Telekinesis.</i> These don't count against the number of spells you prepare."
+			"The magic of your patron ensures you always have certain spells prepared.\n\n**Level 3.** *Detect Thoughts, Dissonant Whispers, Phantasmal Force, Tasha's Hideous Laughter.*"
+			"\n\n**Level 5.** *Clairvoyance, Hunger of Hadar.*\n\n**Level 7.** *Confusion, Summon Aberration.*"
+			"\n\n**Level 9.** *Modify Memory, Telekinesis.* These don't count against the number of spells you prepare."
 			),
 		)
 
@@ -738,7 +738,7 @@ Eldritch_Hex = _goo(
 		min_level=10,
 		description=(
 			"Your alien patron granted you a powerful curse. You always "
-			"have the <i>Hex</i> spell prepared. When you cast <i>Hex</i> "
+			"have the *Hex* spell prepared. When you cast *Hex* "
 			"and choose an ability, the target also has Disadvantage on "
 			"saving throws of the chosen ability for the spell's duration."
 			),
@@ -774,12 +774,12 @@ def _create_thrall_entry(
 			)
 
 	return (
-		"When you cast <i>Summon Aberration</i>, you can modify it so "
+		"When you cast *Summon Aberration*, you can modify it so "
 		"that it does not require Concentration. If you do, the spell's "
 		"duration becomes 1 minute for that casting, and the Aberration "
-		f"arrives with <b>{temporary} Temporary Hit Points</b>. In "
+		f"arrives with **{temporary} Temporary Hit Points**. In "
 		"addition, the first time each turn the Aberration hits a "
-		"creature under the effect of your <i>Hex</i>, it deals extra "
+		"creature under the effect of your *Hex*, it deals extra "
 		"Psychic damage to that target equal to the bonus damage of "
 		"that spell."
 		)

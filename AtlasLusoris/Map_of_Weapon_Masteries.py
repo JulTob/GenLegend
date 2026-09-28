@@ -139,7 +139,7 @@ MASTERY_TEXT: dict[str, str] = {
 			),
 		"Topple": (
 			"On a hit you may force a Constitution saving throw "
-			"<b>(DC {dc})</b>; on a failure the target falls Prone."
+			"**(DC {dc})**; on a failure the target falls Prone."
 			),
 		"Vex": (
 			"On a hit you have Advantage on your next attack roll against "
@@ -832,7 +832,7 @@ def weapon_mastery_entry(
 	parts = [
 			"*You feel comfortable with the weapons you trained with.*\n\n"
 			"Your training with weapons allows you to use the mastery "
-			f"properties of <b>{weapons}</b>. Whenever you finish a Long Rest, "
+			f"properties of **{weapons}**. Whenever you finish a Long Rest, "
 			"you can change one of those weapon choices.",
 			]
 	for weapon, mastery in picks:
@@ -840,14 +840,14 @@ def weapon_mastery_entry(
 				mastery,
 				char,
 				)
-		header = f"<b>{weapon} Mastery: {mastery}</b>"
+		header = f"**{weapon} Mastery: {mastery}**"
 		if blurb:
 			parts.append(
-					f"<br>{header}<br>{blurb}"
+					f"\n\n{header}\n\n{blurb}"
 					)
 		else:
 			parts.append(
-					f"<br>{header}"
+					f"\n\n{header}"
 					)
 	return "".join(
 			parts

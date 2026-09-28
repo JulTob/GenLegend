@@ -149,7 +149,7 @@ Magic_Item_Tinker = _core(
 		min_level=6,
 		description=(
 			"Your understanding of magic items deepens. You can be attuned "
-			"to a maximum of <b>four</b> magic items simultaneously "
+			"to a maximum of **four** magic items simultaneously "
 			"(instead of the normal three)."
 			),
 		)
@@ -169,7 +169,7 @@ Magic_Item_Adept = _core(
 		name="Magic Item Adept",
 		min_level=10,
 		description=(
-			"You can be attuned to up to <b>five</b> magic items at once. "
+			"You can be attuned to up to **five** magic items at once. "
 			"If you craft a magic item requiring an Uncommon or Rare formula, "
 			"it takes a quarter of the normal time and costs half as much "
 			"gold."
@@ -193,7 +193,7 @@ Advanced_Artifice = _core(
 		name="Advanced Artifice",
 		min_level=14,
 		description=(
-			"You can be attuned to up to <b>six</b> magic items at once. "
+			"You can be attuned to up to **six** magic items at once. "
 			"You can now replicate Rare magic items with Replicate Magic Item. "
 			"Once per Long Rest per spell, you can cast any Artificer "
 			"spell you know using Tinker's Tools without expending a "
@@ -206,7 +206,7 @@ Magic_Item_Master = _core(
 		min_level=18,
 		description=(
 			"Magic items are extensions of your will. You can be attuned "
-			"to up to <b>seven</b> magic items simultaneously."
+			"to up to **seven** magic items simultaneously."
 			),
 		)
 
@@ -259,8 +259,8 @@ Alchemist_Spells = _alchemist(
 		min_level=3,
 		description=(
 			"Your alchemical study unlocks extra spells always prepared: "
-			"<i>Healing Word, Ray of Sickness, Flaming Sphere, Melf's "
-			"Acid Arrow, Mass Healing Word, Stinking Cloud.</i> "
+			"*Healing Word, Ray of Sickness, Flaming Sphere, Melf's "
+			"Acid Arrow, Mass Healing Word, Stinking Cloud.* "
 			"These don't count against your prepared spells."
 			),
 		)
@@ -272,10 +272,10 @@ Experimental_Elixir = _alchemist(
 			"When you finish a Long Rest, produce a number of experimental "
 			"elixirs equal to your Intelligence modifier (minimum 1). "
 			"Roll for each on the Experimental Elixir table or choose: "
-			"<i>Healing</i> (2d4+Int HP), <i>Swiftness</i> (+10 ft Speed "
-			"1 hour), <i>Resilience</i> (1d8+Int Temp HP), <i>Boldness</i> "
-			"(Advantage on attacks and saves vs. fear 1 min), <i>Flight</i> "
-			"(10 ft Fly Speed 10 min), <i>Transformation</i> (Alter Self "
+			"*Healing* (2d4+Int HP), *Swiftness* (+10 ft Speed "
+			"1 hour), *Resilience* (1d8+Int Temp HP), *Boldness* "
+			"(Advantage on attacks and saves vs. fear 1 min), *Flight* "
+			"(10 ft Fly Speed 10 min), *Transformation* (Alter Self "
 			"10 min). Elixirs expire on your next Long Rest."
 			),
 		)
@@ -297,7 +297,7 @@ Restorative_Reagents = _alchemist(
 		description=(
 			"Whenever a creature drinks one of your Experimental Elixirs, "
 			"it gains Temporary Hit Points equal to 2d6 plus your "
-			"Intelligence modifier. You always have <i>Lesser Restoration</i> "
+			"Intelligence modifier. You always have *Lesser Restoration* "
 			"prepared; you can cast it without a spell slot a number "
 			"of times equal to your Intelligence modifier (minimum 1), "
 			"regained on a Long Rest."
@@ -309,8 +309,8 @@ Chemical_Mastery = _alchemist(
 		min_level=15,
 		description=(
 			"You gain Immunity to the Poisoned condition and Resistance to "
-			"Acid and Poison damage. You can cast <i>Greater Restoration</i> "
-			"and <i>Heal</i> each once per Long Rest without expending a "
+			"Acid and Poison damage. You can cast *Greater Restoration* "
+			"and *Heal* each once per Long Rest without expending a "
 			"spell slot, using Alchemist's Supplies as the focus."
 			),
 		)
@@ -352,8 +352,8 @@ Armorer_Spells = _armorer(
 		min_level=3,
 		description=(
 			"Your research into armored combat unlocks extra spells "
-			"always prepared: <i>Magic Missile, Thunderwave, Mirror "
-			"Image, Shatter, Hypnotic Pattern, Lightning Bolt.</i> "
+			"always prepared: *Magic Missile, Thunderwave, Mirror "
+			"Image, Shatter, Hypnotic Pattern, Lightning Bolt.* "
 			"These don't count against your prepared spells."
 			),
 		)
@@ -374,14 +374,14 @@ Armor_Model = _armorer(
 		name="Armor Model",
 		min_level=3,
 		description=(
-			"Choose a model for your Arcane Armor — <b>Guardian</b> "
-			"or <b>Infiltrator</b>. You can change the model when "
-			"you finish a Short or Long Rest.<br><b>Guardian.</b> "
+			"Choose a model for your Arcane Armor — **Guardian** "
+			"or **Infiltrator**. You can change the model when "
+			"you finish a Short or Long Rest.\n\n**Guardian.** "
 			"Thunder Gauntlets (1d8 Thunder, Str-based; hit targets "
 			"have Disadvantage on attacks against others until "
 			"your next turn) and Defensive Field (Bonus Action: "
 			"Temp HP = Artificer level; uses = Prof Bonus / Long Rest)."
-			"<br><b>Infiltrator.</b> Lightning Launcher (ranged 1d6 "
+			"\n\n**Infiltrator.** Lightning Launcher (ranged 1d6 "
 			"Lightning, Dex-based; once per turn +1d6 Lightning on hit), "
 			"Powered Steps (+5 ft Speed), Dampening Field (Advantage on "
 			"Stealth checks)."
@@ -413,11 +413,11 @@ Perfected_Armor = _armorer(
 		name="Perfected Armor",
 		min_level=15,
 		description=(
-			"<b>Guardian.</b> When you use Defensive Field, one "
+			"\n\n**Guardian.** When you use Defensive Field, one "
 			"creature within 60 feet receives the same Temp HP. "
 			"You can also use a Reaction when hit to add your "
-			"Intelligence modifier to your AC against that hit.<br>"
-			"<b>Infiltrator.</b> Activate a Stealth device as a Bonus "
+			"Intelligence modifier to your AC against that hit.\n\n"
+			"\n\n**Infiltrator.** Activate a Stealth device as a Bonus "
 			"Action — you become Invisible until the start of your next "
 			"turn. Uses: Proficiency Bonus per Long Rest."
 			),
@@ -460,8 +460,8 @@ Artillerist_Spells = _artillerist(
 		min_level=3,
 		description=(
 			"Your knowledge of battlefield magic unlocks extra "
-			"spells always prepared: <i>Shield, Thunderwave, "
-			"Scorching Ray, Shatter, Fireball, Wind Wall.</i> "
+			"spells always prepared: *Shield, Thunderwave, "
+			"Scorching Ray, Shatter, Fireball, Wind Wall.* "
 			"These don't count against your prepared spells."
 			),
 		)
@@ -474,9 +474,9 @@ Eldritch_Cannon = _artillerist(
 			"create a Small or Tiny Eldritch Cannon in an unoccupied space "
 			"within 5 feet. It lasts 1 hour, until 0 HP, or until dismissed. "
 			"Activate a cannon within 60 feet as a Bonus Action each turn."
-			"<br><b>Flamethrower.</b> 15-ft Cone, 2d8 Fire, Dex save half."
-			"<br><b>Force Ballista.</b> 120 ft, 2d8 Force, push target 5 ft."
-			"<br><b>Protector.</b> You and allies within 10 ft gain 1d8 + "
+			"\n\n**Flamethrower.** 15-ft Cone, 2d8 Fire, Dex save half."
+			"\n\n**Force Ballista.** 120 ft, 2d8 Force, push target 5 ft."
+			"\n\n**Protector.** You and allies within 10 ft gain 1d8 + "
 			"Int Temp HP."
 			),
 		)
@@ -552,8 +552,8 @@ Battle_Smith_Spells = _battle_smith(
 		min_level=3,
 		description=(
 			"Your martial artifice unlocks extra spells always "
-			"prepared: <i>Heroism, Shield, Branding Smite, "
-			"Warding Bond, Aura of Vitality, Conjure Barrage.</i> "
+			"prepared: *Heroism, Shield, Branding Smite, "
+			"Warding Bond, Aura of Vitality, Conjure Barrage.* "
 			"These don't count against your prepared spells."
 			),
 		)
@@ -598,12 +598,12 @@ Arcane_Jolt = _battle_smith(
 			"When you or your Steel Defender hit a target "
 			"with a magic weapon attack, you can channel "
 			"magical energy through the strike for one effect:"
-			"<br><b>Healing.</b> One creature or object within "
+			"\n\n**Healing.** One creature or object within "
 			"30 feet of the target restores 2d6 Hit Points."
-			"<br><b>Lightning Strike.</b> The target takes "
+			"\n\n**Lightning Strike.** The target takes "
 			"an extra 2d6 Lightning damage and can't take "
 			"Reactions until the start of its next turn."
-			"<br>Uses: Intelligence modifier per Long Rest (minimum 1)."
+			"\n\nUses: Intelligence modifier per Long Rest (minimum 1)."
 			),
 		)
 
@@ -611,7 +611,7 @@ Improved_Defender = _battle_smith(
 		name="Improved Defender",
 		min_level=15,
 		description=(
-			"Arcane Jolt damage and healing both increase to <b>4d6</b>. "
+			"Arcane Jolt damage and healing both increase to **4d6**. "
 			"Your Steel Defender gains a +2 bonus to AC. Whenever your "
 			"Steel Defender uses its Deflect Attack, the attacker takes "
 			"1d4 + your Intelligence modifier Force damage."

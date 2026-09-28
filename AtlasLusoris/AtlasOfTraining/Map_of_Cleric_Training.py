@@ -203,30 +203,30 @@ def _channel_entry(
 	return (
 		"You can channel divine energy directly from the Outer Planes to fuel "
 		"magical effects. "
-		f"You can use this class's Channel Divinity <b>{uses} times</b>. "
+		f"You can use this class's Channel Divinity **{uses} times**. "
 		"You regain one expended use when you finish a Short Rest, and you "
 		"regain all expended uses when you finish a Long Rest."
-		"<br>Each time you use Channel Divinity, choose one effect you know. "
+		"\n\nEach time you use Channel Divinity, choose one effect you know. "
 		"You start with Divine Spark and Turn Undead."
-		"<ul>"
-		f"<li><b>Divine Spark.</b> Magic action. Point your Holy Symbol at "
+		"\n\n"
+		f"\n- **Divine Spark.** Magic action. Point your Holy Symbol at "
 		"another creature you can see within 30 feet. "
-		f"Roll <b>{dice_label}</b> and add your Wisdom modifier. "
+		f"Roll **{dice_label}** and add your Wisdom modifier. "
 		"You either restore Hit Points to the creature equal to that total, "
 		"or force it to make a Constitution saving throw. On a failed save, "
 		"it takes Necrotic or Radiant damage (your choice) equal to that total. "
 		"On a successful save, it takes half as much damage (round down). "
 		"You roll an additional d8 at Cleric levels 7 (2d8), 13 (3d8), and "
-		"18 (4d8).</li>"
-		"<li><b>Turn Undead.</b> Magic action. Present your Holy Symbol. "
+		"18 (4d8)."
+		"\n- **Turn Undead.** Magic action. Present your Holy Symbol. "
 		"Each Undead of your choice within 30 feet must make a Wisdom saving "
 		"throw. On a failed save, it has the Frightened and Incapacitated "
 		"conditions for 1 minute. For that duration, it tries to move as far "
 		"from you as it can on its turns. The effect ends early on a creature "
 		"if it takes any damage, if you have the Incapacitated condition, or "
-		"if you die.</li>"
-		"</ul>"
-		"<br>If a Channel Divinity effect requires a saving throw, the DC "
+		"if you die."
+		"\n\n"
+		"\n\nIf a Channel Divinity effect requires a saving throw, the DC "
 		"equals your Cleric spell save DC."
 		)
 
@@ -333,7 +333,7 @@ def _divine_order_entry(
 			None,
 			) == "Protector":
 		return (
-			"<b>Protector.</b> Trained for battle, you gain proficiency with "
+			"\n\n**Protector.** Trained for battle, you gain proficiency with "
 			"Martial weapons and training with Heavy armor."
 			)
 	bonus = getattr(
@@ -349,9 +349,9 @@ def _divine_order_entry(
 				),
 			)
 	return (
-		"<b>Thaumaturge.</b> You know one extra cantrip from the Cleric spell "
+		"\n\n**Thaumaturge.** You know one extra cantrip from the Cleric spell "
 		"list. In addition, your mystical connection to the divine gives you a "
-		f"<b>+{bonus}</b> bonus to your Intelligence (Arcana or Religion) "
+		f"**+{bonus}** bonus to your Intelligence (Arcana or Religion) "
 		"checks (equal to your Wisdom modifier, minimum +1)."
 		)
 
@@ -387,13 +387,13 @@ def _blessed_strikes_entry(
 			None,
 			) == "Potent Spellcasting":
 		return (
-			"<b>Potent Spellcasting.</b> Add your Wisdom modifier to the "
+			"\n\n**Potent Spellcasting.** Add your Wisdom modifier to the "
 			"damage you deal with any Cleric cantrip."
 			)
 	return (
-		"<b>Divine Strike.</b> Once on each of your turns when you hit a "
+		"\n\n**Divine Strike.** Once on each of your turns when you hit a "
 		"creature with an attack roll using a weapon, you can cause the target "
-		"to take an extra <b>1d8</b> Necrotic or Radiant damage (your choice)."
+		"to take an extra **1d8** Necrotic or Radiant damage (your choice)."
 		)
 
 
@@ -406,15 +406,15 @@ def _improved_blessed_strikes_entry(
 			None,
 			) == "Potent Spellcasting":
 		return (
-			"<b>Potent Spellcasting improves.</b> When you cast a Cleric "
+			"\n\n**Potent Spellcasting improves.** When you cast a Cleric "
 			"cantrip and deal damage to a creature with it, you can give "
 			"vitality to yourself or another creature within 60 feet of "
 			"yourself, granting Temporary Hit Points equal to "
-			"<b>twice your Wisdom modifier</b>."
+			"**twice your Wisdom modifier**."
 			)
 	return (
-		"<b>Divine Strike improves.</b> The extra damage of your Divine Strike "
-		"increases to <b>2d8</b>."
+		"\n\n**Divine Strike improves.** The extra damage of your Divine Strike "
+		"increases to **2d8**."
 		)
 
 
@@ -428,9 +428,9 @@ Spellcasting = _core(
 		min_level=1,
 		description=(
 			"You have learned to cast spells through prayer and meditation. "
-			"<b>Wisdom</b> is your spellcasting ability for your Cleric spells. "
+			"**Wisdom** is your spellcasting ability for your Cleric spells. "
 			"You can use a Holy Symbol as a Spellcasting Focus for them."
-			"<br>You know cantrips and prepare level 1+ Cleric spells as shown "
+			"\n\nYou know cantrips and prepare level 1+ Cleric spells as shown "
 			"in the Cleric Features table. Whenever you finish a Long Rest, "
 			"you can change your list of prepared spells. Spells granted by "
 			"other Cleric features that you always have prepared do not count "
@@ -503,7 +503,7 @@ Greater_Divine_Intervention = _core(
 			"You can call on even more powerful divine intervention. When you "
 			"use your Divine Intervention feature, you can choose <em>Wish</em> "
 			"when you select a spell. If you do so, you can't use Divine "
-			"Intervention again until you finish <b>2d4 Long Rests</b>."
+			"Intervention again until you finish **2d4 Long Rests**."
 			),
 		)
 
@@ -519,13 +519,13 @@ Life_Domain_Spells = _life(
 		description=(
 			"You always have the following spells prepared. They don't count "
 			"against the number of spells you can prepare with Spellcasting."
-			"<ul>"
-			"<li><b>3rd:</b> <em>Aid, Bless, Cure Wounds, Lesser Restoration</em></li>"
-			"<li><b>5th:</b> <em>Prayer of Healing, Mass Healing Word</em></li>"
-			"<li><b>9th:</b> <em>Revivify, Mass Cure Wounds</em></li>"
-			"<li><b>13th:</b> <em>Aura of Life, Death Ward</em></li>"
-			"<li><b>17th:</b> <em>Greater Restoration, Heal</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** <em>Aid, Bless, Cure Wounds, Lesser Restoration</em>"
+			"\n- **5th:** <em>Prayer of Healing, Mass Healing Word</em>"
+			"\n- **9th:** <em>Revivify, Mass Cure Wounds</em>"
+			"\n- **13th:** <em>Aura of Life, Death Ward</em>"
+			"\n- **17th:** <em>Greater Restoration, Heal</em>"
+			"\n\n"
 			),
 		)
 
@@ -535,7 +535,7 @@ Disciple_of_Life = _life(
 		description=(
 			"When a spell you cast with a spell slot restores Hit Points to a "
 			"creature, that creature regains additional Hit Points equal to "
-			"<b>2 + the spell's level</b> on the turn you cast the spell."
+			"**2 + the spell's level** on the turn you cast the spell."
 			),
 		)
 
@@ -543,9 +543,9 @@ Preserve_Life = _life(
 		name="Preserve Life",
 		min_level=3,
 		description=(
-			"<b>Channel Divinity — Magic action.</b> "
+			"\n\n**Channel Divinity — Magic action.** "
 			"You evoke healing energy that can restore a number of Hit Points "
-			"equal to <b>five times your Cleric level</b>. Choose Bloodied "
+			"equal to **five times your Cleric level**. Choose Bloodied "
 			"creatures within 30 feet of yourself (which can include you), and "
 			"distribute those Hit Points among them. This feature can restore a "
 			"creature to no more than half of its Hit Point maximum."
@@ -559,7 +559,7 @@ Blessed_Healer = _life(
 			"The healing spells you cast on others heal you as well. "
 			"When you cast a spell with a spell slot that restores Hit Points "
 			"to a creature other than yourself, you regain Hit Points equal to "
-			"<b>2 + the spell's level</b>."
+			"**2 + the spell's level**."
 			),
 		)
 
@@ -585,12 +585,12 @@ Light_Domain_Spells = _light(
 		description=(
 			"You always have the following spells prepared. They don't count "
 			"against the number of spells you can prepare with Spellcasting."
-			"<ul>"
-			"<li><b>3rd:</b> <em>Burning Hands, Faerie Fire, Scorching Ray, See Invisibility</em></li>"
-			"<li><b>5th:</b> <em>Daylight, Fireball</em></li>"
-			"<li><b>9th:</b> <em>Arcane Eye, Wall of Fire</em></li>"
-			"<li><b>13th:</b> <em>Flame Strike, Scrying</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** <em>Burning Hands, Faerie Fire, Scorching Ray, See Invisibility</em>"
+			"\n- **5th:** <em>Daylight, Fireball</em>"
+			"\n- **9th:** <em>Arcane Eye, Wall of Fire</em>"
+			"\n- **13th:** <em>Flame Strike, Scrying</em>"
+			"\n\n"
 			),
 		)
 
@@ -598,12 +598,12 @@ Radiance_of_the_Dawn = _light(
 		name="Radiance of the Dawn",
 		min_level=3,
 		description=(
-			"<b>Channel Divinity — Magic action.</b> "
+			"\n\n**Channel Divinity — Magic action.** "
 			"You present your Holy Symbol, and any Magical Darkness within "
 			"30 feet of you is dispelled. Additionally, each creature of your "
 			"choice within 30 feet must make a Constitution saving throw. On a "
 			"failed save, a creature takes Radiant damage equal to "
-			"<b>2d10 + your Cleric level</b>, or half as much on a successful "
+			"**2d10 + your Cleric level**, or half as much on a successful "
 			"save."
 			),
 		)
@@ -612,10 +612,10 @@ Warding_Flare = _light(
 		name="Warding Flare",
 		min_level=3,
 		description=(
-			"<b>Reaction:</b> when a creature you can see within 30 feet of "
+			"**Reaction:** when a creature you can see within 30 feet of "
 			"yourself makes an attack roll, you can impose Disadvantage on "
 			"that attack roll. "
-			"<br>You can use this feature a number of times equal to your "
+			"\n\nYou can use this feature a number of times equal to your "
 			"Wisdom modifier (minimum once). You regain all expended uses when "
 			"you finish a Long Rest."
 			),
@@ -627,9 +627,9 @@ Improved_Warding_Flare = _light(
 		description=(
 			"You regain all expended uses of Warding Flare when you finish a "
 			"Short or Long Rest. "
-			"<br>In addition, when you use Warding Flare, the target of the "
+			"\n\nIn addition, when you use Warding Flare, the target of the "
 			"triggering attack gains Temporary Hit Points equal to "
-			"<b>2d6 + your Wisdom modifier</b>."
+			"**2d6 + your Wisdom modifier**."
 			),
 		)
 
@@ -637,14 +637,14 @@ Corona_of_Light = _light(
 		name="Corona of Light",
 		min_level=17,
 		description=(
-			"<b>Magic action:</b> you cause yourself to emanate an aura of "
+			"**Magic action:** you cause yourself to emanate an aura of "
 			"sunlight that lasts for 1 minute or until you end it (no action "
 			"required). You emit Bright Light in a 60-foot radius and Dim Light "
 			"for an additional 30 feet. "
-			"<br>Your enemies in the Bright Light have Disadvantage on saving "
+			"\n\nYour enemies in the Bright Light have Disadvantage on saving "
 			"throws against your Radiance of the Dawn and against any spell "
 			"that deals Fire or Radiant damage. "
-			"<br>You can use this feature a number of times equal to your "
+			"\n\nYou can use this feature a number of times equal to your "
 			"Wisdom modifier (minimum once). You regain all expended uses when "
 			"you finish a Long Rest."
 			),
@@ -662,12 +662,12 @@ Trickery_Domain_Spells = _trickery(
 		description=(
 			"You always have the following spells prepared. They don't count "
 			"against the number of spells you can prepare with Spellcasting."
-			"<ul>"
-			"<li><b>3rd:</b> <em>Charm Person, Disguise Self, Invisibility, Pass without Trace</em></li>"
-			"<li><b>5th:</b> <em>Hypnotic Pattern, Nondetection</em></li>"
-			"<li><b>9th:</b> <em>Confusion, Dimension Door</em></li>"
-			"<li><b>13th:</b> <em>Dominate Person, Modify Memory</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** <em>Charm Person, Disguise Self, Invisibility, Pass without Trace</em>"
+			"\n- **5th:** <em>Hypnotic Pattern, Nondetection</em>"
+			"\n- **9th:** <em>Confusion, Dimension Door</em>"
+			"\n- **13th:** <em>Dominate Person, Modify Memory</em>"
+			"\n\n"
 			),
 		)
 
@@ -675,7 +675,7 @@ Blessing_of_the_Trickster = _trickery(
 		name="Blessing of the Trickster",
 		min_level=3,
 		description=(
-			"<b>Magic action:</b> you can give yourself or a willing creature "
+			"**Magic action:** you can give yourself or a willing creature "
 			"within 30 feet of yourself Advantage on Dexterity (Stealth) "
 			"checks. This blessing lasts until you finish a Long Rest or until "
 			"you use this feature again."
@@ -686,14 +686,14 @@ Invoke_Duplicity = _trickery(
 		name="Invoke Duplicity",
 		min_level=3,
 		description=(
-			"<b>Channel Divinity — Bonus Action.</b> "
+			"\n\n**Channel Divinity — Bonus Action.** "
 			"You create a perfect visual illusion of yourself in an unoccupied "
 			"space you can see within 30 feet. The illusion lasts for 1 minute "
 			"or until you dismiss it (no action required). It does not require "
 			"Concentration."
-			"<br>As a Bonus Action on your later turns, you can move the "
+			"\n\nAs a Bonus Action on your later turns, you can move the "
 			"illusion up to 30 feet to a space you can see."
-			"<br>You can cast spells as though you were in the illusion's "
+			"\n\nYou can cast spells as though you were in the illusion's "
 			"space, using your own senses. You have Advantage on attack rolls "
 			"against any creature within 5 feet of the illusion."
 			),
@@ -713,9 +713,9 @@ Improved_Duplicity = _trickery(
 		min_level=17,
 		description=(
 			"The power of your Invoke Duplicity improves:"
-			"<br><b>Shared Distraction.</b> You and your allies have Advantage "
+			"\n\n**Shared Distraction.** You and your allies have Advantage "
 			"on attack rolls against any creature within 5 feet of the illusion."
-			"<br><b>Healing Illusion.</b> When the illusion ends, you or one "
+			"\n\n**Healing Illusion.** When the illusion ends, you or one "
 			"creature of your choice within 5 feet of it regains Hit Points "
 			"equal to your Cleric level."
 			),
@@ -733,12 +733,12 @@ War_Domain_Spells = _war(
 		description=(
 			"You always have the following spells prepared. They don't count "
 			"against the number of spells you can prepare with Spellcasting."
-			"<ul>"
-			"<li><b>3rd:</b> <em>Guiding Bolt, Magic Weapon, Shield of Faith, Spiritual Weapon</em></li>"
-			"<li><b>5th:</b> <em>Crusader's Mantle, Spirit Guardians</em></li>"
-			"<li><b>9th:</b> <em>Fire Shield, Freedom of Movement</em></li>"
-			"<li><b>13th:</b> <em>Hold Monster, Steel Wind Strike</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** <em>Guiding Bolt, Magic Weapon, Shield of Faith, Spiritual Weapon</em>"
+			"\n- **5th:** <em>Crusader's Mantle, Spirit Guardians</em>"
+			"\n- **9th:** <em>Fire Shield, Freedom of Movement</em>"
+			"\n- **13th:** <em>Hold Monster, Steel Wind Strike</em>"
+			"\n\n"
 			),
 		)
 
@@ -746,9 +746,9 @@ Guided_Strike = _war(
 		name="Guided Strike",
 		min_level=3,
 		description=(
-			"<b>Channel Divinity — Reaction.</b> "
+			"\n\n**Channel Divinity — Reaction.** "
 			"When you or a creature within 30 feet of you misses with an attack "
-			"roll, you can grant a <b>+10 bonus</b> to the attack roll, "
+			"roll, you can grant a **+10 bonus** to the attack roll, "
 			"potentially turning the miss into a hit. You can use this feature "
 			"after seeing the roll but before any effects of the roll are applied."
 			),
@@ -760,7 +760,7 @@ War_Priest = _war(
 		description=(
 			"When you take the Attack action, you can make one attack with a "
 			"weapon or an Unarmed Strike as a Bonus Action."
-			"<br>You can use this feature a number of times equal to your "
+			"\n\nYou can use this feature a number of times equal to your "
 			"Wisdom modifier (minimum once). You regain all expended uses when "
 			"you finish a Short or Long Rest."
 			),
@@ -770,7 +770,7 @@ War_Gods_Blessing = _war(
 		name="War God's Blessing",
 		min_level=6,
 		description=(
-			"<b>Channel Divinity.</b> "
+			"\n\n**Channel Divinity.** "
 			"You can expend a use of your Channel Divinity to cast "
 			"<em>Shield of Faith</em> or <em>Spiritual Weapon</em> without "
 			"expending a spell slot. When you cast the spell this way, it "
