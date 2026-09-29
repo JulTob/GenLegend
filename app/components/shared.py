@@ -161,6 +161,10 @@ def attack_rolls_html(
             )
 
 
+DEFAULT_CHIP_SYMBOL = "✦"
+    #-- The symbol a chip shows when it declares none.
+
+
 def Feature_Chip_Triples(
         chips: Any,
         ) -> list[tuple[str, str, str]]:
@@ -174,9 +178,18 @@ def Feature_Chip_Triples(
     - an NPC ``Chip_Grant`` (label, value, icon), until the NonPlayer
       station of QST-0142 moves NonPlayer features to ``Chip`` too.
 
-    Anything else is refused by name rather than skipped in silence.
+    Anything else is refused by name (``Not_A_Chip``), never skipped.
+
+    Two deliberate rules, both from the review of #95:
+
+    - a chip with no symbol shows ``✦``, the default the old emoji table
+      gave, so a dictionary chip or an NPC grant with an empty icon still
+      reads as a chip;
+    - a chip with no label or no value is left out on purpose: its reader
+      answered nothing, so there is nothing to show.
     """
     from AtlasActorLudi.AtlasAlusoris.FeaturesKit import Chip_Grant
+    from AtlasLusoris.FeaturesKit import Not_A_Chip
 
     if not chips:
         return []
@@ -208,17 +221,18 @@ def Feature_Chip_Triples(
                     "value",
                     )
         else:
-            raise TypeError(
+            raise Not_A_Chip(
                     f"{item!r} is not a Chip; write Chip( symbol, label, value )."
                     )
         if label is None or value is None:
             continue
+        shown_symbol = safe_str(
+                symbol,
+                "",
+                ) or DEFAULT_CHIP_SYMBOL
         triples.append(
                 (
-                        safe_str(
-                                symbol,
-                                "",
-                                ),
+                        shown_symbol,
                         safe_str(
                                 label
                                 ),
@@ -467,6 +481,7 @@ def skill_rows(
 
 
 __all__ = [
+    "Feature_Chip_Triples",
     "attack_rolls_html",
     "feature_item",
     "html_prose",

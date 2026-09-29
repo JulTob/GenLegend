@@ -1,5 +1,6 @@
-from AtlasVenustas import Chip
 """Shared mechanics for magic contributed by a Species Heritage."""
+
+from AtlasVenustas import Chip
 
 
 ABILITY_LABELS = {

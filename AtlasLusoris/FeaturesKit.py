@@ -158,7 +158,9 @@ def _chip_as_dict(
 			"label": chip.label,
 			"value": chip.value,
 			"symbol": chip.symbol,
+			"kind": chip.kind,
 			}
+		#-- kind travels too: the printers read it since #94 (review of #95).
 
 
 class Feature:
@@ -254,6 +256,15 @@ class Feature:
 			self,
 			value,
 			):
+		from AtlasVenustas import Chip
+		if isinstance(
+				value,
+				Chip,
+				):
+			raise Not_A_Chip(
+					f"chips= takes a tuple of Chips, not one bare {value!r}; "
+					"write chips=( chip, )."
+					)
 		self._chips = tuple(
 				_store_rail_chip(
 						chip,
