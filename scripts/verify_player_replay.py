@@ -225,6 +225,46 @@ def feature_projection(
             }
 
 
+def build_projection(
+        character: Any,
+        ) -> dict[str, Any]:
+    """
+    Project the Character's build: every Entry and Chip its Tags declare.
+
+    Each is named by the Tag that declared it, so a moved or doubled
+    declaration shows up as a difference, not only a changed text.
+    """
+    from AtlasActorLudi.Charts_of_Build import Find_Build
+
+    build = Find_Build(
+            character
+            )
+    return {
+            "entries": [
+                    {
+                        "tag": built.tag.__name__,
+                        "title": built.entry.title,
+                        "flavor": built.entry.flavor,
+                        "rules": built.entry.rules,
+                        "section": built.entry.section.value,
+                        "level": built.entry.level,
+                        }
+                    for built in build.entries
+                    ],
+            "chips": [
+                    {
+                        "tag": built.tag.__name__,
+                        "symbol": built.chip.symbol,
+                        "label": built.chip.label,
+                        "value": stable_value(
+                                built.chip.value
+                                ),
+                        }
+                    for built in build.chips
+                    ],
+            }
+
+
 def item_name(
         item: Any,
         ) -> str | None:
@@ -301,6 +341,11 @@ def player_sheet_projection(
                             )
                     for feature in data["features"]
                     ],
+            "build": build_projection(
+                    character
+                    ),
+                #-- Ported Tags print from the build, not from features, so
+                #-- the replay compares both (review of #97).
             "equipment": loadout_projection(
                     data["equipment"]
                     ),

@@ -151,6 +151,23 @@ def _picks(
 		bag = {}
 		char._ranger_picks = bag
 	return bag
+	#-- For the apply steps that RECORD a choice.  Readers use _read_picks.
+
+
+def _read_picks(
+		char,
+		) -> dict:
+	"""
+	The recorded choices, read only: never creates or stores anything.
+
+	The sheet's readers call this, so printing writes nothing to the
+	Character (Decree 0009, point 7; review of #97).
+	"""
+	return getattr(
+			char,
+			"_ranger_picks",
+			None,
+			) or {}
 
 
 def _choose_named(
@@ -189,7 +206,7 @@ def _chosen_named(
 	Tag behind with nothing recorded (TopKit keeps the Tag), and one lost
 	choice must not kill the whole sheet. The sheet then says so, visibly.
 	"""
-	name = _picks(
+	name = _read_picks(
 			char
 			).get(
 			key
@@ -393,7 +410,7 @@ def _apply_deft_explorer(
 def _deft_explorer_entry(
 		char,
 		) -> str:
-	skill = _picks(
+	skill = _read_picks(
 			char
 			).get(
 			"Deft Explorer"
@@ -476,7 +493,7 @@ def _apply_expertise(
 def _expertise_entry(
 		char,
 		) -> str:
-	chosen = _picks(
+	chosen = _read_picks(
 			char
 			).get(
 			"Expertise"

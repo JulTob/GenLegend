@@ -288,11 +288,17 @@ def check_character(char, guild, level, seed, failures):
 					)
 
 	# --- no duplicate chip labels on the sheet ------------------------------
-	chip_labels = [
-			chip.label
-			for feature in char.features
-			for chip in getattr(feature, "chips", ())
-			]
+	# Both sources: legacy features and the build (review of #97).
+	from AtlasActorLudi.Charts_of_Build import Build_Read_Error
+	from AtlasInventarium.GearKit import Sheet_Chip_Labels
+
+	try:
+		chip_labels = Sheet_Chip_Labels(char)
+	except Build_Read_Error as error:
+		fail(
+				f"the build cannot be read: {error}"
+				)
+		chip_labels = []
 	chip_dupes = [
 			label
 			for label, count in collections.Counter(chip_labels).items()

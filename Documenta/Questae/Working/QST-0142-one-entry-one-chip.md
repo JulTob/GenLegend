@@ -60,7 +60,7 @@ Scale, for the record: about 350 `Feature(...)`, 354 `Entry(...)`, 284 `chips=` 
 | 5 | **Background** | *Background* and *Hook* as two Entries; Origin Feats. | Background features. |
 | 6 | **Feats** | General Feats, Fighting Styles, Epic Boons, Invocations. | Their `Feature` objects. |
 | 7 | **Proficiencies** | Skills, tools, armour and weapon lines read from Tags. | The `Unarmed_*` skill bridge (QST-0093.12 question 4). |
-| 8 | **Progression** | Level-ups, Ability Score Improvements, hit points as Tags. | `Map_of_Classes`, `Codex_of_Progression`, `Grimoire_of_Features` (with QST-0093.7). |
+| 8 | **Progression** | Level-ups, Ability Score Improvements, hit points as Tags. A live level-up must top up choices that grow with level: since station 3, Weapon Masteries are planned once when the Training is gained, and nothing re-plans them on a level-up (today the level button regenerates the Character, so no sheet is short; review of #97). | `Map_of_Classes`, `Codex_of_Progression`, `Grimoire_of_Features` (with QST-0093.7). |
 | 9 | **Magic** | Spellcasting, focus, spells section. | The old spell `Entry` use. |
 | 9b | **Combatant** | The fighting archetypes (Blade-and-Board, Hard-Hitter, Infiltrator, Tank, Magician, Spellsword…). Chosen after the Guild; Styles, Feats, Pact and Masteries follow it; the weapon is drawn at random from the overlap of every filter. The gates + weights matrix. | The per-Guild hand-written weapon picks. |
 | 10 | **Inventarium** | `char.inventarium`, `Map_of_Wearing`, grips (hands in pairs), attunement 3, rings 10, focus slot, the chosen print layout. | `char.belongings` and `Loadout`'s hand-written slots. |

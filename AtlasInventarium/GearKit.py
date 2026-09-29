@@ -1746,6 +1746,35 @@ _SWEEP_GUILDS = (
 _SWEEP_LEVELS = (1, 3, 5, 10, 20)
 
 
+def Sheet_Chip_Labels(
+		char,
+		) -> list[str]:
+	"""
+	Every chip label the sheet shows, from both of its sources.
+
+	The legacy features carry their chips; the Tags ported by QST-0142
+	declare theirs in the build (Find_Build). Both are listed, so a chip
+	that moved into the build is still checked (review of #97). Raises
+	Build_Read_Error, naming the Tag, when the build cannot be read.
+	"""
+	from AtlasActorLudi.Charts_of_Build import Find_Build
+
+	legacy = [
+			chip.label
+			for feature in char.features
+			for chip in getattr(
+					feature,
+					"chips",
+					(),
+					)
+			]
+	built = [
+			declared.chip.label
+			for declared in Find_Build( char ).chips
+			]
+	return legacy + built
+
+
 def _check_character(
 		char,
 		guild,
@@ -2093,15 +2122,17 @@ def _check_character(
 					)
 
 	# No duplicate chip labels on the sheet. Every chip is a Chip (QST-0142).
-	chip_labels = [
-			chip.label
-			for feature in char.features
-			for chip in getattr(
-					feature,
-					"chips",
-					(),
-					)
-			]
+	from AtlasActorLudi.Charts_of_Build import Build_Read_Error
+
+	try:
+		chip_labels = Sheet_Chip_Labels(
+				char
+				)
+	except Build_Read_Error as error:
+		fail(
+				f"the build cannot be read: {error}"
+				)
+		chip_labels = []
 	chip_dupes = [
 			label
 			for label, count in collections.Counter(
