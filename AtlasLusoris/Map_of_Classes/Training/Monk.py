@@ -128,7 +128,15 @@ class Monk(Progression):
 		if level >= 10:
 			character.speed += 5
 			feats.append(Feature("Heightened Focus", (
-				"While you aren't wearing armor or wielding a Shield, you gain the ability to move along vertical surfaces and across liquids on your turn without falling during the movement."
+				"""
+				Your Flurry of Blows, Patient Defense, and Step of the Wind gain the following benefits.
+				<br>
+				<b>Flurry of Blows.</b> When you expend 1 Focus Point to use Flurry of Blows, you make three Unarmed Strikes with it instead of two.
+				<br>
+				<b>Patient Defense.</b> When you expend a Focus Point to use Patient Defense, you also gain Temporary Hit Points equal to two rolls of your Martial Arts die.
+				<br>
+				<b>Step of the Wind.</b> When you expend a Focus Point to use Step of the Wind, you can choose a willing creature within 5 feet of you that is Large or smaller. It moves with you until the end of your turn, and its movement doesn't provoke Opportunity Attacks.
+				"""
 				)))
 			feats.append(Feature("Self-Restoration", (
 				"""
@@ -214,11 +222,11 @@ class Mercy(Way):
 		if level >= 3:
 			feats.append(Feature("Warrior of Mercy",
 				"""
-				Warriors of Mercy manipulate the life force of others.
-				These Monks are wandering physicians, but they bring a
-				swift end to their enemies. They often wear masks,
-				presenting themselves as faceless bringers of life and
-				death.
+				Warriors of Mercy carry the same touch in either hand:
+				the hand that closes a wound and the hand that ends a life.
+				They are wandering physicians, but they do not flinch from
+				the final choice when mercy must be decisive. They often wear
+				masks to keep the face from showing the cost of the choice.
 				"""))
 			feats.append(Feature("Hand of Harm",
 				f"""

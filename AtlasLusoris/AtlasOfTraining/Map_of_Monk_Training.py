@@ -219,11 +219,9 @@ def _monks_focus_entry(
 		) -> str:
 	fp = _focus_points(char)
 	return (
-		"Your training has let you harness your psionic energy. You have **"
+		"Your training and discipline have given you a well of focus. You have **"
 		f"{fp} Focus Points** that fuel your special actions. "
-		"You regain all spent points when you finish a Long Rest. "
-		"On a Short Rest you also regain Focus Points equal to "
-		"half your Monk level (rounded up)."
+		"You regain all spent points when you finish a Short or Long Rest."
 		"\n\nYou can spend Focus Points on:"
 		"\n\n"
 		"\n- **Flurry of Blows (1 point).** After the Attack "
@@ -442,15 +440,18 @@ Heightened_Focus = _core(
 		min_level=10,
 		description=(
 			"Your Flurry of Blows, Patient Defense, and Step of the Wind "
-			"gain the following upgrades (in addition to their Empowered "
-			"Strikes benefits):"
-			"\n\n**Flurry of Blows.** A creature you hit must succeed "
-			"on a Constitution save (DC 8 + proficiency bonus + Wisdom "
-			"modifier) or be Stunned until the start of your next turn."
-			"\n\n**Patient Defense.** When you expend a Focus Point, "
-			"you gain both the Dodge benefit and Temporary Hit Points."
-			"\n\n**Step of the Wind.** When you expend a Focus Point, "
-			"your Speed doubles until the end of the current turn."
+			"gain the following benefits."
+			"\n\n**Flurry of Blows.** When you expend 1 Focus Point to "
+			"use Flurry of Blows, you make **three** Unarmed Strikes "
+			"with it instead of two."
+			"\n\n**Patient Defense.** When you expend a Focus Point to "
+			"use Patient Defense, you also gain Temporary Hit Points "
+			"equal to **two rolls of your Martial Arts die**."
+			"\n\n**Step of the Wind.** When you expend a Focus Point to "
+			"use Step of the Wind, you can choose a willing creature "
+			"within 5 feet of you that is Large or smaller. It moves "
+			"with you until the end of your turn, and its movement "
+			"doesn't provoke Opportunity Attacks."
 			),
 		)
 
@@ -549,7 +550,7 @@ def _hand_of_healing_entry(
 		) -> str:
 	level = _rank(char)
 	cure_note = (
-		"\n\nWhen you use your Flurry of Blows, you can also end "
+		"\n\nWhen you use Hand of Healing, you can also end "
 		"one of the following conditions on the creature you heal "
 		"(Blinded, Deafened, Paralyzed, Poisoned, or Stunned)."
 		if level >= 6
@@ -571,7 +572,7 @@ Implements_of_Mercy = _mercy(
 		min_level=3,
 		description=(
 			"You gain proficiency in Insight, Medicine, and Herbalism "
-			"Kit. You also gain a special mask — a symbol of your "
+			"Kit. You also gain a special mask. It is a symbol of your "
 			"tradition's philosophy."
 			),
 		)
@@ -708,7 +709,7 @@ Shadow_Arts = _shadow(
 		name="Shadow Arts",
 		min_level=3,
 		description=(
-			"You can use your psionic energy to create illusions and "
+			"You can use your discipline to create illusions and "
 			"harness shadows.\n\n**Darkness.** Expend 1 Focus Point "
 			"to cast *Darkness* without components. You can see "
 			"within the spell's area. While active, you can move the "
