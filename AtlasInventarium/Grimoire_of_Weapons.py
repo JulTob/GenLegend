@@ -35,4 +35,5 @@ class Weapon:
 				result += f", {wpn.properties}."
 		else:
 				result += "."
-		return Entry(wpn.name, result)
+		entry = Entry(wpn.name, result)
+		return f"{entry:html}"

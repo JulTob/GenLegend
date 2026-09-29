@@ -1,5 +1,5 @@
 """
-Ledger_of_Weapons — the PHB 2024 weapon table, built with ``Build_Weapon``.
+Ledger_of_Weapons — the PHB 2024 weapon table, built with ``Make_Weapon``.
 
 One record per weapon; nothing here decides who owns one — that is a
 loadout policy's job (``GearKit`` / ``Outfit``). This Ledger only answers
@@ -13,14 +13,14 @@ catalogue: a Ranger with no firearm training could still "master" one).
 
 from __future__ import annotations
 
-from AtlasInventarium.Grimoire_of_Items import Build_Weapon, Item
+from AtlasInventarium.Grimoire_of_Items import Make_Weapon, Item
 
 
 # ---------------------------------------------------------------------------
 # Simple Melee
 # ---------------------------------------------------------------------------
 
-Club = Build_Weapon(
+Club = Make_Weapon(
 		name="Club",
 		damage="1d4",
 		damage_type="Bludgeoning",
@@ -32,7 +32,7 @@ Club = Build_Weapon(
 		weight=2,
 		)
 
-Dagger = Build_Weapon(
+Dagger = Make_Weapon(
 		name="Dagger",
 		damage="1d4",
 		damage_type="Piercing",
@@ -44,7 +44,7 @@ Dagger = Build_Weapon(
 		weight=1,
 		)
 
-Greatclub = Build_Weapon(
+Greatclub = Make_Weapon(
 		name="Greatclub",
 		damage="1d8",
 		damage_type="Bludgeoning",
@@ -56,7 +56,7 @@ Greatclub = Build_Weapon(
 		weight=10,
 		)
 
-Handaxe = Build_Weapon(
+Handaxe = Make_Weapon(
 		name="Handaxe",
 		damage="1d6",
 		damage_type="Slashing",
@@ -68,7 +68,7 @@ Handaxe = Build_Weapon(
 		weight=2,
 		)
 
-Javelin = Build_Weapon(
+Javelin = Make_Weapon(
 		name="Javelin",
 		damage="1d6",
 		damage_type="Piercing",
@@ -80,7 +80,7 @@ Javelin = Build_Weapon(
 		weight=2,
 		)
 
-Light_Hammer = Build_Weapon(
+Light_Hammer = Make_Weapon(
 		name="Light Hammer",
 		damage="1d4",
 		damage_type="Bludgeoning",
@@ -92,7 +92,7 @@ Light_Hammer = Build_Weapon(
 		weight=2,
 		)
 
-Mace = Build_Weapon(
+Mace = Make_Weapon(
 		name="Mace",
 		damage="1d6",
 		damage_type="Bludgeoning",
@@ -103,7 +103,7 @@ Mace = Build_Weapon(
 		weight=4,
 		)
 
-Quarterstaff = Build_Weapon(
+Quarterstaff = Make_Weapon(
 		name="Quarterstaff",
 		damage="1d6",
 		damage_type="Bludgeoning",
@@ -115,7 +115,7 @@ Quarterstaff = Build_Weapon(
 		weight=4,
 		)
 
-Sickle = Build_Weapon(
+Sickle = Make_Weapon(
 		name="Sickle",
 		damage="1d4",
 		damage_type="Slashing",
@@ -127,7 +127,7 @@ Sickle = Build_Weapon(
 		weight=2,
 		)
 
-Spear = Build_Weapon(
+Spear = Make_Weapon(
 		name="Spear",
 		damage="1d6",
 		damage_type="Piercing",
@@ -144,7 +144,7 @@ Spear = Build_Weapon(
 # Simple Ranged
 # ---------------------------------------------------------------------------
 
-Dart = Build_Weapon(
+Dart = Make_Weapon(
 		name="Dart",
 		damage="1d4",
 		damage_type="Piercing",
@@ -156,7 +156,7 @@ Dart = Build_Weapon(
 		weight=0.25,
 		)
 
-Light_Crossbow = Build_Weapon(
+Light_Crossbow = Make_Weapon(
 		name="Light Crossbow",
 		damage="1d8",
 		damage_type="Piercing",
@@ -168,7 +168,7 @@ Light_Crossbow = Build_Weapon(
 		weight=5,
 		)
 
-Shortbow = Build_Weapon(
+Shortbow = Make_Weapon(
 		name="Shortbow",
 		damage="1d6",
 		damage_type="Piercing",
@@ -180,7 +180,7 @@ Shortbow = Build_Weapon(
 		weight=2,
 		)
 
-Sling = Build_Weapon(
+Sling = Make_Weapon(
 		name="Sling",
 		damage="1d4",
 		damage_type="Bludgeoning",
@@ -197,7 +197,7 @@ Sling = Build_Weapon(
 # Martial Melee
 # ---------------------------------------------------------------------------
 
-Battleaxe = Build_Weapon(
+Battleaxe = Make_Weapon(
 		name="Battleaxe",
 		damage="1d8",
 		damage_type="Slashing",
@@ -209,7 +209,7 @@ Battleaxe = Build_Weapon(
 		weight=4,
 		)
 
-Flail = Build_Weapon(
+Flail = Make_Weapon(
 		name="Flail",
 		damage="1d8",
 		damage_type="Bludgeoning",
@@ -220,7 +220,7 @@ Flail = Build_Weapon(
 		weight=2,
 		)
 
-Glaive = Build_Weapon(
+Glaive = Make_Weapon(
 		name="Glaive",
 		damage="1d10",
 		damage_type="Slashing",
@@ -232,7 +232,7 @@ Glaive = Build_Weapon(
 		weight=6,
 		)
 
-Greataxe = Build_Weapon(
+Greataxe = Make_Weapon(
 		name="Greataxe",
 		damage="1d12",
 		damage_type="Slashing",
@@ -244,7 +244,7 @@ Greataxe = Build_Weapon(
 		weight=7,
 		)
 
-Greatsword = Build_Weapon(
+Greatsword = Make_Weapon(
 		name="Greatsword",
 		damage="2d6",
 		damage_type="Slashing",
@@ -256,7 +256,7 @@ Greatsword = Build_Weapon(
 		weight=6,
 		)
 
-Halberd = Build_Weapon(
+Halberd = Make_Weapon(
 		name="Halberd",
 		damage="1d10",
 		damage_type="Slashing",
@@ -268,7 +268,7 @@ Halberd = Build_Weapon(
 		weight=6,
 		)
 
-Lance = Build_Weapon(
+Lance = Make_Weapon(
 		name="Lance",
 		damage="1d10",
 		damage_type="Piercing",
@@ -280,7 +280,7 @@ Lance = Build_Weapon(
 		weight=6,
 		)
 
-Longsword = Build_Weapon(
+Longsword = Make_Weapon(
 		name="Longsword",
 		damage="1d8",
 		damage_type="Slashing",
@@ -292,7 +292,7 @@ Longsword = Build_Weapon(
 		weight=3,
 		)
 
-Maul = Build_Weapon(
+Maul = Make_Weapon(
 		name="Maul",
 		damage="2d6",
 		damage_type="Bludgeoning",
@@ -304,7 +304,7 @@ Maul = Build_Weapon(
 		weight=10,
 		)
 
-Morningstar = Build_Weapon(
+Morningstar = Make_Weapon(
 		name="Morningstar",
 		damage="1d8",
 		damage_type="Piercing",
@@ -315,7 +315,7 @@ Morningstar = Build_Weapon(
 		weight=4,
 		)
 
-Pike = Build_Weapon(
+Pike = Make_Weapon(
 		name="Pike",
 		damage="1d10",
 		damage_type="Piercing",
@@ -327,7 +327,7 @@ Pike = Build_Weapon(
 		weight=18,
 		)
 
-Rapier = Build_Weapon(
+Rapier = Make_Weapon(
 		name="Rapier",
 		damage="1d8",
 		damage_type="Piercing",
@@ -339,7 +339,7 @@ Rapier = Build_Weapon(
 		weight=2,
 		)
 
-Scimitar = Build_Weapon(
+Scimitar = Make_Weapon(
 		name="Scimitar",
 		damage="1d6",
 		damage_type="Slashing",
@@ -351,7 +351,7 @@ Scimitar = Build_Weapon(
 		weight=3,
 		)
 
-Shortsword = Build_Weapon(
+Shortsword = Make_Weapon(
 		name="Shortsword",
 		damage="1d6",
 		damage_type="Piercing",
@@ -363,7 +363,7 @@ Shortsword = Build_Weapon(
 		weight=2,
 		)
 
-Trident = Build_Weapon(
+Trident = Make_Weapon(
 		name="Trident",
 		damage="1d8",
 		damage_type="Piercing",
@@ -375,7 +375,7 @@ Trident = Build_Weapon(
 		weight=4,
 		)
 
-War_Pick = Build_Weapon(
+War_Pick = Make_Weapon(
 		name="War Pick",
 		damage="1d8",
 		damage_type="Piercing",
@@ -386,7 +386,7 @@ War_Pick = Build_Weapon(
 		weight=2,
 		)
 
-Warhammer = Build_Weapon(
+Warhammer = Make_Weapon(
 		name="Warhammer",
 		damage="1d8",
 		damage_type="Bludgeoning",
@@ -398,7 +398,7 @@ Warhammer = Build_Weapon(
 		weight=2,
 		)
 
-Whip = Build_Weapon(
+Whip = Make_Weapon(
 		name="Whip",
 		damage="1d4",
 		damage_type="Slashing",
@@ -415,7 +415,7 @@ Whip = Build_Weapon(
 # Martial Ranged
 # ---------------------------------------------------------------------------
 
-Blowgun = Build_Weapon(
+Blowgun = Make_Weapon(
 		name="Blowgun",
 		damage="1",
 		damage_type="Piercing",
@@ -427,7 +427,7 @@ Blowgun = Build_Weapon(
 		weight=1,
 		)
 
-Hand_Crossbow = Build_Weapon(
+Hand_Crossbow = Make_Weapon(
 		name="Hand Crossbow",
 		damage="1d6",
 		damage_type="Piercing",
@@ -439,7 +439,7 @@ Hand_Crossbow = Build_Weapon(
 		weight=3,
 		)
 
-Heavy_Crossbow = Build_Weapon(
+Heavy_Crossbow = Make_Weapon(
 		name="Heavy Crossbow",
 		damage="1d10",
 		damage_type="Piercing",
@@ -451,7 +451,7 @@ Heavy_Crossbow = Build_Weapon(
 		weight=18,
 		)
 
-Longbow = Build_Weapon(
+Longbow = Make_Weapon(
 		name="Longbow",
 		damage="1d8",
 		damage_type="Piercing",
@@ -468,7 +468,7 @@ Longbow = Build_Weapon(
 # Firearms (DMG-optional — tagged Firearm, not granted by plain Martial)
 # ---------------------------------------------------------------------------
 
-Musket = Build_Weapon(
+Musket = Make_Weapon(
 		name="Musket",
 		damage="1d12",
 		damage_type="Piercing",
@@ -481,7 +481,7 @@ Musket = Build_Weapon(
 		description="A DMG-optional firearm — Martial proficiency alone does not grant it.",
 		)
 
-Pistol = Build_Weapon(
+Pistol = Make_Weapon(
 		name="Pistol",
 		damage="1d10",
 		damage_type="Piercing",

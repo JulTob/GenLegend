@@ -45,6 +45,11 @@ The course, in order. Each station is one questa branch, gated by compile, smoke
 | 7 | QST-0093.7 Cut the Player path loose from legacy `AtlasAlusoris/` | stations 1 and 2 | now |
 | 8 | QST-0093.8 One deploy path | Julio's target decision | after the decision |
 | 9 | QST-0093.9 One Documenta | nothing | now |
+| 10 | QST-0093.10 Suggest to TopKit: three findings from the pin | Julio files §2 and §3 upstream | §1 fixed in 0.2.0a4 `main` |
+| 11 | QST-0093.11 Applying TopKit: the patterns | nothing | Solved 2026-09-24 |
+| 12 | QST-0093.12 Unarmored Defense is one Tag | nothing | landed; four questions open |
+| 13 | QST-0093.13 Tag factories are made: `Build_` becomes `Make_` | station 5 | Solved 2026-09-24 |
+| 14 | QST-0093.14 The build walk, first slice | Decree 0009 | landed (Chips only); five questions open |
 | then | QST-0091.1 to .4 implementation, one axis at a time | station 5 | after the bump |
 
 Stations 1, 2, 3, 4, 7 and 9 need no upstream change and no decision beyond "go". Stations 5 and 6 wait for the merge. Station 8 waits for the target.

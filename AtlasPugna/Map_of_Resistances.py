@@ -2,7 +2,7 @@ try:
 	from AtlasLudus.Map_of_Useful_Functions import select1
 	from AtlasLudus.Map_of_Dice import Dice
 	from AtlasActorLudi.Map_of_Scores import PB
-	from AtlasScriptum.Map_of_Formats import Entry
+	from AtlasScriptum.Map_of_Formats import Entry_Text
 	from AtlasActorLudi.Map_of_Size import Size as sizer
 except ImportError:
 	raise
@@ -1198,60 +1198,60 @@ def Protection(npc):
 	beast = Beast(npc)
 
 	# Definitions of extra defenses
-	StoneCamouflage= Entry("Stone Camouflage.",
+	StoneCamouflage= Entry_Text("Stone Camouflage.",
 			f"{title} has advantage on Dexterity (Stealth) checks made to hide in rocky terrain, stone constructions, and caves."
 			)
-	WaterCamouflage = Entry("Water Camouflage",
+	WaterCamouflage = Entry_Text("Water Camouflage",
 		f"{title} is invisible while fully immersed in water.")
-	TwoHeaded = Entry("Two-Headed",
+	TwoHeaded = Entry_Text("Two-Headed",
 		f"{title} has advantage on Wisdom (Perception) checks and on saving throws against being blinded, charmed, deafened, frightened, stunned, or knocked unconscious.")
-	Illumination = Entry("Illumination",
+	Illumination = Entry_Text("Illumination",
 			f"{title} sheds bright light in a 5 to {Dice(pb)*10}-foot radius and dim light for an additional number of ft. equal to the chosen radius. {title} can alter the radius, turn it off, or turn it on, as a bonus action."
 			)
-	Etherealness= Entry("Etherealness",
+	Etherealness= Entry_Text("Etherealness",
 		f"{title} enters the Ethereal Plane from the Material Plane, or vice versa. It is visible on the Material Plane while it is in the Border Ethereal, and vice versa, yet it can't affect or be affected by anything on the other plane.")
-	DistressSpores = Entry("Distress Spores",
+	DistressSpores = Entry_Text("Distress Spores",
 		f"When {title} takes damage, any other {npc.race} within 240 feet of it can sense its pain.")
-	Brave = Entry("Brave",
+	Brave = Entry_Text("Brave",
 		f"{title} has advantage on saving throws against being frightened.")
-	Parry = Entry("Parry",
+	Parry = Entry_Text("Parry",
 		f"{title} adds 2 to its AC against one melee attack that would hit it. To do so, {title} must see the attacker and be wielding a melee weapon.")
-	TelepathicBond = Entry("Telepathic Bond",
+	TelepathicBond = Entry_Text("Telepathic Bond",
 		f"While {title} is on the same plane of existence as its master, it can magically convey what it senses to its master, and the two can communicate telepathically.")
-	SpellImmunity = Entry("Spell Immunity",
+	SpellImmunity = Entry_Text("Spell Immunity",
 		random.choice([
 			f"{title} is immune to three spells: Fireball, Heat Metal, and Lightning Bolt.",
 			f"{title} is immune to three spells: Magic Missile, Silvery Barbs, and Counterspell.",
 			f"{title} is immune to three spells: Cause Fear, Charm Person, and Sleep.",
 			]))
-	FalseApperance = Entry("False Apperance",
+	FalseApperance = Entry_Text("False Apperance",
 		f"While {title} remains motionless in rest, it is indistinguishable from a mundane object or feature of the environment.")
-	DamageTransfer= Entry("Damage Transfer",
+	DamageTransfer= Entry_Text("Damage Transfer",
 		f"While it is grappling a creature, {title} takes only half the damage dealt to it, and the creature grappled by {title} takes the other half."
 		)
-	SuperiorInvisibility = Entry("Superior Invisibility",
+	SuperiorInvisibility = Entry_Text("Superior Invisibility",
 		f"{title} magically turns invisible until its concentration ends (as if concentrating on a spell). Any equipment {title} wears or carries is invisible with it.")
-	EntanglingPlants= Entry(
+	EntanglingPlants= Entry_Text(
 		"Entangling Plants",
 		f"Grasping roots and vines sprout in a 15-foot radius centered on {title}, withering away after 1 minute. For the duration, that area is difficult terrain.")
-	Disintegration = Entry(f"Disintegration",
+	Disintegration = Entry_Text(f"Disintegration",
 		f"If {title} dies, its body disintegrates, leaving behind its weapons and anything else it was carrying.")
-	AxiomaticMind= Entry(f"Axiomatic Mind",
+	AxiomaticMind= Entry_Text(f"Axiomatic Mind",
 		f"{title} can't be compelled to act in a manner contrary to its nature or its instructions.")
-	AntimagicSusceptibility = Entry(
+	AntimagicSusceptibility = Entry_Text(
 		f"Antimagic Susceptibility",
 		f"{title} is incapacitated while in the area of an antimagic field. If targeted by dispel magic, {title} must succeed on a Constitution saving throw against the caster's spell save DC or fall unconscious for 1 minute.")
-	MagicResistance = Entry(
+	MagicResistance = Entry_Text(
 		f"Magic Resistance",
 		f"{title} has advantage on saving throws against magical effects.")
-	ChangeShape = select1([Entry(
+	ChangeShape = select1([Entry_Text(
 			f"Change Shape",
 			f"{title} magically polymorphs into a humanoid or {beast} form, or back into its true form. It reverts to its true form if it dies. Any equipment it is wearing or carrying is absorbed or borne by the new {beast} form ({title}'s choice). \n\t In {beast} form, {title} retains its game statistics and ability to speak, but its AC, movement modes, Strength, Dexterity, and other actions are replaced by those of the new form, and it gains any statistics and capabilities (except class features, legendary actions, and lair actions) that the {beast} form has but that it lacks.")
-		, Entry(
+		, Entry_Text(
 			f"Change Shape",
 			f"{title} magically polymorphs into a humanoid or beast that has a challenge rating no higher CR{pb}, or back into its true form. It reverts to its true form if it dies. Any equipment it is wearing or carrying is absorbed or borne by the new form ({title}'s choice). \n\t In a new form, {title} retains its alignment, hit points, Hit Dice, ability to speak, proficiencies, Legendary Resistance, lair actions, and Intelligence, Wisdom, and Charisma scores, as well as this action. Its statistics and capabilities are otherwise replaced by those of the new form, except any class features or legendary actions of that form.")
 		])
-	Shapechanger = Entry(
+	Shapechanger = Entry_Text(
 		f"\n - Shapechanger",
 		(f"{npc.title} can use its action to polymorph into their standard form, into a {beast} hybrid, or into a {beast}."+
 		random.choice ([
@@ -1266,47 +1266,47 @@ def Protection(npc):
 			f"They reverts to its true form if it dies."
 			])
 		))
-	acidic_blood = Entry(
+	acidic_blood = Entry_Text(
 		f"Acidic Blood",
 		f"Any creature that hits {title} with a melee attack while within 5 feet of it takes 2d6 acid damage.")
-	alien_mind = Entry(f"Alien Mind",
+	alien_mind = Entry_Text(f"Alien Mind",
 		f"{npc.title} has advantage on saving throws against being charmed or dominated.")
-	aberrant_ground = Entry(
+	aberrant_ground = Entry_Text(
 		f"Aberrant Ground",
 		f"The ground in a 10-foot radius around the {npc.race} is doughlike difficult terrain. Each creature that starts its turn in that area must succeed on a DC {8+int(npc.pb)+int(npc.spellcasting_ability_mod)} Strength saving throw or have its speed reduced to 0 until the start of its next turn.")
-	arcane_awareness = Entry(f"Arcane Awareness",
+	arcane_awareness = Entry_Text(f"Arcane Awareness",
 		f"{npc.title} has advantage on Intelligence (Arcana) checks to recognize or recall information about spells or magical effects.")
-	berserker_resistance = Entry(f"Berserker Resistance",
+	berserker_resistance = Entry_Text(f"Berserker Resistance",
 		f"{npc.title} has resistance to bludgeoning, piercing, and slashing damage.")
-	diabolic_resilience = Entry(f"Diabolic Resilience",
+	diabolic_resilience = Entry_Text(f"Diabolic Resilience",
 		f"{npc.title} has resistance to bludgeoning, piercing, and slashing damage from non-magical attacks not made with silvered weapons.")
-	etherealness = Entry(f"Etherealness",
+	etherealness = Entry_Text(f"Etherealness",
 		f"{npc.title} can shift partially into the Ethereal Plane, granting it resistance to non-magical attacks and the ability to move through solid objects until the end of their next turn.")
-	fey_ancestry = Entry(
+	fey_ancestry = Entry_Text(
 		f"Fey Ancestry",
 		f"{title} has advantage on saving throws against being charmed, and magic can't put {title} to sleep.")
-	hellish_rebuke = Entry(f"Hellish Rebuke",
+	hellish_rebuke = Entry_Text(f"Hellish Rebuke",
 		f"Once per turn, when {title} takes damage from a melee attack, it can cause flames to engulf its attacker, dealing fire 1d6 damage in return.")
-	infernal_wisdom = Entry(f"Infernal Wisdom",
+	infernal_wisdom = Entry_Text(f"Infernal Wisdom",
 		f"{title} has advantage on saving throws against being charmed or frightened."
 		)
-	lore_preservation = Entry(f"Lore Preservation",
+	lore_preservation = Entry_Text(f"Lore Preservation",
 		f"Once per day, {title} can reroll a failed Intelligence check, taking the new roll.")
-	magic_resistance = Entry(f"Magic Resistance",
+	magic_resistance = Entry_Text(f"Magic Resistance",
 		f"{npc.title} has advantage on saving throws against spells and other magical effects.")
-	mental_fortitude = Entry(f"Mental Fortitude",
+	mental_fortitude = Entry_Text(f"Mental Fortitude",
 		f"The {npc.race} has advantage on saving throws against being charmed or frightened.")
-	meticulous = Entry(f"Meticulous",
+	meticulous = Entry_Text(f"Meticulous",
 		f"{title} has advantage on Investigation checks when analyzing texts or searching for information.")
-	otherwordly_perception = Entry(
+	otherwordly_perception = Entry_Text(
 		f"Otherworldly Perception",
 		f"{npc.title} can sense the presence of invisible or hidden creatures within 60 feet of it.")
-	parry = Entry(
+	parry = Entry_Text(
 		f"Parry",
 		f"As a reaction, {npc.title} can add {PB(pb)} to its AC against one melee attack that would hit it.")
-	psychic_feedback = Entry(f"Psychic Feedback",
+	psychic_feedback = Entry_Text(f"Psychic Feedback",
 		f"Any creature that attempts to read {npc.title}'s thoughts or communicate telepathically with it takes {Dice(pb//2)}d8 psychic damage.")
-	regeneration = Entry(
+	regeneration = Entry_Text(
 		f"Regeneration",
 		f"{title} regains {abs(CON + pb)} hit points at the start of its turn" \
 		+ random.choice(['.', ' if it has at least 1 hit point.']) \
@@ -1316,62 +1316,62 @@ def Protection(npc):
 			]) \
 		+ f"{title} dies only if it starts its turn with 0 hit points and doesn't regenerate."
 		)
-	relentless = Entry(
+	relentless = Entry_Text(
 		f"Relentless",
 		f"(Recharges after a Short or Long Rest). \n\t If {npc.title} takes {npc.pb+CON} damage or less that would reduce it to 0 hit points, it is reduced to 1 hit point instead.")
-	telepathic_shield = Entry(
+	telepathic_shield = Entry_Text(
 		f"Telepathic Shield",
 		f"{npc.title} has advantage on intelligence, wisdom, and charisma saving throws against spells and other magical effects that target its mind.")
-	spell_reflection = Entry(
+	spell_reflection = Entry_Text(
 		f"Spell Reflection",
 		f"If {npc.title} makes a successful saving throw against a spell, or a spell attack misses it, {npc.title} can choose another creature (including the spellcaster) it can see within 30 feet of it. The spell targets the chosen creature instead of {npc.title}. If the spell forced a saving throw, the chosen creature makes its own save. If the spell was an attack, the attack roll is rerolled against the chosen creature")
-	snow_camouflage = Entry(f"Snow Camouflage",
+	snow_camouflage = Entry_Text(f"Snow Camouflage",
 		f"{title} has advantage on Dexterity (Stealth) checks made to hide in snowy terrain.")
-	sure_footed = Entry(f"Sure-Footed",
+	sure_footed = Entry_Text(f"Sure-Footed",
 		f"{title} has advantage on Strength and Dexterity saving throws made against effects that would knock it prone.")
-	shielded_mind = Entry(f"Shielded Mind",
+	shielded_mind = Entry_Text(f"Shielded Mind",
 		f"{title} is immune to any effect that would sense its emotions, read its thoughts, or detect its location.")
-	nimble_scape = Entry(
+	nimble_scape = Entry_Text(
 		f"Nimble Scape",
 		f"{npc.title} can take the Disengage or Hide action as a bonus action on each of its turns.")
-	freeze = Entry(
+	freeze = Entry_Text(
 		f"Freeze",
 		f"If the {npc.race} takes cold damage, it partially freezes; All its speed is reduced by 20 feet until the end of its next turn.")
-	slippery = Entry(
+	slippery = Entry_Text(
 		f"Slippery",
 		f"{npc.title} has advantage on ability checks and saving throws made to escape a grapple.")
-	SwampCamouflage =  Entry(f"Swamp Camouflage",
+	SwampCamouflage =  Entry_Text(f"Swamp Camouflage",
 		f"{npc.title} has advantage on Dexterity (Stealth) checks made to hide in swampy terrain.")
-	LabyrinthineRecall = Entry(f"Labyrinthine Recall",
+	LabyrinthineRecall = Entry_Text(f"Labyrinthine Recall",
 		f"{title} can perfectly recall any path it has traveled.")
-	Burden = Entry(f"{race} of Burden",
+	Burden = Entry_Text(f"{race} of Burden",
 		f"{title} is considered to be a {sizer(npc.height)} creature for the purpose of determining its carrying capacity.")
-	UnusualNature = Entry(
+	UnusualNature = Entry_Text(
 		"Unusual Nature",
 		f"{npc.title} doesn't require air, food, drink, or sleep.")
-	MucousCloud = Entry(f"Mucous Cloud",
+	MucousCloud = Entry_Text(f"Mucous Cloud",
 					f"While underwater or wet, the skin of {title} is surrounded by dense mucus. A creature that touches {title} or that hits it with a melee attack while within 5 ft. of it must make a DC {8+npc.pb+CON} Constitution saving throw. On a failure, the creature is diseased for {Dice(4)} hours. The diseased creature gains a level of exhaustion for the duration."
 					)
-	Inscrutable = Entry(
+	Inscrutable = Entry_Text(
 		"Inscrutable",
 		f"{npc.title} is immune to any effect that would sense its emotions or read its thoughts, as well as any divination spell that it refuses. Wisdom (Insight) checks made to ascertain {npc.title}'s intentions or sincerity have disadvantage.")
-	AntimagicSusceptibility = Entry(
+	AntimagicSusceptibility = Entry_Text(
 		"Antimagic Susceptibility",
 		f"{title} is incapacitated while in the area of an antimagic field. If targeted by dispel magic, {title}  must succeed on a Constitution saving throw against the caster's spell save DC or fall unconscious for 1 minute."
 		)
-	FalseAppearance = Entry(
+	FalseAppearance = Entry_Text(
 		"False Appearance",
 		f"While {title} remains motionless, it is indistinguishable from a normal inanimate object, such as a statue, rock, or plant."
 		)
-	IllusoryAppearance = Entry("Illusory Appearance",
+	IllusoryAppearance = Entry_Text("Illusory Appearance",
 		(f"{title} covers herself and anything they are wearing or carrying with a magical illusion that makes {gender} look like other creature of their general size and shape. The effect ends if {title} takes a bonus action to end it or if {gender} dies."
 		f"The changes wrought by this effect fail to hold up to physical inspection. For example, a hag could appear to have no claws, but someone touching her hand might feel the claws. Otherwise, a creature must take an action to visually inspect the illusion and succeed on a DC {dc} Intelligence (Investigation) check to discern that {title} is disguised."
 		))
-	ImmutableForm = Entry(f"Immutable Form",
+	ImmutableForm = Entry_Text(f"Immutable Form",
 		f"{title} is immune to any spell or effect that would alter its form.")
-	LightningAbsorption = Entry(f"Lightning Absorption",
+	LightningAbsorption = Entry_Text(f"Lightning Absorption",
 		f"Whenever {title} is subjected to lightning damage, it takes no damage and instead regains a number of hit points equal to the lightning damage dealt.")
-	Rejuvenation = Entry(f"Rejuvenation",
+	Rejuvenation = Entry_Text(f"Rejuvenation",
 		f"You might decide that {title} in your campaign is nearly impossible to destroy. Their life essence might be preserved somehow into a vessel. \n\t If the essence-preserving vessel of {title} is intact, {npc.gender} gains a new body in {Dice(pb)}d10 days, regaining all its hit points and becoming active again. The new body appears within 5 feet of the object.")
 
 

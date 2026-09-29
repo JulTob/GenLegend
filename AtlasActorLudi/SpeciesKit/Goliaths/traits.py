@@ -1,7 +1,7 @@
 """Shared 2024 Goliath trait Tags."""
 
-from TagKit import Imprint
-from TagKit import Pre
+from TopKit import Imprint
+from TopKit import Pre
 
 from AtlasLusoris.FeaturesKit import Trait
 

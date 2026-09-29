@@ -8,6 +8,14 @@ Its one inherited principle, from that document's Spirit:
 
 > **Explicit beats magical.**
 
+> **Julio's ruling, 2026-09-24 (QST-0142):**
+> - **One Entry** is a title, a flavor line and the rules text (`AtlasVenustas.Entry( title, rules, flavor )`). Its section and level are metadata that do not print.
+> - **One Chip** is a symbol, a label and a value.
+> - **Text is Markdown, never HTML**, so every medium prints from it: `f"{entry:html}"`, `f"{entry:md}"`, `f"{entry:json}"`.
+> - **Several short Entries beat one long one.**
+>
+> The HTML examples below describe feature text as it was written before that ruling. Each QST-0142 station converts its family's text to Markdown. The rules about *what* to write (breaks, voice, projection, what a sheet states) still hold.
+
 ---
 
 ## Breaks are written, never inferred
@@ -99,8 +107,7 @@ transformation. Those stay open because the rules keep them open.
 
 **Chips are lookups, prose is the entry.** A chip is what a player reaches for
 mid-combat: one label, one value. Anything that needs a sentence belongs in the
-description. A Feature with a chip and no prose is a record and renders as the
-chip alone.
+description.
 
 ---
 

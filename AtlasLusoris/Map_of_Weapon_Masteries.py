@@ -10,7 +10,9 @@ from __future__ import annotations
 import random
 from typing import Any
 
-from TagKit import Pre, Tag
+from TopKit import Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 
 class Weapon_Mastery(Tag):
@@ -38,7 +40,7 @@ class Weapon_Mastery(Tag):
 
 _MASTERY_TAGS: dict[str, type[Weapon_Mastery]] = {}
 
-from TagKit import Pre, Tag
+from TopKit import Pre, Tag
 
 
 class Weapon_Mastery(Tag):
@@ -137,7 +139,7 @@ MASTERY_TEXT: dict[str, str] = {
 			),
 		"Topple": (
 			"On a hit you may force a Constitution saving throw "
-			"<b>(DC {dc})</b>; on a failure the target falls Prone."
+			"**(DC {dc})**; on a failure the target falls Prone."
 			),
 		"Vex": (
 			"On a hit you have Advantage on your next attack roll against "
@@ -332,7 +334,7 @@ def _mastery_tag(
 		weapon: str,
 	):
 	"""Get or mint the Tag that says "this hero has mastered a Longsword"."""
-	from TagKit import Report, Tag
+	from TopKit import Tag
 
 	class_name = "Mastery_Of_" + "".join(
 			part.capitalize()
@@ -358,10 +360,10 @@ def _mastery_tag(
 					),
 			{
 					"NAME": f"{weapon} Mastery",
-					"WEAPON": Report(
+					"WEAPON": Report_Of(
 							weapon
 							),
-					"MASTERY": Report(
+					"MASTERY": Report_Of(
 							WEAPON_MASTERIES[weapon]
 							),
 					"__module__": __name__,
@@ -440,7 +442,7 @@ def _mastery_tag(
 		weapon: str,
 	):
 	"""Get or mint the Tag that says "this hero has mastered a Longsword"."""
-	from TagKit import Report, Tag
+	from TopKit import Tag
 
 	class_name = "Mastery_Of_" + "".join(
 			part.capitalize()
@@ -466,10 +468,10 @@ def _mastery_tag(
 					),
 			{
 					"NAME": f"{weapon} Mastery",
-					"WEAPON": Report(
+					"WEAPON": Report_Of(
 							weapon
 							),
-					"MASTERY": Report(
+					"MASTERY": Report_Of(
 							WEAPON_MASTERIES[weapon]
 							),
 					"__module__": __name__,
@@ -750,6 +752,42 @@ def plan_masteries(
 			)
 
 
+def Plan_Masteries_On_Awaken(
+		char: Any,
+		) -> None:
+	"""
+	The Weapon Mastery Training's apply step, shared by every Guild.
+
+	Decide the drills once, when the lesson awakens; readers only read
+	them (Decree 0009, point 7). One definition for the five Guilds that
+	train masteries, so they cannot drift apart (review of #97).
+	"""
+	plan_masteries(
+			char
+			)
+
+
+def planned_masteries(
+		char: Any,
+		n: int,
+		) -> list[tuple[str, str]]:
+	"""
+	The drills already decided, read only: never picks, never stamps.
+
+	Readers (sheet text and Chips) call this. The decision is
+	``plan_masteries``, made once by the Weapon Mastery Training when it
+	awakens (Decree 0009, point 7: reading is pure).
+	"""
+	picks = list(
+			getattr(
+					char,
+					"weapon_mastery_picks",
+					None,
+					) or []
+			)
+	return picks[ :n ] if n else picks
+
+
 def weapon_mastery_chip(
 		char: Any,
 		n: int | None = None,
@@ -758,7 +796,7 @@ def weapon_mastery_chip(
 	count = mastery_count(
 			char
 			) if n is None else n
-	picks = pick_weapon_masteries(
+	picks = planned_masteries(
 			char,
 			count,
 			)
@@ -780,7 +818,7 @@ def weapon_mastery_entry(
 	count = mastery_count(
 			char
 			) if n is None else n
-	picks = pick_weapon_masteries(
+	picks = planned_masteries(
 			char,
 			count,
 			)
@@ -809,7 +847,7 @@ def weapon_mastery_entry(
 	parts = [
 			"*You feel comfortable with the weapons you trained with.*\n\n"
 			"Your training with weapons allows you to use the mastery "
-			f"properties of <b>{weapons}</b>. Whenever you finish a Long Rest, "
+			f"properties of **{weapons}**. Whenever you finish a Long Rest, "
 			"you can change one of those weapon choices.",
 			]
 	for weapon, mastery in picks:
@@ -817,14 +855,14 @@ def weapon_mastery_entry(
 				mastery,
 				char,
 				)
-		header = f"<b>{weapon} Mastery: {mastery}</b>"
+		header = f"**{weapon} Mastery: {mastery}**"
 		if blurb:
 			parts.append(
-					f"<br>{header}<br>{blurb}"
+					f"\n\n{header}\n\n{blurb}"
 					)
 		else:
 			parts.append(
-					f"<br>{header}"
+					f"\n\n{header}"
 					)
 	return "".join(
 			parts

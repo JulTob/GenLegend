@@ -10,7 +10,12 @@ Thought pattern
 
 from __future__ import annotations
 
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfFeatures.Draconic_Resilience import (
+		Draconic_Armour_Class,
+		Draconic_Resilience,
+		)
+from AtlasVenustas import Chip
 
 
 GUILD = "Sorcerer"
@@ -61,7 +66,7 @@ def _core(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -79,13 +84,15 @@ def _origin(
 		min_level: int,
 		description,
 		chips=(),
+		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
 			description=description,
 			chips=chips,
+			apply=apply,
 			path=origin_name,
 			source=f"Training: {origin_name}",
 			)
@@ -103,11 +110,11 @@ def _font_of_magic_entry(
 			char
 			)
 	return (
-		f"You have <b>{pts} Sorcery Points</b> (regained on Long "
-		"Rest).<br><b>Creating Spell Slots.</b> As a Bonus Action, "
+		f"You have **{pts} Sorcery Points** (regained on Long "
+		"Rest).\n\n**Creating Spell Slots.** As a Bonus Action, "
 		"spend points to create a slot: 1st 2 pts, 2nd 3 pts, "
 		"3rd 5 pts, 4th 6 pts, 5th 7 pts (max 5th level)."
-		"<br><b>Converting Spell Slots.</b> As a Bonus Action, "
+		"\n\n**Converting Spell Slots.** As a Bonus Action, "
 		"expend a slot to gain Sorcery Points equal to its level."
 		)
 
@@ -119,10 +126,10 @@ def _metamagic_entry(
 			char
 			)
 	return (
-		f"Choose <b>{count}</b> Metamagic options. Spend Sorcery "
+		f"Choose **{count}** Metamagic options. Spend Sorcery "
 		"Points to modify your spells — only one option per spell "
 		"unless a feature says otherwise."
-		"<br><i>Options (cost in Sorcery Points):</i> "
+		"\n\n*Options (cost in Sorcery Points):* "
 		"Careful Spell (1), Distant Spell (1), Empowered Spell (1), "
 		"Extended Spell (1), Heightened Spell (2), Quickened "
 		"Spell (2), Seeking Spell (1), Subtle Spell (1), "
@@ -145,12 +152,12 @@ Innate_Sorcery = _core(
 		name="Innate Sorcery",
 		min_level=1,
 		description=(
-			"As a <i>Bonus Action</i>, unleash the sorcerous power "
+			"As a *Bonus Action*, unleash the sorcerous power "
 			"within for 1 minute. While active:"
-			"<br>• Your Sorcerer spell save DC increases by 1."
-			"<br>• You have <b>Advantage</b> on attack rolls of "
+			"\n\n• Your Sorcerer spell save DC increases by 1."
+			"\n\n• You have **Advantage** on attack rolls of "
 			"Sorcerer spells you cast."
-			"<br>Uses: 2 per Long Rest."
+			"\n\nUses: 2 per Long Rest."
 			),
 		)
 
@@ -159,7 +166,11 @@ Font_of_Magic = _core(
 		min_level=2,
 		description=_font_of_magic_entry,
 		chips=(
-				("Sorcery Points", _sorcery_points),
+				Chip(
+					"✦",
+					"Sorcery Points",
+					_sorcery_points,
+					),
 				),
 		)
 
@@ -168,7 +179,11 @@ Metamagic = _core(
 		min_level=2,
 		description=_metamagic_entry,
 		chips=(
-				("Metamagic Options", _metamagic_count),
+				Chip(
+					"✦",
+					"Metamagic Options",
+					_metamagic_count,
+					),
 				),
 		)
 
@@ -186,8 +201,8 @@ Sorcery_Incarnate = _core(
 		min_level=7,
 		description=(
 			"If you have no uses of Innate Sorcery remaining, you can "
-			"activate it by spending <b>2 Sorcery Points</b>. While "
-			"Innate Sorcery is active, you can apply <b>two</b> "
+			"activate it by spending **2 Sorcery Points**. While "
+			"Innate Sorcery is active, you can apply **two** "
 			"Metamagic options to each spell you cast."
 			),
 		)
@@ -197,7 +212,7 @@ Arcane_Apotheosis = _core(
 		min_level=20,
 		description=(
 			"While Innate Sorcery is active, you can apply one Metamagic "
-			"option per turn <b>without spending Sorcery Points</b>."
+			"option per turn **without spending Sorcery Points**."
 			),
 		)
 
@@ -228,9 +243,9 @@ Psionic_Spells = _aberrant(
 		min_level=3,
 		description=(
 			"Your aberrant nature grants extra spells always prepared: "
-			"<i>Arms of Hadar, Dissonant Whispers, Calm Emotions, "
+			"*Arms of Hadar, Dissonant Whispers, Calm Emotions, "
 			"Detect Thoughts, Hunger of Hadar, Sending, Evard's Black "
-			"Tentacles, Summon Aberration.</i> These don't count "
+			"Tentacles, Summon Aberration.* These don't count "
 			"against your prepared spells."
 			),
 		)
@@ -252,7 +267,7 @@ Psionic_Sorcery = _aberrant(
 		min_level=6,
 		description=(
 			"When you cast a spell from your Psionic Spells list, you "
-			"can cast it by expending a spell slot as normal <b>or</b> "
+			"can cast it by expending a spell slot as normal **or** "
 			"by spending Sorcery Points equal to the spell's level. "
 			"If cast using Sorcery Points, it requires no Verbal or "
 			"Somatic components."
@@ -274,10 +289,10 @@ Revelation_in_Flesh = _aberrant(
 		description=(
 			"As a Bonus Action, spend 1–4 Sorcery Points to alter your "
 			"body for 10 minutes. For each point spent, choose one effect:"
-			"<br>• See any invisible creature within 60 feet."
-			"<br>• Swim Speed equal to your Speed; breathe underwater."
-			"<br>• Fly Speed equal to your Speed; you can hover."
-			"<br>• Move through spaces at least 1 inch wide without "
+			"\n\n• See any invisible creature within 60 feet."
+			"\n\n• Swim Speed equal to your Speed; breathe underwater."
+			"\n\n• Fly Speed equal to your Speed; you can hover."
+			"\n\n• Move through spaces at least 1 inch wide without "
 			"squeezing."
 			),
 		)
@@ -291,7 +306,7 @@ Warping_Implosion = _aberrant(
 			"space you left makes a Strength saving throw — on a fail "
 			"it takes 3d10 Force damage and is pulled to the nearest "
 			"unoccupied space near your destination; on a success it "
-			"takes half damage and isn't pulled. <br>Once you use this "
+			"takes half damage and isn't pulled. \n\nOnce you use this "
 			"feature, you can't do so again until you finish a Long "
 			"Rest, unless you spend 5 Sorcery Points to use it again."
 			),
@@ -324,9 +339,9 @@ Clockwork_Spells = _clockwork(
 		min_level=3,
 		description=(
 			"The magic of cosmic order grants extra spells always "
-			"prepared: <i>Alarm, Protection from Evil and Good, Aid, "
+			"prepared: *Alarm, Protection from Evil and Good, Aid, "
 			"Lesser Restoration, Dispel Magic, Protection from Energy, "
-			"Freedom of Movement, Summon Construct.</i> These don't "
+			"Freedom of Movement, Summon Construct.* These don't "
 			"count against your prepared spells."
 			),
 		)
@@ -348,7 +363,7 @@ Bastion_of_Law = _clockwork(
 		description=(
 			"As a Magic action, spend 1–5 Sorcery Points to create a "
 			"ward on a creature you can see within 30 feet. The ward "
-			"has Hit Points equal to <b>5 × Sorcery Points spent</b>. "
+			"has Hit Points equal to **5 × Sorcery Points spent**. "
 			"The next time the warded creature takes damage, reduce "
 			"that damage by the ward's HP pool. The ward lasts until "
 			"depleted or until you finish a Long Rest."
@@ -363,7 +378,7 @@ Trance_of_Order = _clockwork(
 			"minute. While active, attack rolls against you can't "
 			"benefit from Advantage, and whenever you make an attack "
 			"roll, ability check, or saving throw, you can treat a "
-			"roll of 9 or lower as a 10. <br>Once you use this "
+			"roll of 9 or lower as a 10. \n\nOnce you use this "
 			"feature, you can't do so again until you finish a Long "
 			"Rest, unless you spend 5 Sorcery Points to use it again."
 			),
@@ -377,7 +392,7 @@ Clockwork_Cavalcade = _clockwork(
 			"you: each damaged creature regains 3d10 HP; conditions "
 			"grappling, restraining, or paralyzing chosen creatures "
 			"end; and damaged objects are repaired."
-			"<br>Once you use this feature, you can't do so again "
+			"\n\nOnce you use this feature, you can't do so again "
 			"until you finish a Long Rest, unless you spend 7 Sorcery "
 			"Points."
 			),
@@ -395,6 +410,7 @@ def _draconic(
 		min_level: int,
 		description,
 		chips=(),
+		apply=None,
 		):
 	return _origin(
 			DRACONIC,
@@ -402,6 +418,7 @@ def _draconic(
 			min_level=min_level,
 			description=description,
 			chips=chips,
+			apply=apply,
 			)
 
 
@@ -411,20 +428,44 @@ def _draconic_resilience_entry(
 	level = _rank(
 			char
 			)
+	armour_class = Draconic_Armour_Class(
+			char
+			)
 	return (
-		"<b>Draconic Resilience.</b> Your hit point maximum increases by <b>"
-		f"{level}</b> (1 per Sorcerer level). When you aren't wearing "
-		"armor, your AC equals 13 + your Dexterity modifier."
+		"\n\n**Draconic Resilience.** Your hit point maximum increases by **"
+		f"{level}** (1 per Sorcerer level). Parts of your body are covered "
+		"by dragon-like scales: while you aren't wearing armor, your base "
+		f"Armor Class equals **{armour_class}** (10 + your Dexterity and "
+		"Charisma modifiers)."
 		)
 
 
-Draconic_Resilience = _draconic(
+def _apply_draconic_resilience(
+		char,
+		) -> None:
+	"""Grow the scales: the Armor Class rule is its own Tag."""
+	Draconic_Resilience(
+			char
+			)
+
+
+Draconic_Scales = _draconic(
 		name="Draconic Resilience",
 		min_level=3,
 		description=_draconic_resilience_entry,
 		chips=(
-				("HP Bonus", _rank),
+				Chip(
+					"✦",
+					"HP Bonus",
+					_rank,
+					),
+				Chip(
+					"🐉",
+					"Scaled AC",
+					Draconic_Armour_Class,
+					),
 				),
+		apply=_apply_draconic_resilience,
 		)
 
 Draconic_Spells = _draconic(
@@ -432,8 +473,8 @@ Draconic_Spells = _draconic(
 		min_level=3,
 		description=(
 			"Your draconic lineage grants extra spells always prepared: "
-			"<i>Chromatic Orb, Dragon's Breath, Fly, Fear, Dominate "
-			"Beast, Summon Draconic Spirit.</i> These don't count "
+			"*Chromatic Orb, Dragon's Breath, Fly, Fear, Dominate "
+			"Beast, Summon Draconic Spirit.* These don't count "
 			"against your prepared spells."
 			),
 		)
@@ -468,7 +509,7 @@ Dragon_Companion = _draconic(
 			"lineage in an unoccupied space within 30 feet. It acts on "
 			"your initiative, follows your commands, and stays until "
 			"it drops to 0 HP, you dismiss it, or you finish a Long "
-			"Rest. Once used, <br>Once you use this feature, you can't "
+			"Rest. Once used, \n\nOnce you use this feature, you can't "
 			"do so again until you finish a Long Rest, unless you "
 			"spend 7 Sorcery Points to use it again."
 			),

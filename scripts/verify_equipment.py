@@ -89,10 +89,13 @@ def check_records(failures):
 def check_character(char, guild, level, seed, failures):
 	from AtlasInventarium.GearKit import (
 			armour_allowance,
-			armour_voids_unarmoured,
 			current_armour_class,
 			unarmoured_formula,
 			weapon_pool,
+			)
+	from AtlasInventarium.Map_of_Gear_Proficiency import (
+			unarmoured_refuses_armour,
+			unarmoured_refuses_shield,
 			)
 	from AtlasInventarium.Grimoire_of_Items import (
 			SLOTS,
@@ -214,16 +217,15 @@ def check_character(char, guild, level, seed, failures):
 					f"wears {worn.armour_kind} armour but is trained for {allowance}"
 					)
 
-	# --- Unarmored Defence that armour would void stays unarmoured ---------
-	if armour_voids_unarmoured(char):
-		if worn is not None:
-			fail(
-					f"{worn.called} worn, voiding Unarmored Defence"
-					)
-		if loadout.offhand is not None:
-			fail(
-					"shield carried, voiding Unarmored Defence"
-					)
+	# --- Unarmored Defense: no armour; a Shield only if its source allows --
+	if worn is not None and unarmoured_refuses_armour(char):
+		fail(
+				f"{worn.called} worn over Unarmored Defense"
+				)
+	if loadout.offhand is not None and unarmoured_refuses_shield(char):
+		fail(
+				"shield carried, voiding Unarmored Defense"
+				)
 
 	# --- everything equipped is owned --------------------------------------
 	holdings = owned(char)
@@ -286,11 +288,17 @@ def check_character(char, guild, level, seed, failures):
 					)
 
 	# --- no duplicate chip labels on the sheet ------------------------------
-	chip_labels = [
-			chip[0]
-			for feature in char.features
-			for chip in getattr(feature, "chips", ())
-			]
+	# Both sources: legacy features and the build (review of #97).
+	from AtlasActorLudi.Charts_of_Build import Build_Read_Error
+	from AtlasInventarium.GearKit import Sheet_Chip_Labels
+
+	try:
+		chip_labels = Sheet_Chip_Labels(char)
+	except Build_Read_Error as error:
+		fail(
+				f"the build cannot be read: {error}"
+				)
+		chip_labels = []
 	chip_dupes = [
 			label
 			for label, count in collections.Counter(chip_labels).items()

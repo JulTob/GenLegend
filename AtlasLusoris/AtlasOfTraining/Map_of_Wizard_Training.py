@@ -10,7 +10,8 @@ Thought pattern
 
 from __future__ import annotations
 
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
+from AtlasVenustas import Chip
 
 
 GUILD = "Wizard"
@@ -91,7 +92,7 @@ def _core(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -110,7 +111,7 @@ def _tradition(
 		description,
 		chips=(),
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -135,8 +136,8 @@ def _arcane_recovery_entry(
 	return (
 		"When you finish a Short Rest, you can choose expended spell "
 		"slots to recover. The slots can have a combined level equal "
-		f"to no more than <b>{recovery}</b> (half your Wizard level, "
-		"rounded up), and none can be level 6 or higher.<br>"
+		f"to no more than **{recovery}** (half your Wizard level, "
+		"rounded up), and none can be level 6 or higher.\n\n"
 		"Once you use this feature, you can't do so again until you "
 		"finish a Long Rest."
 		)
@@ -164,10 +165,21 @@ Rebuilding a lost book costs an hour and 10 GP per spell level, so this is
 the number both figures are struck from. Cantrips cost nothing to set down
 again and are not counted.
 """
-	try:
-		known = char.get_spellcaster().spells_known
-	except Exception:
+	caster = getattr(
+			char,
+			"spellcaster",
+			None,
+			)
+		#-- The spellcaster already built for this Character.  Never
+		#-- ``get_spellcaster()`` here: that builds a new one, and a reader
+		#-- must not build or choose anything (Decree 0009, point 7).
+	if caster is None:
 		return 0
+	known = getattr(
+			caster,
+			"spells_known",
+			(),
+			) or ()
 	total = 0
 	for spell in known:
 		if "Cantrip" in type(
@@ -218,14 +230,14 @@ unchanged, and nothing announces that a choice was made.
 		f"Your Spellbook is {form}. It holds the spells you know. "
 		"It is a Tiny object weighing 3 pounds, it has room for 100 pages, "
 		"and it can be read only by you or by someone casting "
-		"<i>Identify</i>.<br><b>Copying a Spell.</b> A Wizard spell you "
+		"*Identify*.\n\n**Copying a Spell.** A Wizard spell you "
 		"find, on a Spell Scroll or in another book, can be copied into "
 		"yours if it is of a level you can prepare. It takes 2 hours and "
-		"50 GP per spell level.<br><b>Copying the Book.</b> Copying a "
+		"50 GP per spell level.\n\n**Copying the Book.** Copying a "
 		"spell you already know into a second book is faster: 1 hour and "
 		"10 GP per spell level. Many Wizards keep a spare for exactly "
-		"that reason.<br><b>Replacing the Book.</b> If you lose it you must spend <b>"
-		f"{levels * 10} GP</b> and <b>{levels} hours</b> to rebuild it "
+		"that reason.\n\n**Replacing the Book.** If you lose it you must spend **"
+		f"{levels * 10} GP** and **{levels} hours** to rebuild it "
 		"with the spells on this sheet. Any other spell you had learnt "
 		"is lost with the original."
 		)
@@ -253,7 +265,11 @@ Arcane_Recovery = _core(
 		min_level=1,
 		description=_arcane_recovery_entry,
 		chips=(
-				("Recovery Levels", _recovery_slots),
+				Chip(
+					"✦",
+					"Recovery Levels",
+					_recovery_slots,
+					),
 				),
 		)
 
@@ -286,7 +302,7 @@ Spell_Mastery = _core(
 			"with a casting time of an Action. You always have those "
 			"spells prepared and can cast them at their lowest level "
 			"without expending a spell slot. To cast either spell at "
-			"a higher level, you must expend a spell slot.<br>"
+			"a higher level, you must expend a spell slot.\n\n"
 			"Whenever you finish a Long Rest, you can study your "
 			"Spellbook and replace one of those spells with an "
 			"eligible spell of the same level from the book."
@@ -432,7 +448,11 @@ Portent = _diviner(
 			"one foretold result — you must choose before the roll."
 			),
 		chips=(
-				("Portent Dice", _portent_dice),
+				Chip(
+					"✦",
+					"Portent Dice",
+					_portent_dice,
+					),
 				),
 		)
 
@@ -453,11 +473,11 @@ The_Third_Eye = _diviner(
 		description=(
 			"When you take the Study action or finish a Short Rest, choose "
 			"one benefit (lasts until Incapacitated or until another rest):"
-			"<br><b>Darkvision.</b> 60-foot Darkvision (or extend by 60 ft)."
-			"<br><b>Ethereal Sight.</b> See into the Ethereal Plane within "
+			"\n\n**Darkvision.** 60-foot Darkvision (or extend by 60 ft)."
+			"\n\n**Ethereal Sight.** See into the Ethereal Plane within "
 			"60 feet."
-			"<br><b>Greater Comprehension.</b> Read any language."
-			"<br><b>See Invisibility.</b> As per the <i>See Invisibility</i> "
+			"\n\n**Greater Comprehension.** Read any language."
+			"\n\n**See Invisibility.** As per the *See Invisibility* "
 			"spell."
 			),
 		)
@@ -467,7 +487,7 @@ Greater_Portent = _diviner(
 		min_level=14,
 		description=(
 			"The visions in your dreams grow more vivid. You now roll "
-			"<b>three</b> d20s for your Portent feature, rather than two."
+			"**three** d20s for your Portent feature, rather than two."
 			),
 		)
 
@@ -540,7 +560,7 @@ Overchannel = _evoker(
 		min_level=14,
 		description=(
 			"When you cast a Wizard spell of level 1–5 that deals damage, "
-			"you can deal maximum damage with that spell.<br>"
+			"you can deal maximum damage with that spell.\n\n"
 			"The first time you do this, no ill effects. The second time "
 			"and each time before your next Long Rest, you take 2d12 "
 			"Necrotic damage per spell level immediately after casting. "
@@ -612,7 +632,7 @@ Illusory_Self = _illusionist(
 			"When a creature makes an attack roll against you, you can use "
 			"your Reaction to interpose an illusory duplicate. The attack "
 			"automatically misses, then the illusion dissipates. Once used, "
-			"<br>Once you use this feature, you can't do so again until you "
+			"\n\nOnce you use this feature, you can't do so again until you "
 			"finish a Short or Long Rest."
 			),
 		)
@@ -658,22 +678,22 @@ def _bladesong_entry(
 		char,
 		) -> str:
 	return (
-		"As a <i>Bonus Action</i> you invoke the Bladesong, provided you are "
+		"As a *Bonus Action* you invoke the Bladesong, provided you are "
 		"not wearing armor or using a Shield. It lasts 1 minute, and ends "
 		"early if you have the Incapacitated condition, if you don armor or "
 		"a Shield, or if you use two hands to attack with a weapon. You can "
-		"dismiss it at any time (no action required).<br>You can invoke it <b>"
-		f"{_bladesong_uses(char)}</b> times, regaining all uses on a Long "
-		"Rest and one use whenever you use Arcane Recovery.<br>"
-		"<b>Agility.</b> You gain <b>+"
-		f"{_bladesong_ac(char)}</b> to AC, your Speed increases by <b>10 "
-		"feet</b>, and you have Advantage on Dexterity (Acrobatics) "
-		"checks.<br><b>Bladework.</b> When you attack with a weapon you "
-		"are proficient with, you can use <b>Intelligence</b> for the "
-		"attack and damage rolls instead of Strength or Dexterity.<br>"
-		"<b>Focus.</b> When you make a Constitution saving throw to "
-		"maintain Concentration, you can add <b>+"
-		f"{_intelligence_modifier(char)}</b> "
+		"dismiss it at any time (no action required).\n\nYou can invoke it **"
+		f"{_bladesong_uses(char)}** times, regaining all uses on a Long "
+		"Rest and one use whenever you use Arcane Recovery.\n\n"
+		"\n\n**Agility.** You gain **+"
+		f"{_bladesong_ac(char)}** to AC, your Speed increases by **10 "
+		"feet**, and you have Advantage on Dexterity (Acrobatics) "
+		"checks.\n\n**Bladework.** When you attack with a weapon you "
+		"are proficient with, you can use **Intelligence** for the "
+		"attack and damage rolls instead of Strength or Dexterity.\n\n"
+		"\n\n**Focus.** When you make a Constitution saving throw to "
+		"maintain Concentration, you can add **+"
+		f"{_intelligence_modifier(char)}** "
 		"to the total."
 		)
 
@@ -683,14 +703,16 @@ Bladesong = _bladesinger(
 		min_level=3,
 		description=_bladesong_entry,
 		chips=(
-				(
-						"Bladesong Uses",
-						_bladesong_uses,
-						),
-				(
-						"Bladesong AC",
-						_bladesong_ac,
-						),
+				Chip(
+					"✦",
+					"Bladesong Uses",
+					_bladesong_uses,
+					),
+				Chip(
+					"✦",
+					"Bladesong AC",
+					_bladesong_ac,
+					),
 				),
 		)
 
@@ -700,8 +722,8 @@ Training_in_War_and_Song = _bladesinger(
 		description=(
 			"You gain proficiency with all Melee Martial weapons that do "
 			"not have the Two-Handed or Heavy property. You can use a "
-			"Melee weapon you are proficient with as a <b>Spellcasting "
-			"Focus</b> for your Wizard spells.<br>"
+			"Melee weapon you are proficient with as a **Spellcasting "
+			"Focus** for your Wizard spells.\n\n"
 			"You also gain proficiency in one of Acrobatics, Athletics, "
 			"Performance, or Persuasion."
 			),
@@ -711,7 +733,7 @@ Bladesinger_Extra_Attack = _bladesinger(
 		name="Extra Attack",
 		min_level=6,
 		description=(
-			"You can attack <b>twice</b> instead of once whenever you take "
+			"You can attack **twice** instead of once whenever you take "
 			"the Attack action on your turn. You can also cast one of your "
 			"Wizard cantrips that has a casting time of an action in place "
 			"of one of those attacks."
@@ -723,8 +745,8 @@ Song_of_Defense = _bladesinger(
 		min_level=10,
 		description=(
 			"When you take damage while your Bladesong is active, you can "
-			"take a <i>Reaction</i> to expend one spell slot and reduce the "
-			"damage taken by <b>five times the slot's level</b>."
+			"take a *Reaction* to expend one spell slot and reduce the "
+			"damage taken by **five times the slot's level**."
 			),
 		)
 
@@ -733,6 +755,6 @@ Song_of_Victory = _bladesinger(
 		min_level=14,
 		description=(
 			"After you cast a spell that has a casting time of an action, "
-			"you can make one attack with a weapon as a <i>Bonus Action</i>."
+			"you can make one attack with a weapon as a *Bonus Action*."
 			),
 		)

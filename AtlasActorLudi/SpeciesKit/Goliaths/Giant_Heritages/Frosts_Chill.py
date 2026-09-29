@@ -1,6 +1,6 @@
 """The Frost's Chill Giant Heritage Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 	Giant_Heritage,
@@ -8,10 +8,18 @@ from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 	Imprint_Giant_Heritage,
 	)
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import No_Giant_Heritage_Yet
 
 
 class Frosts_Chill(Giant_Heritage):
 	"""A Frost Giant boon carrying Cold damage and hindrance."""
+
+	@Pre
+	def Only_One_Giant_Heritage(
+		target,
+		):
+		return No_Giant_Heritage_Yet( target )
 
 	DISPLAY = "Frost's Chill"
 	GIANT_KIND = "Frost Giant"

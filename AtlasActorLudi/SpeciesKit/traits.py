@@ -1,6 +1,6 @@
 """Traits shared by more than one Species Atlas."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasLusoris.FeaturesKit import Trait
 

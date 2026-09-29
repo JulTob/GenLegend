@@ -1,6 +1,6 @@
 """The internal Goliath Giant Heritage Geometry."""
 
-from TagKit import Pre
+from TopKit import Pre
 
 from AtlasLusoris.FeaturesKit import Trait
 
@@ -73,3 +73,10 @@ def Imprint_Giant_Heritage(
 	target.giant_heritage_activation = heritage.ACTIVATION
 	target.giant_heritage_use_scaling = "Proficiency Bonus"
 	target.giant_heritage_recovery = heritage.RECOVERY
+
+
+def No_Giant_Heritage_Yet(
+	target,
+	) -> bool:
+	"""The gate every Giant Heritage declares: a Goliath has one."""
+	return target not in Giant_Heritage

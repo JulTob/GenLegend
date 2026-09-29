@@ -16,9 +16,9 @@ Thought pattern (read this before the code)
 
 Usage
 	from AtlasInventarium.Grimoire_of_Items import (
-			Build_Armour, Build_Weapon, equip, armour_class,
+			Make_Armour, Make_Weapon, equip, armour_class,
 			)
-	mail = Build_Armour(name="Chain Mail", base_ac=16, kind="Heavy", value=75)
+	mail = Make_Armour(name="Chain Mail", base_ac=16, kind="Heavy", value=75)
 	equip(char, mail)
 	armour_class(char)          # derived — never stored
 """
@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import math
 
-from TagKit import Imprint, Pre, Report, Tag
+from TopKit import Imprint, Pre, Report, Tag
 
 
 def copper(
@@ -163,10 +163,11 @@ class Item:
 
 	def __str__(item) -> str:
 		from AtlasVenustas import Entry
-		return Entry(
+		entry = Entry(
 				item.called,
 				item.blurb(),
 				)
+		return f"{entry:html}"
 
 	def __repr__(item) -> str:
 		return (
@@ -251,7 +252,7 @@ class Shield(Wieldable):
 
 
 class Weapon(Wieldable):
-	"""Deals damage. Carries damage and mastery through Build_Weapon."""
+	"""Deals damage. Carries damage and mastery through Make_Weapon."""
 
 	NAME = "Weapon"
 
@@ -332,7 +333,7 @@ _ARMOUR_KINDS = (
 # ---------------------------------------------------------------------------
 
 
-def Build_Item(
+def Make_Item(
 		*,
 		name: str,
 		value: float = 0,
@@ -345,7 +346,7 @@ def Build_Item(
 	"""Craft one Item and stamp the Tags that give it meaning."""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_Item: name is required."
+				"Make_Item: name is required."
 				)
 
 	item = Item(
@@ -373,7 +374,7 @@ def Build_Item(
 	return item
 
 
-def Build_Armour(
+def Make_Armour(
 		*,
 		name: str,
 		base_ac: int,
@@ -393,10 +394,10 @@ def Build_Armour(
 	"""
 	if kind not in _ARMOUR_KINDS:
 		raise ValueError(
-				f"Build_Armour: kind must be one of {_ARMOUR_KINDS}, got {kind!r}."
+				f"Make_Armour: kind must be one of {_ARMOUR_KINDS}, got {kind!r}."
 				)
 
-	item = Build_Item(
+	item = Make_Item(
 			name=name,
 			value=value,
 			weight=weight,
@@ -423,7 +424,7 @@ def Build_Armour(
 	return item
 
 
-def Build_Shield(
+def Make_Shield(
 		*,
 		name: str = "Shield",
 		bonus: int = 2,
@@ -433,7 +434,7 @@ def Build_Shield(
 		grants: dict[str, int] | None = None,
 		) -> Item:
 	"""Craft a shield. Its bonus is a grant, so it is summed like any other."""
-	item = Build_Item(
+	item = Make_Item(
 			name=name,
 			value=value,
 			weight=weight,
@@ -447,7 +448,7 @@ def Build_Shield(
 	return item
 
 
-def Build_Worn(
+def Make_Worn(
 		*,
 		name: str,
 		slot: type[Tag],
@@ -471,10 +472,10 @@ def Build_Worn(
 			Jewelry,
 			):
 		raise ValueError(
-				f"Build_Worn: {slot!r} is not a wearable slot."
+				f"Make_Worn: {slot!r} is not a wearable slot."
 				)
 
-	return Build_Item(
+	return Make_Item(
 			name=name,
 			value=value,
 			weight=weight,
@@ -486,7 +487,7 @@ def Build_Worn(
 			)
 
 
-def Build_Consumable(
+def Make_Consumable(
 		*,
 		name: str,
 		value: float = 0,
@@ -495,7 +496,7 @@ def Build_Consumable(
 		description: str = "",
 		) -> Item:
 	"""Craft a potion, scroll, or other one-use good. Stacks freely."""
-	return Build_Item(
+	return Make_Item(
 			name=name,
 			value=value,
 			weight=weight,
@@ -507,7 +508,7 @@ def Build_Consumable(
 			)
 
 
-def Build_Weapon(
+def Make_Weapon(
 		*,
 		name: str,
 		damage: str,
@@ -547,7 +548,7 @@ def Build_Weapon(
 			else Melee
 			)
 
-	item = Build_Item(
+	item = Make_Item(
 			name=name,
 			value=value,
 			weight=weight,
@@ -630,7 +631,10 @@ def instantiate(
 
 	for field, value in prototype.__dict__.items():
 		if field in (
-				"_TAGKIT_STATE",
+				"_TOPKIT_STATE",
+					#-- TopKit's own state: each copy must start its own.
+					#-- (TagKit 0.2.0a1 called it _TAGKIT_STATE; the old name
+					#-- silently shared one state between all copies.)
 				"name",
 				"value",
 				"weight",
@@ -858,9 +862,9 @@ def equip(
 			item,
 			)
 	if item in Carried:
-		Carried.Rip(
+		del Carried[
 				item
-				)
+				]
 	if item not in Equipped:
 		Equipped(
 				item
@@ -873,9 +877,9 @@ def unequip(
 		) -> Item:
 	"""Stop using an item. It stays owned, in the bag."""
 	if item in Equipped:
-		Equipped.Rip(
+		del Equipped[
 				item
-				)
+				]
 	return item
 
 
@@ -889,9 +893,9 @@ def carry(
 			item,
 			)
 	if item in Equipped:
-		Equipped.Rip(
+		del Equipped[
 				item
-				)
+				]
 	if item not in Carried:
 		Carried(
 				item
@@ -904,9 +908,9 @@ def stow(
 		) -> Item:
 	"""Put an at-hand item away into the pack. It stays owned."""
 	if item in Carried:
-		Carried.Rip(
+		del Carried[
 				item
-				)
+				]
 	return item
 
 
@@ -1160,12 +1164,12 @@ def reconcile(
 
 __all__ = (
 		"Armour",
-		"Build_Armour",
-		"Build_Consumable",
-		"Build_Item",
-		"Build_Shield",
-		"Build_Weapon",
-		"Build_Worn",
+		"Make_Armour",
+		"Make_Consumable",
+		"Make_Item",
+		"Make_Shield",
+		"Make_Weapon",
+		"Make_Worn",
 		"Cloak",
 		"Consumable",
 		"Carried",
@@ -1232,7 +1236,7 @@ def _self_test():
 			self.purse = 500
 
 	# --- generic item, crafted by Tags ---------------------------------
-	mail = Build_Armour(
+	mail = Make_Armour(
 			name="Chain Mail",
 			base_ac=16,
 			kind="Heavy",
@@ -1247,14 +1251,14 @@ def _self_test():
 			Item,
 			)
 
-	leather = Build_Armour(
+	leather = Make_Armour(
 			name="Leather Armour",
 			base_ac=11,
 			kind="Light",
 			value=10,
 			weight=10,
 			)
-	sword = Build_Weapon(
+	sword = Make_Weapon(
 			name="Longsword",
 			damage="1d8",
 			damage_type="Slashing",
@@ -1279,7 +1283,7 @@ def _self_test():
 	assert armour_class(char) == 16, armour_class(char)
 
 	# --- a shield stacks ------------------------------------------------
-	shield = Build_Shield()
+	shield = Make_Shield()
 	equip(
 			char,
 			shield,
@@ -1287,7 +1291,7 @@ def _self_test():
 	assert armour_class(char) == 18, armour_class(char)
 
 	# --- artifacts GRANT, they do not overwrite -------------------------
-	cloak = Build_Item(
+	cloak = Make_Item(
 			name="Cloak of Protection",
 			value=200,
 			weight=1,
@@ -1370,7 +1374,7 @@ def _self_test():
 			)
 
 	# --- bag vs equipped -------------------------------------------------
-	rations = Build_Item(
+	rations = Make_Item(
 			name="Rations",
 			value=1,
 			weight=2,
@@ -1393,7 +1397,7 @@ def _self_test():
 	broke.purse = 5
 	assert buy(
 			broke,
-			Build_Armour(
+			Make_Armour(
 					name="Plate",
 					base_ac=18,
 					kind="Heavy",
@@ -1425,7 +1429,7 @@ def _self_test():
 	# Regression: Equipped is a Tag on the object, so handing the SAME
 	# prototype to two characters let one character's sale un-equip the
 	# other's gear. Everything issued goes through instantiate().
-	prototype = Build_Armour(
+	prototype = Make_Armour(
 			name="Shared Mail",
 			base_ac=16,
 			kind="Heavy",
@@ -1492,7 +1496,7 @@ def _self_test():
 	# --- issue/purchase quantities and purse behaviour -------------------
 	stack = issue(
 			bob,
-			Build_Item(
+			Make_Item(
 					name="Arrows",
 					value=0.05,
 					weight=0.05,

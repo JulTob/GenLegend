@@ -1,0 +1,606 @@
+"""
+Charts_of_Printing — one Entry or Chip, printed in one medium.
+
+Thought pattern (read this before the code)
+	1. The shapes live in ``Compass_of_Features``; this module only prints
+	   them. Each medium is one small function with one job:
+
+	       medium   call                  used by
+	       html     f"{entry:html}"       the web sheet (also ``str( entry )``)
+	       md       f"{entry:md}"         tests, snapshots, a printable sheet
+	       json     f"{entry:json}"       the API
+	       plain    f"{entry:plain}"      tooltips, logs
+
+	2. Text is Markdown. HTML is made from it by ``markdown-it-py`` (the
+	   library Shiny already installs), never by hand. While older text
+	   still carries HTML tags, the HTML printer lets them through; the
+	   QST-0142 stations remove them family by family.
+	3. The HTML keeps the markup the sheet has always used for an Entry
+	   (bold title, flavor block, italic rules), so moving to this printer
+	   changes nothing a reader sees. The presentation is redesigned later,
+	   in one place: here.
+	   One exception, from the review of PR #94: a rules body with real
+	   block structure — two paragraphs, a bullet list — must keep its
+	   blocks, and a ``<p>`` may not sit inside ``<i>``. So a body that is
+	   one paragraph prints inline in ``<i>`` exactly as before, and a body
+	   of clean block Markdown prints whole, inside
+	   ``<div class="entry-rules">``; the stylesheet gives that class the
+	   same italics. The parser decides which is which, never a pattern
+	   match on the text — and a body the parser reads as code or raw HTML
+	   blocks (older text with Python indentation or tags in it) keeps the
+	   old inline path until its own station ports it.
+	4. Only read Entries and Chips print. One that still holds a reader
+	   raises ``Unread_Text`` naming it, instead of printing a function's
+	   name onto the sheet.
+"""
+
+from __future__ import annotations
+
+import html as html_text
+import json
+import re
+
+from markdown_it import MarkdownIt
+
+from AtlasVenustas.Compass_of_Features import Chip
+from AtlasVenustas.Compass_of_Features import Entry
+from AtlasVenustas.Compass_of_Features import Unread_Text
+
+
+MARKDOWN = MarkdownIt(
+		"commonmark",
+		{
+				"html": True,
+				"breaks": False,
+				},
+		)
+	#-- "html": older text still carries tags; let them through until ported.
+	#-- "breaks": off.  A single newline is a space, as Markdown and the
+	#-- browser both read it; a new paragraph needs a blank line.
+
+
+MEDIA = (
+		"html",
+		"md",
+		"json",
+		"plain",
+		)
+
+
+class Unknown_Medium( ValueError ):
+	"""A format spec that is not one of the known media."""
+
+
+# ---------------------------------------------------------------------------
+# Small helpers, one step each
+# ---------------------------------------------------------------------------
+
+def Medium_Of(
+		spec: str,
+		) -> str:
+	"""The medium a format spec names; the empty spec means html."""
+	medium = ( spec or "html" ).strip().lower()
+	if medium == "markdown":
+		medium = "md"
+	if medium not in MEDIA:
+		raise Unknown_Medium(
+				f"Unknown medium {spec!r}; use one of {', '.join( MEDIA )}."
+				)
+	return medium
+
+
+def Escaped(
+		text,
+		) -> str:
+	"""
+	A plain field, made safe for HTML.
+
+	Titles, symbols, labels and kinds are plain text by design: they never
+	carry markup, so ``<``, ``&`` and quotes in them are characters, not
+	tags (PR #94 review). A rules or flavor body — and, for now, a Chip's
+	value (the spell-slot tables) — may still carry old HTML, and only
+	until its station ports it.
+	"""
+	return html_text.escape(
+			str( text ),
+			quote=True,
+			)
+
+
+def Inline_Html(
+		markdown: str,
+		) -> str:
+	"""Markdown for one line of a sheet, as HTML without a paragraph around it."""
+	return MARKDOWN.renderInline(
+			markdown
+			)
+
+
+def Block_Html(
+		markdown: str,
+		) -> str:
+	"""Markdown as HTML blocks: paragraphs, lists and quotes survive."""
+	return MARKDOWN.render(
+			markdown
+			).strip()
+
+
+def Top_Block_Kinds(
+		markdown: str,
+		) -> tuple[str, ...]:
+	"""The kinds of top-level blocks Markdown parses the text into."""
+	return tuple(
+			token.type
+			for token in MARKDOWN.parse( markdown )
+			if token.level == 0
+			)
+
+
+def Is_One_Paragraph(
+		markdown: str,
+		) -> bool:
+	"""True when Markdown parses the whole text as a single paragraph."""
+	return Top_Block_Kinds( markdown ) == (
+			"paragraph_open",
+			"paragraph_close",
+			)
+
+
+CLEAN_BLOCK_KINDS = frozenset(
+		(
+				"paragraph_open",
+				"paragraph_close",
+				"bullet_list_open",
+				"bullet_list_close",
+				"ordered_list_open",
+				"ordered_list_close",
+				"blockquote_open",
+				"blockquote_close",
+				)
+		)
+	#-- The blocks a sheet's rules body may be made of.  Anything else the
+	#-- parser finds — a code block, a raw HTML block — is not written
+	#-- Markdown: it is older text whose Python indentation or tags leaked
+	#-- into the string, and that text keeps the old inline path unchanged.
+
+
+def Is_Clean_Block_Markdown(
+		markdown: str,
+		) -> bool:
+	"""True when every top-level block is a paragraph, a list or a quote."""
+	kinds = set(
+			Top_Block_Kinds( markdown )
+			)
+	return kinds <= CLEAN_BLOCK_KINDS
+
+
+def Plain_Text(
+		markdown: str,
+		) -> str:
+	"""Markdown (and any leftover tags) with the markup taken out."""
+	without_tags = re.sub(
+			r"<[^>]+>",
+			"",
+			Inline_Html(
+					markdown
+					),
+			)
+	return html_text.unescape(
+			without_tags
+			)
+
+
+def Require_Read(
+		thing,
+		what: str,
+		) -> None:
+	if not thing.Is_Read():
+		raise Unread_Text(
+				f"{what} still holds a reader; call .Read( character ) first."
+				)
+
+
+# ---------------------------------------------------------------------------
+# Entries
+# ---------------------------------------------------------------------------
+
+def Rules_As_Html(
+		rules: str,
+		) -> str:
+	"""
+	The rules body as HTML.
+
+	One paragraph keeps the sheet's old shape: inline HTML inside
+	``<i>…</i>``. A body of clean block Markdown — two paragraphs, a
+	bullet list — keeps its blocks, and a ``<p>`` may not sit inside
+	``<i>``, so it prints whole, inside ``<div class="entry-rules">``; the
+	stylesheet gives that class the same italics. Older text whose Python
+	indentation or HTML tags would parse as code or raw blocks is not
+	written Markdown yet: it keeps the old inline path, byte for byte,
+	until its own QST-0142 station ports it.
+	"""
+	if Is_One_Paragraph( rules ):
+		inline = Inline_Html(
+				rules
+				)
+		return f"<i>{inline}</i>"
+	if Is_Clean_Block_Markdown( rules ):
+		blocks = Block_Html(
+				rules
+				)
+		return f'<div class="entry-rules">{blocks}</div>'
+	inline = Inline_Html(
+			rules
+			)
+	return f"<i>{inline}</i>"
+
+
+def Entry_As_Html(
+		entry: Entry,
+		) -> str:
+	head = Escaped(
+			entry.title
+			)
+	if not entry.title:
+		return ""
+	if not entry.rules and not entry.flavor:
+		return f"<b>{head}</b>"
+	rules = ""
+	if entry.rules:
+		rules = Rules_As_Html(
+				entry.rules
+				)
+	if not entry.flavor:
+		return f"<b>{head}:</b> {rules}"
+	flavor = Inline_Html(
+			entry.flavor
+			)
+	return (
+			f"<b>{head}:</b>\n"
+			f'<div class="bc4">{flavor}</div>'
+			f"{rules}"
+			)
+
+
+def Entry_As_Markdown(
+		entry: Entry,
+		) -> str:
+	lines = []
+	if entry.title:
+		lines.append(
+				f"### {entry.title}"
+				)
+		#-- Level three: the sheet's name is ``#`` and its sections ``##``,
+		#-- so an Entry sits one step under its section (Julio, 2026-09-24).
+		#-- No title, no heading: a bare "### " is not a heading at all.
+	if entry.flavor:
+		lines.append(
+				f"*{entry.flavor}*"
+				)
+	if entry.rules:
+		lines.append(
+				entry.rules
+				)
+	return "\n\n".join(
+			lines
+			)
+
+
+def Entry_As_Json(
+		entry: Entry,
+		) -> str:
+	return json.dumps(
+			{
+					"title": entry.title,
+					"flavor": entry.flavor,
+					"rules": entry.rules,
+					"section": entry.section.value,
+					"level": entry.level,
+					},
+			ensure_ascii=False,
+			)
+
+
+def Entry_As_Plain(
+		entry: Entry,
+		) -> str:
+	parts = [
+			f"{entry.title}.",
+			]
+	if entry.flavor:
+		parts.append(
+				Plain_Text(
+						entry.flavor
+						)
+				)
+	if entry.rules:
+		parts.append(
+				Plain_Text(
+						entry.rules
+						)
+				)
+	return " ".join(
+			parts
+			)
+
+
+ENTRY_PRINTERS = {
+		"html": Entry_As_Html,
+		"md": Entry_As_Markdown,
+		"json": Entry_As_Json,
+		"plain": Entry_As_Plain,
+		}
+
+
+def Print_Entry(
+		entry: Entry,
+		spec: str,
+		) -> str:
+	Require_Read(
+			entry,
+			f"Entry {entry.title!r}",
+			)
+	printer = ENTRY_PRINTERS[
+			Medium_Of( spec )
+			]
+	return printer(
+			entry
+			)
+
+
+# ---------------------------------------------------------------------------
+# Chips
+# ---------------------------------------------------------------------------
+
+def Chip_As_Html(
+		chip: Chip,
+		) -> str:
+	style = "npc-box stat-chip"
+	if chip.kind:
+		kind = Escaped(
+				chip.kind
+				)
+		style = f"{style} {kind}-chip"
+	symbol = Escaped(
+			chip.symbol
+			)
+	label = Escaped(
+			chip.label
+			)
+	value = chip.value
+		#-- NOT escaped yet.  Some legacy values still ARE markup — the
+		#-- Artificer's spell-slot chip carries a whole <table> — and the
+		#-- sheet gate proves it: escaping values changes 201 sheets.  A
+		#-- value joins the escaped fields when its station ports it to
+		#-- plain text (QST-0142; found by the PR #94 review).
+	return (
+			f'<div class="{style}">'
+			f'<div class="symbol">{symbol}</div>'
+			f'<div class="record">{label}</div>'
+			f'<div class="value">{value}</div>'
+			"</div>"
+			)
+
+
+def Chip_As_Markdown(
+		chip: Chip,
+		) -> str:
+	head = f"{chip.symbol} " if chip.symbol else ""
+	return f"{head}**{chip.label}:** {chip.value}"
+
+
+def Chip_As_Json(
+		chip: Chip,
+		) -> str:
+	return json.dumps(
+			{
+					"symbol": chip.symbol,
+					"label": chip.label,
+					"value": chip.value,
+					"kind": chip.kind,
+					},
+			ensure_ascii=False,
+			default=str,
+			)
+
+
+def Chip_As_Plain(
+		chip: Chip,
+		) -> str:
+	return f"{chip.label}: {chip.value}"
+
+
+CHIP_PRINTERS = {
+		"html": Chip_As_Html,
+		"md": Chip_As_Markdown,
+		"json": Chip_As_Json,
+		"plain": Chip_As_Plain,
+		}
+
+
+def Print_Chip(
+		chip: Chip,
+		spec: str,
+		) -> str:
+	Require_Read(
+			chip,
+			f"Chip {chip.label!r}",
+			)
+	printer = CHIP_PRINTERS[
+			Medium_Of( spec )
+			]
+	return printer(
+			chip
+			)
+
+
+__all__ = (
+		"Chip_As_Html",
+		"Chip_As_Json",
+		"Chip_As_Markdown",
+		"Chip_As_Plain",
+		"Entry_As_Html",
+		"Entry_As_Json",
+		"Entry_As_Markdown",
+		"Entry_As_Plain",
+		"MEDIA",
+		"Rules_As_Html",
+		"Print_Chip",
+		"Print_Entry",
+		"Unknown_Medium",
+		)
+
+
+# ---------------------------------------------------------------------------
+# Self-test:  python -m AtlasVenustas.Charts_of_Printing
+# ---------------------------------------------------------------------------
+
+def _self_test() -> None:
+	from AtlasVenustas.Compass_of_Features import Section
+	from AtlasVenustas.Charts_of_Printing import Unknown_Medium
+		#-- By package path: run as ``python -m``, this file is also
+		#-- ``__main__``, and the printers raise the package's class.
+
+	keen = Entry(
+			"Keen Smell",
+			"Advantage on **Perception** checks that rely on smell.",
+			"Nose to the wind.",
+			section=Section.SPECIES,
+			level=1,
+			)
+
+	#-- One Entry, four media.
+	assert f"{keen:html}" == (
+			"<b>Keen Smell:</b>\n"
+			'<div class="bc4">Nose to the wind.</div>'
+			"<i>Advantage on <strong>Perception</strong> checks that rely on smell.</i>"
+			), f"{keen:html}"
+	assert f"{keen:md}" == (
+			"### Keen Smell\n\n"
+			"*Nose to the wind.*\n\n"
+			"Advantage on **Perception** checks that rely on smell."
+			), f"{keen:md}"
+	assert json.loads( f"{keen:json}" ) == {
+			"title": "Keen Smell",
+			"flavor": "Nose to the wind.",
+			"rules": "Advantage on **Perception** checks that rely on smell.",
+			"section": "Species",
+			"level": 1,
+			}
+	assert f"{keen:plain}" == (
+			"Keen Smell. Nose to the wind. "
+			"Advantage on Perception checks that rely on smell."
+			), f"{keen:plain}"
+	assert str( keen ) == f"{keen:html}" == f"{keen}"
+
+	#-- A title alone, and a title with rules only.
+	assert f"{Entry( 'Shield' ):html}" == "<b>Shield</b>"
+	assert f"{Entry( 'Shield', '+2 AC' ):html}" == "<b>Shield:</b> <i>+2 AC</i>"
+
+	#-- A body with real blocks keeps them (review of PR #94): the two
+	#-- paragraphs and the bullet list survive, inside the styled div, and
+	#-- the flavor line stays inline in its own block.
+	smite = Entry(
+			"Smite",
+			"Spend a spell slot.\n\nThe extra damage is:\n\n- 2d8 at first level\n- 1d8 more per higher slot",
+			"Your weapon burns with judgement.",
+			)
+	blocks = f"{smite:html}"
+	assert '<div class="entry-rules">' in blocks, blocks
+	assert "<p>Spend a spell slot.</p>" in blocks, blocks
+	assert "<li>2d8 at first level</li>" in blocks, blocks
+	assert '<div class="bc4">Your weapon burns with judgement.</div>' in blocks, blocks
+	assert "<i>" not in blocks, blocks
+		#-- The italics of a block body come from the stylesheet, because
+		#-- a <p> may not sit inside <i>.
+
+	#-- Older text is not written Markdown: its Python indentation would
+	#-- parse as a code block.  It keeps the old inline path, unchanged.
+	legacy = Entry(
+			"Levitate",
+			"Rises vertically up to 20 feet.\n\t\tThe target can move only by pushing.\n\t\t<br>When the spell ends, it floats down.",
+			)
+	old_shape = f"{legacy:html}"
+	assert old_shape == (
+			"<b>Levitate:</b> <i>"
+			+ Inline_Html( legacy.rules )
+			+ "</i>"
+			), old_shape
+	assert "<pre>" not in old_shape and "&lt;" not in old_shape, old_shape
+
+	#-- One Chip, four media, and its style family.
+	ac = Chip(
+			"🛡️",
+			"Armor Class",
+			16,
+			)
+	assert f"{ac:md}" == "🛡️ **Armor Class:** 16"
+	assert f"{ac:plain}" == "Armor Class: 16"
+	assert json.loads( f"{ac:json}" ) == {
+			"symbol": "🛡️",
+			"label": "Armor Class",
+			"value": 16,
+			"kind": "",
+			}
+	assert 'class="npc-box stat-chip"' in f"{ac:html}"
+	magic = Chip(
+			"✨",
+			"Spell DC",
+			13,
+			kind="magic",
+			)
+	assert 'class="npc-box stat-chip magic-chip"' in f"{magic:html}"
+
+	#-- Plain fields are text, never markup: < and & print as characters
+	#-- (PR #94 review), and a kind cannot break out of the class attribute.
+	sharp = Chip(
+			"<",
+			"AC & more",
+			"the value passes through",
+			kind='x" onload="y',
+			)
+	safe = f"{sharp:html}"
+	assert '<div class="symbol">&lt;</div>' in safe, safe
+	assert "AC &amp; more" in safe, safe
+	assert 'onload="y"' not in safe, safe
+	assert f"{Entry( 'A & B', '+1' ):html}".startswith( "<b>A &amp; B" )
+
+	#-- A reader that answers nothing prints nothing, never "None".
+	silent = Entry(
+			"Quiet",
+			lambda character: None,
+			).Read( 0 )
+	assert silent.rules == "", silent.rules
+	assert f"{silent:html}" == "<b>Quiet</b>", f"{silent:html}"
+
+	#-- No title, no heading: the Markdown of a titleless Entry has no "### ".
+	assert f"{Entry( '', 'Only rules.' ):md}" == "Only rules.", (
+			f"{Entry( '', 'Only rules.' ):md}"
+			)
+
+	#-- A reader must be read before it prints, and says so by name.
+	live = Entry(
+			"Rage",
+			lambda character: f"You can rage **{character}** times.",
+			)
+	try:
+		f"{live:md}"
+	except Unread_Text as error:
+		assert "Rage" in str( error )
+	else:
+		raise AssertionError( "an unread Entry printed" )
+	assert f"{live.Read( 3 ):md}".endswith( "You can rage **3** times." )
+
+	#-- An unknown medium is refused by name.
+	try:
+		f"{keen:pdf}"
+	except Unknown_Medium as error:
+		assert "pdf" in str( error )
+	else:
+		raise AssertionError( "an unknown medium printed" )
+
+	print( "Charts_of_Printing: all checks passed." )
+
+
+if __name__ == "__main__":
+	_self_test()

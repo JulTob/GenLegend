@@ -6,7 +6,9 @@ mechanics remain deliberately catalogued, not guessed, until each receives a
 dedicated Feature implementation.
 """
 
-from TagKit import Imprint, Post, Record, Report
+from TopKit import Imprint, Post, Record
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.ProficiencyKit import (
 	Commit_Training_Gain,
@@ -28,6 +30,7 @@ from AtlasLusoris.FeaturesKit import (
 	Reserved_Background_Training,
 	grant,
 	)
+from AtlasVenustas import Chip
 
 
 def _class_name(
@@ -45,7 +48,7 @@ def _class_name(
 		)
 
 
-def Build_Catalogued_Origin_Feat(
+def Make_Catalogued_Origin_Feat(
 		*,
 		name: str,
 		source_title: str,
@@ -77,16 +80,16 @@ def Build_Catalogued_Origin_Feat(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": Report(
+			"DESCRIPTION": Report_Of(
 				description
 				),
-			"SOURCE_TITLE": Report(
+			"SOURCE_TITLE": Report_Of(
 				source_title
 				),
-			"SOURCE_URL": Report(
+			"SOURCE_URL": Report_Of(
 				source_url
 				),
-			"MECHANICS_STATUS": Report(
+			"MECHANICS_STATUS": Report_Of(
 				"catalogued"
 				),
 			"Awaken": Awaken,
@@ -525,10 +528,10 @@ class Wildwarden(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"🦊",
 					"Speak with Animals",
 					"Ritual 8h",
-					"🦊",
 					),
 				),
 			)
@@ -580,15 +583,15 @@ class Dragon_Cult_Initiate(Origin_Feat):
 			Dragon_Cult_Initiate.DESCRIPTION,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"🐉",
 					"Dragon's Terror",
 					f"DC {save_dc}",
-					"🐉",
 					),
-				(
+				Chip(
+					"✨",
 					"Inspired by Fear",
 					"1/Rest",
-					"✨",
 					),
 				),
 			)
@@ -782,10 +785,10 @@ class Field_Lieutenant(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"📯",
 					"Rallying Cry",
 					"1/LR",
-					"📯",
 					),
 				),
 			)
@@ -850,10 +853,10 @@ class Arcane_Conduit(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"🔥",
 					"Overflow",
 					f"{uses}/LR",
-					"🔥",
 					),
 				),
 			)
@@ -964,15 +967,15 @@ class Mutant_Aberration(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"\U0001FA78",
 					"Mutant Fortitude",
 					"1/LR",
-					"\U0001FA78",
 					),
-				(
+				Chip(
+					"\u26A1",
 					"Power Surge",
 					"Hit Die",
-					"\u26A1",
 					),
 				),
 			)
@@ -1011,10 +1014,10 @@ class Sharp_Eye(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"\U0001F50D",
 					"Sharp Eye",
 					f"{uses}/LR",
-					"\U0001F50D",
 					),
 				),
 			)
@@ -1066,10 +1069,10 @@ class Spared(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"\U0001F6E1",
 					"Steel Yourself",
 					"1/LR",
-					"\U0001F6E1",
 					),
 				),
 			)
@@ -1092,7 +1095,7 @@ class Spared(Origin_Feat):
 class Dark_Gift(Origin_Feat):
 	"""A boon that arrived uninvited and kept a share of you."""
 
-	CATEGORY = Report(
+	CATEGORY = Report_Of(
 		"Dark Gift"
 		)
 
@@ -1165,15 +1168,15 @@ class Gathered_Whispers(Dark_Gift):
 			description,
 			source="Origin Feat \u2014 Dark Gift",
 			chips=(
-				(
+				Chip(
+					"\U0001F52E",
 					"Augury",
 					"1/LR",
-					"\U0001F52E",
 					),
-				(
+				Chip(
+					"\U0001F4A2",
 					"Protective Shroud",
 					f"{uses}/LR",
-					"\U0001F4A2",
 					),
 				),
 			)
@@ -1224,15 +1227,15 @@ class Shadow_Cast(Dark_Gift):
 			description,
 			source="Origin Feat \u2014 Dark Gift",
 			chips=(
-				(
+				Chip(
+					"\U0001F4A8",
 					"Flinch",
 					f"{bonus}/LR",
-					"\U0001F4A8",
 					),
-				(
+				Chip(
+					"\U0001F311",
 					"It Follows",
 					"10 miles",
-					"\U0001F311",
 					),
 				),
 			)
@@ -1291,15 +1294,15 @@ class Cupbearer(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"\U0001F9EA",
 					"Decanting",
 					"1/LR",
-					"\U0001F9EA",
 					),
-				(
+				Chip(
+					"\U0001F6AA",
 					"Timely Retreat",
 					f"{uses}/LR",
-					"\U0001F6AA",
 					),
 				),
 			)
@@ -1339,10 +1342,10 @@ class On_a_Roll(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"\U0001F3B2",
 					"On a Roll",
 					f"{uses}/SR",
-					"\U0001F3B2",
 					),
 				),
 			)
@@ -1389,10 +1392,10 @@ class Hard_to_Hold(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"\U0001F6E1",
 					"Vitality Ward",
 					f"{dice}d6, 1/SR",
-					"\U0001F6E1",
 					),
 				),
 			)
@@ -1445,10 +1448,10 @@ class Aurora(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"\U00002728",
 					"Faerie Fire",
 					"1/LR",
-					"\U00002728",
 					),
 				),
 			)
@@ -1497,15 +1500,15 @@ class Jinx(Origin_Feat):
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"\U0001F311",
 					"Hex",
 					"1/LR",
-					"\U0001F311",
 					),
-				(
+				Chip(
+					"\U0001F4A5",
 					"Backfire",
 					f"{bonus} psychic",
-					"\U0001F4A5",
 					),
 				),
 			)
@@ -1559,7 +1562,11 @@ class Aberrant_Anatomy(Dark_Gift):
 			f"make a Constitution save (<b>DC {13 + bonus}</b>) or have the "
 			"<b>Stunned</b> condition until the end of your next turn.",
 			source="Origin Feat — Dark Gift",
-			chips=(("Blindsight", "15 ft", "\U0001F441"),),
+			chips=(Chip(
+				"\U0001F441",
+				"Blindsight",
+				"15 ft",
+				),),
 			)
 
 	@Record
@@ -1709,7 +1716,11 @@ class Echoing_Soul(Dark_Gift):
 			"the <b>Incapacitated</b> condition until the end of your next turn, "
 			"with your Speed halved.",
 			source="Origin Feat — Dark Gift",
-			chips=(("Expertise", "swap on LR", "\U0001F504"),),
+			chips=(Chip(
+				"\U0001F504",
+				"Expertise",
+				"swap on LR",
+				),),
 			)
 
 	@Record
@@ -1784,7 +1795,11 @@ class Living_Shadow(Dark_Gift):
 				)
 			+ f'<div class="spell">{MageHand}</div>',
 			source="Origin Feat — Dark Gift",
-			chips=(("Lengthened Strike", f"{bonus}/LR", "\U0001F5A4"),),
+			chips=(Chip(
+				"\U0001F5A4",
+				"Lengthened Strike",
+				f"{bonus}/LR",
+				),),
 			)
 
 
@@ -1816,7 +1831,11 @@ class Touch_of_Death(Dark_Gift):
 			"Throws."
 			f'<div class="spell">{ChillTouch}</div>',
 			source="Origin Feat — Dark Gift",
-			chips=(("Death Saves", "Disadvantage", "\U0001F480"),),
+			chips=(Chip(
+				"\U0001F480",
+				"Death Saves",
+				"Disadvantage",
+				),),
 			)
 
 
@@ -1864,7 +1883,11 @@ class Watchers(Dark_Gift):
 			f'<div class="spell">{BeastSense}</div>'
 			f'<div class="spell">{SpeakwithAnimals}</div>',
 			source="Origin Feat — Dark Gift",
-			chips=(("Search", "+1d4", "\U0001F50E"),),
+			chips=(Chip(
+				"\U0001F50E",
+				"Search",
+				"+1d4",
+				),),
 			)
 
 
@@ -1922,8 +1945,16 @@ class Second_Skin(Dark_Gift):
 			f'<div class="spell">{AlterSelf}</div>',
 			source="Origin Feat — Dark Gift",
 			chips=(
-				("Alter Self", "1/LR", "\U0001F43A"),
-				("Catalyst", catalyst.split()[0].title(), "\U0001F567"),
+				Chip(
+					"\U0001F43A",
+					"Alter Self",
+					"1/LR",
+					),
+				Chip(
+					"\U0001F567",
+					"Catalyst",
+					catalyst.split()[0].title(),
+					),
 				),
 			)
 
@@ -1997,7 +2028,11 @@ class Symbiotic_Being(Dark_Gift):
 			"<b>Charmed</b> condition for <b>1d12 hours</b>, following the "
 			"symbiote's agenda. Repeat the save whenever you take damage.",
 			source="Origin Feat — Dark Gift",
-			chips=(("Sustained Symbiosis", f"{bonus}/LR", "\U0001FAB1"),),
+			chips=(Chip(
+				"\U0001FAB1",
+				"Sustained Symbiosis",
+				f"{bonus}/LR",
+				),),
 			)
 
 	@Record
@@ -2071,7 +2106,7 @@ REAL_SETTING_FEATS = {
 
 OFFICIAL_ORIGIN_FEATS = {
 	**{
-		name: Build_Catalogued_Origin_Feat(
+		name: Make_Catalogued_Origin_Feat(
 			name=name,
 			source_title=source_title,
 			source_url=_SOURCE_URLS[
@@ -2098,6 +2133,6 @@ BACKGROUND_ORIGIN_FEATS = {
 
 __all__ = (
 	"BACKGROUND_ORIGIN_FEATS",
-	"Build_Catalogued_Origin_Feat",
+	"Make_Catalogued_Origin_Feat",
 	"OFFICIAL_ORIGIN_FEATS",
 	)

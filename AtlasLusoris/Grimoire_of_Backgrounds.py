@@ -10,7 +10,7 @@ same text, glued to the description, and is kept only until every record
 declares its Hook (QST-0122.3).
 
 The record is the single authoring surface: write one ``Background(...)`` and
-feed it through ``BackgroundKit.Build_Background`` (``OfficialBackgroundsKit``
+feed it through ``BackgroundKit.Make_Background`` (``OfficialBackgroundsKit``
 re-exports this class as ``Official_Background_Record``) — no parallel lists.
 
 When a de-coupled entry is adapted from an official Background, credit it with a
@@ -84,7 +84,7 @@ class Background:
 				self.description,
 				self.roleplay,
 				(
-					f"**{self.hook.title}.** {self.hook.definition}"
+					f"**{self.hook.title}.** {self.hook.rules}"
 					if self.hook
 					else ""
 					),

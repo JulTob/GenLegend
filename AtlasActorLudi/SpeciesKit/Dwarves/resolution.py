@@ -2,6 +2,7 @@
 
 from AtlasActorLudi.SpeciesKit.presentation import Project_Species_Feature
 from AtlasActorLudi.SpeciesKit.traits import Darkvision_Rules
+from AtlasVenustas import Chip
 
 
 def _proficiency_bonus(
@@ -35,10 +36,10 @@ def _project_darkvision(
 			darkvision_range
 			),
 		chips=(
-			(
+			Chip(
+				"👁️",
 				"Darkvision",
 				f"{darkvision_range} ft",
-				"👁️",
 				),
 			),
 		level=1,
@@ -59,10 +60,10 @@ def _project_dwarven_resilience(
 			f"end the {Dwarven_Resilience.SAVE_ADVANTAGE_CONDITION} condition."
 			),
 		chips=(
-			(
+			Chip(
+				"🧪",
 				"Poison Resistance",
 				"Resistant",
-				"🧪",
 				),
 			),
 		level=1,
@@ -92,10 +93,10 @@ def _project_dwarven_toughness(
 			f"a level: +{gained} at Level {level}."
 			),
 		chips=(
-			(
+			Chip(
+				"❤️",
 				"Toughness HP",
 				f"+{gained}",
-				"❤️",
 				),
 			),
 		level=1,
@@ -123,15 +124,15 @@ def _project_stonecunning(
 			f"uses when you finish a {Stonecunning.RECOVERY}."
 			),
 		chips=(
-			(
+			Chip(
+				"🪨",
 				"Stonecunning Uses",
 				proficiency,
-				"🪨",
 				),
-			(
+			Chip(
+				"📿",
 				"Tremorsense",
 				f"{Stonecunning.RANGE} ft",
-				"📿",
 				),
 			),
 		level=1,

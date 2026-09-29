@@ -1,6 +1,7 @@
 """Resolve Halfling rules onto a completed Character sheet."""
 
 from AtlasActorLudi.SpeciesKit.presentation import Project_Species_Feature
+from AtlasVenustas import Chip
 
 
 def _project_brave(
@@ -17,10 +18,10 @@ def _project_brave(
 			"the Frightened condition."
 			),
 		chips=(
-			(
+			Chip(
+				"🛡️",
 				"Frightened Saves",
 				"Advantage",
-				"🛡️",
 				),
 			),
 		level=1,
@@ -43,10 +44,10 @@ def _project_nimbleness(
 			"there."
 			),
 		chips=(
-			(
+			Chip(
+				"🦶",
 				"Creature Passage",
 				"+1 size",
-				"🦶",
 				),
 			),
 		level=1,
@@ -68,10 +69,10 @@ def _project_luck(
 			"die again, and you must use the new roll."
 			),
 		chips=(
-			(
+			Chip(
+				"🍀",
 				"Luck Reroll",
 				"Natural 1",
-				"🍀",
 				),
 			),
 		level=1,
@@ -94,10 +95,10 @@ def _project_natural_stealth(
 			"you."
 			),
 		chips=(
-			(
+			Chip(
+				"🥷",
 				"Hide Cover",
 				"+1 size creature",
-				"🥷",
 				),
 			),
 		level=1,

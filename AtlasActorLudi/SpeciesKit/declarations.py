@@ -11,9 +11,10 @@ A new homebrew Species needs one declaration after defining its Form:
 		)
 """
 
-from TagKit import Pre
-from TagKit import Record
-from TagKit import Tag
+from TopKit import Pin
+from TopKit import Pre
+from TopKit import Record
+from TopKit import Tag
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
 from AtlasActorLudi.SpeciesKit.bases import Species
@@ -28,6 +29,7 @@ def _tuple_report(
 		)
 
 
+@Pin
 class Declared_Species(Tag):
 	"""Root Pin for Species known to the generator."""
 
@@ -53,6 +55,7 @@ class Declared_Species(Tag):
 	@Record
 	def WEIGHT(
 		target,
+		*,
 		weight=0,
 		) -> int:
 		if weight is None:
@@ -78,6 +81,7 @@ class Declared_Species(Tag):
 	@Record
 	def SIZE_OPTIONS(
 		target,
+		*,
 		size_options=(),
 		) -> tuple[str, ...]:
 		resolved = _tuple_report( size_options )
@@ -110,6 +114,7 @@ class Declared_Species(Tag):
 	@Record
 	def SIZE_WEIGHTS(
 		target,
+		*,
 		size_options=(),
 		size_weights=None,
 		) -> tuple[int, ...] | None:
@@ -155,6 +160,7 @@ class Declared_Species(Tag):
 	@Record
 	def SPEED(
 		target,
+		*,
 		speed=None,
 		) -> int | None:
 		if speed is None:
@@ -180,6 +186,7 @@ class Declared_Species(Tag):
 	@Record
 	def DESCRIPTION(
 		target,
+		*,
 		description=None,
 		) -> str:
 		"""
@@ -206,6 +213,7 @@ class Declared_Species(Tag):
 	@Record
 	def HERITAGES(
 		target,
+		*,
 		heritages=(),
 		) -> tuple[type[Heritage], ...]:
 		resolved = _tuple_report( heritages )
@@ -320,6 +328,7 @@ class Homebrew(Available):
 	@Record
 	def SOURCE_TITLE(
 		target,
+		*,
 		source_title=None,
 		) -> str:
 		resolved = (
@@ -340,6 +349,7 @@ class Homebrew(Available):
 	@Record
 	def SOURCE_URL(
 		target,
+		*,
 		source_url=None,
 		) -> str:
 		if source_url is None:
@@ -358,6 +368,7 @@ class Homebrew(Available):
 	@Record
 	def SOURCE_LOCATOR(
 		target,
+		*,
 		source_locator=None,
 		) -> str:
 		if source_locator is None:

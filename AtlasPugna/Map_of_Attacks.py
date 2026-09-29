@@ -11,7 +11,7 @@ try:
 	from AtlasLudus.Map_of_Useful_Functions import select1
 	from AtlasInventarium.Grimoire_of_Weapons import Weapon
 	from AtlasInventarium.Lodge_of_Basic_Weapons import Lodge as lg
-	from AtlasScriptum.Map_of_Formats import Entry
+	from AtlasScriptum.Map_of_Formats import Entry_Text
 except ImportError:
 	raise
 

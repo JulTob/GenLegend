@@ -1,6 +1,6 @@
 # 🥋 Monk: the Exempt, read against the whole setting
 
-> 📖 **In flow.** 2 of 10 chapters are still proposals. 📜 1 · 📚 2 · 📔 5 · 📖 2
+> 📖 **In flow.** 3 of 11 chapters are still proposals. 📜 1 · 📚 2 · 📔 5 · 📖 3
 
 *Mythos analysis, 2026-09-08. Design and literary criticism, not page text. Builds
 on Dialog 0018 (core fantasy settled as the shonen ninja: named techniques,
@@ -25,7 +25,7 @@ not a spell or inheritance, but a moment of complete commitment.
 
 **Where the text lives.** Class and Warrior paragraphs: *nowhere yet*. Dialog
 0018's five texts are provisional and unwired; `AtlasOfGuilds/MonkKit.py` is four
-bare `Build_Specialization` calls. Lessons: `AtlasOfTraining/Map_of_Monk_Training.py`
+bare `Make_Specialization` calls. Lessons: `AtlasOfTraining/Map_of_Monk_Training.py`
 (rules only, no inspiration lines). A 2014-era blurb still leaks onto the sheet
 from `Map_of_Classes/Training/Monk.py:215` ("Warriors of Mercy manipulate the life
 force of others… faceless bringers of life and death"). Culture keys: the Monk
@@ -43,8 +43,9 @@ is the class the author seeded most precisely.
 
 ⚠️ **This is the widest gap between designed and shipped.** Dialog 0018's texts
 are good (see §7) and have sat provisional since 2026-08-31. The two rules-text
-findings it flagged are still live: *"harness your psionic energy"* (Monk's
-Focus, Shadow Arts) and the em-dash in Implements of Mercy.
+findings it flagged were still live on 2026-09-08: *"harness your psionic
+energy"* (Monk's Focus, Shadow Arts) and the em-dash in Implements of Mercy.
+✅ Both fixed on 2026-09-29 (PR #88).
 
 ---
 
@@ -324,8 +325,9 @@ they disagree (Aasimar, Dwarf) the disagreement is the character.
 
 1. **Nothing is wired.** Five texts, none landed; thirty-seven lessons, zero
    inspiration lines; one 2014 blurb on the sheet in the wrong person and voice.
-2. **"Psionic energy"** ×2 and the **em-dash** in Implements of Mercy, both
-   still live.
+2. ~~**"Psionic energy"** ×2 and the **em-dash** in Implements of Mercy, both
+   still live.~~ ✅ Fixed 2026-09-29 (PR #88): "your discipline", and a full
+   stop.
 3. **Legacy Warrior blurbs** in `Map_of_Classes/Training/Monk.py` render with
    `source=None` and no heading, under the class rules, in third person. Retire
    when 0018's texts land through `extends=`.
@@ -349,10 +351,21 @@ they disagree (Aasimar, Dwarf) the disagreement is the character.
    `ninja` and `anime` both, so that the species' own culture supplies the
    school and the fiction supplies the idiom.
 8. **The Human Monk** is the default ninja unless the Egyptian well is let in.
+9. ✅ **Rules text that was not 2024** (found and fixed 2026-09-29, PR #88,
+   checked against the 2024 sources): Heightened Focus had given Flurry of
+   Blows a stun, Patient Defense Dodge, and Step of the Wind double Speed; in
+   2024 they are three strikes, Temporary Hit Points of two Martial Arts die
+   rolls, and carrying a willing creature. Monk's Focus now refills on a Short
+   or Long Rest. Physician's Touch keeps its 2024 list (Blinded, Deafened,
+   Paralyzed, Poisoned, Stunned) and ends it on Hand of Healing, not only on
+   Flurry of Blows.
 
 ---
 
 ## 📖 9. Working prose draft: discipline of the Way
+
+*Status: prose draft, **not wired to the sheet**. It lands with the Monk's
+Guild texts in a later QST-0142 station.*
 
 This is the third rewrite of the class and Warrior prose after separating the
 Monk's discipline from the Fighter's training. The previous version made the
@@ -511,7 +524,7 @@ sweep items. Proposals for the project's hand, not landed.*
 
 ---
 
-## 📖 10. Threads to pull in later cycles
+## 📖 11. Threads to pull in later cycles
 
 - **Fighter**: "Nobody gave you this" and "ten thousand mornings" are one idea
   in two Guilds. When the Fighter page is written, decide which Guild owns the

@@ -31,18 +31,21 @@ from __future__ import annotations
 
 from random import Random
 
-from TagKit import Imprint, Pre, Report, Tag
+from TopKit import Imprint, Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.AtlasOfOrders.Map_of_Domains import DOMAINS
 from AtlasEpica.Charts_of_The_Monomyth import render
-from AtlasLusoris.AtlasOfOrders.Map_of_Myth import Myth as Build_Myth
+from AtlasLusoris.AtlasOfOrders.Map_of_Myth import Myth as Make_Myth
 from AtlasLusoris.AtlasOfOrders.Map_of_Traditions import (
 	COMMON_ORGANIZATIONS,
 	TRADITIONS,
 	)
 from AtlasLusoris.FeaturesKit import Origin_Feat, grant
 from AtlasVenustas import Entry
+from AtlasVenustas import Chip
 
 
 # ---------------------------------------------------------------------------
@@ -460,7 +463,7 @@ class Order:
 		reads the same twice, and strips anything that failed to resolve
 		rather than leaking a brace.
 		"""
-		myth = Build_Myth(
+		myth = Make_Myth(
 			order
 			)
 		order._myth = myth
@@ -482,13 +485,13 @@ class Order:
 			order,
 			"_myth",
 			None,
-			) or Build_Myth(
+			) or Make_Myth(
 			order
 			)
 
 		return Entry(
 			title=order.name,
-			definition=_sentence_case(
+			rules=_sentence_case(
 				render(
 					"{Hook}",
 					myth,
@@ -496,7 +499,6 @@ class Order:
 					rng=order.dices,
 					)
 				),
-			kind="Hook",
 			)
 
 	# --- the feat -------------------------------------------------------
@@ -645,13 +647,13 @@ def order_tag(
 			),
 		{
 			"NAME": key,
-			"TITLE": Report(
+			"TITLE": Report_Of(
 				order.title
 				),
-			"TRADITION": Report(
+			"TRADITION": Report_Of(
 				order.tradition.name
 				),
-			"DOMAINS": Report(
+			"DOMAINS": Report_Of(
 				tuple(
 					domain.name
 					for domain in order.domains
@@ -695,14 +697,14 @@ def order_feat(
 			description,
 			source="Origin Feat",
 			chips=(
-				(
+				Chip(
+					"🕯",
 					getattr(
 						order.prepared,
 						"name",
 						"Signature",
 						),
 					"1/LR",
-					"🕯",
 					),
 				),
 			)
@@ -716,7 +718,7 @@ def order_feat(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": Report(
+			"DESCRIPTION": Report_Of(
 				description
 				),
 			"awaken": awaken,
@@ -744,7 +746,7 @@ class Sign_of_the_Order(Origin_Feat):
 	"""
 
 	NAME = "Sign of the Order"
-	DESCRIPTION = Report(
+	DESCRIPTION = Report_Of(
 		"An initiate's mark, conferred at swearing. What it grants depends "
 		"on which Order conferred it."
 		)
@@ -792,7 +794,7 @@ def Forge_Order(
 	grant(
 		char,
 		name=order.hook.title,
-		description=order.hook.definition,
+		description=order.hook.rules,
 		source="Order Hook",
 		)
 	grant(
@@ -897,7 +899,7 @@ def _test_shape():
 	assert order.spells_of_the_order, "spell list must never be empty"
 	assert order.organization in order.name
 	assert "{" not in order.description, "an unfilled slot escaped"
-	assert "{" not in order.hook.definition
+	assert "{" not in order.hook.rules
 
 
 def _test_variety():

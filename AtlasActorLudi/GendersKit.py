@@ -1,14 +1,16 @@
 """Gender Tags used by naming, titles, and narrative identity."""
 
-from TagKit import Action
-from TagKit import Imprint
-from TagKit import Pre
-from TagKit import Tag
-from TagKit import Underlay
+from TopKit import Action
+from TopKit import Flag
+from TopKit import Imprint
+from TopKit import Pre
+from TopKit import Tag
+from TopKit import Underlay
 
 from AtlasActorLudi.CharactersKit import Character
 
 
+@Flag
 class Gender(Tag):
 	"""Root Tag for naming and title gender context."""
 
@@ -35,6 +37,7 @@ class Gender(Tag):
 		return prior( specification )
 
 
+@Flag
 class Male(Gender):
 	"""Masculine naming and title context."""
 
@@ -55,6 +58,7 @@ class Male(Gender):
 		target.gender = gender or Male.PRONOUN
 
 
+@Flag
 class Female(Gender):
 	"""Feminine naming and title context."""
 
@@ -75,6 +79,7 @@ class Female(Gender):
 		target.gender = gender or Female.PRONOUN
 
 
+@Flag
 class Agender(Gender):
 	"""Neutral or setting-specific naming and title context."""
 

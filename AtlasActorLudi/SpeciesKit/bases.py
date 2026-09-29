@@ -1,9 +1,9 @@
 """Shared Species and Creature Type Geometry."""
 
-from TagKit import Action
-from TagKit import Pre
-from TagKit import Tag
-from TagKit import Underlay
+from TopKit import Action
+from TopKit import Pre
+from TopKit import Tag
+from TopKit import Underlay
 
 from AtlasActorLudi.CharactersKit import Character
 
@@ -76,6 +76,19 @@ class Species(Tag):
 			return Find_Species(target)
 
 		return prior(specification)
+
+
+def No_Species_Yet(
+	target,
+	) -> bool:
+	"""
+	The gate every Species Shape declares: a Character has one Species.
+
+	It sits on each Shape, not on ``Species``, because TopKit 0.2.0a3 does
+	not re-run a Base's Preconditions when a second Shape of an active Base is
+	applied (QST-0093.10).  Refusing at the gate keeps the conflict atomic.
+	"""
+	return target not in Species
 
 
 class Heritage(Species):
@@ -280,3 +293,10 @@ def Apply_Creature_Type(
 	target.creature_type = selected.__name__
 
 	return selected
+
+
+def No_Heritage_Yet(
+	target,
+	) -> bool:
+	"""The gate every Heritage Shape declares: a Character has one Heritage."""
+	return target not in Heritage

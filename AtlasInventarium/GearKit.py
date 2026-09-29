@@ -23,7 +23,8 @@ Public surface
 	weapon_pool(char)        — weapons this Character may wield
 	may_use_shield(char)     — shield training, and whether it fits the build
 	unarmoured_formula(char) — the natural no-armour AC (Unarmored Defense)
-	armour_voids_unarmoured  — worn armour would turn the formula off
+	unarmoured_refuses_armour / _shield — Unarmored Defense takes no armour,
+	                           and a Shield only when its source allows
 	starting_budget(char)    — gold for the initial kit
 """
 
@@ -67,11 +68,11 @@ from AtlasInventarium.Ledger_of_Gear import (
 from AtlasInventarium.Ledger_of_Tools import TOOLS_BY_NAME
 from AtlasInventarium.Map_of_Gear_Proficiency import (
 		armour_allowance,
-		armour_voids_unarmoured,
-		has_unarmoured_defence,
 		may_use_shield,
 		trained_for,
 		unarmoured_formula,
+		unarmoured_refuses_armour,
+		unarmoured_refuses_shield,
 		weapon_pool,
 		)
 
@@ -356,7 +357,7 @@ def _fit_armour(
 			)
 	if not allowance:
 		return None
-	if armour_voids_unarmoured(
+	if unarmoured_refuses_armour(
 			char,
 			):
 		return None
@@ -1477,10 +1478,8 @@ __all__ = (
 		"Loadout",
 		"Outfit_Player",
 		"armour_allowance",
-		"armour_voids_unarmoured",
 		"current_armour_class",
 		"gear_stream",
-		"has_unarmoured_defence",
 		"may_use_shield",
 		"starting_budget",
 		"unarmoured_formula",
@@ -1632,8 +1631,9 @@ def _self_test():
 			dancer
 			)
 
-	# --- Barbarian MAY carry a shield with Unarmored Defence -------------
+	# --- Barbarian: no armour, but MAY carry a shield ---------------------
 	barb, barb_report = results["Barbarian"]
+	assert barb_report["armour"] is None, "Barbarian should stay unarmoured"
 	assert may_use_shield(
 			barb
 			) is True
@@ -1744,6 +1744,35 @@ _SWEEP_GUILDS = (
 		"Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard",
 		)
 _SWEEP_LEVELS = (1, 3, 5, 10, 20)
+
+
+def Sheet_Chip_Labels(
+		char,
+		) -> list[str]:
+	"""
+	Every chip label the sheet shows, from both of its sources.
+
+	The legacy features carry their chips; the Tags ported by QST-0142
+	declare theirs in the build (Find_Build). Both are listed, so a chip
+	that moved into the build is still checked (review of #97). Raises
+	Build_Read_Error, naming the Tag, when the build cannot be read.
+	"""
+	from AtlasActorLudi.Charts_of_Build import Find_Build
+
+	legacy = [
+			chip.label
+			for feature in char.features
+			for chip in getattr(
+					feature,
+					"chips",
+					(),
+					)
+			]
+	built = [
+			declared.chip.label
+			for declared in Find_Build( char ).chips
+			]
+	return legacy + built
 
 
 def _check_character(
@@ -2008,18 +2037,20 @@ def _check_character(
 				f"wears {worn.armour_kind} armour, untrained for it"
 				)
 
-	# Unarmored Defence that armour would void stays unarmoured.
-	if armour_voids_unarmoured(
+	# Unarmored Defense is handed no armour, and a Shield only when its
+	# source allows one.
+	if worn is not None and unarmoured_refuses_armour(
 			char
 			):
-		if worn is not None:
-			fail(
-					f"{worn.called} worn, voiding Unarmored Defence"
-					)
-		if loadout.offhand is not None:
-			fail(
-					"shield carried, voiding Unarmored Defence"
-					)
+		fail(
+				f"{worn.called} worn over Unarmored Defense"
+				)
+	if loadout.offhand is not None and unarmoured_refuses_shield(
+			char
+			):
+		fail(
+				"shield carried, voiding Unarmored Defense"
+				)
 
 	# Everything equipped is owned.
 	holdings = owned(
@@ -2090,35 +2121,18 @@ def _check_character(
 					f"only {far} of {len(picks)} masteries reach far"
 					)
 
-	# No duplicate chip labels on the sheet.
-	#
-	# A rail chip comes in two shapes while QST-0081.4 is open: the Venustas
-	# ``Chip`` (the named model, which carries ``.label``) and the legacy
-	# ``(label, value)`` tuple. Reading ``chip[0]`` works only for the tuple —
-	# on a Chip, which subclasses ``str``, it silently returns the first
-	# CHARACTER of the rendered HTML, so every Chip-bearing feature reported a
-	# duplicate label of ``'<'``. Ask for the label; fall back to the tuple.
-	def chip_label(
-			chip,
-			):
-		if hasattr(
-				chip,
-				"label",
-				):
-			return chip.label
-		return chip[0]
+	# No duplicate chip labels on the sheet. Every chip is a Chip (QST-0142).
+	from AtlasActorLudi.Charts_of_Build import Build_Read_Error
 
-	chip_labels = [
-			chip_label(
-					chip
-					)
-			for feature in char.features
-			for chip in getattr(
-					feature,
-					"chips",
-					(),
-					)
-			]
+	try:
+		chip_labels = Sheet_Chip_Labels(
+				char
+				)
+	except Build_Read_Error as error:
+		fail(
+				f"the build cannot be read: {error}"
+				)
+		chip_labels = []
 	chip_dupes = [
 			label
 			for label, count in collections.Counter(

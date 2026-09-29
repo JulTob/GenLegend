@@ -28,8 +28,10 @@ from AtlasLusoris.AtlasOfGuilds.FighterKit import (
 	MANEUVERS,
 	PsiWarrior,
 	)
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
 from AtlasLusoris.FeaturesKit import grant
+from AtlasVenustas import Chip
+from AtlasLusoris.Map_of_Weapon_Masteries import Plan_Masteries_On_Awaken
 
 
 GUILD = "Fighter"
@@ -147,7 +149,7 @@ def _core(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -167,7 +169,7 @@ def _path(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -264,11 +266,11 @@ def _second_wind_entry(
 	# Fighter at once; a generated sheet knows this one's level.
 	return (
 		"*You don't stay down. You fight.*\n\n"
-		"As a <i>Bonus Action</i>, you can regain Hit Points equal to "
-		f"<b>1d10 + {_rank( char )}</b>. "
-		f"You can use this feature <b>{uses}</b> times. "
-		"You regain one expended use when you finish a <i>Short Rest</i>, "
-		"and you regain all expended uses when you finish a <i>Long Rest</i>."
+		"As a *Bonus Action*, you can regain Hit Points equal to "
+		f"**1d10 + {_rank( char )}**. "
+		f"You can use this feature **{uses}** times. "
+		"You regain one expended use when you finish a *Short Rest*, "
+		"and you regain all expended uses when you finish a *Long Rest*."
 		)
 
 
@@ -302,7 +304,7 @@ def _extra_attack_entry(
 		count = "twice"
 	return (
 		"*Your training made you formidable in combat.*\n\n"
-		f"You can attack <b>{count}</b> instead of once whenever you "
+		f"You can attack **{count}** instead of once whenever you "
 		"take the Attack action on your turn."
 		)
 
@@ -320,8 +322,8 @@ def _indomitable_entry(
 	return (
 		"*You don't fall down.*\n\n"
 		"If you fail a saving throw, you can reroll it with a bonus of "
-		f"<b>+{level}</b>. You must use the new roll."
-		f"<br>You can use this feature <b>{uses_text}</b> per Long Rest."
+		f"**+{level}**. You must use the new roll."
+		f"\n\nYou can use this feature **{uses_text}** per Long Rest."
 		)
 
 
@@ -338,13 +340,13 @@ def _action_surge_entry(
 	if level >= 17:
 		return lead + (
 			"On your turn, you can take one additional action, except "
-			"the Magic action. You can use this feature <b>twice</b> "
+			"the Magic action. You can use this feature **twice** "
 			"per Short or Long Rest. You can use it only once per turn."
 			)
 	return lead + (
 		"On your turn, you can take one additional action, except "
 		"the Magic action. Once you use this feature, you can't do "
-		"so again until you finish a <i>Short or Long Rest</i>."
+		"so again until you finish a *Short or Long Rest*."
 		)
 
 
@@ -580,8 +582,8 @@ def _student_of_war_entry(
 		"*Every battle is determined by one thing: preparation. "
 		"And you are ready.*\n\n"
 		"You gain proficiency with "
-		f"<b>{char.battle_master_tool}</b> and "
-		f"<b>{char.battle_master_skill}</b>."
+		f"**{char.battle_master_tool}** and "
+		f"**{char.battle_master_skill}**."
 		)
 
 
@@ -598,10 +600,10 @@ def _combat_superiority_entry(
 	return (
 		"*Every battle is a cosmos. You are the sun.*\n\n"
 		"Your maneuvers use "
-		f"<b>{_superiority_dice(char)}</b> Superiority Dice, restored "
+		f"**{_superiority_dice(char)}** Superiority Dice, restored "
 		"after a Short or Long Rest. A maneuver save is "
-		f"<b>DC {_maneuver_save_dc( char )}</b>."
-		f"<br><b>Known maneuvers:</b> {maneuvers}."
+		f"**DC {_maneuver_save_dc( char )}**."
+		f"\n\n**Known maneuvers:** {maneuvers}."
 		)
 
 
@@ -624,7 +626,7 @@ def _combat_superiority_update(
 			char,
 			) -> str:
 		return (
-			f"Your Superiority Dice became <b>d{die}s</b>, and you gained "
+			f"Your Superiority Dice became **d{die}s**, and you gained "
 			"one more."
 			)
 	return entry
@@ -651,10 +653,10 @@ def _combat_superiority_update(
 				)
 			)
 		return (
-			f"Your Superiority Dice became <b>d{die}s</b>, and you gained "
+			f"Your Superiority Dice became **d{die}s**, and you gained "
 			"one more. "
-			f"You have <b>{count}d{current}</b> now, and a maneuver save is "
-			f"<b>DC {_maneuver_save_dc( char )}</b>."
+			f"You have **{count}d{current}** now, and a maneuver save is "
+			f"**DC {_maneuver_save_dc( char )}**."
 			)
 	return entry
 
@@ -680,10 +682,10 @@ def _combat_superiority_update(
 				)
 			)
 		return (
-			f"Your Superiority Dice became <b>d{die}s</b>, and you gained "
+			f"Your Superiority Dice became **d{die}s**, and you gained "
 			"one more. "
-			f"You have <b>{count}d{current}</b> now, and a maneuver save is "
-			f"<b>DC {_maneuver_save_dc( char )}</b>."
+			f"You have **{count}d{current}** now, and a maneuver save is "
+			f"**DC {_maneuver_save_dc( char )}**."
 			)
 	return entry
 
@@ -755,7 +757,11 @@ Second_Wind = _core(
 		min_level=1,
 		description=_second_wind_entry,
 		chips=(
-				("2nd Wind Uses", _second_wind_uses),
+				Chip(
+					"💨",
+					"2nd Wind Uses",
+					_second_wind_uses,
+					),
 				),
 		apply=_apply_second_wind,
 		)
@@ -765,8 +771,13 @@ Weapon_Mastery = _core(
 		min_level=1,
 		description=_weapon_mastery_entry,
 		chips=(
-				("Weapon Masteries", _weapon_mastery_chip),
+				Chip(
+					"⚔️",
+					"Weapon Masteries",
+					_weapon_mastery_chip,
+					),
 				),
+		apply=Plan_Masteries_On_Awaken,
 		)
 
 Action_Surge = _core(
@@ -774,7 +785,8 @@ Action_Surge = _core(
 		min_level=2,
 		description=_action_surge_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Action Surge Uses",
 					_action_surge_uses,
 					),
@@ -818,7 +830,8 @@ Indomitable = _core(
 		min_level=9,
 		description=_indomitable_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Indomitable Uses",
 					_indomitable_uses,
 					),
@@ -859,7 +872,8 @@ Combat_Superiority = _battle_master(
 		min_level=3,
 		description=_combat_superiority_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Superiority Dice",
 					_superiority_dice,
 					),
@@ -903,7 +917,7 @@ Relentless = _battle_master(
 		min_level=15,
 		description=(
 			"*Mind, blade and body have the same purpose.*\n\n"
-			"Once per turn when you use a maneuver, you can roll <b>1d8</b> "
+			"Once per turn when you use a maneuver, you can roll **1d8** "
 			"instead of expending a Superiority Die."
 			),
 		)
@@ -1136,7 +1150,7 @@ def _allies_phrase(
 	count = _rallied_allies(
 			char
 			)
-	return f"<b>{count}</b> all{'y' if count == 1 else 'ies'}"
+	return f"**{count}** all{'y' if count == 1 else 'ies'}"
 
 
 def _emanation(
@@ -1153,9 +1167,9 @@ def _group_recovery_entry(
 		"***We** don't stay down.*\n\n"
 		"When you use your Second Wind to regain Hit Points, you can "
 		f"choose up to {_allies_phrase( char )} within a "
-		f"<b>{_emanation( char )}-foot Emanation</b> originating from "
+		f"**{_emanation( char )}-foot Emanation** originating from "
 		"yourself. Each of them regains "
-		f"<b>1d4 + {_rank( char )}</b> Hit Points. Once you use this "
+		f"**1d4 + {_rank( char )}** Hit Points. Once you use this "
 		"ability, you can't use it again until you finish a Short or "
 		"Long Rest."
 		)
@@ -1168,12 +1182,12 @@ def _rallying_surge_entry(
 		"***We** will push through.*\n\n"
 		"When you use your Action Surge, you can choose up to "
 		f"{_allies_phrase( char )} within a "
-		f"<b>{_emanation( char )}-foot Emanation</b> originating from "
+		f"**{_emanation( char )}-foot Emanation** originating from "
 		"yourself. Each of them can immediately take a Reaction to use "
 		"one of the following options."
-		"<br><b>Attack.</b> The ally makes one attack with a weapon or "
+		"\n\n**Attack.** The ally makes one attack with a weapon or "
 		"an Unarmed Strike."
-		"<br><b>Move.</b> The ally moves up to half its Speed without "
+		"\n\n**Move.** The ally moves up to half its Speed without "
 		"provoking Opportunity Attacks."
 		)
 
@@ -1186,7 +1200,7 @@ def _shared_resilience_entry(
 		"When an ally you can see within 60 feet of yourself fails a "
 		"saving throw, you can take a Reaction to expend a use of your "
 		"Indomitable feature. The ally immediately rerolls the saving "
-		f"throw with a bonus of <b>+{_rank( char )}</b>, and must use "
+		f"throw with a bonus of **+{_rank( char )}**, and must use "
 		"the new roll."
 		)
 
@@ -1196,14 +1210,14 @@ Knightly_Envoy = _banneret(
 		min_level=3,
 		description=(
 			"*A blade opens one kind of door. Manners open the rest.*\n\n"
-			"<b>Comprehension.</b> You can cast <i>Comprehend Languages</i> "
+			"\n\n**Comprehension.** You can cast *Comprehend Languages* "
 			"but only as a Ritual. Charisma is your spellcasting ability "
 			"for it."
-			"<br><b>Polyglot.</b> You know one additional language. When "
+			"\n\n**Polyglot.** You know one additional language. When "
 			"you finish a Long Rest, you can replace it with another "
 			"language you have heard, seen signed, or read in the past 24 "
 			"hours."
-			"<br><b>Well Spoken.</b> You are proficient in one of Insight, "
+			"\n\n**Well Spoken.** You are proficient in one of Insight, "
 			"Intimidation, Persuasion, or Performance."
 			),
 		)
@@ -1213,10 +1227,10 @@ Group_Recovery = _banneret(
 		min_level=3,
 		description=_group_recovery_entry,
 		chips=(
-				(
+				Chip(
+					"\U0001F6E1",
 					"Rallied Allies",
 					_rallied_allies,
-					"\U0001F6E1",
 					),
 				),
 		)
@@ -1248,9 +1262,9 @@ Inspiring_Commander = _banneret(
 		min_level=18,
 		description=(
 			"***We** will be victorious.*\n\n"
-			"<b>Bolstered Rally.</b> The area of effect for both Group "
-			"Recovery and Rallying Surge is now a <b>60-foot Emanation</b>."
-			"<br><b>Unshakable Bravery.</b> You have Immunity to the "
+			"\n\n**Bolstered Rally.** The area of effect for both Group "
+			"Recovery and Rallying Surge is now a **60-foot Emanation**."
+			"\n\n**Unshakable Bravery.** You have Immunity to the "
 			"Charmed and Frightened conditions."
 			),
 		)
@@ -1266,7 +1280,7 @@ Improved_Critical = _champion(
 		description=(
 			"*Take your time. Take your chances.*\n\n"
 			"Your attack rolls with weapons and Unarmed Strikes can score "
-			"a <b>Critical Hit on a roll of 19 or 20</b> on the d20."
+			"a **Critical Hit on a roll of 19 or 20** on the d20."
 			),
 		)
 
@@ -1275,9 +1289,9 @@ Remarkable_Athlete = _champion(
 		min_level=3,
 		description=(
 			"*Rising up to the challenge.*\n\n"
-			"Thanks to your athleticism, you have <b>Advantage on "
-			"Initiative rolls and Strength (Athletics) checks</b>."
-			"<br>In addition, immediately after you score a Critical Hit, "
+			"Thanks to your athleticism, you have **Advantage on "
+			"Initiative rolls and Strength (Athletics) checks**."
+			"\n\nIn addition, immediately after you score a Critical Hit, "
 			"you can move up to half your Speed without provoking "
 			"Opportunity Attacks."
 			),
@@ -1304,7 +1318,7 @@ Heroic_Warrior = _champion(
 		description=(
 			"*Rising up, back in the arena.*\n\n"
 			"The thrill of battle drives you toward victory. During "
-			"combat, you can give yourself <b>Heroic Inspiration</b> "
+			"combat, you can give yourself **Heroic Inspiration** "
 			"whenever you start your turn without it."
 			),
 		)
@@ -1315,7 +1329,7 @@ Superior_Critical = _champion(
 		description=(
 			"*You have the will and the skill to survive.*\n\n"
 			"Your attack rolls with weapons and Unarmed Strikes can now "
-			"score a Critical Hit on a roll of <b>18–20</b> on the d20."
+			"score a Critical Hit on a roll of **18–20** on the d20."
 			),
 		)
 
@@ -1325,12 +1339,12 @@ Survivor = _champion(
 		description=lambda char: (
 			"*Go the distance. Get back on your feet.*\n\n"
 			"You attain the pinnacle of resilience in battle."
-			"<br><b>Defy Death.</b> You have Advantage on Death Saving "
+			"\n\n**Defy Death.** You have Advantage on Death Saving "
 			"Throws. Moreover, when you roll 18–20 on a Death Saving "
 			"Throw, you gain the benefit of rolling a 20 on it."
-			"<br><b>Heroic Rally.</b> At the start of each of your turns, "
+			"\n\n**Heroic Rally.** At the start of each of your turns, "
 			"you regain "
-			f"<b>{5 + _constitution_modifier( char )}</b> Hit Points "
+			f"**{5 + _constitution_modifier( char )}** Hit Points "
 			"if you are Bloodied and have at least 1 Hit Point."
 			),
 		)
@@ -1366,8 +1380,8 @@ War_Bond = _eldritch_knight(
 			"to which someone else is attuned. Once bonded, you can't be "
 			"disarmed of that weapon unless you have the Incapacitated "
 			"condition. If it's on the same plane of existence, you can "
-			"summon it as a <i>Bonus Action</i>."
-			"<br>You can have up to <b>two bonded weapons</b>, but can "
+			"summon it as a *Bonus Action*."
+			"\n\nYou can have up to **two bonded weapons**, but can "
 			"summon only one at a time. Bonding a third weapon breaks "
 			"one existing bond of your choice."
 			),
@@ -1393,7 +1407,7 @@ Eldritch_Strike = _eldritch_knight(
 			"*You know how to find a weak spot.*\n\n"
 			"*You know how to find a weak spot.*\n\n"
 			"When you hit a creature with an attack using a weapon, that "
-			"creature has <b>Disadvantage on the next saving throw</b> it "
+			"creature has **Disadvantage on the next saving throw** it "
 			"makes against a spell you cast before the end of your "
 			"next turn."
 			),
@@ -1406,8 +1420,8 @@ Arcane_Charge = _eldritch_knight(
 			"*You are not sure how it works, but it works like a charm.*\n\n"
 			"*You are not sure how it works, but it works like a charm.*\n\n"
 			"*You are not sure how it works, but it works like a charm.*\n\n"
-			"When you use your Action Surge, you can <b>teleport up to "
-			"30 feet</b> to an unoccupied space you can see. You can "
+			"When you use your Action Surge, you can **teleport up to "
+			"30 feet** to an unoccupied space you can see. You can "
 			"teleport before or after the additional action."
 			),
 		)
@@ -1418,7 +1432,7 @@ Improved_War_Magic = _eldritch_knight(
 		description=(
 			"*The tricks have outgrown the bag.*\n\n"
 			"When you take the Attack action on your turn, you can replace "
-			"<b>two</b> of the attacks with a casting of one of your "
+			"**two** of the attacks with a casting of one of your "
 			"level 1 or level 2 Wizard spells that has a casting time "
 			"of an action."
 			),
@@ -1435,18 +1449,18 @@ def _psionic_power_entry(
 		) -> str:
 	return (
 		"*May the power be in you.*\n\n"
-		f"You have <b>{_psionic_energy_dice(char)}</b> Psionic Energy Dice "
+		f"You have **{_psionic_energy_dice(char)}** Psionic Energy Dice "
 		"that fuel your powers. You regain one expended die after a Short "
 		"Rest and all expended dice after a Long Rest."
-		"<br><b>Protective Field.</b> When you or a creature you can see "
+		"\n\n**Protective Field.** When you or a creature you can see "
 		"within 30 feet takes damage, you can take a Reaction to expend "
 		"one Psionic Energy Die, roll it, and reduce the damage by the "
 		"number rolled plus your Intelligence modifier (minimum 1)."
-		"<br><b>Psionic Strike.</b> Once per turn after a weapon damages "
+		"\n\n**Psionic Strike.** Once per turn after a weapon damages "
 		"a target within 30 feet, you can expend "
-		"one Psionic Energy Die, rolling it to deal <b>Force damage</b> "
+		"one Psionic Energy Die, rolling it to deal **Force damage** "
 		"to the target equal to the roll plus your Intelligence modifier."
-		"<br><b>Telekinetic Movement.</b> As a Magic action, move one Large "
+		"\n\n**Telekinetic Movement.** As a Magic action, move one Large "
 		"or smaller loose object or willing creature within 30 feet up to "
 		"30 feet. This is free once per Short or Long Rest; expending a "
 		"Psionic Energy Die restores the use."
@@ -1458,7 +1472,8 @@ Psionic_Power = _psi_warrior(
 		min_level=3,
 		description=_psionic_power_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Psionic Energy Dice",
 					_psionic_energy_dice,
 					),
@@ -1472,13 +1487,13 @@ def _telekinetic_adept_entry(
 	return (
 		"*You master yourself, then you master your surroundings, then "
 		"you master others.*\n\n"
-		"<b>Psi-Powered Leap.</b> As a Bonus Action, you gain a "
+		"\n\n**Psi-Powered Leap.** As a Bonus Action, you gain a "
 		"Fly Speed equal to twice your Speed until the end of the "
 		"current turn. This is free once per Short or Long Rest; "
 		"expending a Psionic Energy Die restores the use."
-		"<br><b>Telekinetic Thrust.</b> When you deal damage with your "
+		"\n\n**Telekinetic Thrust.** When you deal damage with your "
 		"Psionic Strike, you can force the target to make a Strength "
-		f"saving throw against <b>DC {_psionic_save_dc( char )}</b>. "
+		f"saving throw against **DC {_psionic_save_dc( char )}**. "
 		"On a failed save, you can knock the target Prone or move it "
 		"up to 10 feet in any direction horizontally."
 		)
@@ -1489,7 +1504,8 @@ Telekinetic_Adept = _psi_warrior(
 		min_level=7,
 		description=_telekinetic_adept_entry,
 		chips=(
-				(
+				Chip(
+					"✦",
 					"Psionic Save DC",
 					_psionic_save_dc,
 					),
@@ -1502,7 +1518,7 @@ Guarded_Mind = _psi_warrior(
 		description=(
 			"*You mastered your mind, so no one else has dominion over "
 			"it.*\n\n"
-			"You have <b>Resistance to Psychic damage</b>. Moreover, "
+			"You have **Resistance to Psychic damage**. Moreover, "
 			"if you start your turn Charmed or Frightened, you can expend "
 			"one Psionic Energy Die (no action required) to end every "
 			"effect on yourself giving you those conditions."
@@ -1517,9 +1533,9 @@ Bulwark_of_Force = _psi_warrior(
 			"guardian, the first one standing.*\n\n"
 			"As a Bonus Action, choose creatures (including yourself) "
 			"within 30 feet of you up to your Intelligence modifier "
-			"(minimum 1). Each chosen creature gains <b>Half Cover</b> "
+			"(minimum 1). Each chosen creature gains **Half Cover** "
 			"for 1 minute or until you have the Incapacitated condition."
-			"<br>Once you use this feature, you can't do so again until "
+			"\n\nOnce you use this feature, you can't do so again until "
 			"you finish a Long Rest unless you expend a Psionic Energy Die "
 			"(no action required) to restore your use of it."
 			),
@@ -1530,11 +1546,11 @@ Telekinetic_Master = _psi_warrior(
 		min_level=18,
 		description=(
 			"*Power is the most ancient rule.*\n\n"
-			"You always have <i>Telekinesis</i> prepared and can cast "
+			"You always have *Telekinesis* prepared and can cast "
 			"it without a spell slot or components using Intelligence. "
 			"It still requires Concentration. While concentrating on it, "
 			"you can make one weapon attack as a Bonus Action on each turn."
-			"<br>The slotless casting returns after a Long Rest; expending "
+			"\n\nThe slotless casting returns after a Long Rest; expending "
 			"a Psionic Energy Die restores it sooner."
 			),
 		apply=_apply_telekinetic_master,

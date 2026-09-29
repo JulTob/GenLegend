@@ -6,7 +6,7 @@ try:
 	from AtlasActorLudi.Map_of_Scores import Modifier, PB
 	from AtlasLudus.Map_of_Dice import Dice, Dizero
 	from AtlasLudus.Map_of_Useful_Functions import select1
-	from AtlasScriptum.Map_of_Formats import Entry
+	from AtlasScriptum.Map_of_Formats import Entry_Text
 except Exception:
 	raise
 
@@ -140,12 +140,12 @@ def Movement(npc):
 
 
 
-	spider_climb = Entry(f"Spider Climb",f"The {race} can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check.\n")
-	flyby = Entry(f"Flyby",f"The {race} is an agile flier, quick to fly out of enemies' reach. The {race} doesn't provoke an opportunity attack when it flies out of an enemy's reach.\n")
-	earth_glide = Entry(f"Earth Glide",f"The {race} can burrow through nonmagical, unworked earth and stone. While doing so, the {race} doesn't disturb the material it moves through.\n")
-	amphibious = Entry(f"Amphibious",f"The {race} can breathe air and water.")
-	IceWalk = Entry(f"Ice Walk",f"The {race} can move across and climb icy surfaces without needing to make an ability check. Additionally, difficult terrain composed of ice or snow doesn't cost it extra movement.")
-	ElementalForm = Entry(f"Elemental Form",
+	spider_climb = Entry_Text(f"Spider Climb",f"The {race} can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check.\n")
+	flyby = Entry_Text(f"Flyby",f"The {race} is an agile flier, quick to fly out of enemies' reach. The {race} doesn't provoke an opportunity attack when it flies out of an enemy's reach.\n")
+	earth_glide = Entry_Text(f"Earth Glide",f"The {race} can burrow through nonmagical, unworked earth and stone. While doing so, the {race} doesn't disturb the material it moves through.\n")
+	amphibious = Entry_Text(f"Amphibious",f"The {race} can breathe air and water.")
+	IceWalk = Entry_Text(f"Ice Walk",f"The {race} can move across and climb icy surfaces without needing to make an ability check. Additionally, difficult terrain composed of ice or snow doesn't cost it extra movement.")
+	ElementalForm = Entry_Text(f"Elemental Form",
 		select1(
 			[f"{title} can enter a hostile creature's space and stop there. It can move through a space as narrow as 1 inch wide without squeezing.",
 			f"{title} can move through a space as narrow as 1 inch wide without squeezing. A creature that touches the elemental or hits it with a melee attack while within 5 feet of it takes 3 (1d6) {ElementalDamage()} damage. In addition, the elemental can enter a hostile creature's space and stop there. The first time it enters a creature's space on a turn, that creature takes damage as if they touched the {race}",
@@ -196,25 +196,25 @@ def Movement(npc):
 		if fly>0 and Dice(7) == 1: extras += [flyby]
 
 	if race in [ "Aberration", "Beast", "Beastfolk","Gnome","Lizardfolk","Monstrosity"]:
-		if Dice() == 1: extras += [Entry(f"Standing Leap",f"{title}'s long jump is up to half his speed in feet and its high jump is up to third his speed, with or without a running start.")]
+		if Dice() == 1: extras += [Entry_Text(f"Standing Leap",f"{title}'s long jump is up to half his speed in feet and its high jump is up to third his speed, with or without a running start.")]
 	if race in [ "Aberration", "Beast", "Beastfolk","Monstrosity","Fiend", "Lizardfolk","Ooze","Snakefolk","Undead"]:
 		if Dice()==1:
-			extras += [Entry(f"Spider Climb",
+			extras += [Entry_Text(f"Spider Climb",
 				f"The {race} can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check.\n")
 				]
 			if Dice() == 1:
-				extras += [Entry(f"Web Sense",
+				extras += [Entry_Text(f"Web Sense",
 					f"While in contact with a web, {title} knows the exact location of any other creature in contact with the same web.\n")
 					]
 			if Dice() == 1:
-				extras += [Entry(f"Web Walker",f"{title} ignores movement restrictions caused by webbing.\n")
+				extras += [Entry_Text(f"Web Walker",f"{title} ignores movement restrictions caused by webbing.\n")
 						]
 	if race in [ "Beast", "Beastfolk", "Dragon","Fey"]:
-		if Dice()==1: extras += [Entry(f"Hold Breath",f"{title} can hold its breath for {Dice(3) * Dice(4) * 5} minutes.\n")
+		if Dice()==1: extras += [Entry_Text(f"Hold Breath",f"{title} can hold its breath for {Dice(3) * Dice(4) * 5} minutes.\n")
 				]
 	if race in [ "Aberration", "Beast", "Beastfolk", "Construct", "Dragon","Fiend", "Lizardfolk","Monstrosity","Plant","Snakefolk","Undead"]:
 		if burrow > 0 and Dice()==1:
-			extras += [Entry(f"Tunneler",f"{title} can burrow through solid rock at half its burrowing speed and leaves a 5 foot-wide, 8-foot-high tunnel in its wake.\n")
+			extras += [Entry_Text(f"Tunneler",f"{title} can burrow through solid rock at half its burrowing speed and leaves a 5 foot-wide, 8-foot-high tunnel in its wake.\n")
 				]
 	if race in ["Elemental"]:
 		if burrow > 0 and Dice()==1: extras += [earth_glide]
@@ -222,7 +222,7 @@ def Movement(npc):
 
 	if race in [ "Undead", "Celestial", "Elemental", "Fey", "Fiend", "Ooze" ]:
 		if Dice()==1:
-			extras += [Entry(f"Incorporeal Movement",f"{title} can move through other creatures and objects as if they were difficult terrain. {title} takes 5 force damage if it ends its turn inside an object.\n")
+			extras += [Entry_Text(f"Incorporeal Movement",f"{title} can move through other creatures and objects as if they were difficult terrain. {title} takes 5 force damage if it ends its turn inside an object.\n")
 				]
 
 	Marine = ["Swamp Crocfolk",	"Sea Elf", "Kraken", "Nyk (Watergoblin)", "Fomorians (Sea Giants)", "Nymph", "Nymphian",	"Oceanians",	"Gaian",	"Atlantian",	"Merfolk","Sharkfolk", "Aboleth", "Old One", "Depth Dominators", "Star Whale", "Kaiju Dinosaur"]

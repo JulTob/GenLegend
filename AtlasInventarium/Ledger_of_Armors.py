@@ -1,5 +1,5 @@
 """
-Ledger_of_Armors — the PHB 2024 armor table, built with ``Build_Armour``.
+Ledger_of_Armors — the PHB 2024 armor table, built with ``Make_Armour``.
 
 One record per armor and the Shield. ``str_requirement``/``stealth_disadvantage``
 are recorded but not yet enforced — a later quest applies the Speed penalty and
@@ -8,14 +8,14 @@ Stealth check disadvantage; Quest 1 only needs the data to exist and be queryabl
 
 from __future__ import annotations
 
-from AtlasInventarium.Grimoire_of_Items import Build_Armour, Build_Shield, Item
+from AtlasInventarium.Grimoire_of_Items import Make_Armour, Make_Shield, Item
 
 
 # ---------------------------------------------------------------------------
 # Light Armor — full Dexterity applies
 # ---------------------------------------------------------------------------
 
-Padded = Build_Armour(
+Padded = Make_Armour(
 		name="Padded",
 		base_ac=11,
 		kind="Light",
@@ -25,7 +25,7 @@ Padded = Build_Armour(
 		description="Quilted layers of cloth and batting.",
 		)
 
-Leather = Build_Armour(
+Leather = Make_Armour(
 		name="Leather",
 		base_ac=11,
 		kind="Light",
@@ -35,7 +35,7 @@ Leather = Build_Armour(
 			"leather that has been stiffened by being boiled in oil.",
 		)
 
-Studded_Leather = Build_Armour(
+Studded_Leather = Make_Armour(
 		name="Studded Leather",
 		base_ac=12,
 		kind="Light",
@@ -49,7 +49,7 @@ Studded_Leather = Build_Armour(
 # Medium Armor — Dexterity capped at +2
 # ---------------------------------------------------------------------------
 
-Hide = Build_Armour(
+Hide = Make_Armour(
 		name="Hide",
 		base_ac=12,
 		kind="Medium",
@@ -58,7 +58,7 @@ Hide = Build_Armour(
 		description="A crude armor made from thick furs and pelts.",
 		)
 
-Chain_Shirt = Build_Armour(
+Chain_Shirt = Make_Armour(
 		name="Chain Shirt",
 		base_ac=13,
 		kind="Medium",
@@ -67,7 +67,7 @@ Chain_Shirt = Build_Armour(
 		description="A shirt of interlocking metal rings worn under clothing.",
 		)
 
-Scale_Mail = Build_Armour(
+Scale_Mail = Make_Armour(
 		name="Scale Mail",
 		base_ac=14,
 		kind="Medium",
@@ -77,7 +77,7 @@ Scale_Mail = Build_Armour(
 		description="A coat of leather covered with overlapping pieces of metal.",
 		)
 
-Breastplate = Build_Armour(
+Breastplate = Make_Armour(
 		name="Breastplate",
 		base_ac=14,
 		kind="Medium",
@@ -86,7 +86,7 @@ Breastplate = Build_Armour(
 		description="A fitted metal chest piece worn with supple leather.",
 		)
 
-Half_Plate = Build_Armour(
+Half_Plate = Make_Armour(
 		name="Half Plate",
 		base_ac=15,
 		kind="Medium",
@@ -101,7 +101,7 @@ Half_Plate = Build_Armour(
 # Heavy Armor — Dexterity does not apply
 # ---------------------------------------------------------------------------
 
-Ring_Mail = Build_Armour(
+Ring_Mail = Make_Armour(
 		name="Ring Mail",
 		base_ac=14,
 		kind="Heavy",
@@ -111,7 +111,7 @@ Ring_Mail = Build_Armour(
 		description="Leather armor with heavy rings sewn into it.",
 		)
 
-Chain_Mail = Build_Armour(
+Chain_Mail = Make_Armour(
 		name="Chain Mail",
 		base_ac=16,
 		kind="Heavy",
@@ -122,7 +122,7 @@ Chain_Mail = Build_Armour(
 		description="Interlocking metal rings, worn over a padded coat.",
 		)
 
-Splint = Build_Armour(
+Splint = Make_Armour(
 		name="Splint",
 		base_ac=17,
 		kind="Heavy",
@@ -133,7 +133,7 @@ Splint = Build_Armour(
 		description="Narrow vertical strips of metal riveted to a backing of leather.",
 		)
 
-Plate = Build_Armour(
+Plate = Make_Armour(
 		name="Plate",
 		base_ac=18,
 		kind="Heavy",
@@ -145,7 +145,7 @@ Plate = Build_Armour(
 		)
 
 
-Shield = Build_Shield(
+Shield = Make_Shield(
 		name="Shield",
 		bonus=2,
 		value=10,

@@ -129,13 +129,13 @@ class Monk(Progression):
 			character.speed += 5
 			feats.append(Feature("Heightened Focus", (
 				"""
-				Your Flurry of Blows, Patient Defense, and Step of the Wind gain the following upgrades.
+				Your Flurry of Blows, Patient Defense, and Step of the Wind gain the following benefits.
 				<br>
-				<b>Flurry of Blows.</b> A creature you hit must succeed on a Constitution saving throw or be stunned until the start of your next turn.
+				<b>Flurry of Blows.</b> When you expend 1 Focus Point to use Flurry of Blows, you make three Unarmed Strikes with it instead of two.
 				<br>
-				<b>Patient Defense.</b> When you expend a Focus Point, you gain both the Dodge benefit and Temporary Hit Points.
+				<b>Patient Defense.</b> When you expend a Focus Point to use Patient Defense, you also gain Temporary Hit Points equal to two rolls of your Martial Arts die.
 				<br>
-				<b>Step of the Wind.</b> When you expend a Focus Point, your Speed doubles until the end of the current turn.
+				<b>Step of the Wind.</b> When you expend a Focus Point to use Step of the Wind, you can choose a willing creature within 5 feet of you that is Large or smaller. It moves with you until the end of your turn, and its movement doesn't provoke Opportunity Attacks.
 				"""
 				)))
 			feats.append(Feature("Self-Restoration", (

@@ -1,11 +1,13 @@
 """The 2024 Rock Gnome Heritage Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
 from AtlasActorLudi.SpeciesKit.Gnomes.base import Gnome
 from AtlasActorLudi.SpeciesKit.Gnomes.traits import Gnomish_Lineage
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
 class Rock_Gnome(
@@ -14,6 +16,12 @@ class Rock_Gnome(
 	Gnomish_Lineage,
 	):
 	"""A Gnome Heritage with cantrips and clockwork devices."""
+
+	@Pre
+	def Only_One_Heritage(
+		target,
+		):
+		return No_Heritage_Yet( target )
 
 	HERITAGE_DESCRIPTION = (
 		"""Your family took the city offer and filled a workshop with it. Lenses, springs, a bird that sings on the hour and has done since your great-grandfather wound it. You were taught that anything can be observed, taken apart, solved and improved, that most things should be, and that the shame is not in breaking it but in failing to make something out of the pieces."""

@@ -1,6 +1,6 @@
 """The 2024 Chthonic Tiefling Heritage Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
 from AtlasActorLudi.SpeciesKit.Tieflings.base import Tiefling
@@ -8,6 +8,8 @@ from AtlasActorLudi.SpeciesKit.Tieflings.traits import Fiendish_Legacy
 from AtlasActorLudi.SpeciesKit.Tieflings.traits import (
 	Imprint_Fiendish_Heritage,
 	)
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
 class Chthonic(
@@ -16,6 +18,12 @@ class Chthonic(
 	Fiendish_Legacy,
 	):
 	"""A Tiefling Heritage carrying necrotic magic."""
+
+	@Pre
+	def Only_One_Heritage(
+		target,
+		):
+		return No_Heritage_Yet( target )
 
 	DAMAGE_RESISTANCE = "Necrotic"
 	HERITAGE_DESCRIPTION = (

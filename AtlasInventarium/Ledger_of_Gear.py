@@ -1,7 +1,7 @@
 """
 Ledger_of_Gear — adventuring gear, valuables, and the seven equipment packs.
 
-Built with ``Build_Item``.  Tools are in ``Ledger_of_Tools``.
+Built with ``Make_Item``.  Tools are in ``Ledger_of_Tools``.
 
 Data source: the 2024 equipment tables (dnd2024.wikidot.com/equipment:tool
 and :adventuring-gear), transcribed 2026-07-31. Prices and weights are game
@@ -12,7 +12,7 @@ Costs are held in gold: 1 SP = 0.1 GP, 1 CP = 0.01 GP.
 
 from __future__ import annotations
 
-from AtlasInventarium.Grimoire_of_Items import Build_Item, Item
+from AtlasInventarium.Grimoire_of_Items import Make_Item, Item
 
 
 # Tools live in ``Ledger_of_Tools``, their one copy (QST-0116).  This file
@@ -29,7 +29,7 @@ def _gear(
 		weight: float,
 		description: str = "",
 		) -> Item:
-	return Build_Item(
+	return Make_Item(
 			name=name,
 			value=value,
 			weight=weight,
@@ -100,8 +100,8 @@ def _jewel(
 		value: float,
 		description: str = "",
 		) -> Item:
-	from AtlasInventarium.ItemKit import Build_Worn, Jewelry
-	return Build_Worn(
+	from AtlasInventarium.ItemKit import Make_Worn, Jewelry
+	return Make_Worn(
 			name=name,
 			slot=Jewelry,
 			value=value,
@@ -204,7 +204,7 @@ _PACK_PRICES: dict[str, float] = {
 		}
 
 
-def Build_Pack(
+def Make_Pack(
 		name: str,
 		contents: tuple[tuple[str, int], ...],
 		value: float,
@@ -220,7 +220,7 @@ def Build_Pack(
 			ADVENTURING_GEAR_BY_NAME[item_name].weight * quantity
 			for item_name, quantity in contents
 			)
-	pack = Build_Item(
+	pack = Make_Item(
 			name=name,
 			value=value,
 			weight=weight,
@@ -231,7 +231,7 @@ def Build_Pack(
 
 
 PACKS: tuple[Item, ...] = tuple(
-		Build_Pack(
+		Make_Pack(
 				name,
 				_PACK_CONTENTS[name],
 				_PACK_PRICES[name],
@@ -252,7 +252,7 @@ Explorers_Pack = PACKS_BY_NAME["Explorer's Pack"]
 __all__ = (
 		"ADVENTURING_GEAR",
 		"ADVENTURING_GEAR_BY_NAME",
-		"Build_Pack",
+		"Make_Pack",
 		"Explorers_Pack",
 		"PACKS",
 		"PACKS_BY_NAME",

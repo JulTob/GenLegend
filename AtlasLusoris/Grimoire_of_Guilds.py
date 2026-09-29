@@ -13,7 +13,7 @@ Thought pattern (read this before the code)
 	   Wise, LightlyArmored, Martial, Mage.  They are preferences and
 	   kit facts, not exclusive locks.  A Wise Character leans Wisdom;
 	   they may still grow Strength.
-	2. Build_Guild is the one construction point for a 2024 Guild chassis
+	2. Make_Guild is the one construction point for a 2024 Guild chassis
 	   (hit die, saves, armor / weapon helpers, vocation, multiclass gains).
 	3. Awaken stamps the Guild Tag, syncs the legacy primary string, and
 	   applies the helper Tags so later Maps can ask
@@ -40,7 +40,9 @@ from collections.abc import Iterable
 from collections.abc import Mapping
 from types import MappingProxyType
 
-from TagKit import Action, Has, Imprint, Pre, Report, Tag, Tags, Underlay
+from TopKit import Action, Flag, Imprint, Pin, Pre, Tag, Tags, Underlay
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasActorLudi.ProficiencyKit import (
@@ -85,6 +87,7 @@ PARITY_BONUS = 1.25
 # ---------------------------------------------------------------------------
 
 
+@Flag
 class Guild(Tag):
 	"""
 	Root Tag for character guilds (D&D 2024 classes / vocations).
@@ -103,7 +106,7 @@ class Guild(Tag):
 	    crunch   answer with your own text and let the rest go
 
 	Neither re-searches nor rebuilds the prior text.  Declare a layer with
-	``Describe_Layer``, or through ``Build_Specialization``'s ``extends`` and
+	``Describe_Layer``, or through ``Make_Specialization``'s ``extends`` and
 	``crunches`` arguments, whose names *are* the mode declaration.  Reading the
 	result is ``character.Describe()``: the visible Overlay is already composed,
 	and no caller needs to know how many layers made it.
@@ -498,18 +501,18 @@ def _validate_guild_construction(
 		) -> None:
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_Guild: name is required."
+				"Make_Guild: name is required."
 				)
 	primary = primary.upper()
 	if primary not in _LEANING_BY_ABILITY:
 		raise ValueError(
-				f"Build_Guild: unknown primary ability {primary!r}."
+				f"Make_Guild: unknown primary ability {primary!r}."
 				)
 	if secondary is not None:
 		secondary = secondary.upper()
 		if secondary not in _LEANING_BY_ABILITY:
 			raise ValueError(
-					f"Build_Guild: unknown secondary ability {secondary!r}."
+					f"Make_Guild: unknown secondary ability {secondary!r}."
 					)
 	if hit_die not in {
 			6,
@@ -518,18 +521,18 @@ def _validate_guild_construction(
 			12,
 			}:
 		raise ValueError(
-				f"Build_Guild: unusual hit die {hit_die!r}."
+				f"Make_Guild: unusual hit die {hit_die!r}."
 				)
 	if len(
 			saves
 			) != 2:
 		raise ValueError(
-				"Build_Guild: exactly two saving-throw proficiencies."
+				"Make_Guild: exactly two saving-throw proficiencies."
 				)
 	for save in saves:
 		if save.upper() not in _LEANING_BY_ABILITY:
 			raise ValueError(
-					f"Build_Guild: unknown save {save!r}."
+					f"Make_Guild: unknown save {save!r}."
 					)
 
 
@@ -693,7 +696,7 @@ def _casting_ability_action(
 
 	A Specialization that casts where its Guild does not is honoured too, so an
 	Eldritch Knight answers Intelligence.  This is the floor that a Casting
-	Variant crunches; see ``Build_Casting_Variant``.  There is nothing here to
+	Variant crunches; see ``Make_Casting_Variant``.  There is nothing here to
 	extend, an ability being one answer rather than a stack of paragraphs.
 	"""
 	@Action
@@ -895,7 +898,7 @@ def Project_Guild_Description(
 			)
 
 
-def Build_Guild(
+def Make_Guild(
 		*,
 		name: str,
 		primary: str,
@@ -946,7 +949,7 @@ def Build_Guild(
 		for tool in resolved_tools
 		):
 		raise TypeError(
-			"Build_Guild: tools require Capability_Definition values."
+			"Make_Guild: tools require Capability_Definition values."
 			)
 
 	if not (
@@ -954,7 +957,7 @@ def Build_Guild(
 		and 0 <= multiclass_tool_picks <= len( resolved_tools )
 		):
 		raise ValueError(
-			"Build_Guild: Tool picks must fit the declared Tool pool."
+			"Make_Guild: Tool picks must fit the declared Tool pool."
 			)
 	_validate_guild_construction(
 			name=name,
@@ -968,7 +971,7 @@ def Build_Guild(
 			and resolved_alternate not in _LEANING_BY_ABILITY
 			):
 		raise ValueError(
-				f"Build_Guild: unknown alternate primary "
+				f"Make_Guild: unknown alternate primary "
 				f"{resolved_alternate!r}."
 				)
 
@@ -1059,7 +1062,7 @@ def Build_Guild(
 							),
 					"PRIMARY": primary,
 					"SECONDARY": secondary,
-					"ABILITY_PREFERENCE": Report(
+					"ABILITY_PREFERENCE": Report_Of(
 							tuple(
 									dict.fromkeys(
 											key
@@ -1072,39 +1075,39 @@ def Build_Guild(
 											)
 									)
 							),
-					"HIT_DIE": Report(
+					"HIT_DIE": Report_Of(
 							hit_die
 							),
-					"SAVES": Report(
+					"SAVES": Report_Of(
 							resolved_saves
 							),
-					"SKILL_PICKS": Report(
+					"SKILL_PICKS": Report_Of(
 							skill_picks
 							),
-					"TOOLS": Report(
+					"TOOLS": Report_Of(
 							resolved_tools
 							),
-					"TOOL_PICKS": Report(
+					"TOOL_PICKS": Report_Of(
 							tool_picks
 							),
-					"MULTICLASS_TOOL_PICKS": Report(
+					"MULTICLASS_TOOL_PICKS": Report_Of(
 							multiclass_tool_picks
 							),
-					"MULTICLASS_GAINS": Report(
+					"MULTICLASS_GAINS": Report_Of(
 							tuple(
 									multiclass_gains
 									)
 							),
-					"EDITION": Report(
+					"EDITION": Report_Of(
 							edition
 							),
-					"HELPERS": Report(
+					"HELPERS": Report_Of(
 							helpers
 							),
-					"SOURCE_TITLE": Report(
+					"SOURCE_TITLE": Report_Of(
 							source_title
 							),
-					"SOURCE_KIND": Report(
+					"SOURCE_KIND": Report_Of(
 							source_kind
 							),
 					"Awaken": Awaken,
@@ -1113,6 +1116,10 @@ def Build_Guild(
 					},
 			)
 
+	Flag(
+			guild_tag
+			)
+		#-- A Guild is a word: ``"Wizard" in char`` answers by its name.
 	_GUILD_DECLARATIONS.append(
 			guild_tag
 			)
@@ -1127,7 +1134,7 @@ def Build_Guild(
 def _PHB_Guild(
 		**record,
 		) -> type[Guild]:
-	return Build_Guild(
+	return Make_Guild(
 			edition="2024",
 			source_title="Player's Handbook (2024)",
 			source_kind="official-reference",
@@ -1469,7 +1476,7 @@ Wizard = _PHB_Guild(
 
 
 # 2024 Artificer (Eberron: Forge of the Artificer).
-Artificer = Build_Guild(
+Artificer = Make_Guild(
 		name="Artificer",
 		primary="INT",
 		secondary="CON",
@@ -1527,7 +1534,7 @@ SPECIALIZATIONS_BY_GUILD = MappingProxyType(
 	)
 
 
-def Build_Specialization(
+def Make_Specialization(
 		*,
 		guild: type[Guild],
 		name: str,
@@ -1562,11 +1569,11 @@ def Build_Specialization(
 	"""
 	if guild not in GUILDS.values():
 		raise ValueError(
-			"Build_Specialization requires a registered concrete Guild."
+			"Make_Specialization requires a registered concrete Guild."
 			)
 	if not name or not name.strip():
 		raise ValueError(
-			"Build_Specialization requires a name."
+			"Make_Specialization requires a name."
 			)
 
 	guild_name = guild.NAME
@@ -1666,7 +1673,7 @@ def Build_Specialization(
 					)
 		namespace[
 			report_name
-			] = Report(
+			] = Report_Of(
 				report_value
 				)
 
@@ -1694,6 +1701,7 @@ def Build_Specialization(
 	return tag
 
 
+@Pin
 class Casting_Variant(Tag):
 	"""
 	Classifies the Guild layers that answer to a different ability.
@@ -1705,7 +1713,7 @@ class Casting_Variant(Tag):
 	"""
 
 
-def Build_Casting_Variant(
+def Make_Casting_Variant(
 		*,
 		guild: type[Guild],
 		name: str,
@@ -1741,11 +1749,11 @@ def Build_Casting_Variant(
 	"""
 	if guild not in GUILDS.values():
 		raise ValueError(
-			"Build_Casting_Variant requires a registered concrete Guild."
+			"Make_Casting_Variant requires a registered concrete Guild."
 			)
 	if not name or not name.strip():
 		raise ValueError(
-			"Build_Casting_Variant requires a name."
+			"Make_Casting_Variant requires a name."
 			)
 	if not ability or not ability.strip():
 		raise ValueError(
@@ -2216,7 +2224,7 @@ def Apply_Specialization(
 from AtlasLusoris.AtlasOfGuilds import Load_Guild_Libraries
 
 # Called by GuildKit, never here.  Every kit opens with
-# ``from AtlasLusoris.GuildKit import Build_Specialization``, so the spec has
+# ``from AtlasLusoris.GuildKit import Make_Specialization``, so the spec has
 # to finish re-exporting this body before the first kit is imported.  GuildKit
 # makes the call as its last statement.
 
@@ -2925,11 +2933,7 @@ def _self_test():
 	assert char in FinesseArms
 	assert Rogue.SKILL_PICKS == 4
 	assert Rogue.EDITION == "2024"
-	assert Has(
-			char,
-			Rogue,
-			Guild,
-			)
+	assert char in Rogue and char in Guild
 	assert guild_ability_prefs(
 			char
 			) == (

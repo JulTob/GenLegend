@@ -517,6 +517,7 @@ class Character(Character_Skeleton):
 	@minion
 	def to_dict(char):
 		""" Convert character details to dictionary format. """
+		from AtlasActorLudi.Charts_of_Build import Find_Build
 		from AtlasActorLudi.SpeciesKit import (
 				Current_Creature_Type,
 				Current_Heritage,
@@ -581,6 +582,9 @@ class Character(Character_Skeleton):
 			'other_proficiencies':		char.other_proficiencies,
 			'Practices':	practices,
 			'features':		char.features,
+			'build':		Find_Build( char ),
+				#-- What the Tags declare, read now (Decree 0009); the sheet
+				#-- prints the ported families from it (QST-0142).
 			'equipment': 	char.equipment,
 			'SavingThrow':  char.saving_throws,
 			'AttackRolls':	char.attack_rolls,
@@ -724,6 +728,9 @@ class Character(Character_Skeleton):
 			Background skills and tools are granted by
 			``Apply_Background_Training`` after this builds the sheet.
 		"""
+		from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
+				Unarmored_Defense,
+				)
 
 		char.skills = Char_Skills(
 			AS=char.AS,
@@ -872,9 +879,17 @@ class Character(Character_Skeleton):
 							) == "Dance"
 						and char.level >= 3
 						):
-					char.skills.Unarmed_Dance.set_proficiency()
+					Unarmored_Defense(
+							char,
+							ability="CHA",
+							shield_allowed=False,
+							)
 			elif char.character_class == "Monk":
-				char.skills.Unarmed_Monk.set_proficiency()
+				Unarmored_Defense(
+						char,
+						ability="WIS",
+						shield_allowed=False,
+						)
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Light_Weapons.set_proficiency()
 				char.skills.activate_proficiencies(2, [
@@ -981,7 +996,11 @@ class Character(Character_Skeleton):
 				char.skills.Light.set_proficiency()
 				char.skills.Medium.set_proficiency()
 				char.skills.Shields.set_proficiency()
-				char.skills.Unarmed_Barb.set_proficiency()
+				Unarmored_Defense(
+						char,
+						ability="CON",
+						shield_allowed=True,
+						)
 		return
 
 	@property

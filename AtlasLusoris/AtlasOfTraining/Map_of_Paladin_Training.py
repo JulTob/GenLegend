@@ -11,7 +11,9 @@ Thought pattern
 
 from __future__ import annotations
 
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
+from AtlasVenustas import Chip
+from AtlasLusoris.Map_of_Weapon_Masteries import Plan_Masteries_On_Awaken
 
 
 GUILD = "Paladin"
@@ -63,7 +65,7 @@ def _core(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -82,7 +84,7 @@ def _path(
 		description,
 		chips=(),
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -171,12 +173,12 @@ def _lay_entry(
 	return (
 		"You have a pool of healing power that replenishes when you finish "
 		"a Long Rest. With that pool, you can restore a total of "
-		f"<b>{pool}</b> Hit Points. "
-		"<br><b>Bonus Action:</b> touch a creature (which could be yourself) "
+		f"**{pool}** Hit Points. "
+		"\n\n**Bonus Action:** touch a creature (which could be yourself) "
 		"and draw power from the pool to restore Hit Points, up to the maximum "
 		"remaining. "
-		"<br>You can also expend 5 Hit Points from the pool to remove the "
-		"<em>Poisoned</em> condition from the creature; those points don't also "
+		"\n\nYou can also expend 5 Hit Points from the pool to remove the "
+		"*Poisoned* condition from the creature; those points don't also "
 		"restore Hit Points."
 		)
 
@@ -189,10 +191,10 @@ def _channel_entry(
 			)
 	return (
 		"You can channel divine energy to fuel magical effects. "
-		f"You can use Channel Divinity <b>{uses} times</b>. "
+		f"You can use Channel Divinity **{uses} times**. "
 		"You regain one expended use when you finish a Short Rest, and you "
 		"regain all expended uses when you finish a Long Rest. "
-		"<br>If a Channel Divinity effect requires a saving throw, the DC equals "
+		"\n\nIf a Channel Divinity effect requires a saving throw, the DC equals "
 		"your Paladin spell save DC."
 		)
 
@@ -204,10 +206,10 @@ def _aura_protection_entry(
 			char
 			)
 	return (
-		f"You and friendly creatures within <b>{r} feet</b> of you gain a bonus "
+		f"You and friendly creatures within **{r} feet** of you gain a bonus "
 		"to all saving throws equal to your Charisma modifier (minimum +1). "
 		"This aura is inactive while you have the Incapacitated condition. "
-		"<br>If multiple Paladin auras overlap, a creature chooses which "
+		"\n\nIf multiple Paladin auras overlap, a creature chooses which "
 		"Aura of Protection to benefit from."
 		)
 
@@ -219,8 +221,8 @@ def _aura_courage_entry(
 			char
 			)
 	return (
-		f"You and friendly creatures within <b>{r} feet</b> of you can't be "
-		"<em>Frightened</em> while you are conscious."
+		f"You and friendly creatures within **{r} feet** of you can't be "
+		"*Frightened* while you are conscious."
 		)
 
 
@@ -234,7 +236,11 @@ Lay_on_Hands = _core(
 		min_level=1,
 		description=_lay_entry,
 		chips=(
-				("Lay on Hands HP", _lay_pool),
+				Chip(
+					"✦",
+					"Lay on Hands HP",
+					_lay_pool,
+					),
 				),
 		)
 
@@ -243,7 +249,7 @@ Spellcasting = _core(
 		min_level=1,
 		description=(
 			"You cast Paladin spells through prayer and devotion. "
-			"<b>Charisma</b> is your spellcasting ability. "
+			"**Charisma** is your spellcasting ability. "
 			"You prepare a list of Paladin spells chosen from the Paladin spell list. "
 			"You can change your list of prepared spells when you finish a Long Rest."
 			),
@@ -272,8 +278,13 @@ Weapon_Mastery = _core(
 		min_level=1,
 		description=_weapon_mastery_entry,
 		chips=(
-				("Weapon Masteries", _weapon_mastery_chip),
+				Chip(
+					"⚔️",
+					"Weapon Masteries",
+					_weapon_mastery_chip,
+					),
 				),
+		apply=Plan_Masteries_On_Awaken,
 		)
 
 Fighting_Style = _core(
@@ -290,9 +301,9 @@ Paladins_Smite = _core(
 		name="Paladin's Smite",
 		min_level=2,
 		description=(
-			"You always have the <em>Divine Smite</em> spell prepared. "
+			"You always have the *Divine Smite* spell prepared. "
 			"When you hit a target with a melee weapon or Unarmed Strike, "
-			"you can expend a Paladin spell slot to cast <em>Divine Smite</em> "
+			"you can expend a Paladin spell slot to cast *Divine Smite* "
 			"as part of that attack (no action required)."
 			),
 		)
@@ -302,7 +313,11 @@ Channel_Divinity = _core(
 		min_level=3,
 		description=_channel_entry,
 		chips=(
-				("Channel Divinity Uses", _channel_uses),
+				Chip(
+					"✦",
+					"Channel Divinity Uses",
+					_channel_uses,
+					),
 				),
 		)
 
@@ -319,10 +334,10 @@ Faithful_Steed = _core(
 		name="Faithful Steed",
 		min_level=5,
 		description=(
-			"You always have the <em>Find Steed</em> spell prepared. "
+			"You always have the *Find Steed* spell prepared. "
 			"You can cast it once without expending a spell slot, and you regain "
 			"the ability to do so when you finish a Long Rest. "
-			"<br>The steed is Celestial, Fey, or Fiendish (your choice), obeys your "
+			"\n\nThe steed is Celestial, Fey, or Fiendish (your choice), obeys your "
 			"commands, understands one language you speak, and vanishes at 0 Hit Points. "
 			"While it is within 1 mile you can communicate telepathically, and any spell "
 			"you cast that targets only you can also target the steed."
@@ -334,7 +349,11 @@ Aura_of_Protection = _core(
 		min_level=6,
 		description=_aura_protection_entry,
 		chips=(
-				("Aura Range (ft)", _aura_range),
+				Chip(
+					"✦",
+					"Aura Range (ft)",
+					_aura_range,
+					),
 				),
 		)
 
@@ -342,13 +361,13 @@ Abjure_Foes = _core(
 		name="Abjure Foes",
 		min_level=9,
 		description=(
-			"<b>Channel Divinity — Magic action.</b> "
+			"\n\n**Channel Divinity — Magic action.** "
 			"Choose creatures you can see within 60 feet. "
 			"Each target must succeed on a Wisdom saving throw against your Paladin "
-			"spell save DC or have the <em>Frightened</em> condition for 1 minute. "
-			"<br>While frightened this way, a creature can do only one of the following "
+			"spell save DC or have the *Frightened* condition for 1 minute. "
+			"\n\nWhile frightened this way, a creature can do only one of the following "
 			"on its turn: move, take an action, or take a Bonus Action. "
-			"<br>Frightened creatures repeat the save at the end of each of their turns, "
+			"\n\nFrightened creatures repeat the save at the end of each of their turns, "
 			"ending the effect on a success."
 			),
 		)
@@ -367,7 +386,7 @@ Radiant_Strikes = _core(
 		min_level=11,
 		description=(
 			"Whenever you hit a creature with a melee weapon or an Unarmed Strike, "
-			"the target takes an extra <b>1d8</b> Radiant damage."
+			"the target takes an extra **1d8** Radiant damage."
 			),
 		)
 
@@ -377,8 +396,8 @@ Restoring_Touch = _core(
 		description=(
 			"When you use Lay on Hands on a creature, you can expend 5 Hit Points "
 			"from the pool (without restoring HP) to end one of these conditions on it: "
-			"<em>Blinded, Charmed, Deafened, Frightened, Paralyzed,</em> or "
-			"<em>Stunned</em>. Spend 5 Hit Points for each additional condition removed."
+			"*Blinded, Charmed, Deafened, Frightened, Paralyzed,* or "
+			"*Stunned*. Spend 5 Hit Points for each additional condition removed."
 			),
 		)
 
@@ -387,7 +406,7 @@ Aura_Expansion = _core(
 		min_level=18,
 		description=(
 			"Your Aura of Protection and Aura of Courage now extend "
-			"to <b>30 feet</b>."
+			"to **30 feet**."
 			),
 		)
 
@@ -402,13 +421,13 @@ Ancients_Oath_Spells = _ancients(
 		min_level=3,
 		description=(
 			"You always have the following spells prepared:"
-			"<ul>"
-			"<li><b>3rd:</b> <em>Ensnaring Strike, Speak with Animals</em></li>"
-			"<li><b>5th:</b> <em>Misty Step, Moonbeam</em></li>"
-			"<li><b>9th:</b> <em>Plant Growth, Protection from Energy</em></li>"
-			"<li><b>13th:</b> <em>Ice Storm, Stoneskin</em></li>"
-			"<li><b>17th:</b> <em>Commune with Nature, Tree Stride</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** *Ensnaring Strike, Speak with Animals*"
+			"\n- **5th:** *Misty Step, Moonbeam*"
+			"\n- **9th:** *Plant Growth, Protection from Energy*"
+			"\n- **13th:** *Ice Storm, Stoneskin*"
+			"\n- **17th:** *Commune with Nature, Tree Stride*"
+			"\n\n"
 			),
 		)
 
@@ -416,11 +435,11 @@ Natures_Wrath = _ancients(
 		name="Nature's Wrath",
 		min_level=3,
 		description=(
-			"<b>Channel Divinity — Action.</b> "
+			"\n\n**Channel Divinity — Action.** "
 			"You call on the powers of nature to restrain a creature you can see "
 			"within 10 feet. The target must succeed on a Strength or Dexterity "
 			"saving throw (its choice) against your spell save DC or have the "
-			"<em>Restrained</em> condition until you use this feature again or until "
+			"*Restrained* condition until you use this feature again or until "
 			"the target succeeds on the save repeated at the end of each of its turns."
 			),
 		)
@@ -442,7 +461,7 @@ Undying_Sentinel = _ancients(
 			"When you are reduced to 0 Hit Points and not killed outright, you can "
 			"choose to drop to 1 Hit Point instead. Once you use this feature, you "
 			"can't do so again until you finish a Long Rest. "
-			"<br>Additionally, you suffer none of the drawbacks of old age, and you "
+			"\n\nAdditionally, you suffer none of the drawbacks of old age, and you "
 			"can't be aged magically."
 			),
 		)
@@ -453,15 +472,15 @@ Elder_Champion = _ancients(
 		description=(
 			"As a Bonus Action, you can assume the form of an ancient force of nature "
 			"for 1 minute or until you end it (no action required). "
-			"<br>While transformed:"
-			"<ul>"
-			"<li><b>Regeneration.</b> At the start of each of your turns, you regain "
-			"10 Hit Points.</li>"
-			"<li><b>Extended Auras.</b> Beasts and Plants have Disadvantage on attack "
-			"rolls against you.</li>"
-			"<li><b>Bonus Spell.</b> When you cast a Paladin spell with a casting time "
-			"of an action, you can cast it using a Bonus Action instead.</li>"
-			"</ul>"
+			"\n\nWhile transformed:"
+			"\n\n"
+			"\n- **Regeneration.** At the start of each of your turns, you regain "
+			"10 Hit Points."
+			"\n- **Extended Auras.** Beasts and Plants have Disadvantage on attack "
+			"rolls against you."
+			"\n- **Bonus Spell.** When you cast a Paladin spell with a casting time "
+			"of an action, you can cast it using a Bonus Action instead."
+			"\n\n"
 			"Once you use this feature, you can't use it again until you finish a "
 			"Long Rest."
 			),
@@ -478,13 +497,13 @@ Devotion_Oath_Spells = _devotion(
 		min_level=3,
 		description=(
 			"You always have the following spells prepared:"
-			"<ul>"
-			"<li><b>3rd:</b> <em>Protection from Evil and Good, Shield of Faith</em></li>"
-			"<li><b>5th:</b> <em>Aid, Zone of Truth</em></li>"
-			"<li><b>9th:</b> <em>Beacon of Hope, Dispel Magic</em></li>"
-			"<li><b>13th:</b> <em>Freedom of Movement, Guardian of Faith</em></li>"
-			"<li><b>17th:</b> <em>Commune, Flame Strike</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** *Protection from Evil and Good, Shield of Faith*"
+			"\n- **5th:** *Aid, Zone of Truth*"
+			"\n- **9th:** *Beacon of Hope, Dispel Magic*"
+			"\n- **13th:** *Freedom of Movement, Guardian of Faith*"
+			"\n- **17th:** *Commune, Flame Strike*"
+			"\n\n"
 			),
 		)
 
@@ -492,12 +511,12 @@ Sacred_Weapon = _devotion(
 		name="Sacred Weapon",
 		min_level=3,
 		description=(
-			"<b>Channel Divinity — Bonus Action.</b> "
+			"\n\n**Channel Divinity — Bonus Action.** "
 			"You imbue a weapon you are holding with positive energy. "
 			"For 1 minute, you add your Charisma modifier to attack rolls made "
 			"with that weapon (minimum bonus of +1), and the weapon emits bright light "
 			"in a 20-foot radius and dim light 20 feet beyond that. "
-			"<br>If the weapon isn't already magical, it becomes magical for the duration. "
+			"\n\nIf the weapon isn't already magical, it becomes magical for the duration. "
 			"The effect ends early if you aren't holding or carrying the weapon."
 			),
 		)
@@ -507,7 +526,7 @@ Aura_of_Devotion = _devotion(
 		min_level=7,
 		description=(
 			"You and friendly creatures within the range of your Aura of Protection "
-			"can't be <em>Charmed</em> while you are conscious."
+			"can't be *Charmed* while you are conscious."
 			),
 		)
 
@@ -527,11 +546,11 @@ Holy_Nimbus = _devotion(
 		description=(
 			"As a Bonus Action, you can emanate an aura of sunlight for 1 minute. "
 			"For the duration, bright light fills a 30-foot Emanation originating from you. "
-			"<br>Whenever an enemy starts its turn in the bright light, it takes "
-			"<b>10 Radiant</b> damage. "
-			"<br>In addition, for the duration, you have Advantage on saving throws "
+			"\n\nWhenever an enemy starts its turn in the bright light, it takes "
+			"**10 Radiant** damage. "
+			"\n\nIn addition, for the duration, you have Advantage on saving throws "
 			"against spells cast by Fiends or Undead. "
-			"<br>Once you use this feature, you can't use it again until you finish "
+			"\n\nOnce you use this feature, you can't use it again until you finish "
 			"a Long Rest."
 			),
 		)
@@ -547,13 +566,13 @@ Glory_Oath_Spells = _glory(
 		min_level=3,
 		description=(
 			"You always have the following spells prepared:"
-			"<ul>"
-			"<li><b>3rd:</b> <em>Guiding Bolt, Heroism</em></li>"
-			"<li><b>5th:</b> <em>Enhance Ability, Magic Weapon</em></li>"
-			"<li><b>9th:</b> <em>Aura of Vitality, Protection from Energy</em></li>"
-			"<li><b>13th:</b> <em>Compulsion, Freedom of Movement</em></li>"
-			"<li><b>17th:</b> <em>Legend Lore, Yolande's Regal Presence</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** *Guiding Bolt, Heroism*"
+			"\n- **5th:** *Enhance Ability, Magic Weapon*"
+			"\n- **9th:** *Aura of Vitality, Protection from Energy*"
+			"\n- **13th:** *Compulsion, Freedom of Movement*"
+			"\n- **17th:** *Legend Lore, Yolande's Regal Presence*"
+			"\n\n"
 			),
 		)
 
@@ -563,7 +582,7 @@ Inspiring_Smite = _glory(
 		description=(
 			"Immediately after you cast Divine Smite, you can use a Channel Divinity "
 			"(no action required) and distribute Temporary Hit Points equal to "
-			"<b>2d8 + your Paladin level</b> among yourself and any creatures of your "
+			"**2d8 + your Paladin level** among yourself and any creatures of your "
 			"choice within 30 feet of you."
 			),
 		)
@@ -572,7 +591,7 @@ Peerless_Athlete = _glory(
 		name="Peerless Athlete",
 		min_level=3,
 		description=(
-			"<b>Channel Divinity — Bonus Action.</b> "
+			"\n\n**Channel Divinity — Bonus Action.** "
 			"For 10 minutes, whenever you make a Strength (Athletics) or Dexterity "
 			"(Acrobatics) check, you treat a roll of 9 or lower on the d20 as a 10. "
 			"Also, you can carry, push, drag, or lift twice the normal amount, and "
@@ -600,7 +619,7 @@ Glorious_Defense = _glory(
 			"(minimum of +1) to the target's AC against that attack. "
 			"If the attack misses, you can make one weapon attack against the attacker "
 			"as part of this Reaction, provided the attacker is within your reach. "
-			"<br>You can use this feature a number of times equal to your Charisma "
+			"\n\nYou can use this feature a number of times equal to your Charisma "
 			"modifier (minimum once). You regain all expended uses when you finish "
 			"a Long Rest."
 			),
@@ -613,14 +632,14 @@ Living_Legend = _glory(
 			"You can empower yourself with the legends — whether true or exaggerated "
 			"— of your past deeds. As a Bonus Action, you gain the following benefits "
 			"for 1 minute:"
-			"<ul>"
-			"<li><b>Charismatic.</b> You are blessed with an otherworldly presence, "
-			"gaining Advantage on Charisma checks.</li>"
-			"<li><b>Saving Throw Reroll.</b> If you fail a saving throw, you can use "
-			"your Reaction to reroll it. You must use this new roll.</li>"
-			"<li><b>Unerring Strike.</b> Once on each of your turns when you miss with "
-			"an attack roll, you can cause that attack to hit instead.</li>"
-			"</ul>"
+			"\n\n"
+			"\n- **Charismatic.** You are blessed with an otherworldly presence, "
+			"gaining Advantage on Charisma checks."
+			"\n- **Saving Throw Reroll.** If you fail a saving throw, you can use "
+			"your Reaction to reroll it. You must use this new roll."
+			"\n- **Unerring Strike.** Once on each of your turns when you miss with "
+			"an attack roll, you can cause that attack to hit instead."
+			"\n\n"
 			"Once you use this feature, you can't use it again until you finish a "
 			"Long Rest."
 			),
@@ -637,13 +656,13 @@ Vengeance_Oath_Spells = _vengeance(
 		min_level=3,
 		description=(
 			"You always have the following spells prepared:"
-			"<ul>"
-			"<li><b>3rd:</b> <em>Bane, Hunter's Mark</em></li>"
-			"<li><b>5th:</b> <em>Hold Person, Misty Step</em></li>"
-			"<li><b>9th:</b> <em>Haste, Protection from Energy</em></li>"
-			"<li><b>13th:</b> <em>Banishment, Dimension Door</em></li>"
-			"<li><b>17th:</b> <em>Hold Monster, Scrying</em></li>"
-			"</ul>"
+			"\n\n"
+			"\n- **3rd:** *Bane, Hunter's Mark*"
+			"\n- **5th:** *Hold Person, Misty Step*"
+			"\n- **9th:** *Haste, Protection from Energy*"
+			"\n- **13th:** *Banishment, Dimension Door*"
+			"\n- **17th:** *Hold Monster, Scrying*"
+			"\n\n"
 			),
 		)
 
@@ -651,11 +670,11 @@ Vow_of_Enmity = _vengeance(
 		name="Vow of Enmity",
 		min_level=3,
 		description=(
-			"<b>Channel Divinity — Bonus Action.</b> "
+			"\n\n**Channel Divinity — Bonus Action.** "
 			"You utter a vow of enmity against a creature you can see within 30 feet. "
 			"You gain Advantage on attack rolls against the creature for 1 minute or "
 			"until it drops to 0 Hit Points or falls Unconscious. "
-			"<br>If the creature drops to 0 Hit Points before the minute ends, you "
+			"\n\nIf the creature drops to 0 Hit Points before the minute ends, you "
 			"can transfer the vow to a different creature (no action required)."
 			),
 		)
@@ -689,14 +708,14 @@ Avenging_Angel = _vengeance(
 		description=(
 			"You can assume the form of an angelic avenger. As a Bonus Action, "
 			"you sprout wings and gain the following benefits for 1 hour:"
-			"<ul>"
-			"<li><b>Flight.</b> Fly Speed equal to your Speed.</li>"
-			"<li><b>Frightening Aura.</b> Whenever an enemy starts its turn in a "
+			"\n\n"
+			"\n- **Flight.** Fly Speed equal to your Speed."
+			"\n- **Frightening Aura.** Whenever an enemy starts its turn in a "
 			"30-foot Emanation originating from you, it must make a Wisdom saving "
 			"throw against your spell save DC. On a failed save, the target has the "
-			"<em>Frightened</em> condition for 1 minute. On a successful save, the "
-			"target is immune to this aura for 24 hours.</li>"
-			"</ul>"
+			"*Frightened* condition for 1 minute. On a successful save, the "
+			"target is immune to this aura for 24 hours."
+			"\n\n"
 			"Once you use this feature, you can't use it again until you finish "
 			"a Long Rest."
 			),

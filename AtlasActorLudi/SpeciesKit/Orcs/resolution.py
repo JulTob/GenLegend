@@ -2,6 +2,7 @@
 
 from AtlasActorLudi.SpeciesKit.presentation import Project_Species_Feature
 from AtlasActorLudi.SpeciesKit.traits import Darkvision_Rules
+from AtlasVenustas import Chip
 
 
 def _proficiency_bonus(
@@ -38,15 +39,15 @@ def _project_adrenaline_rush(
 			"finish a Short or Long Rest."
 			),
 		chips=(
-			(
+			Chip(
+				"💨",
 				"Adrenaline Rush Uses",
 				proficiency,
-				"💨",
 				),
-			(
+			Chip(
+				"💚",
 				"Rush Temporary HP",
 				proficiency,
-				"💚",
 				),
 			),
 		level=1,
@@ -76,10 +77,10 @@ def _project_darkvision(
 				)
 			),
 		chips=(
-			(
+			Chip(
+				"👁️",
 				"Darkvision",
 				f"{darkvision_range} ft",
-				"👁️",
 				),
 			),
 		level=1,
@@ -102,10 +103,10 @@ def _project_relentless_endurance(
 			f"{Relentless_Endurance.RECOVERY}."
 			),
 		chips=(
-			(
+			Chip(
+				"❤️‍🔥",
 				"Relentless Endurance",
 				"1 / Long Rest",
-				"❤️‍🔥",
 				),
 			),
 		level=1,

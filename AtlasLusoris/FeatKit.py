@@ -11,7 +11,10 @@ import re
 from collections.abc import Callable
 from typing import Any
 
-from TagKit import Imprint, Post, Pre, Record, Report, Tag
+from TopKit import Imprint, Post, Pre, Record, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
+from AtlasVenustas import Chip
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasActorLudi.ProficiencyKit import (
@@ -329,19 +332,19 @@ def fighting_styles_known(
 	return need
 
 
-def Build_Fighting_Style(
+def Make_Fighting_Style(
 		*,
 		name: str,
 		description: str,
 		guilds: tuple[str, ...] | None = None,
 		source: str = "Fighting Style",
 		apply: Callable[[Any], None] | None = None,
-		chips: tuple[tuple[str, str], ...] = (),
+		chips: tuple[Chip, ...] = (),
 		) -> type[Fighting_Style_Feat]:
 	"""Construct one Fighting Style feat Tag."""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_Fighting_Style: name is required."
+				"Make_Fighting_Style: name is required."
 				)
 	allowed = guilds
 	resolved_chips = tuple(
@@ -399,10 +402,10 @@ def Build_Fighting_Style(
 					),
 			{
 					"NAME": name,
-					"GUILDS": Report(
+					"GUILDS": Report_Of(
 							allowed
 							),
-					"SOURCE": Report(
+					"SOURCE": Report_Of(
 							source
 							),
 					"Fighting_Style_Feature": Fighting_Style_Feature,
@@ -417,7 +420,7 @@ def Build_Fighting_Style(
 	return style_tag
 
 
-def Build_General_Feat(
+def Make_General_Feat(
 		*,
 		name: str,
 		description: str,
@@ -465,7 +468,7 @@ def Build_General_Feat(
 	"""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_General_Feat: name is required."
+				"Make_General_Feat: name is required."
 				)
 	feat_tag = None
 	resolved_training_record = (
@@ -639,28 +642,28 @@ def Build_General_Feat(
 
 	namespace = {
 		"NAME": name,
-		"MIN_LEVEL": Report(
+		"MIN_LEVEL": Report_Of(
 			min_level
 			),
-		"REPEATABLE": Report(
+		"REPEATABLE": Report_Of(
 			repeatable
 			),
-		"ABILITY_ANY": Report(
+		"ABILITY_ANY": Report_Of(
 			ability_any
 			),
-		"ABILITY_MIN": Report(
+		"ABILITY_MIN": Report_Of(
 			ability_min
 			),
-		"REQUIRES_SPELLCASTING": Report(
+		"REQUIRES_SPELLCASTING": Report_Of(
 			requires_spellcasting
 			),
-		"REQUIRES_FEAT_ANY": Report(
+		"REQUIRES_FEAT_ANY": Report_Of(
 			requires_feat_any
 			),
-		"REQUIRES_WEAPON_MASTERY": Report(
+		"REQUIRES_WEAPON_MASTERY": Report_Of(
 			requires_weapon_mastery
 			),
-		"SOURCE": Report(
+		"SOURCE": Report_Of(
 			source
 			),
 		"Rank_Reached": Rank_Reached,
@@ -713,7 +716,7 @@ def Build_General_Feat(
 	return feat_tag
 
 
-def Build_Epic_Boon(
+def Make_Epic_Boon(
 		*,
 		name: str,
 		description: str,
@@ -725,7 +728,7 @@ def Build_Epic_Boon(
 	"""Construct one Epic Boon feat Tag."""
 	if not name or not name.strip():
 		raise ValueError(
-				"Build_Epic_Boon: name is required."
+				"Make_Epic_Boon: name is required."
 				)
 	boon_tag = None
 
@@ -820,10 +823,10 @@ def Build_Epic_Boon(
 					),
 			{
 					"NAME": name,
-					"REQUIRES_SPELLCASTING": Report(
+					"REQUIRES_SPELLCASTING": Report_Of(
 							requires_spellcasting
 							),
-					"SOURCE": Report(
+					"SOURCE": Report_Of(
 							source
 							),
 					"Rank_Reached": Rank_Reached,

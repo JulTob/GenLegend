@@ -7,13 +7,15 @@ it the place where the Fae are made of dream and shadows are made of nightmare,
 and these are the elves who live on that side of it.
 """
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage
 from AtlasActorLudi.SpeciesKit.Elves.traits import Elven_Lineage
 
 from AtlasActorLudi.SpeciesKit.Elves.base import Elf
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
 class Shadow_Elf(
@@ -22,6 +24,12 @@ class Shadow_Elf(
 	Elven_Lineage,
 	):
 	"""An Elf Heritage with deeper Darkvision and the magic of the Shadow."""
+
+	@Pre
+	def Only_One_Heritage(
+		target,
+		):
+		return No_Heritage_Yet( target )
 
 	DARKVISION_RANGE = 120
 

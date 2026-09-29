@@ -494,10 +494,23 @@ u {
 
 
 .bc4 {
-    font-weight: italic;
+    font-style: italic; /* was font-weight: italic — an invalid value, so
+                           flavor was never italic. PR #94 review. */
     color: var(--third-color);
 	font-size:0.7em;
 
+}
+
+/* QST-0142: an Entry's rules body with more than one block (paragraphs,
+   a bullet list) prints inside this div. Same italics the one-line
+   <i> bodies get; tight margins so the blocks fit the entry's box. */
+.entry-rules {
+    font-style: italic;
+}
+.entry-rules p,
+.entry-rules ul,
+.entry-rules ol {
+    margin: 0.2em 0;
 }
 
 

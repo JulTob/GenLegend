@@ -10,7 +10,7 @@ Entry, and role eligibility. Pins classify each Background Tag directly:
     background_tag in NPC_Background
 
 The Pin Fields derive every public registry.  Adding a homebrew
-Background therefore requires one ``Build_Background`` call and no parallel
+Background therefore requires one ``Make_Background`` call and no parallel
 choice lists.
 """
 
@@ -19,7 +19,9 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping
 from typing import Iterable
 
-from TagKit import Action, Imprint, Pre, Report, Tag, Underlay
+from TopKit import Action, Imprint, Pin, Pre, Tag, Underlay
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import (
 	Character,
@@ -146,6 +148,7 @@ class Background(Tag):
 # ---------------------------------------------------------------------------
 
 
+@Pin
 class Background_Audience(Tag):
 	"""Root Pin classifying Background Tags by Character Role."""
 
@@ -372,7 +375,7 @@ def _validate_background_construction(
 			Entry,
 			)
 		or not hook.title.strip()
-		or not hook.definition.strip()
+		or not hook.rules.strip()
 		):
 		raise ValueError(
 			f"Background {name!r} declares a Hook without a title and text."
@@ -805,7 +808,7 @@ def _grant_hook(
 		char,
 		name=hook.title,
 		description=_describe(
-			hook.definition
+			hook.rules
 			),
 		source="Background Hook",
 		narrative=True,
@@ -841,7 +844,7 @@ def _awaken(
 		)
 
 
-def Build_Background(
+def Make_Background(
 	*,
 	name: str,
 	audiences: Iterable[type[Background_Audience]],
@@ -936,40 +939,40 @@ def Build_Background(
 			),
 		{
 			"NAME": name,
-			"TITLE": Report(
+			"TITLE": Report_Of(
 				title
 				),
-			"DESCRIPTION": Report(
+			"DESCRIPTION": Report_Of(
 				description
 				),
-			"HOOK": Report(
+			"HOOK": Report_Of(
 				hook
 				),
-			"ABILITIES": Report(
+			"ABILITIES": Report_Of(
 				resolved_abilities
 				),
-			"SKILLS": Report(
+			"SKILLS": Report_Of(
 				resolved_skills
 				),
-			"TOOLS": Report(
+			"TOOLS": Report_Of(
 				resolved_tools
 				),
-			"ORIGIN_FEAT": Report(
+			"ORIGIN_FEAT": Report_Of(
 				origin_feat
 				),
-			"ORIGIN_FEAT_OPTIONS": Report(
+			"ORIGIN_FEAT_OPTIONS": Report_Of(
 				resolved_origin_feat_options
 				),
-			"SOURCE_TITLE": Report(
+			"SOURCE_TITLE": Report_Of(
 				source_title
 				),
-			"SOURCE_URL": Report(
+			"SOURCE_URL": Report_Of(
 				source_url
 				),
-			"SOURCE_LOCATOR": Report(
+			"SOURCE_LOCATOR": Report_Of(
 				source_locator
 				),
-			"SOURCE_KIND": Report(
+			"SOURCE_KIND": Report_Of(
 				source_kind
 				),
 			"Eligible_Role": Eligible_Role,
@@ -994,7 +997,7 @@ def Build_Background(
 def _Build_Player_Handbook_Background(
 		**record,
 		) -> type[Background]:
-	return Build_Background(
+	return Make_Background(
 		source_title="Player's Handbook (2024)",
 		source_url="https://www.dndbeyond.com/sources/dnd/phb-2024",
 		source_locator="Chapter 4: Character Origins — Background Descriptions",
@@ -1036,7 +1039,7 @@ Acolyte = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Shelter of the Faithful",
-		definition=(
+		rules=(
 			"Anywhere your faith has taken root (a grand temple, a roadside shrine, "
 			"a few believers gathered in secret), you and your companions can count "
 			"on a welcome: a meal, a bed, care for your wounds, and sanctuary when "
@@ -1080,7 +1083,7 @@ Artisan = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="The Guild",
-		definition=(
+		rules=(
 			"Your trade opens doors that coin alone cannot. In most towns you can "
 			"find the guild, workshop, or craftsfolk of your art, and among them "
 			"your skill earns a fair hearing: a place to work, tools and materials "
@@ -1124,7 +1127,7 @@ Charlatan = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="False Identity",
-		definition=(
+		rules=(
 			"You are never only one person. You can be a grieving widow, a visiting "
 			"dignitary, a healer with a miracle cure, or a nobody not worth a "
 			"second glance, complete with the reputation, the papers, the quick "
@@ -1172,7 +1175,7 @@ Criminal = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Criminal Contact",
-		definition=(
+		rules=(
 			"You know how the underworld passes what it does not want overheard. "
 			"Wherever you go, you can find the local version of the people you used "
 			"to run with (a fence, a smuggler, a tavern that asks no questions) and "
@@ -1216,7 +1219,7 @@ Entertainer = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="By Popular Demand",
-		definition=(
+		rules=(
 			"Give you a stage, a crate, or a cleared corner of a common room, and "
 			"you can earn your keep: a meal, a bed, a few coins, and the goodwill "
 			"of a crowd that came in strangers and leaves knowing your name. A "
@@ -1262,7 +1265,7 @@ Farmer = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Rustic Hospitality",
-		definition=(
+		rules=(
 			"Working people know one of their own. In any village, farmstead, or "
 			"waystation, you can find a dry barn to sleep in, a plain meal, and "
 			"hands willing to help someone who has clearly done a day's labor in "
@@ -1309,7 +1312,7 @@ Guard = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Network of Favors",
-		definition=(
+		rules=(
 			"You never worked alone, and you never worked clean. The years left you "
 			"names on both sides of the lamplight: a sergeant who owes you for a "
 			"night that never made it into the report, a clerk who lets you read "
@@ -1357,7 +1360,7 @@ Guide = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="The Ways Between",
-		definition=(
+		rules=(
 			"There is a whole country of people who live off the roads: trappers, "
 			"hermits, herders, border-runners, the last family on the last farm "
 			"before the trees. You know how to find them, and how to be welcome: a "
@@ -1403,7 +1406,7 @@ Hermit = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="What You Found Out There",
-		definition=(
+		rules=(
 			"In your solitude you came to know one thing the world does not (the "
 			"meaning of a symbol nobody can read, where something old was buried "
 			"and why, a heresy that happens to be true, the cure for a sickness "
@@ -1451,7 +1454,7 @@ Merchant = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="I Know Where to Get It",
-		definition=(
+		rules=(
 			"You do not need to own a thing to sell it. Put an object in your hands "
 			"and you can tell what it is worth, whose workshop or century it came "
 			"out of, and who in this world would pay stupid money to own it. Better "
@@ -1513,7 +1516,7 @@ Noble = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="The Weight of the Crown",
-		definition=(
+		rules=(
 			"*Crown, throne, seat, baton, council, the right to speak first: "
 			"whatever your people call it, you bear a recognized claim to "
 			"authority. Your name is not only a key. It is a blade hanging over "
@@ -1573,7 +1576,7 @@ Sage = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Working Hypothesis",
-		definition=(
+		rules=(
 			"You may not have the answer, but you always know where it might be "
 			"kept, and who to ask. Archives, temple libraries, private collections, "
 			"a retired scholar who has not spoken to anyone about her life's work "
@@ -1625,7 +1628,7 @@ Sailor = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Ship's Passage",
-		definition=(
+		rules=(
 			"You speak the language of decks and harbors, and it opens the water to "
 			"you. In any port you can find a berth: work your passage, or trade on "
 			"a name that some captain in the crowd will recognize, and bring your "
@@ -1675,7 +1678,7 @@ Scribe = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Alumni",
-		definition=(
+		rules=(
 			"There is a bond unique to learning together. You made friends, you "
 			"made rivals, you even made enemies. All of them, you know them better "
 			"than their families do. You helped a classmate prepare for a "
@@ -1729,7 +1732,7 @@ Soldier = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="Old Company",
-		definition=(
+		rules=(
 			"You were baptized into an army with your first blood, and that stain "
 			"cannot be washed away. You know the ranks and the courtesies, how to "
 			"talk to a quartermaster, and which requests get answered and which get "
@@ -1779,7 +1782,7 @@ Wayfarer = _Build_Player_Handbook_Background(
 		),
 	hook=Entry(
 		title="The Overlooked",
-		definition=(
+		rules=(
 			"There is a second nation inside every city, and no map shows it. "
 			"Beggars, urchins, day laborers, the woman who sweeps the temple steps, "
 			"the drifters under the bridge: no crown, no captain, no borders, and "
@@ -1808,7 +1811,7 @@ Wayfarer = _Build_Player_Handbook_Background(
 # ---------------------------------------------------------------------------
 
 
-Artist = Build_Background(
+Artist = Make_Background(
 	name="Artist",
 	audiences=(
 		NPC_Background,
@@ -1831,7 +1834,7 @@ Artist = Build_Background(
 		),
 	)
 
-Bandit = Build_Background(
+Bandit = Make_Background(
 	name="Bandit",
 	audiences=(
 		NPC_Background,
@@ -1854,7 +1857,7 @@ Bandit = Build_Background(
 		),
 	)
 
-Berserker = Build_Background(
+Berserker = Make_Background(
 	name="Berserker",
 	audiences=(
 		NPC_Background,
@@ -1877,7 +1880,7 @@ Berserker = Build_Background(
 		),
 	)
 
-Commoner = Build_Background(
+Commoner = Make_Background(
 	name="Commoner",
 	audiences=(
 		NPC_Background,
@@ -1900,7 +1903,7 @@ Commoner = Build_Background(
 		),
 	)
 
-Crafter = Build_Background(
+Crafter = Make_Background(
 	name="Crafter",
 	audiences=(
 		NPC_Background,
@@ -1923,7 +1926,7 @@ Crafter = Build_Background(
 		),
 	)
 
-Cultist = Build_Background(
+Cultist = Make_Background(
 	name="Cultist",
 	audiences=(
 		NPC_Background,
@@ -1946,7 +1949,7 @@ Cultist = Build_Background(
 		),
 	)
 
-Doctor = Build_Background(
+Doctor = Make_Background(
 	name="Doctor",
 	audiences=(
 		NPC_Background,
@@ -1969,7 +1972,7 @@ Doctor = Build_Background(
 		),
 	)
 
-Expert = Build_Background(
+Expert = Make_Background(
 	name="Expert",
 	audiences=(
 		NPC_Background,
@@ -1992,7 +1995,7 @@ Expert = Build_Background(
 		),
 	)
 
-Explorer = Build_Background(
+Explorer = Make_Background(
 	name="Explorer",
 	audiences=(
 		NPC_Background,
@@ -2015,7 +2018,7 @@ Explorer = Build_Background(
 		),
 	)
 
-Guardian = Build_Background(
+Guardian = Make_Background(
 	name="Guardian",
 	audiences=(
 		NPC_Background,
@@ -2038,7 +2041,7 @@ Guardian = Build_Background(
 		),
 	)
 
-Healer = Build_Background(
+Healer = Make_Background(
 	name="Healer",
 	audiences=(
 		NPC_Background,
@@ -2061,7 +2064,7 @@ Healer = Build_Background(
 		),
 	)
 
-Hero = Build_Background(
+Hero = Make_Background(
 	name="Hero",
 	audiences=(
 		NPC_Background,
@@ -2084,7 +2087,7 @@ Hero = Build_Background(
 		),
 	)
 
-Hunter = Build_Background(
+Hunter = Make_Background(
 	name="Hunter",
 	audiences=(
 		NPC_Background,
@@ -2107,7 +2110,7 @@ Hunter = Build_Background(
 		),
 	)
 
-Knight = Build_Background(
+Knight = Make_Background(
 	name="Knight",
 	audiences=(
 		NPC_Background,
@@ -2130,7 +2133,7 @@ Knight = Build_Background(
 		),
 	)
 
-Mage = Build_Background(
+Mage = Make_Background(
 	name="Mage",
 	audiences=(
 		NPC_Background,
@@ -2153,7 +2156,7 @@ Mage = Build_Background(
 		),
 	)
 
-Mentor = Build_Background(
+Mentor = Make_Background(
 	name="Mentor",
 	audiences=(
 		NPC_Background,
@@ -2176,7 +2179,7 @@ Mentor = Build_Background(
 		),
 	)
 
-Ninja = Build_Background(
+Ninja = Make_Background(
 	name="Ninja",
 	audiences=(
 		NPC_Background,
@@ -2199,7 +2202,7 @@ Ninja = Build_Background(
 		),
 	)
 
-Pirate = Build_Background(
+Pirate = Make_Background(
 	name="Pirate",
 	audiences=(
 		NPC_Background,
@@ -2222,7 +2225,7 @@ Pirate = Build_Background(
 		),
 	)
 
-Priest = Build_Background(
+Priest = Make_Background(
 	name="Priest",
 	audiences=(
 		NPC_Background,
@@ -2245,7 +2248,7 @@ Priest = Build_Background(
 		),
 	)
 
-Scholar = Build_Background(
+Scholar = Make_Background(
 	name="Scholar",
 	audiences=(
 		NPC_Background,
@@ -2268,7 +2271,7 @@ Scholar = Build_Background(
 		),
 	)
 
-Shaman = Build_Background(
+Shaman = Make_Background(
 	name="Shaman",
 	audiences=(
 		NPC_Background,
@@ -2291,7 +2294,7 @@ Shaman = Build_Background(
 		),
 	)
 
-Spy = Build_Background(
+Spy = Make_Background(
 	name="Spy",
 	audiences=(
 		NPC_Background,
@@ -2314,7 +2317,7 @@ Spy = Build_Background(
 		),
 	)
 
-Trickster = Build_Background(
+Trickster = Make_Background(
 	name="Trickster",
 	audiences=(
 		NPC_Background,
@@ -2337,7 +2340,7 @@ Trickster = Build_Background(
 		),
 	)
 
-Traveler = Build_Background(
+Traveler = Make_Background(
 	name="Traveler",
 	audiences=(
 		NPC_Background,
@@ -2360,7 +2363,7 @@ Traveler = Build_Background(
 		),
 	)
 
-Warrior = Build_Background(
+Warrior = Make_Background(
 	name="Warrior",
 	audiences=(
 		NPC_Background,
@@ -2383,7 +2386,7 @@ Warrior = Build_Background(
 		),
 	)
 
-Witch = Build_Background(
+Witch = Make_Background(
 	name="Witch",
 	audiences=(
 		NPC_Background,
@@ -2413,7 +2416,7 @@ Witch = Build_Background(
 
 
 OFFICIAL_2024_BACKGROUNDS = Register_Official_2024_Backgrounds(
-	build_background=Build_Background,
+	build_background=Make_Background,
 	pc_background=Available,
 	npc_background=NPC_Background,
 	artisan_tools=ARTISAN_TOOLS,
@@ -2889,7 +2892,7 @@ def _test_hook_and_slots():
 		character,
 		Entry(
 			title="Alumni",
-			definition="Your {guild} classmates remember you.",
+			rules="Your {guild} classmates remember you.",
 			),
 		)
 	background, hook = character.features[ -2: ]
@@ -2933,8 +2936,12 @@ def _test_hook_and_slots():
 			title="Untitled Hook",
 			description="A life.",
 			hook=Entry(
-				definition="A price with no name.",
+				title="",
+				rules="A price with no name.",
 				),
+				#-- The new Entry requires a title by construction, so
+				#-- "absent" is impossible; the validator's own case is a
+				#-- BLANK title (line ~377), and that is what this tests.
 			origin_feat_options=Soldier.ORIGIN_FEAT_OPTIONS,
 			source_title="Test",
 			source_url="",
@@ -2975,7 +2982,7 @@ def _test_official_hooks():
 	for tag, hook_title in hooks.items():
 		assert tag.TITLE == tag.NAME, tag.NAME
 		assert tag.HOOK.title == hook_title, tag.NAME
-		assert tag.HOOK.definition.strip(), tag.NAME
+		assert tag.HOOK.rules.strip(), tag.NAME
 
 	assert "the {guild} School" in Scribe.DESCRIPTION
 
@@ -3089,7 +3096,7 @@ __all__ = (
 	"Background_Audience",
 	"Background_Is_Available",
 	"Backgrounds_For",
-	"Build_Background",
+	"Make_Background",
 	"Find_Background",
 	"NPC_Background",
 	"NONPLAYER_BACKGROUNDS",

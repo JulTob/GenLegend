@@ -1,6 +1,6 @@
 """Shared 2024 Gnome trait Tags."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasLusoris.FeaturesKit import Trait
 

@@ -1,6 +1,6 @@
 """The Hill's Tumble Giant Heritage Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 	Giant_Heritage,
@@ -8,10 +8,18 @@ from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import (
 	Imprint_Giant_Heritage,
 	)
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.Goliaths.Giant_Heritages.base import No_Giant_Heritage_Yet
 
 
 class Hills_Tumble(Giant_Heritage):
 	"""A Hill Giant boon carrying a forceful knockdown."""
+
+	@Pre
+	def Only_One_Giant_Heritage(
+		target,
+		):
+		return No_Giant_Heritage_Yet( target )
 
 	DISPLAY = "Hill's Tumble"
 	GIANT_KIND = "Hill Giant"

@@ -1,11 +1,13 @@
 """The 2024 Forest Gnome Heritage Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
 from AtlasActorLudi.SpeciesKit.Gnomes.base import Gnome
 from AtlasActorLudi.SpeciesKit.Gnomes.traits import Gnomish_Lineage
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
 class Forest_Gnome(
@@ -14,6 +16,12 @@ class Forest_Gnome(
 	Gnomish_Lineage,
 	):
 	"""A Gnome Heritage with illusion and animal-speaking magic."""
+
+	@Pre
+	def Only_One_Heritage(
+		target,
+		):
+		return No_Heritage_Yet( target )
 
 	HERITAGE_DESCRIPTION = (
 		"""Your family never took the city offer, but put down roots in the forest nearby. You grew up past the last farm where the wood begins, on speaking terms with everything in it. The fae, they say, are nearer out there. Some of it rubbed off."""

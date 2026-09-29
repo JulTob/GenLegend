@@ -225,6 +225,34 @@ def Training_Grants(character) -> list[str]:
             )
 
 
+def Feature_Names(character) -> list[str]:
+    """
+    Every feature the Character has, by name, wherever it is recorded.
+
+    Families that QST-0142 has ported print from the build (``Find_Build``)
+    and no longer write ``char.features``; the rest still do. A feature
+    moving from one to the other must not look like a feature lost.
+    """
+    from AtlasActorLudi.Charts_of_Build import Find_Build
+
+    names = [
+            Named(feature)
+            for feature in getattr(
+                    character,
+                    "features",
+                    [],
+                    )
+            or []
+            ]
+    names.extend(
+            built.entry.title
+            for built in Find_Build(
+                    character
+                    ).entries
+            )
+    return names
+
+
 def Fingerprint_Of(character) -> dict[str, Any]:
     """One Character reduced to the facts a refactor must not move."""
     return {
@@ -262,13 +290,9 @@ def Fingerprint_Of(character) -> dict[str, Any]:
                     or []
                     ),
             "features": sorted(
-                    Named(feature)
-                    for feature in getattr(
-                            character,
-                            "features",
-                            [],
+                    Feature_Names(
+                            character
                             )
-                    or []
                     ),
             "items": Carried_Items(character),
             "training": Training_Grants(character),

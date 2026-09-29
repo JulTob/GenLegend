@@ -1,5 +1,7 @@
 """Shared mechanics for magic contributed by a Species Heritage."""
 
+from AtlasVenustas import Chip
+
 
 ABILITY_LABELS = {
 	"INT": "Intelligence",
@@ -111,10 +113,10 @@ def Species_Spellcasting_Chips(
 		ability,
 		)
 	chips = [
-		(
+		Chip(
+			"🪄",
 			"Spellcasting Ability",
 			ability_label,
-			"🪄",
 			),
 		]
 	scores = getattr(
@@ -163,10 +165,10 @@ def Species_Spellcasting_Chips(
 	# lists for that ability.  Save DC has no such table anywhere on the
 	# sheet, so it stays the one chip worth its space.
 	chips.append(
-		(
+		Chip(
+			"🔮",
 			"Species Spell Save DC",
 			save_dc,
-			"🔮",
 			),
 		)
 

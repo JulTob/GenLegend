@@ -5,7 +5,7 @@ It also calculates the radius of visibility of the creature in diferent sights
 """
 try:
 	from AtlasLudus.Map_of_Useful_Functions import select1
-	from AtlasScriptum.Map_of_Formats import Entry
+	from AtlasScriptum.Map_of_Formats import Entry_Text
 	from AtlasLudus.Map_of_Dice import Dice, Dizero
 	from AtlasActorLudi.Map_of_Scores import Modifier, PB
 except ImportError:
@@ -40,48 +40,48 @@ def Senses(Character):
 	extras = []
 
 	# Enhanced Senses
-	OtherwordlyPerception = Entry(
+	OtherwordlyPerception = Entry_Text(
 		f"Otherworldly Perception",
 		f"{title} can sense the presence of any creature within 30 feet of {title} that is invisible or on the Ethereal Plane.")
-	Enhanced_Smell = Entry(
+	Enhanced_Smell = Entry_Text(
 		f"Enhanced Smell",
 		f"{title} has advantage on Wisdom (Perception) checks that rely on smell within {Dice(3) * Dice(2)*Dice(2) * 10} feet.")
-	enhanced_hearing =  Entry(
+	enhanced_hearing =  Entry_Text(
 		f"Enhanced Hearing",
 			f"{title} has advantage on Wisdom (Perception) checks that rely on sounds from up to {Dice(3) * Dice(2)*Dice(2) * 10} feet away.")
-	enhanced_taste = Entry(
+	enhanced_taste = Entry_Text(
 		f"Enhanced Taste",
 			f"{title} has advantage on Wisdom (Perception) checks that rely on taste, and has advantage on saving throws against ingested poisons.")
-	keen_smell = Entry(
+	keen_smell = Entry_Text(
 		f"Keen Smell",
 			f"{title} has advantage on Wisdom (Perception) checks that rely on smell.")
-	keen_hearing =  Entry(
+	keen_hearing =  Entry_Text(
 		f"Keen Hearing",
 			f"{title} has advantage on Wisdom (Perception) checks that rely on hearing.")
-	KeenSight = Entry(
+	KeenSight = Entry_Text(
 		f"Keen Sight",
 		f"Advantage on Wisdom (Perception) checks that rely on sight.")
-	KeenSenses = Entry(
+	KeenSenses = Entry_Text(
 		f"Keen Senses",
 		f"Advantage on Wisdom (Perception) checks that rely on one of their senses.")
 
 	# Specialized Senses
-	echolocation = Entry(
+	echolocation = Entry_Text(
 		f"Echolocation",
 			f"{title} can perceive its surroundings within 60 feet as if it had blindsight, but only if it isn't deafened.")
 
 	# Sensory Communication
-	color_change = Entry(
+	color_change = Entry_Text(
 		f"Color Change",
 			f"{title} can change the color of its skin to communicate or as a response to its environment.")
 
 	# Sensory Deprivation & Resistance
-	blind_fighting = Entry(
+	blind_fighting = Entry_Text(
 		f"Blind Fighting",
 			f"{title} doesn’t need to see a creature to target it with an attack, provided the creature isn't hidden from the {race}.")
 
 	# Hide and Mimic
-	mimicry = Entry(
+	mimicry = Entry_Text(
 		f"Mimicry",
 		select1(
 			(	f"{title} can mimic simple sounds it has heard, such as a person whispering, a baby crying, or an animal chittering. " +
@@ -89,47 +89,47 @@ def Senses(Character):
 			f"{title} can mimic any sounds it has heard, including voices. A creature that hears the sounds can tell they are imitations with a successful DC {dc} Wisdom (Insight) check.",
 			)))
 	Mimicry = mimicry
-	chameleon_skin = Entry(
+	chameleon_skin = Entry_Text(
 		f"Chameleonic Skin",
 			f"{title} has advantage on Dexterity (Stealth) checks made to hide.")
 
 	# Enviromental adaptations
-	water_breathing= Entry(
+	water_breathing= Entry_Text(
 		f"Water Breathing",
 		f"{title} can breathe underwater")
-	underwater_camouflage = Entry(f"Underwater Camouflage",
+	underwater_camouflage = Entry_Text(f"Underwater Camouflage",
 		f"{title} has advantage on Dexterity (Stealth) checks made while underwater.")
-	hold_breath =   Entry(
+	hold_breath =   Entry_Text(
 		f"Hold Breath",
 		f"{title} can hold its breath for {5*Dice(3)*Dice(2)*Dice(2)} minutes.")
 
 	# Sensibilities
-	sunlight_sensitivity = Entry(
+	sunlight_sensitivity = Entry_Text(
 		f"Sunlight Sensitivity",
 		f"While in sunlight, {title} has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight.")
 
 	# Illumination
-	illumination = Entry(
+	illumination = Entry_Text(
 		f"Illumination",
 		f"{title} sheds bright light in a {Dice(3)*10}-foot radius and dim light for an additional {Dice(3)*10} ft.")
-	sense_magic = Entry(
+	sense_magic = Entry_Text(
 		f"Sense Magic",
 		f"{title} senses magic within {Dice(2) * Dice(2) * Dice(3) * 10} feet of it at will. This trait otherwise works like the Detect Magic spell but isn't itself magical.")
-	SpeakAnimal = Entry(
+	SpeakAnimal = Entry_Text(
 			"Speak with Animal",
 			f"{title} can communicate simple concepts to his affinity animal when it speaks in Beast language.")
-	RadiantSight = Entry(
+	RadiantSight = Entry_Text(
 		f"Radiant Sight",
 		f"Can see divine auras and celestial beings within a {Dice(2) * Dice(2) * Dice(3) * 10} range.")
-	DarkSight = Entry(
+	DarkSight = Entry_Text(
 		f"{race} Sight",
 		f"Can see through magical darkness and illusions up to {Dice(2)*Dice(2) * Dice(3) * 10} feet."
 		)
-	Cogniscent = Entry(
+	Cogniscent = Entry_Text(
 		f"Cogniscent",
 		f"At the start of its turn, {title} automatically knows its target's location. If the target was hidden, it is no longer hidden from {title}."
 		)
-	TreasureSense = Entry("Treasure Sense.",
+	TreasureSense = Entry_Text("Treasure Sense.",
 		f"{title} can sense, like guided by scent, the location of precious metals and stones, such as coins and gems, within {Dice(pb)*10} feet of it."
 		)
 
@@ -733,22 +733,22 @@ def Senses(Character):
 	if telepathy>0:
 		if Dice() == 1:
 			extras += [
-				Entry(
+				Entry_Text(
 					f"Probing Telepathy",
 					f"If a creature communicates telepathically with {title}, {title} learns the creature's greatest desires if {title} can see the creature."
 					),
-				Entry(
+				Entry_Text(
 					f"Telepathic Shroud.",
 					f"The {race} is immune to any effect that would sense its emotions or read its thoughts, as well as all divination spells."),
-				Entry(
+				Entry_Text(
 					f"Advanced Telepathy",
 					f"The {race} can perceive the content of any telepathic communication used within {telepathy//2} feet of it, and it can't be surprised by creatures with any form of telepathy."),
-				Entry(
+				Entry_Text(
 					f"Limited Telepathy.",
 					f"The {race} can magically transmit simple messages and images to any creature within {telepathy} feet of it that can understand a language. This form of telepathy doesn't allow the receiving creature to telepathically respond."),
-				Entry( f"Detect Sentience",
+				Entry_Text( f"Detect Sentience",
 					f"The {race} can sense the presence and location of any creature within {telepathy} feet of it that has an Intelligence of 3 or higher, regardless of interposing barriers, unless the creature is protected by a mind blank spell."),
-				Entry(f"Limited Telepathy",
+				Entry_Text(f"Limited Telepathy",
 					f"The {race} can magically communicate simple ideas, emotions, and images telepathically with any creature within {telepathy} feet of it that can understand a language. It can also communicate with any {race}"),
 
 				]

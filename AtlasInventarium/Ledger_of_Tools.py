@@ -17,7 +17,7 @@ in gold: 1 SP = 0.1 GP.
 
 from __future__ import annotations
 
-from AtlasInventarium.ItemKit import Build_Item, Item
+from AtlasInventarium.ItemKit import Make_Item, Item
 from AtlasInventarium.ToolsKit import (
 	ARTISAN_TOOLS as _ARTISAN_TOOL_DEFINITIONS,
 	GAMING_SETS as _GAMING_SET_DEFINITIONS,
@@ -87,7 +87,7 @@ def _kit(
 	"""The item one tool proficiency is carried in, described by its Practice."""
 	weight, value = _KITS[ tool.key ]
 	ability = _ABILITY_NAMES[ tool.ability ]
-	item = Build_Item(
+	item = Make_Item(
 			name=tool.name,
 			value=value,
 			weight=weight,

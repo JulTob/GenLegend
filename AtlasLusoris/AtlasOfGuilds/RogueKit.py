@@ -1,25 +1,25 @@
 """Rogue Specializations."""
 
-from AtlasLusoris.GuildKit import Build_Specialization
+from AtlasLusoris.GuildKit import Make_Specialization
 from AtlasLusoris.GuildKit import Rogue
 
 
-ArcaneTrickster = Build_Specialization(
+ArcaneTrickster = Make_Specialization(
 	guild=Rogue,
 	name="Arcane Trickster",
 	module=__name__,
 	)
-Assassin = Build_Specialization(
+Assassin = Make_Specialization(
 	guild=Rogue,
 	name="Assassin",
 	module=__name__,
 	)
-Soulknife = Build_Specialization(
+Soulknife = Make_Specialization(
 	guild=Rogue,
 	name="Soulknife",
 	module=__name__,
 	)
-Thief = Build_Specialization(
+Thief = Make_Specialization(
 	guild=Rogue,
 	name="Thief",
 	module=__name__,

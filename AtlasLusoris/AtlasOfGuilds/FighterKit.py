@@ -16,13 +16,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 from types import MappingProxyType
 
-from TagKit import Pre, Report, Tag
+from TopKit import Pre, Tag
+
+from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasInventarium.ToolsKit import (
 	ARTISAN_TOOLS as _ARTISAN_TOOL_DEFINITIONS,
 	)
-from AtlasLusoris.GuildKit import Build_Specialization, Fighter
+from AtlasLusoris.GuildKit import Make_Specialization, Fighter
 
 
 # ---------------------------------------------------------------------------
@@ -295,9 +297,9 @@ FIGHTER_RESOURCES = (
 			),
 	)
 
-FEATURES = Report(FIGHTER_FEATURES)
-CHOICES = Report(FIGHTER_CHOICES)
-RESOURCES = Report(FIGHTER_RESOURCES)
+FEATURES = Report_Of(FIGHTER_FEATURES)
+CHOICES = Report_Of(FIGHTER_CHOICES)
+RESOURCES = Report_Of(FIGHTER_RESOURCES)
 Fighter.FEATURES = FEATURES
 Fighter.CHOICES = CHOICES
 Fighter.RESOURCES = RESOURCES
@@ -609,7 +611,7 @@ BATTLE_MASTER_DESCRIPTION = (
 	"That is the difference. Others see a fight. You see a position, and "
 	"you have the winning move."
 	)
-BattleMaster = Build_Specialization(
+BattleMaster = Make_Specialization(
 	guild=Fighter,
 	name="Battle Master",
 	module=__name__,
@@ -655,7 +657,7 @@ BANNERET_DESCRIPTION = (
 	"the line is. You are that symbol. You do not get to fall."
 	)
 
-Banneret = Build_Specialization(
+Banneret = Make_Specialization(
 	guild=Fighter,
 	name="Banneret",
 	module=__name__,
@@ -707,7 +709,7 @@ CHAMPION_DESCRIPTION = (
 	"days you did the work."
 	)
 
-Champion = Build_Specialization(
+Champion = Make_Specialization(
 	guild=Fighter,
 	name="Champion",
 	module=__name__,
@@ -806,7 +808,7 @@ ELDRITCH_KNIGHT_DESCRIPTION = (
 	"knack for them."
 	)
 
-EldritchKnight = Build_Specialization(
+EldritchKnight = Make_Specialization(
 	guild=Fighter,
 	name="Eldritch Knight",
 	module=__name__,
@@ -939,7 +941,7 @@ def Psi_Warrior_Description(
 		)
 
 
-PsiWarrior = Build_Specialization(
+PsiWarrior = Make_Specialization(
 	guild=Fighter,
 	name="Psi Warrior",
 	module=__name__,

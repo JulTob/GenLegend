@@ -1,6 +1,6 @@
 """The 2024 Human Species Shape."""
 
-from TagKit import Imprint
+from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Humanoid
 from AtlasActorLudi.SpeciesKit.bases import Species
@@ -11,6 +11,8 @@ from AtlasLusoris.FeaturesKit import Grant_Versatile
 from AtlasLusoris.FeaturesKit import ORIGIN_FEATS
 from AtlasLusoris.FeaturesKit import Skillful
 from AtlasLusoris.FeaturesKit import Versatile
+from TopKit import Pre
+from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
 class Human(
@@ -36,6 +38,12 @@ class Human(
 		- Skillful
 		- Versatile
 	"""
+
+	@Pre
+	def Only_One_Species(
+		target,
+		):
+		return No_Species_Yet( target )
 
 	@Imprint
 	def Set_Physiology(

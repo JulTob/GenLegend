@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import random
 
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
 
 
 GUILD = "Cleric"
@@ -86,7 +86,7 @@ def _core(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -105,7 +105,7 @@ def _path(
 		description,
 		chips=(),
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,

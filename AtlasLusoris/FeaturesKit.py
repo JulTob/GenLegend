@@ -32,7 +32,7 @@ The Grimoire_of_Features factories are legacy; new grants live here.
 from contextlib import redirect_stdout
 from io import StringIO
 
-from TagKit import Action, Imprint, Post, Pre, Record, Tag
+from TopKit import Action, Imprint, Post, Pre, Record, Tag
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasActorLudi.ProficiencyKit import (
@@ -101,155 +101,66 @@ def _project(
 	return source( subject ) if callable( source ) else source
 
 
-def _is_rail_chip(
+class Not_A_Chip( TypeError ):
+	"""Something other than an ``AtlasVenustas.Chip`` was given as a chip."""
+
+
+def _require_chip(
 		chip,
-		) -> bool:
-	"""True for a Venustas Chip (named rail), not a leftover tuple."""
-	return (
-		hasattr(
-				chip,
-				"label",
+		) -> None:
+	"""One shape only (QST-0142 station 2): refuse anything else by name."""
+	from AtlasVenustas import Chip
+	if not isinstance(
+			chip,
+			Chip,
+			):
+		raise Not_A_Chip(
+				f"{chip!r} is not a Chip; write Chip( symbol, label, value )."
 				)
-		and hasattr(
-				chip,
-				"value",
-				)
-		and not isinstance(
-				chip,
-				(
-						tuple,
-						list,
-						dict,
-						),
-				)
-		)
 
 
 def _store_rail_chip(
 		chip,
 		live,
 		):
-	if _is_rail_chip(
+	"""Keep a declared Chip, checking that a reader has a subject to read."""
+	_require_chip(
 			chip
-			):
-		from AtlasVenustas import Chip
-		return Chip(
-				getattr(
-						chip,
-						"symbol",
-						"",
-						) or "",
-				chip.label,
-				live(
-						chip.value,
-						f"chip {chip.label!r}",
-						),
-				extra_class=getattr(
-						chip,
-						"extra_class",
-						"",
-						) or "",
-				kind=getattr(
-						chip,
-						"kind",
-						"Attribute",
-						) or "Attribute",
-				)
-	label = chip[
-			0
-			]
-	return (
-			label,
-			live(
-					chip[
-							1
-							],
-					f"chip {label!r}",
-					),
-			) + tuple(
-			chip[
-					2:
-					]
 			)
+	live(
+			chip.value,
+			f"chip {chip.label!r}",
+			)
+	return chip
 
 
 def _project_rail_chip(
 		chip,
 		subject,
 		):
-	projected = str(
-			_project(
-					chip.value if _is_rail_chip(
-							chip
-							) else chip[
-							1
-							],
-					subject,
-					)
-			)
-	if _is_rail_chip(
-			chip
-			):
-		from AtlasVenustas import Chip
-		return Chip(
-				getattr(
-						chip,
-						"symbol",
-						"",
-						) or "",
-				chip.label,
-				projected,
-				extra_class=getattr(
-						chip,
-						"extra_class",
-						"",
-						) or "",
-				kind=getattr(
-						chip,
-						"kind",
-						"Attribute",
-						) or "Attribute",
-				)
-	return (
-			chip[
-					0
-					],
-			projected,
-			) + tuple(
-			chip[
-					2:
-					]
+	"""The Chip read against the Character, its value rendered as text."""
+	from dataclasses import replace
+	return replace(
+			chip,
+			value=str(
+					_project(
+							chip.value,
+							subject,
+							)
+					),
 			)
 
 
 def _chip_as_dict(
 		chip,
 		) -> dict:
-	if _is_rail_chip(
-			chip
-			):
-		return {
-				"label": chip.label,
-				"value": chip.value,
-				"symbol": getattr(
-						chip,
-						"symbol",
-						"",
-						) or "",
-				}
 	return {
-			"label": chip[
-					0
-					],
-			"value": chip[
-					1
-					],
-			"symbol": chip[
-					2
-					] if len(
-					chip
-					) > 2 else "",
+			"label": chip.label,
+			"value": chip.value,
+			"symbol": chip.symbol,
+			"kind": chip.kind,
 			}
+		#-- kind travels too: the printers read it since #94 (review of #95).
 
 
 class Feature:
@@ -332,7 +243,6 @@ class Feature:
 		# Chip values are always rendered as text, so they are coerced here.
 		# The renderer and ``to_dict`` have always received strings; projecting
 		# lazily must not quietly start handing them ints.
-		# Venustas Chip is the named rail model; tuples remain until QST-0081.4.
 		return tuple(
 				_project_rail_chip(
 						chip,
@@ -346,6 +256,15 @@ class Feature:
 			self,
 			value,
 			):
+		from AtlasVenustas import Chip
+		if isinstance(
+				value,
+				Chip,
+				):
+			raise Not_A_Chip(
+					f"chips= takes a tuple of Chips, not one bare {value!r}; "
+					"write chips=( chip, )."
+					)
 		self._chips = tuple(
 				_store_rail_chip(
 						chip,
@@ -664,7 +583,7 @@ def _Tool_Proficiency_Clause(
 #
 # WHY NOT A @Pre.  Making the Feat decline when its pool is short was considered
 # and rejected.  _take_first_that_applies (FeatKit) only guards General feats;
-# an Origin feat reaches a Character through Tag inheritance in Build_Background
+# an Origin feat reaches a Character through Tag inheritance in Make_Background
 # and through Grant_Origin_Feat, neither of which catches TagPreconditionError.
 # A refusing @Pre would therefore trade one crash for another, and because a
 # Background's Origin feat is not optional (Artisan *is* Crafter) it would have

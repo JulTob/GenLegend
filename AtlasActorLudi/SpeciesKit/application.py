@@ -136,16 +136,20 @@ def Apply_Species(
 				f"{owner.__name__!r}, not {selected.__name__!r}."
 				)
 
-		selected_heritage = (
-			requested_heritage
-			or current_heritage
-			or _random_heritage(
+		#-- Explicit ``is not None``: a Heritage is a Tag, and TopKit's
+		#-- ``bool( Tag )`` asks whether it has members yet, so ``or``
+		#-- would skip a requested Heritage nobody carries so far.
+		if requested_heritage is not None:
+			selected_heritage = requested_heritage
+		elif current_heritage is not None:
+			selected_heritage = current_heritage
+		else:
+			selected_heritage = _random_heritage(
 				character,
 				selected,
 				available_heritages,
 				size=size,
 				)
-			)
 		shape = selected_heritage
 	elif requested_heritage is not None:
 		owner = Species_For_Heritage(

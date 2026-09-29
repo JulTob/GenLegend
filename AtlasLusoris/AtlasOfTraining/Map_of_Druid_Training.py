@@ -11,7 +11,7 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.FeaturesKit import Grant_Resistance
-from AtlasLusoris.TrainingKit import Build_Training
+from AtlasLusoris.TrainingKit import Make_Training
 
 
 GUILD = "Druid"
@@ -40,7 +40,7 @@ def _core(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -60,7 +60,7 @@ def _circle(
 		chips=(),
 		apply=None,
 		):
-	return Build_Training(
+	return Make_Training(
 			name=name,
 			guild_name=GUILD,
 			min_level=min_level,
@@ -122,11 +122,11 @@ def _primal_order_entry(
 			)
 	if order == "Magician":
 		return (
-			"<b>Primal Order: Magician.</b> You know one extra cantrip "
+			"\n\n**Primal Order: Magician.** You know one extra cantrip "
 			"from the Druid spell list and lean into primal spellcraft."
 			)
 	return (
-		"<b>Primal Order: Warden.</b> You gain proficiency with Martial "
+		"\n\n**Primal Order: Warden.** You gain proficiency with Martial "
 		"weapons and training in Medium armor."
 		)
 
@@ -153,14 +153,14 @@ def _wild_shape_entry(
 			)
 	return (
 		"The power of nature allows you to assume the form of an animal. "
-		"As a <i>Bonus Action</i>, you shape-shift into a Beast form you "
+		"As a *Bonus Action*, you shape-shift into a Beast form you "
 		"have learned. You stay in that form for a number of hours equal "
 		"to half your Druid level or until you use Wild Shape again, have "
 		"the Incapacitated condition, or die. You can leave the form early "
 		"as a Bonus Action."
-		f"<br>Maximum Beast CR: <b>{cr}</b>.{fly_line}"
-		"<br>When you assume a Wild Shape form you gain <b>Temporary Hit "
-		"Points</b> equal to your Druid level."
+		f"\n\nMaximum Beast CR: **{cr}**.{fly_line}"
+		"\n\nWhen you assume a Wild Shape form you gain **Temporary Hit "
+		"Points** equal to your Druid level."
 		)
 
 
@@ -174,11 +174,11 @@ def _elemental_fury_entry(
 	return (
 		"The might of the elemental world infuses your Wild Shape and "
 		"spells. Once per turn, choose one option:"
-		"<br><b>Potent Spellcasting.</b> When you cast a Druid cantrip "
+		"\n\n**Potent Spellcasting.** When you cast a Druid cantrip "
 		"that deals damage, add your Wisdom modifier to one damage roll."
-		"<br><b>Primal Strike.</b> Once per turn when you hit a creature "
+		"\n\n**Primal Strike.** Once per turn when you hit a creature "
 		"while in Wild Shape, deal an extra "
-		f"<b>{die}</b> Force or Necrotic damage."
+		f"**{die}** Force or Necrotic damage."
 		)
 
 
@@ -197,7 +197,7 @@ Druidic = _core(
 		name="Druidic",
 		min_level=1,
 		description=(
-			"You know <b>Druidic</b>, the secret language of Druids. You can "
+			"You know **Druidic**, the secret language of Druids. You can "
 			"speak it and use it to leave hidden messages. Creatures that "
 			"don't know Druidic automatically fail to detect these messages."
 			),
@@ -246,8 +246,8 @@ Wild_Companion = _core(
 		name="Wild Companion",
 		min_level=2,
 		description=(
-			"You learn <i>Find Familiar</i> and can cast it without preparing "
-			"it. As a <i>Magic action</i>, expend a spell slot or a use of "
+			"You learn *Find Familiar* and can cast it without preparing "
+			"it. As a *Magic action*, expend a spell slot or a use of "
 			"Wild Shape to cast it without Material components. The familiar "
 			"is Fey and disappears when you finish a Long Rest."
 			),
@@ -278,9 +278,9 @@ Improved_Elemental_Fury = _core(
 		min_level=15,
 		description=(
 			"Your Elemental Fury grows more powerful."
-			"<br><b>Potent Spellcasting</b> now adds double your Wisdom "
+			"\n\n**Potent Spellcasting** now adds double your Wisdom "
 			"modifier to cantrip damage."
-			"<br><b>Primal Strike</b> now deals an extra <b>2d6</b> Force "
+			"\n\n**Primal Strike** now deals an extra **2d6** Force "
 			"or Necrotic damage."
 			),
 		)
@@ -344,7 +344,7 @@ Lands_Aid = _land(
 		name="Land's Aid",
 		min_level=3,
 		description=(
-			"As a <i>Magic action</i>, expend a use of Wild Shape to bolster "
+			"As a *Magic action*, expend a use of Wild Shape to bolster "
 			"allies or drain a foe. Choose a point within 60 feet — each "
 			"creature of your choice within 30 feet regains Hit Points equal "
 			"to 1d6 plus your Wisdom modifier, and one creature in that area "
@@ -425,7 +425,7 @@ Moon_Spells = _moon(
 		min_level=3,
 		description=(
 			"Your connection to the moon grants extra spells always prepared: "
-			"<i>Faerie Fire, Moonbeam, Vampiric Touch, Greater Invisibility.</i> "
+			"*Faerie Fire, Moonbeam, Vampiric Touch, Greater Invisibility.* "
 			"These don't count against the number of spells you can prepare."
 			),
 		)
@@ -491,7 +491,7 @@ Sea_Spells = _sea(
 		min_level=3,
 		description=(
 			"Your bond to the ocean grants extra spells always prepared: "
-			"<i>Fog Cloud, Thunderwave, Shatter, Misty Step.</i> "
+			"*Fog Cloud, Thunderwave, Shatter, Misty Step.* "
 			"These don't count against the number of spells you can prepare."
 			),
 		)
@@ -550,7 +550,7 @@ Oceanic_Gift = _sea(
 			"success it takes half damage and isn't Prone. Friendly creatures "
 			"in the area instead regain Hit Points equal to the damage "
 			"calculated for them."
-			"<br>Once you use this feature, you can't do so again until you "
+			"\n\nOnce you use this feature, you can't do so again until you "
 			"finish a Long Rest."
 			),
 		)
@@ -588,11 +588,11 @@ def _starry_form_entry(
 		"When you use Wild Shape, you can expend a use to adopt a luminous "
 		"Starry Form instead of a Beast form. You retain your statistics, "
 		"but gain one active constellation:"
-		f"<br><b>Archer.</b> Bonus Action ranged spell attack — <b>{die}</b> "
+		f"\n\n**Archer.** Bonus Action ranged spell attack — **{die}** "
 		"Radiant on a hit."
-		f"<br><b>Chalice.</b> When you cast a healing spell, you or a "
-		f"creature within 30 feet regains an extra <b>{die}</b> HP."
-		"<br><b>Dragon.</b> When you make an Intelligence or Wisdom check, "
+		f"\n\n**Chalice.** When you cast a healing spell, you or a "
+		f"creature within 30 feet regains an extra **{die}** HP."
+		"\n\n**Dragon.** When you make an Intelligence or Wisdom check, "
 		"treat any roll of 9 or lower as a 10."
 		)
 
@@ -603,8 +603,8 @@ Star_Map = _stars(
 		description=(
 			"You have charted the heavens and created a Star Map — a record "
 			"of the night sky that serves as a Spellcasting Focus. You always "
-			"have <i>Guidance</i> and <i>Guiding Bolt</i> prepared; you can "
-			"cast <i>Guiding Bolt</i> without expending a spell slot a "
+			"have *Guidance* and *Guiding Bolt* prepared; you can "
+			"cast *Guiding Bolt* without expending a spell slot a "
 			"number of times equal to your Wisdom modifier per Long Rest."
 			),
 		)
@@ -622,8 +622,8 @@ Cosmic_Omen = _stars(
 			"When you finish a Long Rest, roll a die. Until your next Long "
 			"Rest, you can use a Reaction when a creature you can see within "
 			"30 feet makes a roll:"
-			"<br><b>Weal (even).</b> Add 1d6 to the roll."
-			"<br><b>Woe (odd).</b> Subtract 1d6 from the roll."
+			"\n\n**Weal (even).** Add 1d6 to the roll."
+			"\n\n**Woe (odd).** Subtract 1d6 from the roll."
 			"Uses equal your Wisdom modifier (minimum 1); regained on "
 			"a Long Rest."
 			),
