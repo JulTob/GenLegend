@@ -27,7 +27,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from typing import Any
 
-from TopKit import Imprint, Pre, Tag
+from TopKit import Flag, Imprint, Pre, Tag
 
 from AtlasActorLudi.CharactersKit import Report_Of
 
@@ -185,6 +185,7 @@ def Make_Training(
 		apply: Callable[[Any], None] | None = None,
 		path: str | type[Tag] | None = None,
 		on_sheet: bool = True,
+		flag: bool = False,
 		) -> type[Training]:
 	"""
 	Construct one Training Tag for a Guild lesson.
@@ -199,6 +200,12 @@ def Make_Training(
 	but skips the Feature Entry — use when another section owns the prose
 	(Spellcasting → Spells) or a FeatKit grant names the pick
 	(Fighting Style → Archery, …).
+
+	``flag=True`` marks a lesson with a **lasting effect** (a stat, a
+	proficiency, a sense, a speed, a known cantrip…) as a TopKit Flag, so
+	a rule elsewhere asks for it by word, ``"MartialArts" in char``,
+	without importing the Guild (QST-0142 station 3b, Julio 2026-09-29).
+	The word is the Tag's class name.
 	"""
 	if not name or not name.strip():
 		raise ValueError(
@@ -374,6 +381,10 @@ def Make_Training(
 			namespace,
 			)
 
+	if flag:
+		Flag(
+				training_tag
+				)
 	_TRAINING_DECLARATIONS.append(
 			training_tag
 			)
@@ -732,19 +743,19 @@ def _refresh_training_registry() -> None:
 # ---------------------------------------------------------------------------
 
 _TRAINING_MAP_MODULES = (
-		"Map_of_Artificer_Training",
-		"Map_of_Barbarian_Training",
-		"Map_of_Bard_Training",
-		"Map_of_Cleric_Training",
-		"Map_of_Druid_Training",
-		"Map_of_Fighter_Training",
-		"Map_of_Monk_Training",
-		"Map_of_Paladin_Training",
-		"Map_of_Ranger_Training",
-		"Map_of_Rogue_Training",
-		"Map_of_Sorcerer_Training",
-		"Map_of_Warlock_Training",
-		"Map_of_Wizard_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Artificer_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Barbarian_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Bard_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Cleric_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Druid_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Fighter_Training",
+		"AtlasLusoris.AtlasOfGuilds.Monk_Kit",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Paladin_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Ranger_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Rogue_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Sorcerer_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Warlock_Training",
+		"AtlasLusoris.AtlasOfTraining.Map_of_Wizard_Training",
 		)
 
 
@@ -754,7 +765,7 @@ def _load_training_maps() -> None:
 
 	for module_name in _TRAINING_MAP_MODULES:
 		importlib.import_module(
-				f"AtlasLusoris.AtlasOfTraining.{module_name}"
+				module_name
 				)
 	_refresh_training_registry()
 
