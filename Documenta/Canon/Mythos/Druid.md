@@ -3,30 +3,92 @@
 > 📖 **In flow.** 2 of 8 chapters are still proposals. 📜 0 · 📚 3 · 📔 3 · 📖 2
 
 *Mythos analysis, 2026-09-08. Design and literary criticism, not page text. Builds
-on Dialog 0017 (core fantasy settled as the elder belonging, sharpened to
-membership maintained through attention; the register is the walker's field
-diary; Land keeps the covenant, Moon is change that stays itself, Sea signs
-nothing, Stars is the wilderness overhead). This page does not re-litigate
-that. It reads the Druid against the peoples and backgrounds, names the wells
-the dialog left, records what the generated sheets actually do, and drafts the
-feature lines. Nothing here is landed.*
+on Dialog 0017 (revised: study as active inquiry, with the participant changed
+by the experiment; the register is documentary natural history with mythic
+scale; Land observes habitats, Moon animal behaviour, Sea forces and flux,
+and Stars the cosmos and celestial Ideals). This page reads the Druid against
+the peoples
+and backgrounds, names the wells the dialog left, records what the generated
+sheets actually do, and drafts the feature lines. The class description is
+landed; the feature lines and legacy cleanup remain open.*
 
 **Where the text lives.** Class and Circle paragraphs: Dialog 0017's five
-texts, provisional and unwired; `AtlasOfGuilds/DruidKit.py` is four bare
-calls. Lessons: `AtlasOfTraining/Map_of_Druid_Training.py` (rules only, no
-lines). A 2014-era layer in `Map_of_Classes/Training/Druid.py` still emits
+texts, provisional and now wired through `Grimoire_of_Guilds.py` and
+`AtlasOfGuilds/DruidKit.py`. Lessons: `AtlasOfTraining/Map_of_Druid_Training.py`
+(rules only, no lines). A 2014-era layer in `Map_of_Classes/Training/Druid.py` still emits
 *Number of Wild Shape*, *Known Forms of Wild Shape*, *Wild Shape: Rules While
 Transformed*, and its own *Primal Order*. Seat in the theology table: **owed**
 (from the Orders' Primal devotion, "the land itself, which is owed and does
 the owing").
 
+## 📚 0. The wiki source is a generic NPC, not Druid canon
+
+The linked wiki page, [Druid](https://github.com/JulTob/GenLegend/wiki/%E2%A0%89-%E2%98%98%EF%B8%8F-Druid),
+is a conventional 2014-era monster entry: a medium humanoid at Challenge 2
+with barkskin, a quarterstaff, a prepared spell list, and the stock sentence
+that druids protect wilderness from monsters and civilization. It has no
+GenLegend-specific people, Orders, metaphysics, Circle identity, or
+character-generator contract.
+
+That makes it useful as **recovery evidence for the old NPC surface**, but not
+as a source for the player class. Its generic "forest protector" framing is
+also precisely the fantasy Dialog 0017 moved out of the class and into the
+Circle of the Land, where the 2024 mechanics actually support a covenant.
+The project canon therefore keeps the wiki page as legacy reference and uses
+the 2024 Druid chassis plus the five wired descriptions above as the player
+surface.
+
+## 📜 0.1. Reframing: the Druid is the student who is changed by study
+
+The elder-belonging reading was a useful first pass, but it still makes the
+world sound like an older society that admits the Druid. The stronger reading,
+and the one better supported by the 2024 text, is **study as active inquiry**.
+
+Learning can mean receiving and retaining an answer. Study begins where the
+answer is not yet known: observation, experiment, experience, and empathy.
+The Druid is a porous vessel, not an empty one, and the observer is part of
+the experiment. Understanding a creature requires walking a mile in its fur;
+Wild Shape is therefore study embodied, not a revelation of a hidden true
+self.
+
+This makes the Druid a natural counterpoint to the Dragon canon's
+self-authorship. The Dragon is shaped by the self against the world; the
+Druid is shaped by the world through attention, experiment, experience, and
+empathy. Guardianship is a consequence, not a creed: once the Druid
+understands a system from within, damaging it becomes damage to something they
+have become part of. That understanding can serve medicine, profit,
+forensics, survival, or wonder. It must not moral-lock the class.
+
+The 2024 rules establish the spine without requiring generic “protector of
+nature” language:
+
+| 2024 evidence | What the Druid becomes |
+|---|---|
+| Spellcasting is learned by studying mystical forces; Wisdom is the casting ability | Comprehension is distinct from Intelligence's storage of facts |
+| Magician adds Wisdom to Intelligence (Arcana or Nature) checks | Understanding makes investigation more capable |
+| Druidic is learned and carries hidden symbolic messages | A precise, rediscoverable notation; mathematics is our setting interpretation, not a rules claim |
+| Wild Shape uses a Beast form “you have learned” | Knowledge becomes embodiment through empathy |
+| Known forms can be replaced after a Long Rest | The field of inquiry remains revisable |
+| Wild Companion is a temporary Fey animal form | The world answers the investigator with a participant, not a pet |
+| Wild Resurgence exchanges spell slots and Wild Shape | Inquiry and embodiment are one renewable practice |
+| Beast Spells retains the Druid's speech, personality, and memories in form | Transformation changes the observer without erasing the observer |
+| Circle is a subclass chosen at level 3 | A Circle is a field of inquiry and peer practice, not a priestly rank |
+
+The 2024 rules do not say that Druidic is mathematics, that every Circle is
+egalitarian, or that every Druid has a thesis. Those are strong GenLegend
+interpretations to use in the setting. They should be presented as the
+Druid's method, not smuggled into the rules summary as if they were printed
+mechanics.
+
 ---
 
 ## 📚 1. What a Druid player is handed today
 
-Four sheets were generated (Elf Land, Goliath Moon, Halfling Stars, Orc Sea).
-All four: no class text, no Circle text, no line above any feature, and the
-2014 layer beneath the 2024 one. Three findings that are not in the dialog:
+The original four sheets (Elf Land, Goliath Moon, Halfling Stars, Orc Sea)
+were generated before the Druid descriptions were wired. They had no class
+text, no Circle text, no line above any feature, and the 2014 layer beneath
+the 2024 one. Feature lines and legacy cleanup remain open. Three findings
+that are not in the dialog:
 
 1. ⚠️ **Two Primal Orders on one sheet.** The 2024 feature says *Primal
    Order: Magician*; a legacy feature with `source=None` says *Primal Order:
@@ -246,8 +308,8 @@ touch on the page.
 
 1. **The class close.** "Mountains count in winters. Forests count in
    centuries. So, in time, will you." The Fighter precedent holds; keep it.
-2. **"Fog follows you like a dog. Thunder waits behind your teeth."** The Sea
-   text's two best sentences; the register at its warmest.
+2. **"You become infinite by discovering how much world can fit inside one
+   observing life."** The Stars text's clearest expression of cosmic scale.
 3. **The Moon's teeth**, and Actaeon behind them (§3).
 4. **Starry Form spends Wild Shape**: the constellations are the class's
    beasts. The dialog's structural finding; the Stars line should say it.
@@ -258,7 +320,9 @@ touch on the page.
 
 ### ⚠️ Stock, contradictory, or thin
 
-1. **Nothing is wired; no lines; the 2014 layer leaks** (§1).
+1. **Feature lines are still unwired and the 2014 layer leaks** (§1). The
+   class and Circle descriptions are now wired; the rules surface still needs
+   its line and legacy cleanup pass.
 2. **Two Primal Orders on one sheet** (§1). A visible contradiction.
 3. **The forms are never drawn** (§1, §2). The fantasy's vocabulary is an
    open choice.
@@ -273,67 +337,68 @@ touch on the page.
 
 ---
 
-## 📖 7. Feature lines: drafts
+## 📖 7. Feature lines: landed draft
 
-*Italic inspiration line only. Register: the walker's field diary, concrete
-senses, warmth without awe, no proper nouns, no dice, no em-dashes. Rule text
-untouched except the em-dashes. Proposals.*
+*Italic inspiration line before the rule. Register: documentary natural history,
+concrete observation, active inquiry, no proper nouns, no dice. The lines below
+are wired in `AtlasOfTraining/Map_of_Druid_Training.py`; the rule text remains
+separate from the flavor line.*
 
 ### Core lessons
 
 | Lesson | Draft |
 |---|---|
-| **Spellcasting** (1) | *Most of it is listening. The rest the world does for you, because you asked the way it likes to be asked.* |
-| **Druidic** (1) | *Letters in leaf and stone, from people you will never meet, in a language the cities never learned.* |
-| **Primal Order: Magician** (1) | *You went further into the asking.* |
-| **Primal Order: Warden** (1) | *You went further into the standing.* |
-| **Wild Shape** (2) | *You watched until you could be the thing you watched. The wild lends its bodies the way a friend lends a coat.* |
-| **Wild Companion** (2) | *The older house sends you company from its own.* |
-| **Wild Resurgence** (5) | *Speaking with the wild and wearing it turned out to be one currency.* |
-| **Elemental Fury** (7) | *Whichever hand you use, the same world is behind it.* |
-| **Improved Elemental Fury** (15) | *The world behind your hand has grown heavier.* |
-| **Beast Spells** (18) | *You kept your speech inside the borrowed body. The two halves of the craft stopped being halves.* |
-| **Archdruid** (20) | *Mountains count in winters. You have started to.* |
+| **Spellcasting** (1) | *Understanding the world gives you the power to affect it.* |
+| **Druidic** (1) | *There is a universal language of symbols any Druid can decipher.* |
+| **Primal Order: Magician** (1) | *Watching brings forth real understanding.* |
+| **Primal Order: Warden** (1) | *Experience brings forth real understanding.* |
+| **Wild Shape** (2) | *You need to be to understand. Become, and see.* |
+| **Wild Companion** (2) | *The experiment of life claims another participant.* |
+| **Wild Resurgence** (5) | *Life feeds life. The cycle continues.* |
+| **Elemental Fury** (7) | *The core concepts are the same. Application makes them differ.* |
+| **Improved Elemental Fury** (15) | *(No separate line; this feature extends Elemental Fury.)* |
+| **Beast Spells** (18) | *The observer affects the experiment. The experiment affects the observer.* |
+| **Archdruid** (20) | *You truly understand.* |
 
 ### Circle of the Land
 
 | Feature | Draft |
 |---|---|
-| **Circle Spells** (3) | *Each country teaches its own way of answering.* |
-| **Land's Aid** (3) | *The ground feeds its own and turns on the rest, in one gesture.* |
-| **Natural Recovery** (6) | *Rest in a place you have learned and it gives you back your reach.* |
-| **Nature's Ward** (10) | *Poison forgets your name. Fear finds nothing in you to hold. Green things part.* |
-| **Nature's Sanctuary** (14) | *Even the beast, even the briar, turns aside from the one who remembered the terms.* |
+| **Circle Spells** (3) | *This land keeps its own words. You learned how to listen.* |
+| **Land's Aid** (3) | *The land selects. You adapt.* |
+| **Natural Recovery** (6) | *This land provides.* |
+| **Nature's Ward** (10) | *Evolve, adapt, or die.* |
+| **Nature's Sanctuary** (14) | *Life finds you, and your land protects you.* |
 
 ### Circle of the Moon
 
 | Feature | Draft |
 |---|---|
-| **Circle Forms** (3) | *Not even flesh is the limit of the vocabulary.* |
-| **Moon Spells** (3) | *The night's whole company: silver, and teeth.* |
-| **Improved Circle Forms** (6) | *Moonlight in the claw.* |
-| **Moonlight Step** (10) | *You move the way light moves.* |
-| **Lunar Form** (14) | *Phases do not destroy the moon.* |
+| **Circle Forms** (3) | *Life is larger than any single body.* |
+| **Moon Spells** (3) | *Who said beasts did not know spells?* |
+| **Improved Circle Forms** (6) | *(No separate line; this feature extends Circle Forms.)* |
+| **Moonlight Step** (10) | *Change comes, sometimes in just an instant.* |
+| **Lunar Form** (14) | *The phase changes. The moon remains.* |
 
 ### Circle of the Sea
 
 | Feature | Draft |
 |---|---|
-| **Sea Spells** (3) | *You came back with its weather in you.* |
-| **Wrath of the Sea** (3) | *You do not aim the sea. You stand in it, and it happens around you.* |
-| **Aquatic Affinity** (6) | *The border opened. Breath, and speed, and the cold not minding you.* |
-| **Stormborn** (10) | *A storm spares its own.* |
-| **Oceanic Gift** (14) | *One water. It feeds your people and breaks what stands against them, with no hatred in it anywhere.* |
+| **Sea Spells** (3) | *The ocean around you caused an ocean inside you.* |
+| **Wrath of the Sea** (3) | *You came back from the storm with a storm in you.* |
+| **Aquatic Affinity** (6) | *The mind opens. You belong to the sea.* |
+| **Stormborn** (10) | *A storm cannot harm a storm.* |
+| **Oceanic Gift** (14) | *Wherever your attention is, that is the eye of your storm.* |
 
 ### Circle of Stars
 
 | Feature | Draft |
 |---|---|
 | **Star Map** (3) | *You watched until the watching became a map.* |
-| **Starry Form** (3) | *The sky lends its figures the way the forest lends its beasts: from a higher pasture, by the same friendship.* |
-| **Cosmic Omen** (6) | *Read the sky at rest. Then tell luck which way to lean, a breath before it lands.* |
-| **Twinkling Constellations** (10) | *The figures burn brighter for being read.* |
-| **Full of Stars** (14) | *Watch anything long enough, with enough love, and you take on its nature.* |
+| **Starry Form** (3) | *One night can chart many constellations, and so can you.* |
+| **Cosmic Omen** (6) | *Read the sky, find the signs, walk the path.* |
+| **Twinkling Constellations** (10) | *The darker the night, the brighter the stars.* |
+| **Full of Stars** (14) | *The night hides the world, but reveals a universe.* |
 
 ---
 
@@ -348,5 +413,3 @@ untouched except the em-dashes. Proposals.*
 - **Barbarian, Wild Heart**: the Basajaun as the teacher the Path lacks.
 - **Rules work outside this page**: the Primal Order double, the forms draw,
   the em-dashes.
-
-

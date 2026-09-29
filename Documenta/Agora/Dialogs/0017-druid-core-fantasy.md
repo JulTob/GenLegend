@@ -4,11 +4,39 @@
 - **Commissioned by:** Julio (in chat, 2026-08-31), as part of the all-classes description commission: find the core fantasy through archetypal analysis, verify the rules establish it, write the prose in a register that fits the class.
 - **Date:** 2026-08-31
 - **Consuls called:** Lorekeeper (Elf Sage), Venustas (Bard), Contracts (Warlock), Simplicity (Monk). Vox reports.
-- **Status:** 🟡 provisional. The texts below ship as provisional pending Julio's word.
+- **Status:** 🟡 revised provisional. The 2024 rules read is retained, but the
+  core fantasy is revised from elder belonging to study that changes the
+  observer, pending Julio's word.
 
 ---
 
 ## 🧭 Framing
+
+### Revision after the 2024 rules read
+
+The first pass treated the Druid as someone admitted to an older society. The
+stronger reading is that the Druid is an investigator who becomes part of the
+world by studying it. Learning can mean receiving and retaining an answer;
+studying is active contact with what is not yet understood. The Druid is a
+porous vessel: not empty of personality, but willing to let observation,
+experiment, experience, and empathy change the observer. Wild Shape is study
+embodied, not a hidden animal self revealed.
+
+This also explains why a Druid can be a healer, a Charlatan making profitable
+potions, a Guard studying forensics, or an explorer with an unanswered thesis.
+The class is not morally defined by conservation. Guardianship is a result of
+understanding a system from within, and the Circle is the field of inquiry
+that gives that investigation a peer language and method.
+
+The 2024 rules support this reading directly: Spellcasting comes from
+studying mystical forces; Magician adds Wisdom to Intelligence (Arcana or
+Nature) checks; Druidic is learned and carries hidden messages; Wild Shape
+requires forms the Druid has learned and can revise after a Long Rest; Wild
+Companion summons a temporary Fey animal; Wild Resurgence exchanges spell
+slots and Wild Shape; and Beast Spells preserves the Druid's personality,
+memories, and speech while transformed. “Druidic is mathematics” is therefore
+a GenLegend interpretation of its symbolic precision, not a claim about the
+printed rules.
 
 This commission arrived with no seed from Julio and no found text to inherit.
 Both facts were verified before the council spoke:
@@ -141,18 +169,14 @@ the duty; a Circle may keep the covenant. That contrast is roster texture,
 exactly as the Barbarian keeps possession out of the class and gives it to
 the Zealot.
 
-**Venustas (Bard):** Now the register, because for this class it can be
-derived rather than invented. The engine is Wisdom, the craft is attention,
-so the prose should *perform* attention: the register of **nature writing,
-the field diary kept by someone who walks**. Grahame is its warm pole,
-Leopold its ethical pole, Mary Oliver its devotional pole ("attention is the
-beginning of devotion" is practically the Druid's Spellcasting entry), and
-the sentences move at walking pace. Concrete senses over abstractions: crows,
-rain, the two kinds of silence. Metaphors kept domestic and warm (a friend's
-coat, letters waiting) rather than grand, because the thesis is familiarity
-with the elder world, not awe before it. Awe is the World Tree Barbarian's
-register; the Druid is past awe, the way you are past awe with an old
-friend.
+**Venustas (Bard):** The register is documentary natural history, not generic
+nature writing. The narrator observes before interpreting: habitat, tracks,
+weather, migration, pressure, light. Land may carry the patient ecological
+clarity of Attenborough's documentaries; Moon may carry the intimate field
+attention associated with Félix Rodríguez de la Fuente's wolf films; Stars
+may widen into Sagan-like cosmological wonder. These are tonal coordinates,
+not imitation or quotation. The prose should remain GenLegend's own: direct
+second person, concrete evidence first, wonder earned by the observation.
 
 Against the siblings, so the shelf reads as a set: the Barbarian chants, the
 Fighter talks between drills, the Warlock confesses, the Wizard writes
@@ -353,75 +377,74 @@ enough, with enough love, and you take on its nature).
 
 ---
 
-## 📜 The proposed texts
+## 📜 Current working descriptions
+
+These are the current player-facing descriptions, developed from the
+study-centered draft. They are wired in
+`Grimoire_of_Guilds.py` and `AtlasOfGuilds/DruidKit.py`.
 
 Plain prose, paragraphs separated by blank lines, ready to lift into the kit
 as string constants when the wiring lands (headings per sibling practice:
 "Circle of the Land", "Circle of the Moon", "Circle of the Sea", "Circle of
 Stars").
 
-**DRUID_DESCRIPTION** (fresh, this Dialog):
+**DRUID_DESCRIPTION**:
 
 ```
-Walls are young. Roads are young. The wild was here long before either, and it will be here after, and it has not forgotten you. There are letters waiting for you out there, left in leaf and stone by people you will never meet, in a language the cities never learned. You go in under the trees and something old takes notice, the way an old friend takes notice: without any surprise at all.
+To be a Druid is to see yourself as part of a greater thing. A Druid studies a cosmos made of order and chaos, experiences it, embodies it, and searches for what is not yet understood. You follow the air directing the storm. You put your hands in the soil and smell its nutrients. You feed the cub until it becomes a wolf. Life is not learned from a book. It is lived, entered, and learned through being there.
 
-Your craft is attention. You can sit still long enough to hear a forest change its mind. You know what the crows are arguing about, which silence means rain and which silence means run. People call what you do magic. Most of it is listening. The rest the world does for you, because you ask the way it likes to be asked.
-
-And when asking is not enough, you have shapes. You watched the wolf until you could be the wolf. Every form you wear was learned like a friendship, by walking beside it season after season, and the wild lends you its bodies the way a friend lends a coat. Keep such company long enough and you begin to keep its calendar. Mountains count in winters. Forests count in centuries. So, in time, will you.
+You are not a watchful observer. You are an enthusiastic participant. Experiment and experience become one. Observer and observed become the same thing. The search changes you. You have glimpsed the connection among living things, and you have let the world fill you. You were the wolf feeding the cub, the eagle riding the storm, the warg smelling the ground, because you understood exactly what they are, and that made you aware of what you are. The world is not a catalogue. It is an experiment in progress, and you are part of the apparatus.
 ```
 
-**LAND_DESCRIPTION** (fresh, this Dialog):
+**LAND_DESCRIPTION**:
 
 ```
-There is an old understanding between people and the places that feed them. Most have let it lapse. You keep it. You learn each country the way you would learn a house you are welcomed in: where the water runs, what the soil is owed, what may be taken, what must be left. And a place notices being known. Rest in it and it restores you. Stand your ground and the ground stands with you.
+You learn about this land, and the lands beyond the horizon. You learn where water runs after rain, which grasses return first, why foxes hunt rabbits, and how a field dies when one small insect disappears.
 
-The land keeps you back. Green things part to let you through. Poison forgets your name. Fear finds nothing in you to hold. Even the beast, even the briar, turns aside rather than strike the one who remembered the terms. Nothing was ever signed. Nothing needed to be. That is what keeping faith means.
+The Circle of the Land studies habitat as a living system. Every answer creates another question. Every connection opens another investigation. Your Circle studies and shares this knowledge to preserve the natural order. You do not guard nature because it is innocent. You guard the experiment because you understand how much disappears when it is broken.
 ```
 
-**MOON_DESCRIPTION** (fresh, this Dialog):
+**MOON_DESCRIPTION**:
 
 ```
-The moon is never the same two nights running, and it has never once been anything but the moon. That is the lesson you took to heart. You change the way it changes: wholly, openly, on no schedule but your own necessity, and without ever losing the thread of yourself.
+Your study begins with tracks. Not just the shape of the paw, but the distance between them, the weight in the mud, the moment the animal stopped and looked back. The Circle of the Moon studies the animal from inside. You learn hunger, caution, territory, and the need to run. There is no honest way to observe a living thing without being changed by it.
 
-Others wear a shape the way they wear a mask. You wear yours the way the moon wears a phase. Wolf, bear, something vast, something with no blood in it at all: each one is true while it lasts, because the constant was never the body. And you keep the night's whole company. There is silver in the dark, and there are teeth in it, and you answer for both.
+Your Circle studies change, difference, and the connections among all living things. You learn that every form belongs to one tree of life. The observation then takes you: fur, muscle, talon, scale. You try not to ask why it is so easy for you to understand the beast, or whether, after changing, you will still want to return.
 ```
 
-**SEA_DESCRIPTION** (fresh, this Dialog):
+**SEA_DESCRIPTION**:
 
 ```
-The land can be lived with. The sea cannot, and never lies about it. It feeds a whole coast and drowns it with the same water. That is why you went to it: of all the wild things, it is the one that has never once pretended to be tame, and you loved it for that.
+Life began in the sea. Life remains in motion. What becomes static drowns. You study currents, flux, cycles, migration, and the first invisible difference that becomes a storm. The sea is ever changing. It is the oldest experiment. You learned to flow with it.
 
-You came back with its weather in you. Fog follows you like a dog. Thunder waits behind your teeth. Cold and lightning pass you by, the way a storm spares its own. And when you finally open your hands, the wave does what the sea has always done: one water, feeding your people and breaking what stands against them, with no hatred in it anywhere.
+The Circle of the Sea studies change at its largest scale. You learn that calm is not kindness and violence is not anger. Water follows forces. You let those forces shape you, until adapting becomes instinct. You breathe where others cannot, move as the current moves, and bring the sea ashore. You become one with the sea, and you guide it.
 ```
 
-**STARS_DESCRIPTION** (fresh, this Dialog):
+**STARS_DESCRIPTION**:
 
 ```
-One wilderness sits beyond every axe and every wall, and it comes out at dusk. Shepherds learned to read it before anyone read anything else: sow when this rises, sail when that one sets. It is the oldest of the wild places, and the quietest, and you kept its first literacy alive. You watched until the watching became a map.
+At dusk, the first stars appear before the eye that looks up. One becomes two, two become a pattern, and the universe slowly opens for you. And you open yourself to the universe. You are one of the wanderers: a living thing that looks up from a small world and discovers that it, too, is moving through the dark. The light you watch began before your ancestors had names.
 
-The sky repays a patient reader. It tells you, a breath early, which way luck is about to lean. It lends you its figures the way the forest lends its beasts: an archer, a chalice, a dragon, drawn on you in light. Watch anything long enough, with enough love, and you begin to take on its nature. You have watched the night for years. That is why you shine.
+Some stars are more than fires. They are principles made visible, ordered by influence and omen. You study the heavens to learn the patterns by which to guide your own life. You become infinite by discovering how much world can fit inside one observing life. You are the cosmos looking at itself.
 ```
 
 ---
 
 ## 🕊️ Vox report
 
-**The choice made.** The Druid's core fantasy is **the elder belonging,
-sharpened to membership through attention**: the wild is not scenery but an
-older society you never left, your craft is attention paid so long that the
-world answers, and its shapes are lent to you like a friend's coat. The 2024
-rules were verified to establish it: Wisdom casting and "drawing on the
-power of the natural world" (attention, rewarded), Druidic's hidden letters
-(membership), Wild Shape's forms "you have learned" (acquaintance, not
-confession), Wild Resurgence's one currency, and Archdruid's slowed ageing
-(the wild adopting your clock). The tone register is **nature writing, the
-walker's field diary**: sentences at walking pace, concrete senses, warmth
-without awe, with one deliberate geological shift in the class text's
-closing tricolon. Each Circle refracts the conversation: Land is the place
-that answers (the covenant candidate, housed where Nature's Sanctuary funds
-it), Moon is the change that stays itself (the honesty candidate, reframed
-and anchored by Moonbeam's own rules), Sea is the wild that signs nothing,
-Stars is the wilderness overhead, read until the reader begins to shine.
+**The working choice.** The Druid's core fantasy is **study that changes the
+participant**: an investigator enters an experiment, understands the world
+through attention and empathy, and eventually embodies what they have studied.
+Learning receives an answer; study tests what is not yet known. The
+2024 rules establish it through studying mystical forces, Wisdom-powered
+comprehension, Magician's investigation bonus, Druidic's learned symbols,
+Wild Shape's learned and revisable forms, Wild Resurgence's exchange between
+spell knowledge and embodiment, and Beast Spells' retention of personality and
+memory. The register is **documentary natural history with mythic scale**:
+exploratory, concrete, patient, and capable of wonder without becoming a
+sermon. Circles are fields of inquiry and peer practices. Land investigates
+habitat and succession, Moon animal behaviour and transformation, Sea force
+and flux, and Stars pattern, wanderers, and celestial Ideals.
 
 **The strongest rival.** Candidate C, the forgotten treaty (Mononoke,
 Nausicaä, the Lorax, Leopold): rejected at class level because no core
@@ -430,16 +453,16 @@ promise what the sheet never delivers; preserved at Circle level, where the
 Land's features pay the fantasy in full. Candidate B (the wild as the true
 self) was cut harder: Wild Shape's own wording makes forms learned rather
 than revealed, the Barbarian's Wild Heart already owns the inner wild, and
-self-authorship is the Dragons' reserved ground; it survives at the Moon as
-change-that-stays-itself.
+self-authorship is the Dragons' reserved ground. It survives at the Moon as
+transformation through understanding, not as a hidden animal identity.
 
 **Open questions for Julio.**
 
-1. **The class close** ("Mountains count in winters. Forests count in
-   centuries. So, in time, will you.") spends its last line on Archdruid's
-   level-20 ageing, on the Fighter's "When Death comes for you, it will not
-   collect" precedent. Confirm the reach is wanted at class level.
-2. **The Moon's teeth.** The council kept the night's predatory side
+1. **The documentary register.** Land, Moon, Sea, and Stars now have distinct
+   observational voices. The references to Attenborough, Félix Rodríguez de
+   la Fuente, and Sagan are tonal coordinates only; the prose should remain
+   original and second-person.
+2. **The Moon's teeth.** The council keeps the night's predatory side
    ("there are teeth in it, and you answer for both") because Vampiric Touch
    sits on the Moon list. If the Moon should read purely silver, that
    sentence is the one to change, and the rules finding should be recorded
