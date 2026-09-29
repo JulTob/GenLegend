@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
 from AtlasVenustas import Chip
+from AtlasLusoris.Map_of_Weapon_Masteries import Plan_Masteries_On_Awaken
 
 
 GUILD = "Paladin"
@@ -177,7 +178,7 @@ def _lay_entry(
 		"and draw power from the pool to restore Hit Points, up to the maximum "
 		"remaining. "
 		"\n\nYou can also expend 5 Hit Points from the pool to remove the "
-		"<em>Poisoned</em> condition from the creature; those points don't also "
+		"*Poisoned* condition from the creature; those points don't also "
 		"restore Hit Points."
 		)
 
@@ -221,7 +222,7 @@ def _aura_courage_entry(
 			)
 	return (
 		f"You and friendly creatures within **{r} feet** of you can't be "
-		"<em>Frightened</em> while you are conscious."
+		"*Frightened* while you are conscious."
 		)
 
 
@@ -272,16 +273,6 @@ def _weapon_mastery_chip(
 			)
 
 
-def _apply_weapon_mastery(
-		char,
-		) -> None:
-	"""Decide the drills once, when the lesson awakens; readers only read them."""
-	from AtlasLusoris.Map_of_Weapon_Masteries import plan_masteries
-	plan_masteries(
-			char
-			)
-
-
 Weapon_Mastery = _core(
 		name="Weapon Mastery",
 		min_level=1,
@@ -293,7 +284,7 @@ Weapon_Mastery = _core(
 					_weapon_mastery_chip,
 					),
 				),
-		apply=_apply_weapon_mastery,
+		apply=Plan_Masteries_On_Awaken,
 		)
 
 Fighting_Style = _core(
@@ -310,9 +301,9 @@ Paladins_Smite = _core(
 		name="Paladin's Smite",
 		min_level=2,
 		description=(
-			"You always have the <em>Divine Smite</em> spell prepared. "
+			"You always have the *Divine Smite* spell prepared. "
 			"When you hit a target with a melee weapon or Unarmed Strike, "
-			"you can expend a Paladin spell slot to cast <em>Divine Smite</em> "
+			"you can expend a Paladin spell slot to cast *Divine Smite* "
 			"as part of that attack (no action required)."
 			),
 		)
@@ -343,7 +334,7 @@ Faithful_Steed = _core(
 		name="Faithful Steed",
 		min_level=5,
 		description=(
-			"You always have the <em>Find Steed</em> spell prepared. "
+			"You always have the *Find Steed* spell prepared. "
 			"You can cast it once without expending a spell slot, and you regain "
 			"the ability to do so when you finish a Long Rest. "
 			"\n\nThe steed is Celestial, Fey, or Fiendish (your choice), obeys your "
@@ -373,7 +364,7 @@ Abjure_Foes = _core(
 			"\n\n**Channel Divinity — Magic action.** "
 			"Choose creatures you can see within 60 feet. "
 			"Each target must succeed on a Wisdom saving throw against your Paladin "
-			"spell save DC or have the <em>Frightened</em> condition for 1 minute. "
+			"spell save DC or have the *Frightened* condition for 1 minute. "
 			"\n\nWhile frightened this way, a creature can do only one of the following "
 			"on its turn: move, take an action, or take a Bonus Action. "
 			"\n\nFrightened creatures repeat the save at the end of each of their turns, "
@@ -405,8 +396,8 @@ Restoring_Touch = _core(
 		description=(
 			"When you use Lay on Hands on a creature, you can expend 5 Hit Points "
 			"from the pool (without restoring HP) to end one of these conditions on it: "
-			"<em>Blinded, Charmed, Deafened, Frightened, Paralyzed,</em> or "
-			"<em>Stunned</em>. Spend 5 Hit Points for each additional condition removed."
+			"*Blinded, Charmed, Deafened, Frightened, Paralyzed,* or "
+			"*Stunned*. Spend 5 Hit Points for each additional condition removed."
 			),
 		)
 
@@ -431,11 +422,11 @@ Ancients_Oath_Spells = _ancients(
 		description=(
 			"You always have the following spells prepared:"
 			"\n\n"
-			"\n- **3rd:** <em>Ensnaring Strike, Speak with Animals</em>"
-			"\n- **5th:** <em>Misty Step, Moonbeam</em>"
-			"\n- **9th:** <em>Plant Growth, Protection from Energy</em>"
-			"\n- **13th:** <em>Ice Storm, Stoneskin</em>"
-			"\n- **17th:** <em>Commune with Nature, Tree Stride</em>"
+			"\n- **3rd:** *Ensnaring Strike, Speak with Animals*"
+			"\n- **5th:** *Misty Step, Moonbeam*"
+			"\n- **9th:** *Plant Growth, Protection from Energy*"
+			"\n- **13th:** *Ice Storm, Stoneskin*"
+			"\n- **17th:** *Commune with Nature, Tree Stride*"
 			"\n\n"
 			),
 		)
@@ -448,7 +439,7 @@ Natures_Wrath = _ancients(
 			"You call on the powers of nature to restrain a creature you can see "
 			"within 10 feet. The target must succeed on a Strength or Dexterity "
 			"saving throw (its choice) against your spell save DC or have the "
-			"<em>Restrained</em> condition until you use this feature again or until "
+			"*Restrained* condition until you use this feature again or until "
 			"the target succeeds on the save repeated at the end of each of its turns."
 			),
 		)
@@ -507,11 +498,11 @@ Devotion_Oath_Spells = _devotion(
 		description=(
 			"You always have the following spells prepared:"
 			"\n\n"
-			"\n- **3rd:** <em>Protection from Evil and Good, Shield of Faith</em>"
-			"\n- **5th:** <em>Aid, Zone of Truth</em>"
-			"\n- **9th:** <em>Beacon of Hope, Dispel Magic</em>"
-			"\n- **13th:** <em>Freedom of Movement, Guardian of Faith</em>"
-			"\n- **17th:** <em>Commune, Flame Strike</em>"
+			"\n- **3rd:** *Protection from Evil and Good, Shield of Faith*"
+			"\n- **5th:** *Aid, Zone of Truth*"
+			"\n- **9th:** *Beacon of Hope, Dispel Magic*"
+			"\n- **13th:** *Freedom of Movement, Guardian of Faith*"
+			"\n- **17th:** *Commune, Flame Strike*"
 			"\n\n"
 			),
 		)
@@ -535,7 +526,7 @@ Aura_of_Devotion = _devotion(
 		min_level=7,
 		description=(
 			"You and friendly creatures within the range of your Aura of Protection "
-			"can't be <em>Charmed</em> while you are conscious."
+			"can't be *Charmed* while you are conscious."
 			),
 		)
 
@@ -576,11 +567,11 @@ Glory_Oath_Spells = _glory(
 		description=(
 			"You always have the following spells prepared:"
 			"\n\n"
-			"\n- **3rd:** <em>Guiding Bolt, Heroism</em>"
-			"\n- **5th:** <em>Enhance Ability, Magic Weapon</em>"
-			"\n- **9th:** <em>Aura of Vitality, Protection from Energy</em>"
-			"\n- **13th:** <em>Compulsion, Freedom of Movement</em>"
-			"\n- **17th:** <em>Legend Lore, Yolande's Regal Presence</em>"
+			"\n- **3rd:** *Guiding Bolt, Heroism*"
+			"\n- **5th:** *Enhance Ability, Magic Weapon*"
+			"\n- **9th:** *Aura of Vitality, Protection from Energy*"
+			"\n- **13th:** *Compulsion, Freedom of Movement*"
+			"\n- **17th:** *Legend Lore, Yolande's Regal Presence*"
 			"\n\n"
 			),
 		)
@@ -666,11 +657,11 @@ Vengeance_Oath_Spells = _vengeance(
 		description=(
 			"You always have the following spells prepared:"
 			"\n\n"
-			"\n- **3rd:** <em>Bane, Hunter's Mark</em>"
-			"\n- **5th:** <em>Hold Person, Misty Step</em>"
-			"\n- **9th:** <em>Haste, Protection from Energy</em>"
-			"\n- **13th:** <em>Banishment, Dimension Door</em>"
-			"\n- **17th:** <em>Hold Monster, Scrying</em>"
+			"\n- **3rd:** *Bane, Hunter's Mark*"
+			"\n- **5th:** *Hold Person, Misty Step*"
+			"\n- **9th:** *Haste, Protection from Energy*"
+			"\n- **13th:** *Banishment, Dimension Door*"
+			"\n- **17th:** *Hold Monster, Scrying*"
 			"\n\n"
 			),
 		)
@@ -722,7 +713,7 @@ Avenging_Angel = _vengeance(
 			"\n- **Frightening Aura.** Whenever an enemy starts its turn in a "
 			"30-foot Emanation originating from you, it must make a Wisdom saving "
 			"throw against your spell save DC. On a failed save, the target has the "
-			"<em>Frightened</em> condition for 1 minute. On a successful save, the "
+			"*Frightened* condition for 1 minute. On a successful save, the "
 			"target is immune to this aura for 24 hours."
 			"\n\n"
 			"Once you use this feature, you can't use it again until you finish "

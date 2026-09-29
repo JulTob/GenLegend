@@ -752,6 +752,21 @@ def plan_masteries(
 			)
 
 
+def Plan_Masteries_On_Awaken(
+		char: Any,
+		) -> None:
+	"""
+	The Weapon Mastery Training's apply step, shared by every Guild.
+
+	Decide the drills once, when the lesson awakens; readers only read
+	them (Decree 0009, point 7). One definition for the five Guilds that
+	train masteries, so they cannot drift apart (review of #97).
+	"""
+	plan_masteries(
+			char
+			)
+
+
 def planned_masteries(
 		char: Any,
 		n: int,

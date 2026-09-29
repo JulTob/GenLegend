@@ -501,7 +501,7 @@ Greater_Divine_Intervention = _core(
 		min_level=20,
 		description=(
 			"You can call on even more powerful divine intervention. When you "
-			"use your Divine Intervention feature, you can choose <em>Wish</em> "
+			"use your Divine Intervention feature, you can choose *Wish* "
 			"when you select a spell. If you do so, you can't use Divine "
 			"Intervention again until you finish **2d4 Long Rests**."
 			),
@@ -520,11 +520,11 @@ Life_Domain_Spells = _life(
 			"You always have the following spells prepared. They don't count "
 			"against the number of spells you can prepare with Spellcasting."
 			"\n\n"
-			"\n- **3rd:** <em>Aid, Bless, Cure Wounds, Lesser Restoration</em>"
-			"\n- **5th:** <em>Prayer of Healing, Mass Healing Word</em>"
-			"\n- **9th:** <em>Revivify, Mass Cure Wounds</em>"
-			"\n- **13th:** <em>Aura of Life, Death Ward</em>"
-			"\n- **17th:** <em>Greater Restoration, Heal</em>"
+			"\n- **3rd:** *Aid, Bless, Cure Wounds, Lesser Restoration*"
+			"\n- **5th:** *Prayer of Healing, Mass Healing Word*"
+			"\n- **9th:** *Revivify, Mass Cure Wounds*"
+			"\n- **13th:** *Aura of Life, Death Ward*"
+			"\n- **17th:** *Greater Restoration, Heal*"
 			"\n\n"
 			),
 		)
@@ -586,10 +586,10 @@ Light_Domain_Spells = _light(
 			"You always have the following spells prepared. They don't count "
 			"against the number of spells you can prepare with Spellcasting."
 			"\n\n"
-			"\n- **3rd:** <em>Burning Hands, Faerie Fire, Scorching Ray, See Invisibility</em>"
-			"\n- **5th:** <em>Daylight, Fireball</em>"
-			"\n- **9th:** <em>Arcane Eye, Wall of Fire</em>"
-			"\n- **13th:** <em>Flame Strike, Scrying</em>"
+			"\n- **3rd:** *Burning Hands, Faerie Fire, Scorching Ray, See Invisibility*"
+			"\n- **5th:** *Daylight, Fireball*"
+			"\n- **9th:** *Arcane Eye, Wall of Fire*"
+			"\n- **13th:** *Flame Strike, Scrying*"
 			"\n\n"
 			),
 		)
@@ -663,10 +663,10 @@ Trickery_Domain_Spells = _trickery(
 			"You always have the following spells prepared. They don't count "
 			"against the number of spells you can prepare with Spellcasting."
 			"\n\n"
-			"\n- **3rd:** <em>Charm Person, Disguise Self, Invisibility, Pass without Trace</em>"
-			"\n- **5th:** <em>Hypnotic Pattern, Nondetection</em>"
-			"\n- **9th:** <em>Confusion, Dimension Door</em>"
-			"\n- **13th:** <em>Dominate Person, Modify Memory</em>"
+			"\n- **3rd:** *Charm Person, Disguise Self, Invisibility, Pass without Trace*"
+			"\n- **5th:** *Hypnotic Pattern, Nondetection*"
+			"\n- **9th:** *Confusion, Dimension Door*"
+			"\n- **13th:** *Dominate Person, Modify Memory*"
 			"\n\n"
 			),
 		)
@@ -734,10 +734,10 @@ War_Domain_Spells = _war(
 			"You always have the following spells prepared. They don't count "
 			"against the number of spells you can prepare with Spellcasting."
 			"\n\n"
-			"\n- **3rd:** <em>Guiding Bolt, Magic Weapon, Shield of Faith, Spiritual Weapon</em>"
-			"\n- **5th:** <em>Crusader's Mantle, Spirit Guardians</em>"
-			"\n- **9th:** <em>Fire Shield, Freedom of Movement</em>"
-			"\n- **13th:** <em>Hold Monster, Steel Wind Strike</em>"
+			"\n- **3rd:** *Guiding Bolt, Magic Weapon, Shield of Faith, Spiritual Weapon*"
+			"\n- **5th:** *Crusader's Mantle, Spirit Guardians*"
+			"\n- **9th:** *Fire Shield, Freedom of Movement*"
+			"\n- **13th:** *Hold Monster, Steel Wind Strike*"
 			"\n\n"
 			),
 		)
@@ -772,7 +772,7 @@ War_Gods_Blessing = _war(
 		description=(
 			"\n\n**Channel Divinity.** "
 			"You can expend a use of your Channel Divinity to cast "
-			"<em>Shield of Faith</em> or <em>Spiritual Weapon</em> without "
+			"*Shield of Faith* or *Spiritual Weapon* without "
 			"expending a spell slot. When you cast the spell this way, it "
 			"doesn't require Concentration, and it lasts for 1 minute."
 			),

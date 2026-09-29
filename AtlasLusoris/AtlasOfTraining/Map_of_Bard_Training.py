@@ -738,8 +738,8 @@ Words_of_Creation = _core(
 	min_level=20,
 	description=_Sung(
 		"You are no longer an instrument. You are the conductor.",
-		"You have mastered two of the Words of Creation: <em>Power Word Heal</em> "
-		"and <em>Power Word Kill</em>. These spells are always prepared for you "
+		"You have mastered two of the Words of Creation: *Power Word Heal* "
+		"and *Power Word Kill*. These spells are always prepared for you "
 		"and don't count against your number of prepared spells. \n\n"
 		"When you cast either spell, you can target a second creature with the "
 		"spell if that creature is within 10 feet of the first target."
@@ -828,7 +828,7 @@ Beguiling_Magic = _glamour(
 	min_level=3,
 	description=_Sung(
 		"Adore me or dread me. Either way, you are mine.",
-		"You always have the <em>Charm Person</em> and <em>Mirror Image</em> "
+		"You always have the *Charm Person* and *Mirror Image* "
 		"spells prepared. \n\n"
 		"Immediately after you cast an Enchantment or Illusion spell using a "
 		"spell slot, you can cause a creature you can see within 60 feet to make "
@@ -859,8 +859,8 @@ Mantle_of_Majesty = _glamour(
 	min_level=6,
 	description=_Sung(
 		"Say no, then. I'll wait.",
-		"You always have the <em>Command</em> spell prepared. \n\n"
-		"**Bonus Action:** cast <em>Command</em> without expending a spell "
+		"You always have the *Command* spell prepared. \n\n"
+		"**Bonus Action:** cast *Command* without expending a spell "
 		"slot and assume an unearthly appearance for 1 minute or until your "
 		"Concentration ends. While this lasts, you can cast Command as a Bonus "
 		"Action on each turn (no slot required). \n\n"

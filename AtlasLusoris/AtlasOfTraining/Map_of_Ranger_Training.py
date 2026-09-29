@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
 from AtlasVenustas import Chip
+from AtlasLusoris.Map_of_Weapon_Masteries import Plan_Masteries_On_Awaken
 
 
 GUILD = "Ranger"
@@ -337,7 +338,7 @@ def _favored_entry(
 			char
 			)
 	return (
-		"You always have the <em>Hunter's Mark</em> spell prepared. "
+		"You always have the *Hunter's Mark* spell prepared. "
 		f"You can cast it a number of times equal to your Favored Enemy uses "
 		f"(currently **{uses}**) without expending a spell slot. "
 		"You regain all expended uses when you finish a Long Rest."
@@ -514,8 +515,8 @@ def _tireless_entry(
 			)
 	times = "1 time" if uses == 1 else f"{uses} times"
 	return (
-		f"<em>Magic action:</em>\n\n"
-		f"You gain <em>Temporary Hit Points</em> equal to "
+		f"*Magic action:*\n\n"
+		f"You gain *Temporary Hit Points* equal to "
 		f"**1d8 {_signed_bonus(mod)}**. "
 		f"You can use this action **{times}**. "
 		f"You regain all expended uses when you finish a **Long Rest**."
@@ -546,8 +547,8 @@ def _natures_veil_entry(
 			)
 	times = "1 time" if uses == 1 else f"{uses} times"
 	return (
-		"<em>Bonus Action:</em>\n\n"
-		"You draw on nature's power to become <em>Invisible</em> "
+		"*Bonus Action:*\n\n"
+		"You draw on nature's power to become *Invisible* "
 		"until the end of your next turn. "
 		f"You can use this feature **{times}**. "
 		"You regain all expended uses when you finish a **Long Rest**."
@@ -667,16 +668,6 @@ Favored_Enemy = _core(
 				),
 		)
 
-def _apply_weapon_mastery(
-		char,
-		) -> None:
-	"""Decide the drills once, when the lesson awakens; readers only read them."""
-	from AtlasLusoris.Map_of_Weapon_Masteries import plan_masteries
-	plan_masteries(
-			char
-			)
-
-
 Weapon_Mastery = _core(
 		name="Weapon Mastery",
 		min_level=1,
@@ -688,7 +679,7 @@ Weapon_Mastery = _core(
 					_weapon_mastery_chip,
 					),
 				),
-		apply=_apply_weapon_mastery,
+		apply=Plan_Masteries_On_Awaken,
 		)
 
 Deft_Explorer = _core(
@@ -747,7 +738,7 @@ Relentless_Hunter = _core(
 		min_level=13,
 		description=(
 			"Taking damage can't break your Concentration on "
-			"<em>Hunter's Mark</em>."
+			"*Hunter's Mark*."
 			),
 		)
 
@@ -769,7 +760,7 @@ Precise_Hunter = _core(
 		min_level=17,
 		description=(
 			"You have Advantage on attack rolls against the creature currently "
-			"marked by your <em>Hunter's Mark</em>."
+			"marked by your *Hunter's Mark*."
 			),
 		)
 
@@ -793,7 +784,7 @@ Foe_Slayer = _core(
 		min_level=20,
 		description=(
 			"You become an unparalleled hunter. "
-			"Your <em>Hunter's Mark</em> deals **1d10** extra damage instead "
+			"Your *Hunter's Mark* deals **1d10** extra damage instead "
 			"of 1d6."
 			),
 		)
@@ -876,11 +867,11 @@ Fey_Spells = _fey_wanderer(
 		description=(
 			"You always have the following spells prepared:"
 			"\n\n"
-			"\n- **3rd:** <em>Charm Person</em>"
-			"\n- **5th:** <em>Misty Step</em>"
-			"\n- **9th:** <em>Summon Fey</em>"
-			"\n- **13th:** <em>Dimension Door</em>"
-			"\n- **17th:** <em>Mislead</em>"
+			"\n- **3rd:** *Charm Person*"
+			"\n- **5th:** *Misty Step*"
+			"\n- **9th:** *Summon Fey*"
+			"\n- **13th:** *Dimension Door*"
+			"\n- **17th:** *Mislead*"
 			"\n\n"
 			),
 		)
@@ -915,7 +906,7 @@ Fey_Reinforcements = _fey_wanderer(
 		name="Fey Reinforcements",
 		min_level=11,
 		description=(
-			"You can cast <em>Summon Fey</em> without a material component. "
+			"You can cast *Summon Fey* without a material component. "
 			"\n\nYou can also cast it once without expending a spell slot, and "
 			"you regain this use when you finish a Long Rest. "
 			"\n\nWhenever you start casting the spell, you can modify it so that "
@@ -928,10 +919,10 @@ Misty_Wanderer = _fey_wanderer(
 		name="Misty Wanderer",
 		min_level=15,
 		description=(
-			"You can cast <em>Misty Step</em> without expending a spell slot a "
+			"You can cast *Misty Step* without expending a spell slot a "
 			"number of times equal to your Wisdom modifier (minimum once). "
 			"You regain all expended uses when you finish a Long Rest. "
-			"\n\nIn addition, whenever you cast <em>Misty Step</em>, you can bring "
+			"\n\nIn addition, whenever you cast *Misty Step*, you can bring "
 			"one willing creature you can see within 5 feet of you to an unoccupied "
 			"space within 5 feet of your destination."
 			),
@@ -962,11 +953,11 @@ Gloom_Spells = _gloom_stalker(
 		description=(
 			"You always have the following spells prepared:"
 			"\n\n"
-			"\n- **3rd:** <em>Disguise Self</em>"
-			"\n- **5th:** <em>Rope Trick</em>"
-			"\n- **9th:** <em>Fear</em>"
-			"\n- **13th:** <em>Greater Invisibility</em>"
-			"\n- **17th:** <em>Seeming</em>"
+			"\n- **3rd:** *Disguise Self*"
+			"\n- **5th:** *Rope Trick*"
+			"\n- **9th:** *Fear*"
+			"\n- **13th:** *Greater Invisibility*"
+			"\n- **17th:** *Seeming*"
 			"\n\n"
 			),
 		)
@@ -1030,7 +1021,7 @@ Hunters_Lore = _hunter(
 		min_level=3,
 		description=(
 			"You can call on the knowledge of your most formidable foes. "
-			"While a creature is marked by your <em>Hunter's Mark</em>, you know "
+			"While a creature is marked by your *Hunter's Mark*, you know "
 			"whether it has any Immunities, Resistances, or Vulnerabilities, "
 			"and what they are."
 			),
