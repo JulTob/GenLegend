@@ -2,7 +2,7 @@
 
 - **Type:** design · tagkit · campaign
 - **Priority:** 🟠 high *(every family port after it is written once, in the final shape)*
-- **Status:** Open — a proposal with evidence (Dialog 0027); every station waits for Julio's word
+- **Status:** Open — stations 0 to 3 landed on PR #102 (2026-10-05), station 4 landing family by family; stations 5 and up on the rulings below
 - **Owner:** unclaimed (minted by Claude on Julio's word, 2026-10-05)
 - **Route to:** Architecture (Druid) · Contracts (Warlock) · Methods (Wizard) · Simplicity (Monk) · Safety (Paladin) · Testing (Rogue) · Julio
 - **Parent:** —
@@ -54,7 +54,7 @@ Every Tag file is self-contained: identity and words, Bases, gates, facts, choic
 | 2 | `SECTION` Report on each family root; the walk fills a missing section from the Form | QST-0144.3 | station 1 | identical (sheet 343) |
 | 3 | Words: `@Flag( "Display Name" )` for every lasting effect; maps read words, not names | QST-0144.4 | station 0; ruling 6 | identical |
 | 4 | Catalogues are Pin Fields: `Declared_Lesson`, `Declared_Feat`, `Declared_Invocation`, `Declared_Guild`, the small ones | QST-0144.5 | station 1; ruling 7 | identical |
-| 5 | Choices inside the offering Tag; Dice Bags named by the Tag | QST-0144.6 | station 4; ruling 8 | declared diff |
+| 5 | Choices inside the offering Tag; Dice Bags named by the Tag | QST-0144.6 | station 4; ruling 8 (given in full, 2026-10-05: *"Apply the suggested Dice Bag. more consistent"*) | declared diff, accepted in advance |
 | 6 | The one-file fixture, `scripts/verify_one_file.py` | QST-0144.7 | station 4 | new gate, green |
 | 7+ | The family ports in the final shape: QST-0142 stations 3b to 11, QST-0091.1 to .4 | existing questae | stations 1 to 6 | per station |
 | ∞ | ~~Doctrine resync~~ closed: Julio deletes the Doctrine (2026-10-05); the TopKit Guides, the Specification and the code are the authorities. Nothing is owed upstream | QST-0093.6 · QST-0093.10 | — | none |
