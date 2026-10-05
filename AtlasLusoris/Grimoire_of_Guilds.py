@@ -24,6 +24,11 @@ Thought pattern (read this before the code)
 	   marks the Character when more than one Guild is present.
 	5. Level lessons are Training Tags (TrainingKit) — you train in a
 	   Guild.  Legacy Map_of_Classes/Training still fills unmigrated ranks.
+	6. The catalogue is a Pin Field.  Make_Guild pins each Guild with
+	   Declared_Guild and Make_Specialization pins each Shape with
+	   Declared_Specialization; GUILDS, SPECIALIZATIONS_BY_GUILD and
+	   guild.SPECIALIZATIONS are live views of those Fields, so nothing
+	   is listed twice (QST-0144.5).
 
 Usage
 	from AtlasLusoris.GuildKit import Rogue, Apply_Guild, Join_Guild, Wise
@@ -38,9 +43,8 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from collections.abc import Mapping
-from types import MappingProxyType
 
-from TopKit import Action, Flag, Imprint, Pin, Pre, Tag, Tags, Underlay
+from TopKit import Action, Flag, Imprint, Pin, Pre, Record, Tag, Tags, Underlay
 
 from AtlasActorLudi.CharactersKit import Report_Of
 
@@ -87,6 +91,35 @@ PARITY_BONUS = 1.25
 # ---------------------------------------------------------------------------
 
 
+class _Specializations_Of:
+	"""
+	``Fighter.SPECIALIZATIONS``: that Guild's Shapes, read live off the Field.
+
+	A descriptor on the Guild root rather than a tuple written onto each Guild
+	as its Shapes are declared, so ``Declared_Specialization[:]`` stays the
+	only list.  Read on a concrete Guild it answers that Guild's
+	Specializations in declaration order; read on the root, or on a
+	Specialization itself, it answers nothing.
+	"""
+
+	def __get__(
+			descriptor,
+			instance,
+			owner=None,
+			):
+		if owner is None:
+			owner = type(
+					instance
+					)
+			#-- ``if not owner`` would ask whether the Tag's Field is empty.
+
+		return tuple(
+				tag
+				for tag in Declared_Specialization[:]
+				if tag.GUILD is owner
+				)
+
+
 @Flag
 class Guild(Tag):
 	"""
@@ -114,6 +147,8 @@ class Guild(Tag):
 
 	NAME = "Guild"
 	DESCRIPTION = ""
+	SPECIALIZATIONS = _Specializations_Of()
+		#-- Live: the Shapes pinned under this Guild, never a stored tuple.
 
 	@Action
 	@Underlay
@@ -199,10 +234,7 @@ class Guild(Tag):
 		"""Allow several Guilds — enough room for multiclass dips."""
 		return sum(
 				target in tag
-				for tag in globals().get(
-						"GUILDS",
-						{},
-						).values()
+				for tag in Declared_Guild[:]
 				) < MAX_GUILDS
 
 # ---------------------------------------------------------------------------
@@ -456,7 +488,404 @@ class Multiclassed(Tag):
 # ---------------------------------------------------------------------------
 
 
-_GUILD_DECLARATIONS: list[type[Guild]] = []
+def _ability_key(
+		key,
+		role: str,
+		) -> str:
+	"""One ability key, upper-cased, or the reason it is not one."""
+	if (
+			isinstance(
+					key,
+					str,
+					)
+			and key.upper() in ABILITY_KEYS
+			):
+		return key.upper()
+
+	raise ValueError(
+			f"Declared_Guild: unknown {role} ability {key!r}; "
+			f"expected one of {', '.join( ABILITY_KEYS )}."
+			)
+
+
+def _picks(
+		count,
+		label: str,
+		pool: int | None = None,
+		) -> int:
+	"""A non-negative pick count, within ``pool`` when there is one."""
+	if (
+			isinstance(
+					count,
+					bool,
+					)
+			or not isinstance(
+					count,
+					int,
+					)
+			or count < 0
+			):
+		raise ValueError(
+				f"Declared_Guild: {label} must be a non-negative integer, "
+				f"not {count!r}."
+				)
+
+	if pool is not None and count > pool:
+		raise ValueError(
+				f"Declared_Guild: {label} must fit the declared Tool pool."
+				)
+
+	return count
+
+
+def _text(
+		value,
+		label: str,
+		) -> str:
+	"""Non-empty text, or the reason it is not."""
+	if (
+			not isinstance(
+					value,
+					str,
+					)
+			or not value.strip()
+			):
+		raise ValueError(
+				f"Declared_Guild: {label} must be non-empty text, not {value!r}."
+				)
+
+	return value
+
+
+@Pin
+class Declared_Guild(Tag):
+	"""
+	Root Pin for the Guilds the generator knows.
+
+	``Make_Guild`` builds a Guild Tag with only its behaviour, then pins it
+	here with its chassis.  Each Record below validates one constant and lands
+	it on the Guild as a Report (``Rogue.HIT_DIE``, ``Bard.TOOLS``), where a
+	Specialization inherits it.  ``Declared_Guild[:]`` is the catalogue, in
+	declaration order; ``GUILDS`` is a live view of it by name.  No second
+	list is kept.
+	"""
+
+	@Pre
+	def Guild_Tag_Only(
+			target,
+			):
+		return (
+			isinstance(
+					target,
+					type,
+					)
+			and issubclass(
+					target,
+					Guild,
+					)
+			and target is not Guild
+			)
+
+	@Record
+	def PRIMARY(
+			target,
+			*,
+			primary,
+			) -> str:
+		return _ability_key(
+				primary,
+				"primary",
+				)
+
+	@Record
+	def SECONDARY(
+			target,
+			*,
+			secondary=None,
+			) -> str | None:
+		if secondary is None:
+			return None
+
+		return _ability_key(
+				secondary,
+				"secondary",
+				)
+
+	@Record
+	def ABILITY_PREFERENCE(
+			target,
+			*,
+			primary,
+			secondary=None,
+			alternate_primary=None,
+			) -> tuple[str, ...]:
+		"""What the Guild wants, in order: primary, secondary, alternate."""
+		return tuple(
+				dict.fromkeys(
+						_ability_key(
+								key,
+								role,
+								)
+						for key, role in (
+								(
+									primary,
+									"primary",
+									),
+								(
+									secondary,
+									"secondary",
+									),
+								(
+									alternate_primary,
+									"alternate primary",
+									),
+								)
+						if key
+						)
+				)
+
+	@Record
+	def HIT_DIE(
+			target,
+			*,
+			hit_die,
+			) -> int:
+		if hit_die not in {
+				6,
+				8,
+				10,
+				12,
+				}:
+			raise ValueError(
+					f"Declared_Guild: unusual hit die {hit_die!r}; "
+					"a Guild rolls a d6, d8, d10 or d12."
+					)
+
+		return hit_die
+
+	@Record
+	def SAVES(
+			target,
+			*,
+			saves,
+			) -> tuple[str, str]:
+		resolved = tuple(
+				saves or ()
+				)
+
+		if len(
+				resolved
+				) != 2:
+			raise ValueError(
+					"Declared_Guild: exactly two saving-throw proficiencies, "
+					f"not {resolved!r}."
+					)
+
+		return tuple(
+				_ability_key(
+						save,
+						"save",
+						)
+				for save in resolved
+				)
+
+	@Record
+	def SKILL_PICKS(
+			target,
+			*,
+			skill_picks=2,
+			) -> int:
+		return _picks(
+				skill_picks,
+				"skill picks",
+				)
+
+	@Record
+	def TOOLS(
+			target,
+			*,
+			tools=(),
+			) -> tuple[Capability_Definition, ...]:
+		resolved = tuple(
+				tools or ()
+				)
+
+		if not all(
+				isinstance(
+						tool,
+						Capability_Definition,
+						)
+				for tool in resolved
+				):
+			raise TypeError(
+					"Declared_Guild: tools require Capability_Definition values."
+					)
+
+		return resolved
+
+	@Record
+	def TOOL_PICKS(
+			target,
+			*,
+			tools=(),
+			tool_picks=0,
+			) -> int:
+		return _picks(
+				tool_picks,
+				"Tool picks",
+				pool=len(
+						tuple(
+								tools or ()
+								)
+						),
+				)
+
+	@Record
+	def MULTICLASS_TOOL_PICKS(
+			target,
+			*,
+			tools=(),
+			multiclass_tool_picks=0,
+			) -> int:
+		return _picks(
+				multiclass_tool_picks,
+				"multiclass Tool picks",
+				pool=len(
+						tuple(
+								tools or ()
+								)
+						),
+				)
+
+	@Record
+	def MULTICLASS_GAINS(
+			target,
+			*,
+			multiclass_gains=(),
+			) -> tuple[str, ...]:
+		"""What a dip into this Guild grants, as the sheet words it."""
+		return tuple(
+				_text(
+						gain,
+						"a multiclass gain",
+						)
+				for gain in tuple(
+						multiclass_gains or ()
+						)
+				)
+
+	@Record
+	def EDITION(
+			target,
+			*,
+			edition="2024",
+			) -> str:
+		return _text(
+				edition,
+				"the edition",
+				)
+
+	@Record
+	def HELPERS(
+			target,
+			*,
+			helpers=(),
+			) -> tuple[type[Tag], ...]:
+		"""The helper Tags the Guild is built on: vocation, armor, arms, leanings."""
+		resolved = tuple(
+				helpers or ()
+				)
+
+		for helper in resolved:
+			if not (
+					isinstance(
+							helper,
+							type,
+							)
+					and issubclass(
+							helper,
+							Tag,
+							)
+					and issubclass(
+							target,
+							helper,
+							)
+					):
+				raise ValueError(
+						f"Declared_Guild: {helper!r} is not a helper Tag "
+						f"{target.__name__} is built on."
+						)
+
+		return resolved
+
+	@Record
+	def SOURCE_TITLE(
+			target,
+			*,
+			source_title="Player's Handbook (2024)",
+			) -> str:
+		return _text(
+				source_title,
+				"the source title",
+				)
+
+	@Record
+	def SOURCE_KIND(
+			target,
+			*,
+			source_kind="official-reference",
+			) -> str:
+		return _text(
+				source_kind,
+				"the source kind",
+				)
+
+
+class Field_Index(Mapping):
+	"""
+	A read-only Mapping that is a live view of a Pin's Field.
+
+	``index`` reads the Field and keys it, and every read calls it again, so a
+	Tag is in the Mapping the moment it is pinned and the Field stays the only
+	catalogue.  ``GUILDS`` is one of these, keyed by NAME: the readers that
+	spell ``GUILDS[ name ]``, ``name in GUILDS`` or ``sorted( GUILDS )`` keep
+	their spelling and never hold a copy.
+	"""
+
+	__slots__ = (
+		"_index",
+		)
+
+	def __init__(
+			view,
+			index,
+			):
+		view._index = index
+
+	def __getitem__(
+			view,
+			key,
+			):
+		return view._index()[ key ]
+
+	def __iter__(
+			view,
+			):
+		return iter(
+				view._index()
+				)
+
+	def __len__(
+			view,
+			):
+		return len(
+				view._index()
+				)
+
+	def __repr__(
+			view,
+			) -> str:
+		return f"{type( view ).__name__}({dict( view )!r})"
 
 
 def _class_name(
@@ -496,45 +925,35 @@ def _validate_guild_construction(
 		name: str,
 		primary: str,
 		secondary: str | None = None,
-		hit_die: int,
-		saves: tuple[str, str],
+		alternate_primary: str | None = None,
 		) -> None:
+	"""
+	What Make_Guild itself builds the class from: a name, and ability keys
+	that name leaning helper Tags.  The chassis (hit die, saves, picks, tools,
+	source) is validated where it lands, in the Records of ``Declared_Guild``.
+	"""
 	if not name or not name.strip():
 		raise ValueError(
 				"Make_Guild: name is required."
 				)
-	primary = primary.upper()
-	if primary not in _LEANING_BY_ABILITY:
-		raise ValueError(
-				f"Make_Guild: unknown primary ability {primary!r}."
-				)
-	if secondary is not None:
-		secondary = secondary.upper()
-		if secondary not in _LEANING_BY_ABILITY:
+	for role, key in (
+			(
+				"primary",
+				primary,
+				),
+			(
+				"secondary",
+				secondary,
+				),
+			(
+				"alternate primary",
+				alternate_primary,
+				),
+			):
+		if key is not None and key not in _LEANING_BY_ABILITY:
 			raise ValueError(
-					f"Make_Guild: unknown secondary ability {secondary!r}."
+					f"Make_Guild: unknown {role} ability {key!r}."
 					)
-	if hit_die not in {
-			6,
-			8,
-			10,
-			12,
-			}:
-		raise ValueError(
-				f"Make_Guild: unusual hit die {hit_die!r}."
-				)
-	if len(
-			saves
-			) != 2:
-		raise ValueError(
-				"Make_Guild: exactly two saving-throw proficiencies."
-				)
-	for save in saves:
-		if save.upper() not in _LEANING_BY_ABILITY:
-			raise ValueError(
-					f"Make_Guild: unknown save {save!r}."
-					)
-
 
 
 def _ensure_guild_levels(
@@ -941,39 +1360,12 @@ def Make_Guild(
 		)
 	resolved_tools = tuple( tools )
 
-	if not all(
-		isinstance(
-			tool,
-			Capability_Definition,
-			)
-		for tool in resolved_tools
-		):
-		raise TypeError(
-			"Make_Guild: tools require Capability_Definition values."
-			)
-
-	if not (
-		0 <= tool_picks <= len( resolved_tools )
-		and 0 <= multiclass_tool_picks <= len( resolved_tools )
-		):
-		raise ValueError(
-			"Make_Guild: Tool picks must fit the declared Tool pool."
-			)
 	_validate_guild_construction(
 			name=name,
 			primary=primary,
 			secondary=secondary,
-			hit_die=hit_die,
-			saves=resolved_saves,
+			alternate_primary=resolved_alternate,
 			)
-	if (
-			resolved_alternate is not None
-			and resolved_alternate not in _LEANING_BY_ABILITY
-			):
-		raise ValueError(
-				f"Make_Guild: unknown alternate primary "
-				f"{resolved_alternate!r}."
-				)
 
 	armor_tags = _as_tag_tuple(
 			armor
@@ -1060,32 +1452,6 @@ def Make_Guild(
 					"Casting_Ability": _casting_ability_action(
 							name
 							),
-					"PRIMARY": primary,
-					"SECONDARY": secondary,
-					"ABILITY_PREFERENCE": tuple(
-							dict.fromkeys(
-									key
-									for key in (
-											primary,
-											secondary,
-											resolved_alternate,
-											)
-									if key
-									)
-							),
-					"HIT_DIE": hit_die,
-					"SAVES": resolved_saves,
-					"SKILL_PICKS": skill_picks,
-					"TOOLS": resolved_tools,
-					"TOOL_PICKS": tool_picks,
-					"MULTICLASS_TOOL_PICKS": multiclass_tool_picks,
-					"MULTICLASS_GAINS": tuple(
-							multiclass_gains
-							),
-					"EDITION": edition,
-					"HELPERS": helpers,
-					"SOURCE_TITLE": source_title,
-					"SOURCE_KIND": source_kind,
 					"Awaken": Awaken,
 					"primary_ability": primary_ability,
 					"__module__": __name__,
@@ -1102,9 +1468,27 @@ def Make_Guild(
 			guild_tag
 			)
 		#-- The Guild's name is a word: ``"Wizard" in char`` (QST-0144.4).
-	_GUILD_DECLARATIONS.append(
-			guild_tag
+	Declared_Guild(
+			guild_tag,
+			primary=primary,
+			secondary=secondary,
+			alternate_primary=resolved_alternate,
+			hit_die=hit_die,
+			saves=resolved_saves,
+			skill_picks=skill_picks,
+			tools=resolved_tools,
+			tool_picks=tool_picks,
+			multiclass_tool_picks=multiclass_tool_picks,
+			multiclass_gains=tuple(
+					multiclass_gains
+					),
+			edition=edition,
+			helpers=helpers,
+			source_title=source_title,
+			source_kind=source_kind,
 			)
+		#-- The chassis lands as Reports and the Guild joins the catalogue,
+		#-- ``Declared_Guild[:]``, in one act (QST-0144.5).
 	return guild_tag
 
 
@@ -1485,10 +1869,19 @@ Artificer = Make_Guild(
 		)
 
 
-GUILDS = {
-		tag.NAME: tag
-		for tag in _GUILD_DECLARATIONS
-		}
+def _guilds_by_name() -> dict[str, type[Guild]]:
+	"""The Guild Field, keyed by NAME, in declaration order."""
+	return {
+			tag.NAME: tag
+			for tag in Declared_Guild[:]
+			}
+
+
+GUILDS = Field_Index(
+		_guilds_by_name
+		)
+	#-- A live view of ``Declared_Guild[:]``: ``GUILDS[ "Rogue" ]`` is the Tag
+	#-- and ``sorted( GUILDS )`` the names, with no second list behind them.
 
 # Alias — sheet / Maps still say "class"
 CLASSES = GUILDS
@@ -1499,21 +1892,85 @@ CLASSES = GUILDS
 # ---------------------------------------------------------------------------
 
 
-_SPECIALIZATION_TAGS_BY_GUILD: dict[
-	str,
-	dict[
-		str,
-		type[Guild],
-		],
-	] = {}
-_SPECIALIZATION_NAMES_BY_GUILD: dict[
-	str,
-	tuple[str, ...],
-	] = {}
+@Pin
+class Declared_Specialization(Tag):
+	"""
+	Root Pin for the Specializations a Guild owns.
 
-SPECIALIZATIONS_BY_GUILD = MappingProxyType(
-	_SPECIALIZATION_NAMES_BY_GUILD
-	)
+	``Make_Specialization`` builds the Shape under its Guild, then pins it
+	here with that Guild, which lands as the Report ``Champion.GUILD``.
+	``Declared_Specialization[:]`` is the catalogue in declaration order;
+	``SPECIALIZATIONS_BY_GUILD``, ``Specialization_Choices`` and
+	``guild.SPECIALIZATIONS`` are live views of it.
+	"""
+
+	@Pre
+	def Guild_Shape_Only(
+			target,
+			):
+		return (
+			isinstance(
+					target,
+					type,
+					)
+			and issubclass(
+					target,
+					Guild,
+					)
+			and target is not Guild
+			and target not in Declared_Guild
+			)
+
+	@Record
+	def GUILD(
+			target,
+			*,
+			guild,
+			) -> type[Guild]:
+		"""The declared Guild this Shape specializes: a Tag, read on the Tag."""
+		if guild not in Declared_Guild:
+			raise ValueError(
+					f"Declared_Specialization: {target.__name__} needs a "
+					f"declared Guild, not {guild!r}."
+					)
+
+		if not issubclass(
+				target,
+				guild,
+				):
+			raise ValueError(
+					f"Declared_Specialization: {target.__name__} is not a "
+					f"Shape of {guild.NAME}."
+					)
+
+		return guild
+
+
+def _specialization_names_by_guild() -> dict[str, tuple[str, ...]]:
+	"""Guild NAME to its Specializations' NAMEs, read off the Field."""
+	names: dict[str, list[str]] = {}
+
+	for tag in Declared_Specialization[:]:
+		names.setdefault(
+				tag.GUILD.NAME,
+				[],
+				).append(
+				tag.NAME
+				)
+
+	return {
+			guild_name: tuple(
+					found
+					)
+			for guild_name, found in names.items()
+			}
+
+
+SPECIALIZATIONS_BY_GUILD = Field_Index(
+		_specialization_names_by_guild
+		)
+	#-- A live view of ``Declared_Specialization[:]`` by Guild name; the
+	#-- names stay names (making them Tags is another station).
 
 
 def Make_Specialization(
@@ -1549,7 +2006,7 @@ def Make_Specialization(
 	for the thing: a Warlock has a Patron, a Cleric a Domain, a Bard a
 	College.  Omit it and the layer runs on unannounced.
 	"""
-	if guild not in GUILDS.values():
+	if guild not in Declared_Guild:
 		raise ValueError(
 			"Make_Specialization requires a registered concrete Guild."
 			)
@@ -1559,12 +2016,10 @@ def Make_Specialization(
 			)
 
 	guild_name = guild.NAME
-	catalogue = _SPECIALIZATION_TAGS_BY_GUILD.setdefault(
-			guild_name,
-			{},
-			)
 
-	if name in catalogue:
+	if name in Specialization_Choices(
+			guild_name
+			):
 		raise ValueError(
 			f"{guild_name} already declares Specialization {name!r}."
 			)
@@ -1674,17 +2129,12 @@ def Make_Specialization(
 		tag
 		)
 		#-- The Specialization's name is a word: ``"Champion" in char``.
-	catalogue[
-		name
-		] = tag
-	guild.SPECIALIZATIONS = tuple(
-		catalogue.values()
+	Declared_Specialization(
+		tag,
+		guild=guild,
 		)
-	_SPECIALIZATION_NAMES_BY_GUILD[
-		guild_name
-		] = tuple(
-			catalogue
-			)
+		#-- The Shape joins the catalogue, ``Declared_Specialization[:]``, and
+		#-- ``guild.SPECIALIZATIONS`` answers it from there (QST-0144.5).
 
 	return tag
 
@@ -1735,7 +2185,7 @@ def Make_Casting_Variant(
 	keeps whatever its Variants do not claim.  ``extends`` and ``crunches``
 	describe this kind in prose, exactly as they do for a Specialization.
 	"""
-	if guild not in GUILDS.values():
+	if guild not in Declared_Guild:
 		raise ValueError(
 			"Make_Casting_Variant requires a registered concrete Guild."
 			)
@@ -2088,16 +2538,16 @@ def Specialization_Tag(
 		name: str,
 		) -> type[Guild]:
 	"""Resolve one Specialization Shape inside its Guild namespace."""
-	try:
-		return _SPECIALIZATION_TAGS_BY_GUILD[
-			guild_name
-			][
-			name
-			]
-	except KeyError as error:
-		raise KeyError(
-			f"{guild_name!r} has no Specialization {name!r}."
-			) from error
+	for tag in Declared_Specialization[:]:
+		if (
+			tag.GUILD.NAME == guild_name
+			and tag.NAME == name
+			):
+			return tag
+
+	raise KeyError(
+		f"{guild_name!r} has no Specialization {name!r}."
+		)
 
 
 def specializations_on(
@@ -2106,8 +2556,7 @@ def specializations_on(
 	"""Return the Guild-owned Specialization Shapes carried by a Character."""
 	return tuple(
 		tag
-		for catalogue in _SPECIALIZATION_TAGS_BY_GUILD.values()
-		for tag in catalogue.values()
+		for tag in Declared_Specialization[:]
 		if character in tag
 		)
 
@@ -2619,9 +3068,9 @@ def guilds_on(
 	"""Guild Tags currently carried by the Character."""
 	return tuple(
 			tag
-			for tag in GUILDS.values()
+			for tag in Declared_Guild[:]
 			if char in tag
-		)
+			)
 
 
 def Find_Guild(
@@ -2879,7 +3328,6 @@ _NOT_OURS = frozenset(
 		"annotations",
 		"Iterable",
 		"Mapping",
-		"MappingProxyType",
 		}
 	)
 
@@ -3052,6 +3500,307 @@ def _self_test():
 	assert len(
 			GUILDS
 			) == 13
+
+	# Station 4 (QST-0144.5): the catalogue is the Pin Field.  The Field
+	# holds the Guilds in declaration order, GUILDS is a live read-only view
+	# of it by name, and the accessors answer what the registry dict did.
+	from TopKit import TagCompositionError
+
+	declared = tuple(
+			Declared_Guild[:]
+			)
+	assert declared == (
+			Barbarian,
+			Bard,
+			Cleric,
+			Druid,
+			Fighter,
+			Monk,
+			Paladin,
+			Ranger,
+			Rogue,
+			Sorcerer,
+			Warlock,
+			Wizard,
+			Artificer,
+			)
+	assert tuple( GUILDS ) == tuple(
+			tag.NAME
+			for tag in declared
+			)
+	assert tuple( GUILDS.values() ) == declared
+	assert all(
+			GUILDS[ tag.NAME ] is tag
+			for tag in declared
+			)
+	assert GUILDS.get( "Nonesuch" ) is None
+	assert "Nonesuch" not in GUILDS
+	assert CLASSES is GUILDS
+	assert isinstance( GUILDS, Mapping )
+	assert not hasattr( GUILDS, "__setitem__" )
+	assert all(
+			tag not in Declared_Guild
+			for tag in (
+					Guild,
+					Mage,
+					Multiclassed,
+					)
+			)
+	# The chassis lands on the Guild as Reports, where a Shape inherits it.
+	assert Rogue.__dict__[ "HIT_DIE" ] == 8
+	assert "HIT_DIE" not in Guild.__dict__
+	assert Rogue.TOOLS == () and Rogue.TOOL_PICKS == 0
+	assert Bard.TOOLS == tuple( MUSICAL_INSTRUMENTS )
+	assert Bard.TOOL_PICKS == 3 and Bard.MULTICLASS_TOOL_PICKS == 1
+	assert Rogue.MULTICLASS_GAINS == (
+			"Hit Point Die",
+			"One skill",
+			"Thieves' Tools",
+			"Light armor",
+			)
+	assert Fighter.HELPERS == (
+			Martial,
+			HeavilyArmored,
+			MartialArms,
+			Strong,
+			Hardy,
+			Dexterous,
+			)
+	assert Rogue.SOURCE_TITLE == "Player's Handbook (2024)"
+	assert Rogue.SOURCE_KIND == "official-reference"
+	assert Artificer.SOURCE_TITLE == "Eberron: Forge of the Artificer (2024)"
+	assert Monk.SECONDARY == "WIS"
+	assert Monk.ABILITY_PREFERENCE == (
+			"DEX",
+			"WIS",
+			)
+	assert guild_hit_die( "Barbarian" ) == 12
+	assert guild_hit_die( "Nonesuch" ) is None
+	assert guild_saves( "Nonesuch" ) is None
+	# A chassis the Pin refuses never joins the catalogue.
+	try:
+		Make_Guild(
+				name="Probe",
+				primary="STR",
+				hit_die=7,
+				saves=(
+						"STR",
+						"CON",
+						),
+				armor=Unarmored,
+				weapons=SimpleArms,
+				vocation=Martial,
+				)
+	except TagCompositionError as error:
+		assert "unusual hit die" in str( error )
+	else:
+		raise AssertionError(
+				"Declared_Guild accepted a d7."
+				)
+	assert "Probe" not in GUILDS
+	assert len( GUILDS ) == 13
+
+	# The Specialization Field.  No kit is loaded when this module runs as a
+	# script, so declare one probe Shape and read it back through every
+	# accessor; the production catalogue is checked through GuildKit below.
+	assert tuple( Declared_Specialization[:] ) == ()
+	assert Specialization_Choices( "Rogue" ) == ()
+	assert Rogue.SPECIALIZATIONS == ()
+	probe_shape = Make_Specialization(
+			guild=Rogue,
+			name="Probe Shape",
+			module=__name__,
+			)
+	assert tuple( Declared_Specialization[:] ) == (
+			probe_shape,
+			)
+	assert probe_shape.GUILD is Rogue
+	assert probe_shape.GUILD_NAME == "Rogue"
+	assert probe_shape.HIT_DIE == 8
+		#-- A Shape inherits its Guild's chassis Reports.
+	assert probe_shape not in Declared_Guild
+	assert Rogue.SPECIALIZATIONS == (
+			probe_shape,
+			)
+	assert Wizard.SPECIALIZATIONS == ()
+	assert Guild.SPECIALIZATIONS == ()
+	assert Specialization_Choices( "Rogue" ) == (
+			"Probe Shape",
+			)
+	assert Specialization_Choices() == (
+			"Probe Shape",
+			)
+	assert dict( SPECIALIZATIONS_BY_GUILD ) == {
+			"Rogue": (
+				"Probe Shape",
+				),
+			}
+	assert Specialization_Tag(
+			"Rogue",
+			"Probe Shape",
+			) is probe_shape
+	try:
+		Specialization_Tag(
+				"Rogue",
+				"Nonesuch",
+				)
+	except KeyError as error:
+		assert "has no Specialization" in str( error )
+	else:
+		raise AssertionError(
+				"Specialization_Tag found a Shape nobody declared."
+				)
+	try:
+		Make_Specialization(
+				guild=Rogue,
+				name="Probe Shape",
+				module=__name__,
+				)
+	except ValueError as error:
+		assert "already declares" in str( error )
+	else:
+		raise AssertionError(
+				"Make_Specialization declared one Shape twice."
+				)
+	assert specializations_on( char ) == ()
+	assert Apply_Specialization(
+			char,
+			"Probe Shape",
+			) is probe_shape
+	assert specializations_on( char ) == (
+			probe_shape,
+			)
+	assert Find_Specialization( char ) == "Probe Shape"
+	assert f"{char:Specialization}" == "Probe Shape"
+	assert "Probe Shape" in char
+
+	# The production catalogue, through the spec that loads the kits.  Run as
+	# a script this module is ``__main__``, so GuildKit imports a second copy
+	# of it and the kits pin into that copy's Field; that Field is the one the
+	# generator reads, and it must hold what the registry dicts held, in order.
+	from AtlasLusoris import GuildKit
+
+	assert tuple( GuildKit.GUILDS ) == tuple( GUILDS )
+	assert dict( GuildKit.SPECIALIZATIONS_BY_GUILD ) == {
+			"Artificer": (
+				"Alchemist",
+				"Armorer",
+				"Artillerist",
+				"Battle Smith",
+				),
+			"Barbarian": (
+				"Berserker",
+				"Wild Heart",
+				"World Tree",
+				"Zealot",
+				),
+			"Bard": (
+				"Dance",
+				"Glamour",
+				"Lore",
+				"Valor",
+				),
+			"Cleric": (
+				"Life",
+				"Light",
+				"Trickery",
+				"War",
+				),
+			"Druid": (
+				"Land",
+				"Moon",
+				"Sea",
+				"Stars",
+				),
+			"Fighter": (
+				"Battle Master",
+				"Banneret",
+				"Champion",
+				"Eldritch Knight",
+				"Psi Warrior",
+				),
+			"Monk": (
+				"Mercy",
+				"Open Hand",
+				"Shadow",
+				"Elements",
+				),
+			"Paladin": (
+				"Ancients",
+				"Devotion",
+				"Glory",
+				"Vengeance",
+				),
+			"Ranger": (
+				"Beast Master",
+				"Fey Wanderer",
+				"Gloom Stalker",
+				"Hunter",
+				),
+			"Rogue": (
+				"Arcane Trickster",
+				"Assassin",
+				"Soulknife",
+				"Thief",
+				),
+			"Sorcerer": (
+				"Aberrant Sorcery",
+				"Clockwork Sorcery",
+				"Draconic Sorcery",
+				"Wild Magic Sorcery",
+				),
+			"Warlock": (
+				"Archfey",
+				"Celestial",
+				"Fiend",
+				"Great Old One",
+				),
+			"Wizard": (
+				"Abjurer",
+				"Diviner",
+				"Evoker",
+				"Illusionist",
+				"Bladesinger",
+				),
+			}
+	assert tuple( GuildKit.SPECIALIZATIONS_BY_GUILD ) == (
+			"Artificer",
+			"Barbarian",
+			"Bard",
+			"Cleric",
+			"Druid",
+			"Fighter",
+			"Monk",
+			"Paladin",
+			"Ranger",
+			"Rogue",
+			"Sorcerer",
+			"Warlock",
+			"Wizard",
+			)
+		#-- Keyed in declaration order: ArtificerKit loads first.
+	assert tuple(
+			tag.NAME
+			for tag in GuildKit.Declared_Specialization[:]
+			) == tuple(
+			name
+			for names in GuildKit.SPECIALIZATIONS_BY_GUILD.values()
+			for name in names
+			)
+	assert len( GuildKit.Specialization_Choices() ) == 54
+	for guild_name, names in GuildKit.SPECIALIZATIONS_BY_GUILD.items():
+		guild = GuildKit.GUILDS[ guild_name ]
+		assert guild.SPECIALIZATIONS == tuple(
+				GuildKit.Specialization_Tag(
+						guild_name,
+						name,
+						)
+				for name in names
+				)
+		assert all(
+				tag.GUILD is guild
+				for tag in guild.SPECIALIZATIONS
+				)
 	print(
 			"OK — GuildKit self-test (2024 + multiclass prep)"
 			)
