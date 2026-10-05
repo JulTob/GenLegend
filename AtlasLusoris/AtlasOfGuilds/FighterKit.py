@@ -18,8 +18,6 @@ from types import MappingProxyType
 
 from TopKit import Pre, Tag
 
-from AtlasActorLudi.CharactersKit import Report_Of
-
 from AtlasActorLudi.CharactersKit import Character
 from AtlasInventarium.ToolsKit import (
 	ARTISAN_TOOLS as _ARTISAN_TOOL_DEFINITIONS,
@@ -297,9 +295,9 @@ FIGHTER_RESOURCES = (
 			),
 	)
 
-FEATURES = Report_Of(FIGHTER_FEATURES)
-CHOICES = Report_Of(FIGHTER_CHOICES)
-RESOURCES = Report_Of(FIGHTER_RESOURCES)
+FEATURES = FIGHTER_FEATURES
+CHOICES = FIGHTER_CHOICES
+RESOURCES = FIGHTER_RESOURCES
 Fighter.FEATURES = FEATURES
 Fighter.CHOICES = CHOICES
 Fighter.RESOURCES = RESOURCES

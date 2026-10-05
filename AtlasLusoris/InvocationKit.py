@@ -34,8 +34,6 @@ from typing import Any
 
 from TopKit import Imprint, Pre, Tag
 
-from AtlasActorLudi.CharactersKit import Report_Of
-
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.FeaturesKit import (
 		Invocation as Invocation_Root,
@@ -385,19 +383,13 @@ def Make_Invocation(
 					),
 			{
 					"NAME": name,
-					"MIN_LEVEL": Report_Of(
-							min_level
+					"MIN_LEVEL": min_level,
+					"REQUIRES": getattr(
+							requires,
+							"NAME",
+							None,
 							),
-					"REQUIRES": Report_Of(
-							getattr(
-									requires,
-									"NAME",
-									None,
-									)
-							),
-					"SOURCE": Report_Of(
-							source
-							),
+					"SOURCE": source,
 					"Warlock_Only": Warlock_Only,
 					"Rank_Reached": Rank_Reached,
 					"Prerequisite_Met": Prerequisite_Met,

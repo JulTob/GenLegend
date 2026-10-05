@@ -48,14 +48,18 @@ def Report_Of(
 		value,
 		):
 	"""
-	A Report that always gives back one fixed value.
+	A Report that always gives back one fixed value, for a value that is a Tag or a function.
 
-	TopKit 0.2.0a3 builds Reports from functions (``@Report def X(tag)``) and
-	no longer accepts ``Report( value )``.  A factory that declares Tags from
-	data needs the value form, so this wraps the value in a builder.  A plain
-	value would mostly do, but a function stored as plain class data becomes
-	an Action on the Character; a Report keeps it a plain value on the Tag.
-	Proposed upstream in QST-0093.10.
+	A plain value written on a Tag class (``NAME = "Rage"``, a number, a
+	tuple) already is a Report in effect: readable on the Tag, never on the
+	Character.  Write those as plain class data (Julio, Dialog 0027,
+	2026-10-05: "supposed to be just a normal report"; QST-0144.2).
+
+	A Tag class or a function stored as plain class data is different: TopKit
+	turns a callable into an Action on the Character.  Wrap only those, so
+	the Tag keeps them as a value: a Training's ``PATH`` (a Tag), a
+	Background's ``ORIGIN_FEAT`` (a Tag), a Specialization's generic
+	``reports=`` hook (anything).
 	"""
 	def Builder(
 			tag,

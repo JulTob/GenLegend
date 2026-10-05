@@ -26,8 +26,6 @@ from collections.abc import Callable
 
 from TopKit import Pre, Tag
 
-from AtlasActorLudi.CharactersKit import Report_Of
-
 from AtlasInventarium.Grimoire_of_Items import (
 		Armour,
 		Cloak,
@@ -127,34 +125,20 @@ def Make_Craft(
 
 	namespace = {
 			"NAME": name,
-			"GRANTS": Report_Of(
-					dict(
-							grants
-							)
+			"GRANTS": dict(
+					grants
 					),
-			"TIER": Report_Of(
-					tier
+			"TIER": tier,
+			"MIN_LEVEL": TIERS[tier],
+			"AFFIX": affix,
+			"APPLIES_TO": tuple(
+					applies_to
 					),
-			"MIN_LEVEL": Report_Of(
-					TIERS[tier]
+			"REQUIRES": tuple(
+					requires
 					),
-			"AFFIX": Report_Of(
-					affix
-					),
-			"APPLIES_TO": Report_Of(
-					tuple(
-							applies_to
-							)
-					),
-			"REQUIRES": Report_Of(
-					tuple(
-							requires
-							)
-					),
-			"FORBIDS": Report_Of(
-					tuple(
-							forbids
-							)
+			"FORBIDS": tuple(
+					forbids
 					),
 			"DESCRIPTION": description,
 			"__module__": __name__,

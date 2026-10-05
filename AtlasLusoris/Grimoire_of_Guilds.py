@@ -1062,54 +1062,30 @@ def Make_Guild(
 							),
 					"PRIMARY": primary,
 					"SECONDARY": secondary,
-					"ABILITY_PREFERENCE": Report_Of(
-							tuple(
-									dict.fromkeys(
-											key
-											for key in (
-													primary,
-													secondary,
-													resolved_alternate,
-													)
-											if key
+					"ABILITY_PREFERENCE": tuple(
+							dict.fromkeys(
+									key
+									for key in (
+											primary,
+											secondary,
+											resolved_alternate,
 											)
+									if key
 									)
 							),
-					"HIT_DIE": Report_Of(
-							hit_die
+					"HIT_DIE": hit_die,
+					"SAVES": resolved_saves,
+					"SKILL_PICKS": skill_picks,
+					"TOOLS": resolved_tools,
+					"TOOL_PICKS": tool_picks,
+					"MULTICLASS_TOOL_PICKS": multiclass_tool_picks,
+					"MULTICLASS_GAINS": tuple(
+							multiclass_gains
 							),
-					"SAVES": Report_Of(
-							resolved_saves
-							),
-					"SKILL_PICKS": Report_Of(
-							skill_picks
-							),
-					"TOOLS": Report_Of(
-							resolved_tools
-							),
-					"TOOL_PICKS": Report_Of(
-							tool_picks
-							),
-					"MULTICLASS_TOOL_PICKS": Report_Of(
-							multiclass_tool_picks
-							),
-					"MULTICLASS_GAINS": Report_Of(
-							tuple(
-									multiclass_gains
-									)
-							),
-					"EDITION": Report_Of(
-							edition
-							),
-					"HELPERS": Report_Of(
-							helpers
-							),
-					"SOURCE_TITLE": Report_Of(
-							source_title
-							),
-					"SOURCE_KIND": Report_Of(
-							source_kind
-							),
+					"EDITION": edition,
+					"HELPERS": helpers,
+					"SOURCE_TITLE": source_title,
+					"SOURCE_KIND": source_kind,
 					"Awaken": Awaken,
 					"primary_ability": primary_ability,
 					"__module__": __name__,

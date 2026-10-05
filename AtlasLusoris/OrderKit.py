@@ -33,8 +33,6 @@ from random import Random
 
 from TopKit import Imprint, Pre, Tag
 
-from AtlasActorLudi.CharactersKit import Report_Of
-
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.AtlasOfOrders.Map_of_Domains import DOMAINS
 from AtlasEpica.Charts_of_The_Monomyth import render
@@ -647,17 +645,11 @@ def order_tag(
 			),
 		{
 			"NAME": key,
-			"TITLE": Report_Of(
-				order.title
-				),
-			"TRADITION": Report_Of(
-				order.tradition.name
-				),
-			"DOMAINS": Report_Of(
-				tuple(
-					domain.name
-					for domain in order.domains
-					)
+			"TITLE": order.title,
+			"TRADITION": order.tradition.name,
+			"DOMAINS": tuple(
+				domain.name
+				for domain in order.domains
 				),
 			"__doc__": f"Sworn to {key}.",
 			"__module__": __name__,
@@ -718,9 +710,7 @@ def order_feat(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": Report_Of(
-				description
-				),
+			"DESCRIPTION": description,
 			"awaken": awaken,
 			"__module__": __name__,
 			},
@@ -746,7 +736,7 @@ class Sign_of_the_Order(Origin_Feat):
 	"""
 
 	NAME = "Sign of the Order"
-	DESCRIPTION = Report_Of(
+	DESCRIPTION = (
 		"An initiate's mark, conferred at swearing. What it grants depends "
 		"on which Order conferred it."
 		)

@@ -939,42 +939,20 @@ def Make_Background(
 			),
 		{
 			"NAME": name,
-			"TITLE": Report_Of(
-				title
-				),
-			"DESCRIPTION": Report_Of(
-				description
-				),
-			"HOOK": Report_Of(
-				hook
-				),
-			"ABILITIES": Report_Of(
-				resolved_abilities
-				),
-			"SKILLS": Report_Of(
-				resolved_skills
-				),
-			"TOOLS": Report_Of(
-				resolved_tools
-				),
+			"TITLE": title,
+			"DESCRIPTION": description,
+			"HOOK": hook,
+			"ABILITIES": resolved_abilities,
+			"SKILLS": resolved_skills,
+			"TOOLS": resolved_tools,
 			"ORIGIN_FEAT": Report_Of(
 				origin_feat
 				),
-			"ORIGIN_FEAT_OPTIONS": Report_Of(
-				resolved_origin_feat_options
-				),
-			"SOURCE_TITLE": Report_Of(
-				source_title
-				),
-			"SOURCE_URL": Report_Of(
-				source_url
-				),
-			"SOURCE_LOCATOR": Report_Of(
-				source_locator
-				),
-			"SOURCE_KIND": Report_Of(
-				source_kind
-				),
+			"ORIGIN_FEAT_OPTIONS": resolved_origin_feat_options,
+			"SOURCE_TITLE": source_title,
+			"SOURCE_URL": source_url,
+			"SOURCE_LOCATOR": source_locator,
+			"SOURCE_KIND": source_kind,
 			"Eligible_Role": Eligible_Role,
 			"Awaken": Awaken,
 			"__module__": __name__,

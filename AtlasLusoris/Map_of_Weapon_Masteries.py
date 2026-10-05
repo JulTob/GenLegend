@@ -12,8 +12,6 @@ from typing import Any
 
 from TopKit import Pre, Tag
 
-from AtlasActorLudi.CharactersKit import Report_Of
-
 
 class Weapon_Mastery(Tag):
 	"""
@@ -360,12 +358,8 @@ def _mastery_tag(
 					),
 			{
 					"NAME": f"{weapon} Mastery",
-					"WEAPON": Report_Of(
-							weapon
-							),
-					"MASTERY": Report_Of(
-							WEAPON_MASTERIES[weapon]
-							),
+					"WEAPON": weapon,
+					"MASTERY": WEAPON_MASTERIES[weapon],
 					"__module__": __name__,
 					},
 			)
@@ -468,12 +462,8 @@ def _mastery_tag(
 					),
 			{
 					"NAME": f"{weapon} Mastery",
-					"WEAPON": Report_Of(
-							weapon
-							),
-					"MASTERY": Report_Of(
-							WEAPON_MASTERIES[weapon]
-							),
+					"WEAPON": weapon,
+					"MASTERY": WEAPON_MASTERIES[weapon],
 					"__module__": __name__,
 					},
 			)

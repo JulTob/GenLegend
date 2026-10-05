@@ -8,8 +8,6 @@ dedicated Feature implementation.
 
 from TopKit import Imprint, Post, Record
 
-from AtlasActorLudi.CharactersKit import Report_Of
-
 from AtlasActorLudi.ProficiencyKit import (
 	Commit_Training_Gain,
 	Feature_Training_Record,
@@ -80,18 +78,10 @@ def Make_Catalogued_Origin_Feat(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": Report_Of(
-				description
-				),
-			"SOURCE_TITLE": Report_Of(
-				source_title
-				),
-			"SOURCE_URL": Report_Of(
-				source_url
-				),
-			"MECHANICS_STATUS": Report_Of(
-				"catalogued"
-				),
+			"DESCRIPTION": description,
+			"SOURCE_TITLE": source_title,
+			"SOURCE_URL": source_url,
+			"MECHANICS_STATUS": "catalogued",
 			"Awaken": Awaken,
 			"__module__": __name__,
 			},
@@ -1095,9 +1085,7 @@ class Spared(Origin_Feat):
 class Dark_Gift(Origin_Feat):
 	"""A boon that arrived uninvited and kept a share of you."""
 
-	CATEGORY = Report_Of(
-		"Dark Gift"
-		)
+	CATEGORY = "Dark Gift"
 
 
 # Based on the Gathered Whispers dark gift

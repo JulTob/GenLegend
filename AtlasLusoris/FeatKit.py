@@ -13,7 +13,6 @@ from typing import Any
 
 from TopKit import Imprint, Post, Pre, Record, Tag
 
-from AtlasActorLudi.CharactersKit import Report_Of
 from AtlasVenustas import Chip
 
 from AtlasActorLudi.CharactersKit import Character
@@ -402,12 +401,8 @@ def Make_Fighting_Style(
 					),
 			{
 					"NAME": name,
-					"GUILDS": Report_Of(
-							allowed
-							),
-					"SOURCE": Report_Of(
-							source
-							),
+					"GUILDS": allowed,
+					"SOURCE": source,
 					"Fighting_Style_Feature": Fighting_Style_Feature,
 					"Guild_Allowed": Guild_Allowed,
 					"Awaken": Awaken,
@@ -642,30 +637,14 @@ def Make_General_Feat(
 
 	namespace = {
 		"NAME": name,
-		"MIN_LEVEL": Report_Of(
-			min_level
-			),
-		"REPEATABLE": Report_Of(
-			repeatable
-			),
-		"ABILITY_ANY": Report_Of(
-			ability_any
-			),
-		"ABILITY_MIN": Report_Of(
-			ability_min
-			),
-		"REQUIRES_SPELLCASTING": Report_Of(
-			requires_spellcasting
-			),
-		"REQUIRES_FEAT_ANY": Report_Of(
-			requires_feat_any
-			),
-		"REQUIRES_WEAPON_MASTERY": Report_Of(
-			requires_weapon_mastery
-			),
-		"SOURCE": Report_Of(
-			source
-			),
+		"MIN_LEVEL": min_level,
+		"REPEATABLE": repeatable,
+		"ABILITY_ANY": ability_any,
+		"ABILITY_MIN": ability_min,
+		"REQUIRES_SPELLCASTING": requires_spellcasting,
+		"REQUIRES_FEAT_ANY": requires_feat_any,
+		"REQUIRES_WEAPON_MASTERY": requires_weapon_mastery,
+		"SOURCE": source,
 		"Rank_Reached": Rank_Reached,
 		"Ability_Met": Ability_Met,
 		"Spellcasting_Met": Spellcasting_Met,
@@ -823,12 +802,8 @@ def Make_Epic_Boon(
 					),
 			{
 					"NAME": name,
-					"REQUIRES_SPELLCASTING": Report_Of(
-							requires_spellcasting
-							),
-					"SOURCE": Report_Of(
-							source
-							),
+					"REQUIRES_SPELLCASTING": requires_spellcasting,
+					"SOURCE": source,
 					"Rank_Reached": Rank_Reached,
 					"Spellcasting_Met": Spellcasting_Met,
 					"Awaken": Awaken,

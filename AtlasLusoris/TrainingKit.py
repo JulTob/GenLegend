@@ -345,18 +345,12 @@ def Make_Training(
 					resolved_chips,
 					on_sheet,
 					),
-			"GUILD_NAME": Report_Of(
-					guild_name
-					),
-			"MIN_LEVEL": Report_Of(
-					min_level
-					),
+			"GUILD_NAME": guild_name,
+			"MIN_LEVEL": min_level,
 			"PATH": Report_Of(
 					resolved_path
 					),
-			"SOURCE": Report_Of(
-					resolved_source
-					),
+			"SOURCE": resolved_source,
 			"Trained_In_Guild": Trained_In_Guild,
 			"Rank_Reached": Rank_Reached,
 			"Path_Matched": Path_Matched,
