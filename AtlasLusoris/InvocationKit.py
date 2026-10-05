@@ -22,6 +22,12 @@ the gate is ``target in requires``.  Tag membership is the question TagKit
 exists to answer; comparing names against two different feature lists was a
 workaround for not having asked it.
 
+The catalogue is a Pin Field.  ``Make_Invocation`` builds the Tag with only
+its behaviour and pins it with ``Declared_Invocation``, whose Records
+(``MIN_LEVEL``, ``REQUIRES``, ``SOURCE``) land on the Tag as Reports;
+``all_invocations()`` reads ``Declared_Invocation[:]``, so declaring an
+Invocation is the only step that makes it real.
+
 Effects land on plain Character attributes, the same way Backgrounds land
 skills: ``at_will_spells``, ``free_cast_spells``, ``senses``, ``enhanced_cantrips``,
 ``pact_familiar``.  Nothing here simulates combat — this builds a sheet.
@@ -32,7 +38,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-from TopKit import Imprint, Pre, Tag
+from TopKit import Imprint, Pin, Pre, Record, Tag
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.FeaturesKit import (
@@ -65,7 +71,100 @@ class Pact_Tome(
 	"""A Book of Shadows, and whatever is written into it."""
 
 
-_INVOCATION_DECLARATIONS: list[type[Invocation_Root]] = []
+@Pin
+class Declared_Invocation(
+		Tag,
+		):
+	"""
+	The catalogue of Eldritch Invocations, as a Pin.
+
+	``Make_Invocation`` builds an Invocation Tag with only its behaviour and
+	then pins it here, so ``Declared_Invocation[:]`` is the catalogue in
+	declaration order and nothing keeps a list beside it.  The Records land
+	on the pinned Tag as Reports (``EldritchSmite.MIN_LEVEL``) and are
+	validated here, once, for every declarer.
+	"""
+
+	@Pre
+	def Invocation_Tag_Only(
+			target,
+			):
+		return (
+				isinstance(
+						target,
+						type,
+						)
+				and issubclass(
+						target,
+						Invocation_Root,
+						)
+				and target is not Invocation_Root
+				)
+
+	@Record
+	def MIN_LEVEL(
+			target,
+			*,
+			min_level=1,
+			) -> int:
+		"""The Warlock level at which this Invocation opens."""
+		if (
+				isinstance(
+						min_level,
+						bool,
+						)
+				or not isinstance(
+						min_level,
+						int,
+						)
+				or min_level < 1
+				):
+			raise ValueError(
+					"Declared_Invocation: min_level must be an integer of "
+					f"at least 1, not {min_level!r}."
+					)
+		return min_level
+
+	@Record
+	def REQUIRES(
+			target,
+			*,
+			requires=None,
+			) -> str | None:
+		"""
+		The NAME of the Invocation this one requires, or None.
+
+		Read off whatever ``requires`` holds, as the namespace constant was:
+		a prerequisite Tag answers with its NAME, anything else with None.
+		The prerequisite itself is kept by ``prerequisite_of``.
+		"""
+		return getattr(
+				requires,
+				"NAME",
+				None,
+				)
+
+	@Record
+	def SOURCE(
+			target,
+			*,
+			source="Eldritch Invocation",
+			) -> str:
+		"""The source line the sheet prints under this Invocation."""
+		if (
+				not isinstance(
+						source,
+						str,
+						)
+				or not source.strip()
+				):
+			raise ValueError(
+					"Declared_Invocation: source must be a non-empty string, "
+					f"not {source!r}."
+					)
+		return source
+
+
 _PREREQUISITE: dict[type[Invocation_Root], type[Invocation_Root]] = {}
 
 
@@ -383,13 +482,6 @@ def Make_Invocation(
 					),
 			{
 					"NAME": name,
-					"MIN_LEVEL": min_level,
-					"REQUIRES": getattr(
-							requires,
-							"NAME",
-							None,
-							),
-					"SOURCE": source,
 					"Warlock_Only": Warlock_Only,
 					"Rank_Reached": Rank_Reached,
 					"Prerequisite_Met": Prerequisite_Met,
@@ -398,8 +490,11 @@ def Make_Invocation(
 					"__module__": __name__,
 					},
 			)
-	_INVOCATION_DECLARATIONS.append(
-			invocation_tag
+	Declared_Invocation(
+			invocation_tag,
+			min_level=min_level,
+			requires=requires,
+			source=source,
 			)
 	if requires is not None:
 		_PREREQUISITE[ invocation_tag ] = requires
@@ -429,8 +524,9 @@ def prerequisite_of(
 
 
 def all_invocations() -> tuple[type[Invocation_Root], ...]:
+	"""Every declared Invocation, in declaration order: the Pin's Field."""
 	return tuple(
-			_INVOCATION_DECLARATIONS
+			Declared_Invocation[:]
 			)
 
 
@@ -486,11 +582,11 @@ def available_invocations(
 		) -> list[type[Invocation_Root]]:
 	owned = {
 			tag.NAME
-			for tag in _INVOCATION_DECLARATIONS
+			for tag in Declared_Invocation[:]
 			if char in tag
 			}
 	found = []
-	for tag in _INVOCATION_DECLARATIONS:
+	for tag in Declared_Invocation[:]:
 		if tag.NAME in owned:
 			continue
 		if not invocation_eligible(
@@ -537,7 +633,7 @@ def Apply_Warlock_Invocations(
 	applied = []
 	already = [
 			tag
-			for tag in _INVOCATION_DECLARATIONS
+			for tag in Declared_Invocation[:]
 			if char in tag
 			]
 	applied.extend(
@@ -620,6 +716,62 @@ def _self_test():
 	assert len(
 			all_invocations()
 			) >= 28
+	#-- The catalogue is the Pin's Field: the Map's declarations, in the
+	#-- order they were written, and nothing else.
+	from AtlasLusoris.AtlasOfInvocations import Map_of_Eldritch_Invocations
+	declared = tuple(
+			value
+			for value in vars(
+					Map_of_Eldritch_Invocations
+					).values()
+			if isinstance(
+					value,
+					type,
+					)
+			and issubclass(
+					value,
+					Invocation_Root,
+					)
+			)
+	assert len(
+			declared
+			) == 28
+	assert tuple(
+			Declared_Invocation[:]
+			) == declared
+	assert all_invocations() == declared
+	#-- The Reports answer what the namespace constants used to.
+	for tag in declared:
+		assert tag in Declared_Invocation
+		assert tag.MIN_LEVEL >= 1
+		assert tag.REQUIRES == getattr(
+				prerequisite_of(
+						tag
+						),
+				"NAME",
+				None,
+				)
+		assert tag.SOURCE == "Eldritch Invocation"
+	#-- available_invocations reads the same Field: a first-rank Warlock
+	#-- sees exactly the first-rank lessons.
+	novice = Character(
+			seed=1
+			)
+	novice.level = 1
+	novice.char_class = "Warlock"
+	Apply_Guild(
+			novice
+			)
+	assert [
+			tag.NAME
+			for tag in available_invocations(
+					novice
+					)
+			] == [
+			tag.NAME
+			for tag in declared
+			if tag.MIN_LEVEL <= 1
+			]
 	picked = Apply_Warlock_Invocations(
 			char
 			)
