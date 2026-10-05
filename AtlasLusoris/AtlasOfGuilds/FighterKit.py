@@ -13,10 +13,10 @@ exist.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from types import MappingProxyType
 
-from TopKit import Pre, Tag
+from TopKit import Pin, Pre, Record, Tag
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasInventarium.ToolsKit import (
@@ -321,7 +321,51 @@ class Maneuver(Tag):
 				)
 
 
-_MANEUVER_TAGS: dict[str, type[Maneuver]] = {}
+@Pin
+class Declared_Maneuver(Tag):
+	"""
+	Classifies the Battle Master maneuvers the Fighter knows.
+
+	A Pin rather than a dict: a maneuver is declared by applying this Tag
+	*to the Maneuver Tag*, and ``Declared_Maneuver[:]`` is then the
+	catalogue, in declaration order.  Its Record lands on the maneuver as a
+	Report, so ``Parry.DESCRIPTION`` reads the text validated here.
+	"""
+
+	@Pre
+	def Maneuver_Tag_Only(
+			target,
+			):
+		return (
+			isinstance(
+				target,
+				type,
+				)
+			and issubclass(
+				target,
+				Maneuver,
+				)
+			and target is not Maneuver
+			)
+
+	@Record
+	def DESCRIPTION(
+			target,
+			*,
+			description=None,
+			) -> str:
+		if (
+			not isinstance(
+				description,
+				str,
+				)
+			or not description.strip()
+			):
+			raise ValueError(
+				"A Maneuver description must be non-empty text."
+				)
+
+		return description
 
 
 def _class_name(
@@ -338,6 +382,7 @@ def _Build_Maneuver(
 		name: str,
 		description: str,
 		) -> type[Maneuver]:
+	"""Build one Maneuver Tag with only its name, then declare it."""
 	tag = type(
 		_class_name(
 			name
@@ -347,13 +392,13 @@ def _Build_Maneuver(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": description,
 			"__module__": __name__,
 			},
 		)
-	_MANEUVER_TAGS[
-		name
-		] = tag
+	Declared_Maneuver(
+		tag,
+		description=description,
+		)
 	return tag
 
 
@@ -438,9 +483,48 @@ Trip_Attack = _Build_Maneuver(
 		"Add damage and knock a Large or smaller target Prone on a failed save.",
 		)
 
-MANEUVERS = MappingProxyType(
-	_MANEUVER_TAGS
-	)
+
+class _Maneuver_Catalogue(Mapping):
+	"""
+	The declared maneuvers by name, read live off the Pin Field.
+
+	A view rather than a second dict, so nothing is listed twice: the Field
+	is the catalogue, and this only answers it by name, in declaration order.
+	"""
+
+	def _by_name(
+			self,
+			) -> dict[str, type[Maneuver]]:
+		return {
+			tag.NAME: tag
+			for tag in Declared_Maneuver[:]
+			}
+
+	def __getitem__(
+			self,
+			name: str,
+			) -> type[Maneuver]:
+		return self._by_name()[
+			name
+			]
+
+	def __iter__(
+			self,
+			):
+		return iter(
+			self._by_name()
+			)
+
+	def __len__(
+			self,
+			) -> int:
+		return len(
+			self._by_name()
+			)
+
+
+MANEUVERS = _Maneuver_Catalogue()
+	#-- The by-name view of ``Declared_Maneuver[:]``.  Its readers keep the name.
 
 FIGHTER_SKILLS = (
 	"Acrobatics",
@@ -485,7 +569,8 @@ BATTLE_MASTER_CHOICES = (
 					(15, 2),
 					),
 			options=tuple(
-					MANEUVERS
+					tag.NAME
+					for tag in Declared_Maneuver[:]
 					),
 			),
 	Choice_Progression(
@@ -979,6 +1064,70 @@ def _self_test() -> None:
 	assert len(
 		MANEUVERS
 		) == 20
+	assert tuple(
+		Declared_Maneuver[:]
+		) == (
+		Ambush,
+		Bait_and_Switch,
+		Commanders_Strike,
+		Commanding_Presence,
+		Disarming_Attack,
+		Distracting_Strike,
+		Evasive_Footwork,
+		Feinting_Attack,
+		Goading_Attack,
+		Lunging_Attack,
+		Maneuvering_Attack,
+		Menacing_Attack,
+		Parry,
+		Precision_Attack,
+		Pushing_Attack,
+		Rally,
+		Riposte,
+		Sweeping_Attack,
+		Tactical_Assessment,
+		Trip_Attack,
+		)
+		#-- The Field is the catalogue: the twenty, in declaration order.
+	assert tuple(
+		MANEUVERS
+		) == (
+		"Ambush",
+		"Bait and Switch",
+		"Commander's Strike",
+		"Commanding Presence",
+		"Disarming Attack",
+		"Distracting Strike",
+		"Evasive Footwork",
+		"Feinting Attack",
+		"Goading Attack",
+		"Lunging Attack",
+		"Maneuvering Attack",
+		"Menacing Attack",
+		"Parry",
+		"Precision Attack",
+		"Pushing Attack",
+		"Rally",
+		"Riposte",
+		"Sweeping Attack",
+		"Tactical Assessment",
+		"Trip Attack",
+		)
+	assert all(
+		MANEUVERS[
+			tag.NAME
+			] is tag
+		for tag in Declared_Maneuver[:]
+		)
+	assert "Parry" in MANEUVERS and "Feint" not in MANEUVERS
+	assert Parry in Declared_Maneuver and Maneuver not in Declared_Maneuver
+	assert Parry.NAME == "Parry"
+	assert Parry.DESCRIPTION == (
+		"Use a Reaction to reduce damage from a melee attack."
+		)
+	assert BATTLE_MASTER_CHOICES[0].options == tuple(
+		MANEUVERS
+		)
 	assert BATTLE_MASTER_CHOICES[0].total_at(3) == 3
 	assert BATTLE_MASTER_CHOICES[0].total_at(20) == 9
 	assert BATTLE_MASTER_RESOURCES[0].at(18) == "6d12"
