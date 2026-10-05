@@ -501,6 +501,8 @@ Making the identities Flags was planned as a change that prints nothing new. It 
 
 - **Ruling 8, second half: a Dice Bag is named by the Tag that offers the choice.** *"Apply the suggested Dice Bag. more consistent."* So a choice draws from `char.Dice_Bag( f"{Tag.__name__}.{choice}" )`, the row of Layer 1 above, and the purposes written today by hand (`identity.species.Elf.keen_senses`, `training.monk.open_hand.bullet`, `wizard.spellbook`) or derived from the calling `module.function` (the migration Decree 0005 left open) are renamed as each choice moves into its Tag. A renamed purpose moves its draws once; that is station 5's declared difference, accepted in advance by this ruling. Decree 0005's own rule stands: a purpose is a stable string that no file move or rename can change.
 
+- **Station 5 measured the same night.** Four readers, a merge and two critics inventoried every live choice site on the branch after station 4: 104 of them, 49 through a named Dice Bag, 14 through a purpose derived from the caller's stack frame (a bare `Accept` always derives the same purpose, so all bare Accepts of a Character share one stream), 38 through the random module or `app.random` under `Isolated_Legacy_RNG` (one shared stream in draw order, the coupling that moved station 3's fingerprints), 2 through a private `random.Random`. QST-0144.6 carries the inventory and a four-commit plan; five questions are asked in chat before it runs.
+
 ## ⚖️ Rulings needed from Julio
 
 Numbered so an answer can say "1: yes, 2: no". *(Three rounds answered above; station 3's difference accepted; the Dice Bag names ruled. Open: whether the Species and Background ports move their Traits and Origin Feats from Bases into Imprints as the second-round reading implies.)*

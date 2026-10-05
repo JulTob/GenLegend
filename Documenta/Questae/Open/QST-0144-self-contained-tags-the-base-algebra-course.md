@@ -6,7 +6,7 @@
 - **Owner:** unclaimed (minted by Claude on Julio's word, 2026-10-05)
 - **Route to:** Architecture (Druid) · Contracts (Warlock) · Methods (Wizard) · Simplicity (Monk) · Safety (Paladin) · Testing (Rogue) · Julio
 - **Parent:** —
-- **Sidequests:** QST-0144.1 (the pin moves to 0.2.0a4) · .2 to .7 to be minted on Julio's rulings (listed below)
+- **Sidequests:** QST-0144.1 (the pin) · .2 (plain Reports) · .4 (words) · .5 (Pin catalogues), landed · QST-0144.6 (choices inside the Tag; Dice Bags named by the Tag), Open with its inventory · .3 and .7 to be minted
 - **Related:** Dialog 0027 · QST-0142 (one Entry, one Chip; stations 1 to 3 landed, 3b in flight) · QST-0093 (the optimization course) · QST-0093.10 (Suggest to TopKit) · QST-0093.11 (the patterns) · QST-0091 and .1 to .4 (one file per thing) · QST-0047 · QST-0036 · Decree 0009
 
 > Minted under `Documenta/` (Julio, 2026-10-05: "analyze and plan a complete implementation with modular integration into GenLegend, making the tags self contained through the Base Algebra and progressive tag implementation").
