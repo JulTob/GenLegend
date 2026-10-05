@@ -433,7 +433,7 @@ Each station is one branch and one PR (Decree 0008), gated by the fingerprint (w
 
 | # | Station | Questa | What lands | What it deletes | Gate reads |
 |---|---|---|---|---|---|
-| 0 | **The pin moves to 0.2.0a4** | QST-0144.1 | `topkit==0.2.0a4`; Python floor 3.12 in `requirements.txt`, the Makefile and the README; the "Role first" comment retired; the two stale self-tests fixed or removed | nothing else | identical |
+| 0 | **The pin moves to 0.2.0a4** · *landed 2026-10-05* | QST-0144.1 | `topkit==0.2.0a4`; Python floor 3.12 in `requirements.txt`, the Makefile and the README; the "Role first" comment retired; the two stale self-tests repaired (the spell one exposed a missing one-school gate, now on each School and Level) | nothing else | identical: 273, 343, 1164, equipment, replay |
 | 1 | **The family roots** *(revised 2026-10-05: no universal Base)* | QST-0144.2 | Each root keeps its explicit gate; `Report_Of` sites that wrap a plain value become plain class data, the few that wrap a Tag or a reader stay Reports; the `Only_One` helper only if ruling 5 says so | most of the 69 `Report_Of` sites | identical |
 | 2 | **Where it prints** | QST-0144.3 | `SECTION` Report on each family root; the walk fills a missing `section` from the Form; `section=` removed where it equals the root's | per-Entry `section=` where redundant | identical (sheet 343) |
 | 3 | **Words** | QST-0144.4 | `@Flag( "Display Name" )` for every lasting effect (3b's `flag=True` gains `words=`); Kinship, Role and Guild words audited; maps that spell a name read a word instead | the string comparisons counted in the evidence, one family at a time | identical |

@@ -484,9 +484,10 @@ class Role(Tag):
 	"""Root Tag for a Character's play role.
 
 	Role, Player and NonPlayer are Flags: ``"Player" in char`` answers by
-	name.  A Character's first Tag is its Role, and that matters today:
-	TopKit 0.2.0a3 installs name lookups only when a Character's first Tag is
-	a Flag (QST-0093.10, a Suggest-to-TopKit questa).
+	name.  A Character's first Tag is its Role, by design: everything after
+	it may ask what the Character is for.  (Until TopKit 0.2.0a4 the order
+	was also load-bearing, because a Flag applied after another Tag did not
+	answer by name: QST-0093.10 §1, fixed upstream.)
 	"""
 
 	@Pre

@@ -2764,21 +2764,32 @@ def Apply_Background_Abilities(
 
 
 def _test_meta_fields():
-	assert len(
-		tuple(
-			Background_Audience[:]
-			)
-		) == 87
-	assert len(
-		tuple(
-			Available[:]
-			)
-		) == 61
-	assert len(
-		tuple(
-			NPC_Background[:]
-			)
-		) == 87
+	"""
+	The audience Pins partition the declarations, whatever their number.
+
+	A count typed by hand here drifted twice as the catalogue grew (QST-0144.1),
+	so the test reads the Fields and checks the relations between them instead:
+	every declared Background is pinned once, every Player Background is also a
+	NonPlayer one, and nothing is pinned that was not declared.
+	"""
+	declared = set(
+		BACKGROUNDS.values()
+		)
+	audience = set(
+		Background_Audience[:]
+		)
+	available = set(
+		Available[:]
+		)
+	non_player = set(
+		NPC_Background[:]
+		)
+
+	assert declared == audience, "every declared Background carries exactly the audience Pins"
+	assert available <= audience
+	assert non_player <= audience
+	assert available | non_player == audience, "a Background is for Players, NonPlayers, or both"
+	assert available <= non_player, "every Player Background is also a NonPlayer Background"
 	assert Merchant in Available
 	assert Merchant in NPC_Background
 	assert Doctor not in Available
