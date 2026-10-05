@@ -13,12 +13,12 @@ exist.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from dataclasses import dataclass
 
 from TopKit import Pin, Pre, Record, Tag
 
 from AtlasActorLudi.CharactersKit import Character
+from AtlasActorLudi.CharactersKit import Field_Index
 from AtlasInventarium.ToolsKit import (
 	ARTISAN_TOOLS as _ARTISAN_TOOL_DEFINITIONS,
 	)
@@ -484,46 +484,17 @@ Trip_Attack = _Build_Maneuver(
 		)
 
 
-class _Maneuver_Catalogue(Mapping):
-	"""
-	The declared maneuvers by name, read live off the Pin Field.
-
-	A view rather than a second dict, so nothing is listed twice: the Field
-	is the catalogue, and this only answers it by name, in declaration order.
-	"""
-
-	def _by_name(
-			self,
-			) -> dict[str, type[Maneuver]]:
-		return {
+def _maneuvers_by_name() -> dict[str, type[Maneuver]]:
+	"""The Maneuver Field, keyed by NAME, in declaration order."""
+	return {
 			tag.NAME: tag
 			for tag in Declared_Maneuver[:]
 			}
 
-	def __getitem__(
-			self,
-			name: str,
-			) -> type[Maneuver]:
-		return self._by_name()[
-			name
-			]
 
-	def __iter__(
-			self,
-			):
-		return iter(
-			self._by_name()
-			)
-
-	def __len__(
-			self,
-			) -> int:
-		return len(
-			self._by_name()
-			)
-
-
-MANEUVERS = _Maneuver_Catalogue()
+MANEUVERS = Field_Index(
+		_maneuvers_by_name
+		)
 	#-- The by-name view of ``Declared_Maneuver[:]``.  Its readers keep the name.
 
 FIGHTER_SKILLS = (

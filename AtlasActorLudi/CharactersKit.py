@@ -30,6 +30,8 @@ assert "Player" in charlie      # Player is a @Flag: it answers by name
 
 """
 
+from collections.abc import Mapping
+
 from TopKit import Flag, Pre, Report, Tag, TagPreconditionError
 
 
@@ -69,6 +71,55 @@ def Report_Of(
 	return Report(
 		Builder
 		)
+
+
+class Field_Index(Mapping):
+	"""
+	A read-only Mapping that is a live view of a Pin's Field.
+
+	A Pin's Field (``Declared_Guild[:]``) is the catalogue of a family, in
+	declaration order.  Readers that want it by name get one of these instead
+	of a second dictionary: ``index`` reads the Field and keys it, and every
+	read calls it again, so a Tag is in the Mapping the moment it is pinned
+	and nothing is listed twice (QST-0144.5).  ``GUILDS`` and ``MANEUVERS``
+	are Field_Index views keyed by NAME: ``GUILDS[ name ]``, ``name in GUILDS``
+	and ``sorted( GUILDS )`` keep their spelling and never hold a copy.
+	"""
+
+	__slots__ = (
+		"_index",
+		)
+
+	def __init__(
+			view,
+			index,
+			):
+		view._index = index
+
+	def __getitem__(
+			view,
+			key,
+			):
+		return view._index()[ key ]
+
+	def __iter__(
+			view,
+			):
+		return iter(
+				view._index()
+				)
+
+	def __len__(
+			view,
+			):
+		return len(
+				view._index()
+				)
+
+	def __repr__(
+			view,
+			) -> str:
+		return f"{type( view ).__name__}({dict( view )!r})"
 
 
 # ---------------------------------------------------------------------------

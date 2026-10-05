@@ -46,6 +46,7 @@ from collections.abc import Mapping
 
 from TopKit import Action, Flag, Imprint, Pin, Pre, Record, Tag, Tags, Underlay
 
+from AtlasActorLudi.CharactersKit import Field_Index
 from AtlasActorLudi.CharactersKit import Report_Of
 
 from AtlasActorLudi.CharactersKit import Character
@@ -839,53 +840,6 @@ class Declared_Guild(Tag):
 				source_kind,
 				"the source kind",
 				)
-
-
-class Field_Index(Mapping):
-	"""
-	A read-only Mapping that is a live view of a Pin's Field.
-
-	``index`` reads the Field and keys it, and every read calls it again, so a
-	Tag is in the Mapping the moment it is pinned and the Field stays the only
-	catalogue.  ``GUILDS`` is one of these, keyed by NAME: the readers that
-	spell ``GUILDS[ name ]``, ``name in GUILDS`` or ``sorted( GUILDS )`` keep
-	their spelling and never hold a copy.
-	"""
-
-	__slots__ = (
-		"_index",
-		)
-
-	def __init__(
-			view,
-			index,
-			):
-		view._index = index
-
-	def __getitem__(
-			view,
-			key,
-			):
-		return view._index()[ key ]
-
-	def __iter__(
-			view,
-			):
-		return iter(
-				view._index()
-				)
-
-	def __len__(
-			view,
-			):
-		return len(
-				view._index()
-				)
-
-	def __repr__(
-			view,
-			) -> str:
-		return f"{type( view ).__name__}({dict( view )!r})"
 
 
 def _class_name(
