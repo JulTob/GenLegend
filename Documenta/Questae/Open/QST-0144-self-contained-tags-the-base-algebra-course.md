@@ -57,7 +57,7 @@ Every Tag file is self-contained: identity and words, Bases, gates, facts, choic
 | 5 | Choices inside the offering Tag; Dice Bags named by the Tag | QST-0144.6 | station 4; ruling 8 | declared diff |
 | 6 | The one-file fixture, `scripts/verify_one_file.py` | QST-0144.7 | station 4 | new gate, green |
 | 7+ | The family ports in the final shape: QST-0142 stations 3b to 11, QST-0091.1 to .4 | existing questae | stations 1 to 6 | per station |
-| ∞ | Doctrine resync (QST-0093.6) and upstream filing (QST-0093.10) | existing questae | Julio | none |
+| ∞ | ~~Doctrine resync~~ closed: Julio deletes the Doctrine (2026-10-05); the TopKit Guides, the Specification and the code are the authorities. Nothing is owed upstream | QST-0093.6 · QST-0093.10 | — | none |
 
 ## 🧭 Notes for the Agora / implementer
 
@@ -66,7 +66,7 @@ Every Tag file is self-contained: identity and words, Bases, gates, facts, choic
 - **Two modes, one sentence:** fixed, no inputs, no draw: a Base; otherwise: a grant from the Imprint.
 - **Shallow.** One root per family, one Shape level below it. Measure Form depth at every station; it must not grow.
 - **Structural stations read identical** (fingerprint 273, sheet 343, sweep 1164, replay, equipment, self-tests). A station that moves a draw declares its diff first, as QST-0142 station 3 did.
-- **Never patch TopKit locally.** A blocker is a Suggest-to-TopKit questa (Doctrine); the workaround lives in the Kit that owns the axis and names the questa that deletes it.
+- **Never patch TopKit locally.** A blocker is a Suggest-to-TopKit questa; the workaround lives in the Kit that owns the axis and names the questa that deletes it. The authorities on TOP are the TopKit Guides, the Specification and the code (the Doctrine is deleted, 2026-10-05).
 - **Do not** start the structural stations under an open PR that edits the same files (#98, #86) until Julio orders the landings.
 
 ---
