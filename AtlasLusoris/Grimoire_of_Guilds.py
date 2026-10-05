@@ -1096,6 +1096,12 @@ def Make_Guild(
 			guild_tag
 			)
 		#-- A Guild is a word: ``"Wizard" in char`` answers by its name.
+	Flag(
+			name
+			)(
+			guild_tag
+			)
+		#-- The Guild's name is a word: ``"Wizard" in char`` (QST-0144.4).
 	_GUILD_DECLARATIONS.append(
 			guild_tag
 			)
@@ -1662,6 +1668,12 @@ def Make_Specialization(
 			),
 		namespace,
 		)
+	Flag(
+		name
+		)(
+		tag
+		)
+		#-- The Specialization's name is a word: ``"Champion" in char``.
 	catalogue[
 		name
 		] = tag
@@ -2898,6 +2910,8 @@ def _self_test():
 			char
 			)
 	assert char in Rogue and char in Guild
+	assert "Rogue" in char and "Guild" in char
+		#-- A Guild's name is its word (QST-0144.4).
 	assert Find_Guild( char ) == "Rogue"
 	assert f"{char:Guild}" == "Rogue"
 	assert f"{char:Class}" == "Rogue"

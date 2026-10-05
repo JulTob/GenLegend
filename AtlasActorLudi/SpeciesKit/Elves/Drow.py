@@ -1,5 +1,6 @@
 """The 2024 Drow Elf Heritage Shape."""
 
+from TopKit import Flag
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
@@ -9,6 +10,7 @@ from AtlasActorLudi.SpeciesKit.Elves.traits import Elven_Lineage
 from AtlasActorLudi.SpeciesKit.Elves.base import Elf
 
 
+@Flag( "Drow" )
 class Drow(
 	Elf,
 	Heritage,

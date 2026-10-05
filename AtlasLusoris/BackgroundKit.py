@@ -19,7 +19,7 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping
 from typing import Iterable
 
-from TopKit import Action, Imprint, Pin, Pre, Tag, Underlay
+from TopKit import Action, Flag, Imprint, Pin, Pre, Tag, Underlay
 
 from AtlasActorLudi.CharactersKit import Report_Of
 
@@ -964,6 +964,12 @@ def Make_Background(
 			background_tag
 			)
 
+	Flag(
+		name
+		)(
+		background_tag
+		)
+		#-- The Background's name is a word: ``"Soldier" in char`` (QST-0144.4).
 	return background_tag
 
 
@@ -2858,6 +2864,8 @@ def _test_apply_by_name():
 
 	assert character in Soldier
 	assert character in Savage_Attacker
+	assert "Soldier" in character
+		#-- A Background's name is its word (QST-0144.4).
 	assert Find_Background( character ) == "Soldier"
 	assert f"{character:Background}" == "Soldier"
 

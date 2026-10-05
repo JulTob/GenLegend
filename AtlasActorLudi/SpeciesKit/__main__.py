@@ -915,6 +915,8 @@ def _test_orc_trait_geometry_and_records() -> None:
 		)
 
 	assert character in Orc
+	assert "Orc" in character
+		#-- A Species' name is its word (QST-0144.4).
 	assert character in Adrenaline_Rush
 	assert character in Common_Darkvision
 	assert character in Orc_Darkvision

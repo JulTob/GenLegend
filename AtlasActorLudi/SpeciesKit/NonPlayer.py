@@ -3,10 +3,12 @@
 from AtlasActorLudi.SpeciesKit.bases import Humanoid
 from AtlasActorLudi.SpeciesKit.bases import Species
 from AtlasActorLudi.SpeciesKit.declarations import Legacy_NonPlayer
+from TopKit import Flag
 from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
+@Flag( "Aven" )
 class Aven(
 	Species,
 	Humanoid,
@@ -23,6 +25,7 @@ class Aven(
 Legacy_NonPlayer(Aven)
 
 
+@Flag( "Beastfolk" )
 class Beastfolk(
 	Species,
 	Humanoid,
@@ -39,6 +42,7 @@ class Beastfolk(
 Legacy_NonPlayer(Beastfolk)
 
 
+@Flag( "Catfolk" )
 class Catfolk(
 	Species,
 	Humanoid,
@@ -55,6 +59,7 @@ class Catfolk(
 Legacy_NonPlayer(Catfolk)
 
 
+@Flag( "Goblin" )
 class Goblin(
 	Species,
 	Humanoid,
@@ -71,6 +76,7 @@ class Goblin(
 Legacy_NonPlayer(Goblin)
 
 
+@Flag( "Kobold" )
 class Kobold(
 	Species,
 	Humanoid,
@@ -87,6 +93,7 @@ class Kobold(
 Legacy_NonPlayer(Kobold)
 
 
+@Flag( "Lizardfolk" )
 class Lizardfolk(
 	Species,
 	Humanoid,
@@ -103,6 +110,7 @@ class Lizardfolk(
 Legacy_NonPlayer(Lizardfolk)
 
 
+@Flag( "Snakefolk" )
 class Snakefolk(
 	Species,
 	Humanoid,

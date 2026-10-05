@@ -1,5 +1,6 @@
 """The shared 2024 Dragonborn Species Shape."""
 
+from TopKit import Flag
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Humanoid
@@ -14,6 +15,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
+@Flag( "Dragonborn" )
 class Dragonborn(
 	Species,
 	Humanoid,

@@ -7,6 +7,7 @@ crossings are not a plane's local variant, they are the branch that never came
 across.
 """
 
+from TopKit import Flag
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
@@ -18,6 +19,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
+@Flag( "Fae Elf" )
 class Fae_Elf(
 	Elf,
 	Heritage,

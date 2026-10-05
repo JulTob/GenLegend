@@ -1,5 +1,6 @@
 """The world-free 2024 Dark Elf Heritage Shape."""
 
+from TopKit import Flag
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
@@ -11,6 +12,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
+@Flag( "Dark Elf" )
 class Dark_Elf(
 	Elf,
 	Heritage,

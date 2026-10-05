@@ -37,7 +37,7 @@ class Gender(Tag):
 		return prior( specification )
 
 
-@Flag
+@Flag( "He", "Him" )
 class Male(Gender):
 	"""Masculine naming and title context."""
 
@@ -58,7 +58,7 @@ class Male(Gender):
 		target.gender = gender or Male.PRONOUN
 
 
-@Flag
+@Flag( "She", "Her" )
 class Female(Gender):
 	"""Feminine naming and title context."""
 
@@ -79,7 +79,7 @@ class Female(Gender):
 		target.gender = gender or Female.PRONOUN
 
 
-@Flag
+@Flag( "They", "Them" )
 class Agender(Gender):
 	"""Neutral or setting-specific naming and title context."""
 

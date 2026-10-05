@@ -21,6 +21,7 @@ These tags influence further decisions, like titles, story beats, and motivation
 
 from __future__ import annotations
 
+from TopKit import Flag
 from TopKit import Action
 from TopKit import Pre
 from TopKit import Tag
@@ -54,6 +55,7 @@ def Find_Alignment(
 	return f"{order} {morality}"
 
 
+@Flag
 class Alignment(Tag):
 	"""Semantic context for a Character's moral and order axes."""
 
@@ -87,6 +89,7 @@ class Morality(Alignment):
 	pass
 
 
+@Flag
 class Good(Morality):
 
 	@Pre
@@ -96,6 +99,7 @@ class Good(Morality):
 		return target not in Evil
 
 
+@Flag
 class Evil(Morality):
 
 	@Pre
@@ -109,6 +113,7 @@ class Order(Alignment):
 	pass
 
 
+@Flag
 class Lawful(Order):
 
 	@Pre
@@ -118,6 +123,7 @@ class Lawful(Order):
 		return target not in Chaotic
 
 
+@Flag
 class Chaotic(Order):
 
 	@Pre
@@ -339,6 +345,9 @@ def _test_membership_is_source(
 			)
 	assert character in Good
 	assert character in Chaotic
+	assert "Good" in character and "Chaotic" in character
+	assert "Evil" not in character and "Lawful" not in character
+		#-- Alignments are Flags: a title or a backstory may ask the word (QST-0144.4).
 	assert f"{character:Alignment}" == "Chaotic Good"
 	assert Find_Alignment(
 			character,

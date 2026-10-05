@@ -7,6 +7,7 @@ it the place where the Fae are made of dream and shadows are made of nightmare,
 and these are the elves who live on that side of it.
 """
 
+from TopKit import Flag
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
@@ -18,6 +19,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
+@Flag( "Shadow Elf" )
 class Shadow_Elf(
 	Elf,
 	Heritage,

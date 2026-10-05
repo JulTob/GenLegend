@@ -1,5 +1,6 @@
 """The shared 2024 Aasimar Species Shape."""
 
+from TopKit import Flag
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.Aasimar.traits import Celestial_Resistance
@@ -14,6 +15,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
+@Flag( "Aasimar" )
 class Aasimar(
 	Species,
 	Humanoid,
