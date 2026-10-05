@@ -2,7 +2,7 @@
 
 - **Type:** design · tagkit · campaign
 - **Priority:** 🟠 high *(every family port after it is written once, in the final shape)*
-- **Status:** Open — stations 0 to 3 landed on PR #102 (2026-10-05), station 4 landing family by family; stations 5 and up on the rulings below
+- **Status:** Open — stations 0 to 4 landed on PR #102 (2026-10-05), every gate identical or declared; stations 5 and up on the rulings below
 - **Owner:** unclaimed (minted by Claude on Julio's word, 2026-10-05)
 - **Route to:** Architecture (Druid) · Contracts (Warlock) · Methods (Wizard) · Simplicity (Monk) · Safety (Paladin) · Testing (Rogue) · Julio
 - **Parent:** —
