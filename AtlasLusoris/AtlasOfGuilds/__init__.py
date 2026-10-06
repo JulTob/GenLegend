@@ -9,7 +9,7 @@ _GUILD_LIBRARIES = (
 	"ClericKit",
 	"DruidKit",
 	"FighterKit",
-	"MonkKit",
+	"Monk_Kit",
 	"PaladinKit",
 	"RangerKit",
 	"RogueKit",

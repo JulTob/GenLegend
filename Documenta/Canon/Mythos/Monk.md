@@ -24,9 +24,11 @@ share this fantasy even when their settings disagree: the named technique is
 not a spell or inheritance, but a moment of complete commitment.
 
 **Where the text lives.** Class and Warrior paragraphs: *nowhere yet*. Dialog
-0018's five texts are provisional and unwired; `AtlasOfGuilds/MonkKit.py` is four
-bare `Make_Specialization` calls. Lessons: `AtlasOfTraining/Map_of_Monk_Training.py`
-(rules only, no inspiration lines). A 2014-era blurb still leaks onto the sheet
+0018's five texts are provisional and unwired. The Guild lives in
+`AtlasOfGuilds/Monk_Kit/`: `Core_Kit.py` holds every Monk's lessons, and each
+Warrior Kit (`Mercy_Kit.py`, `Open_Hand_Kit.py`, `Shadow_Kit.py`,
+`Elements_Kit.py`) holds its Warrior Tag and lessons (rules only, no inspiration
+lines). A 2014-era blurb still leaks onto the sheet
 from `Map_of_Classes/Training/Monk.py:215` ("Warriors of Mercy manipulate the life
 force of others… faceless bringers of life and death"). Culture keys: the Monk
 alone among Guilds adds `ninja` (society) and `anime` (legend) to any species.
