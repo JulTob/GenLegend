@@ -517,6 +517,8 @@ Making the identities Flags was planned as a change that prints nothing new. It 
 
 - **Names: the methods stay, the lists are chosen by the words.** *"what you described are the maps of names and the map of titles"*: the Maps already are the curated lists; the new piece is only the readable chooser. *"I did want to explore linguistics through these name generating methods: markov, entropy, and composition... so they stay as ways to produce names from the selected and curated lists through flags."* So a name is made in two steps a reader can follow: the Character's words select the curated list (a Dwarf's names come from the Dwarf file, built from Spanish names), and one of the methods (Markov, entropy, composition) turns that list into a new name. Julio asked for a review of the name files; it is run and reported in QST-0144.9.
 
+- **Titles: the same program shape, plus grammar.** *"titles should also read any list, string or agent with flags, and compose the title by selecting from the filtered pool of possible strings, and apply the grammar rules so it makes sense and has variety."* So the title program takes anything that answers words (a Character, a plain list of words, a string), filters the pool of possible title pieces by those words, selects from the filtered pool with the Dice Bag, and applies grammar rules (agreement, articles, order) so the title reads well and varies. Recorded for QST-0144.9.
+
 ## ⚖️ Rulings needed from Julio
 
 Numbered so an answer can say "1: yes, 2: no". *(Three rounds answered above; station 3's difference accepted; the Dice Bag names ruled. Open: whether the Species and Background ports move their Traits and Origin Feats from Bases into Imprints as the second-round reading implies.)*
