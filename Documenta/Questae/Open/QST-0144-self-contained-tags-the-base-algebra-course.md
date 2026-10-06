@@ -59,7 +59,7 @@ Every Tag file is self-contained: identity and words, Bases, gates, facts, choic
 | 7+ | The family ports in the final shape: QST-0142 stations 3b to 11, QST-0091.1 to .4 | existing questae | stations 1 to 6 | per station |
 | 8 | The non-player path opens (Julio, 2026-10-06): the monster module fixed; Races, Archetypes and non-player Features as Tags with Pin Fields and Flags; every draw through the non-player's own Dice Bag; the sheet read from Tags | QST-0144.8 (to mint on the inventory) | station 5; the inventory | non-player fingerprint and sheet, declared |
 | 9 | Names and titles read the words (Julio, 2026-10-06): one readable program each, input a Character and a Dice Bag; the words choose the curated list (the Maps), the methods (Markov, entropy, composition) make the name from it; testable with plain lists; the name files reviewed first | QST-0144.9 (the review, then the design) | station 3; station 5 | declared (names and titles move) |
-| 10 | The 2024 language rules, checked against the program; the disagreements fixed (Julio, 2026-10-06: "fix the Origin Feats and the languages") | QST-0144.10 (the comparison, then the fix) | station 5 pass 1 (same file) | declared (languages move) |
+| 10 | The 2024 language rules, checked against the program; the disagreements fixed (Julio, 2026-10-06: "fix the Origin Feats and the languages") | QST-0144.10 (Working: the comparison measured; the fix after station 5 pass 1) | station 5 pass 1 (same file) | declared (languages move) |
 | ∞ | ~~Doctrine resync~~ closed: Julio deletes the Doctrine (2026-10-05); the TopKit Guides, the Specification and the code are the authorities. Nothing is owed upstream | QST-0093.6 · QST-0093.10 | — | none |
 
 ## 🧭 Notes for the Agora / implementer
