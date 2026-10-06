@@ -92,23 +92,6 @@ class Dwarven_Toughness(Trait):
 		target.bonus_health_per_level = sum(
 			sources.values()
 			)
-		# Granted, not merely recorded.  Contributions are kept by name so that
-		# re-imprinting cannot double them and a second source cannot silently
-		# replace the first: the sheet reads the sum.
-		sources = dict(
-			getattr(
-				target,
-				"bonus_health_sources",
-				{},
-				) or {}
-			)
-		sources[
-			"Dwarven Toughness"
-			] = Dwarven_Toughness.HIT_POINTS_PER_LEVEL
-		target.bonus_health_sources = sources
-		target.bonus_health_per_level = sum(
-			sources.values()
-			)
 
 
 class Stonecunning(Trait):
