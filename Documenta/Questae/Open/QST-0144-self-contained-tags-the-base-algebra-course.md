@@ -57,6 +57,9 @@ Every Tag file is self-contained: identity and words, Bases, gates, facts, choic
 | 5 | Choices inside the offering Tag; Dice Bags named by the Tag | QST-0144.6 | station 4; ruling 8 (given in full, 2026-10-05: *"Apply the suggested Dice Bag. more consistent"*) | declared diff, accepted in advance |
 | 6 | The one-file fixture, `scripts/verify_one_file.py` | QST-0144.7 | station 4 | new gate, green |
 | 7+ | The family ports in the final shape: QST-0142 stations 3b to 11, QST-0091.1 to .4 | existing questae | stations 1 to 6 | per station |
+| 8 | The non-player path opens (Julio, 2026-10-06): the monster module fixed; Races, Archetypes and non-player Features as Tags with Pin Fields and Flags; every draw through the non-player's own Dice Bag; the sheet read from Tags | QST-0144.8 (to mint on the inventory) | station 5; the inventory | non-player fingerprint and sheet, declared |
+| 9 | Names and titles read the words (Julio, 2026-10-06): one readable program each, input a Character and a Dice Bag, composing from lists keyed by the Character's Flags; testable with plain lists | QST-0144.9 (to mint on Julio's word) | station 3; station 5 | declared (names and titles move) |
+| 10 | The 2024 language rules, checked against the program; disagreements ruled on | QST-0144.10 (the comparison first) | nothing | per ruling |
 | ∞ | ~~Doctrine resync~~ closed: Julio deletes the Doctrine (2026-10-05); the TopKit Guides, the Specification and the code are the authorities. Nothing is owed upstream | QST-0093.6 · QST-0093.10 | — | none |
 
 ## 🧭 Notes for the Agora / implementer
