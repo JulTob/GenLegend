@@ -519,6 +519,8 @@ Making the identities Flags was planned as a change that prints nothing new. It 
 
 - **Titles: the same program shape, plus grammar.** *"titles should also read any list, string or agent with flags, and compose the title by selecting from the filtered pool of possible strings, and apply the grammar rules so it makes sense and has variety."* So the title program takes anything that answers words (a Character, a plain list of words, a string), filters the pool of possible title pieces by those words, selects from the filtered pool with the Dice Bag, and applies grammar rules (agreement, articles, order) so the title reads well and varies. Recorded for QST-0144.9.
 
+- **Languages (QST-0144.10).** *"Fix the languages following the 2024 rules, and move draconic to its right place, but the choices should be weighted by species as they have also cultural importance (Elfs elven, Dragonborn draconic....). Secret tongues stay in free picks, yeah, it's more interesting this way. rogues know Thieves' Cant by default anyway, right? Remove the monk's thingy."* The 2024 tables; the two creation picks weighted by the book's d12 plus the species' own tongue (a nudge, not a filter); Druidic and Thieves' Cant in the free picks; the Rogue's Thieves' Cant confirmed; the Monk's 2014 feature removed.
+
 ## ⚖️ Rulings needed from Julio
 
 Numbered so an answer can say "1: yes, 2: no". *(Three rounds answered above; station 3's difference accepted; the Dice Bag names ruled. Open: whether the Species and Background ports move their Traits and Origin Feats from Bases into Imprints as the second-round reading implies.)*
