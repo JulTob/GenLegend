@@ -12,7 +12,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
-@Flag( "Wood Elf" )
+@Flag( "Wood Elf", "Wood", "Sylvan" )
 class Wood_Elf(
 	Elf,
 	Heritage,

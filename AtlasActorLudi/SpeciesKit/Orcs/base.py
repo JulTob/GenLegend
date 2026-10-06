@@ -13,7 +13,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
-@Flag( "Orc" )
+@Flag( "Orc", "Ork" )
 class Orc(
 	Species,
 	Humanoid,

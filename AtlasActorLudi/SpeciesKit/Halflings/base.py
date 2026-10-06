@@ -14,7 +14,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
-@Flag( "Halfling" )
+@Flag( "Halfling", "Hobbit" )
 class Halfling(
 	Species,
 	Humanoid,

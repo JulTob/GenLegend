@@ -11,7 +11,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
-@Flag( "Forest Gnome" )
+@Flag( "Forest Gnome", "Forest", "Sylvan" )
 class Forest_Gnome(
 	Gnome,
 	Heritage,

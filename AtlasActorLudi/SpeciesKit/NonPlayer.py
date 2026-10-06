@@ -3,12 +3,14 @@
 from AtlasActorLudi.SpeciesKit.bases import Humanoid
 from AtlasActorLudi.SpeciesKit.bases import Species
 from AtlasActorLudi.SpeciesKit.declarations import Legacy_NonPlayer
+from AtlasActorLudi.SpeciesKit.kinship import Dragon as Kin_Dragon
+from AtlasActorLudi.SpeciesKit.kinship import Fey as Kin_Fey
 from TopKit import Flag
 from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Species_Yet
 
 
-@Flag( "Aven" )
+@Flag( "Aven", "Bird", "Raptor" )
 class Aven(
 	Species,
 	Humanoid,
@@ -25,7 +27,7 @@ class Aven(
 Legacy_NonPlayer(Aven)
 
 
-@Flag( "Beastfolk" )
+@Flag( "Beastfolk", "Beast" )
 class Beastfolk(
 	Species,
 	Humanoid,
@@ -42,7 +44,7 @@ class Beastfolk(
 Legacy_NonPlayer(Beastfolk)
 
 
-@Flag( "Catfolk" )
+@Flag( "Catfolk", "Cat", "Feline" )
 class Catfolk(
 	Species,
 	Humanoid,
@@ -59,10 +61,11 @@ class Catfolk(
 Legacy_NonPlayer(Catfolk)
 
 
-@Flag( "Goblin" )
+@Flag( "Goblin", "Fae" )
 class Goblin(
 	Species,
 	Humanoid,
+	Kin_Fey,
 	):
 	"""A Goblin Humanoid lineage."""
 
@@ -76,10 +79,11 @@ class Goblin(
 Legacy_NonPlayer(Goblin)
 
 
-@Flag( "Kobold" )
+@Flag( "Kobold", "Dog" )
 class Kobold(
 	Species,
 	Humanoid,
+	Kin_Dragon,
 	):
 	"""A Kobold Humanoid lineage."""
 
@@ -93,7 +97,7 @@ class Kobold(
 Legacy_NonPlayer(Kobold)
 
 
-@Flag( "Lizardfolk" )
+@Flag( "Lizardfolk", "Lizard", "Reptile" )
 class Lizardfolk(
 	Species,
 	Humanoid,
@@ -110,7 +114,7 @@ class Lizardfolk(
 Legacy_NonPlayer(Lizardfolk)
 
 
-@Flag( "Snakefolk" )
+@Flag( "Snakefolk", "Snake", "Reptile" )
 class Snakefolk(
 	Species,
 	Humanoid,

@@ -11,7 +11,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
-@Flag( "Rock Gnome" )
+@Flag( "Rock Gnome", "Rock" )
 class Rock_Gnome(
 	Gnome,
 	Heritage,
