@@ -12,8 +12,10 @@ Thought pattern (read this before the code)
 	   ``Unarmed_Dance``) — the machine-readable training data, not
 	   string-matched class names. Who-may-wear-what lives in
 	   ``Map_of_Gear_Proficiency``.
-	3. Every pick is drawn from a per-character seeded stream, so the same
-	   seed always outfits the same way (no reroll flicker).
+	3. Every pick is drawn from the Character's own Dice Bag, opened with a
+	   ``gear.<purpose>`` name by ``gear_stream``, so the same seed always
+	   outfits the same way (no reroll flicker) and no pick moves when
+	   another purpose draws more or less.
 	4. Nothing is written that a derived read could compute. AC is never
 	   stored here: ``armour_class(char, unarmoured=…)`` sums it live.
 
@@ -86,20 +88,16 @@ def gear_stream(
 		char,
 		salt: str = "gear",
 		) -> random.Random:
-	"""A per-character, per-purpose stream. Never the global module RNG."""
-	seed = getattr(
-			char,
-			"seed",
-			None,
-			)
-	if seed is None:
-		seed = getattr(
-				char,
-				"name",
-				"",
-				) or 0
-	return random.Random(
-			f"{seed}:{salt}"
+	"""
+	The Character's own Dice Bag for one gear purpose, ``gear.<salt>``.
+
+	Ruling 8 (QST-0144.6): every gear pick is drawn from the Character's
+	Dice Bag, never from a private stream or the global module RNG. Each
+	call opens the bag afresh, so one purpose yields the same draws whatever
+	another purpose drew before it.
+	"""
+	return char.Dice_Bag(
+			f"gear.{salt}"
 			)
 
 
@@ -1208,7 +1206,7 @@ def _apply_crafts(
 				char,
 				gear_stream(
 						char,
-						f"title:{item.name}",
+						f"title.{item.name}",
 						),
 				)
 		if earned:
@@ -1709,6 +1707,10 @@ def _self_test():
 				"Paladin"
 				), "same seed must outfit identically"
 
+	_test_gear_bags_are_named(
+			hush
+			)
+
 	swept, failures = _sweep_invariants()
 
 	if failures:
@@ -1731,8 +1733,266 @@ def _self_test():
 			"OK — GearKit self-test "
 			f"({len(results)} guilds outfitted; training respected, "
 			f"Monk unarmoured, AC derived, deterministic; "
+			f"every gear pick from the Character's gear.<purpose> Dice Bag; "
 			f"{swept} characters swept clean)"
 			)
+
+
+def _test_gear_bags_are_named(
+		hush,
+		):
+	"""
+	Ruling 8 (QST-0144.6): every gear pick is drawn from the Character's own
+	Dice Bag, opened with ``gear.<purpose>`` on the default key, once per
+	use, and the pool is the one it always was.
+	"""
+	from collections import Counter
+
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Map_of_Character_Generation import summon_player
+	from AtlasInventarium.Ledger_of_Tools import TOOLS_BY_NAME
+	from AtlasInventarium.Ledger_of_Weapons import WEAPONS_BY_NAME
+	from AtlasInventarium.Ledger_of_Wonders import implements_for
+
+	original = Character.Dice_Bag
+	opened: Counter = Counter()
+		#-- purpose -> how many bags the rite under probe opened with it
+	keys: dict = {}
+		#-- purpose -> the (version, namespace) pairs it was opened with
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		shown = str(
+				purpose
+				)
+		opened[shown] += 1
+		keys.setdefault(
+				shown,
+				set(),
+				).add(
+				(
+						str(
+								version
+								),
+						str(
+								namespace
+								),
+						)
+				)
+		return original(
+				char,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+
+	def recorded(
+			rite,
+			*arguments,
+			):
+		"""Run one rite with the recorder on; give back what gear it opened."""
+		opened.clear()
+		keys.clear()
+		Character.Dice_Bag = Recording_Dice_Bag
+		try:
+			with hush():
+				result = rite(
+						*arguments
+						)
+		finally:
+			Character.Dice_Bag = original
+		gear = {
+				purpose: count
+				for purpose, count in opened.items()
+				if purpose.startswith(
+						"gear."
+						)
+				}
+		for purpose in gear:
+			assert keys[purpose] == {
+					(
+							"1",
+							"GenLegend",
+							),
+					}, (purpose, keys[purpose])
+		return result, gear
+
+	def summon(
+			guild,
+			level,
+			):
+		with hush():
+			char = summon_player(
+					guild=guild,
+					level=level,
+					seed=23,
+					)
+		# Start from a clean ledger: this policy owns the loadout.
+		char.belongings = []
+		return char
+
+	# --- gear_stream IS the Character's bag, on the default key -----------
+	fighter = summon(
+			"Fighter",
+			10,
+			)
+	assert gear_stream(
+			fighter,
+			"budget",
+			).random() == fighter.Dice_Bag(
+			"gear.budget"
+			).random(), "gear_stream must open the Character's own gear.<salt> bag"
+	assert gear_stream(
+			fighter,
+			"budget",
+			).random() != gear_stream(
+			fighter,
+			"weapons",
+			).random(), "two purposes, two bags"
+
+	# --- the loadout opens each purpose once per use ------------------------
+	report, gear = recorded(
+			Outfit_Player,
+			fighter,
+			)
+	named = {
+			"gear.budget",
+			"gear.weapons",
+			"gear.wonders",
+			"gear.crafts",
+			"gear.material",
+			}
+	assert all(
+			purpose in named or purpose.startswith(
+					"gear.title."
+					)
+			for purpose in gear
+			), sorted(
+			gear
+			)
+	assert gear["gear.budget"] == 1, gear
+	assert gear["gear.weapons"] == 1, gear
+	assert gear["gear.wonders"] == 1, gear
+	assert gear["gear.crafts"] == 1, gear
+		#-- one bag forges every craft of the loadout
+	assert "gear.implement" not in gear, "a Fighter has no implement ability"
+	assert gear["gear.material"] >= 1, gear
+	titled = Counter(
+			f"gear.title.{item.name}"
+			for item in report["forged"]
+			)
+	assert {
+			purpose: count
+			for purpose, count in gear.items()
+			if purpose.startswith(
+					"gear.title."
+					)
+			} == dict(
+			titled
+			), (gear, titled)
+		#-- one title bag per forged item, named after it
+
+	# --- below level 5 nothing is forged, so no crafts bag is opened -------
+	novice = summon(
+			"Fighter",
+			1,
+			)
+	report, gear = recorded(
+			Outfit_Player,
+			novice,
+			)
+	assert report["forged"] == [] and "gear.crafts" not in gear, gear
+	assert not any(
+			purpose.startswith(
+					"gear.title."
+					)
+			for purpose in gear
+			), gear
+	assert gear["gear.wonders"] == 1, gear
+
+	# --- a caster's implement: one bag, one pick from the affordable pool --
+	wizard = summon(
+			"Wizard",
+			10,
+			)
+	with hush():
+		Outfit_Player(
+				wizard
+				)
+	wizard.purse = 10_000
+		#-- every implement affordable: the pool is the whole catalogue
+	bought, gear = recorded(
+			_fit_implement,
+			wizard,
+			)
+	assert gear["gear.implement"] == 1, gear
+	assert bought is not None and bought.name in {
+			implement.name
+			for implement in implements_for(
+					"Intelligence"
+					)
+			}, bought
+	assert gear["gear.material"] == 1, gear
+		#-- the one purchase personalised the implement
+
+	# --- every item handed over opens one material bag ---------------------
+	item, gear = recorded(
+			purchase,
+			wizard,
+			WEAPONS_BY_NAME["Dagger"],
+			)
+	assert item is not None and gear == {
+			"gear.material": 1,
+			}, gear
+	item, gear = recorded(
+			issue,
+			wizard,
+			TOOLS_BY_NAME["Disguise Kit"],
+			)
+	assert item is not None and gear == {
+			"gear.material": 1,
+			}, gear
+
+	# --- the stipend is still the sum of the level bands --------------------
+	earned_levels = range(
+			2,
+			fighter.level + 1,
+			)
+	low = sum(
+			_stipend_band(
+					earned
+					)[0]
+			for earned in earned_levels
+			)
+	high = sum(
+			_stipend_band(
+					earned
+					)[1]
+			for earned in earned_levels
+			)
+	base = _GUILD_GOLD.get(
+			getattr(
+					fighter,
+					"char_class",
+					None,
+					),
+			_DEFAULT_GOLD,
+			) + _BACKGROUND_GOLD.get(
+			getattr(
+					fighter,
+					"background",
+					None,
+					),
+			_DEFAULT_BACKGROUND_GOLD,
+			)
+	assert base + low <= starting_budget(
+			fighter
+			) <= base + high
 
 
 # ---------------------------------------------------------------------------
