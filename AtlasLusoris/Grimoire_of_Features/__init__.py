@@ -1,7 +1,6 @@
 # AtlasLusoris/Grimoire_of_Features.py
 # from AtlasLusoris.Grimoire_of_Features import Feature
 from dataclasses import dataclass
-import app.random as random
 from dataclasses import dataclass, field
 from typing import Callable, Optional, Any
 ABILITY_NAMES = {
@@ -115,10 +114,11 @@ def increase_two_highest_below_20(char):
 	for key, _ in best:
 		raise_stat(char, key, 1, cap=20)
 
-def _ability_to_increase(char, cap: int = 30):
+def _ability_to_increase(char, cap: int = 30, *, dice):
 	"""
-	Pick an ability to raise: prefer the *highest* one that is still < 30,
-	break ties randomly.
+	Pick an ability to raise: prefer the *highest* one that is still < cap,
+	break ties from ``dice``, the Boon's own Dice Bag (``<Boon>.ability``,
+	ruling 8, QST-0144.6).
 	"""
 	scores = all_ability_scores(char)
 
@@ -131,12 +131,12 @@ def _ability_to_increase(char, cap: int = 30):
 	odd_max = max((v for v in candidates.values() if v % 2), default=None)
 	if odd_max is not None:
 		bucket = [k for k, v in candidates.items() if v == odd_max and v % 2]
-		return random.choice(bucket)
+		return dice.choice(bucket)
 
 	# ---------- 2. No odd numbers?  Use the highest score ----------
 	even_max = max(candidates.values())                    # guaranteed to exist
 	bucket = [k for k, v in candidates.items() if v == even_max]
-	return random.choice(bucket)
+	return dice.choice(bucket)
 
 def raise_stat( char, key: str,	amount: int = 1, cap: int = 30):
 	"""
@@ -191,10 +191,11 @@ def grant_all_skill_proficiency(char):
 	for skill in char.skills.get_all_skills():
 		skill.set_proficiency()
 
-def grant_expertise_in_one_skill(char):
+def grant_expertise_in_one_skill(char, *, dice):
+	"""Double one proficient skill, drawn from ``dice`` (Boon_of_Skill.expertise)."""
 	candidates = [skill for skill in char.skills.get_all_skills() if skill.proficiency_level == 1]
 	if candidates:
-		random.choice(candidates).set_expertise()
+		dice.choice(candidates).set_expertise()
 
 # -------- Spell Granting ----------------#
 def grant_spell(spell_name: str, casting_stat: str, uses_per_day: Optional[int] = None):
@@ -341,7 +342,7 @@ def BuildAvailableFeats(char):
 
 def BoonCombatProwess():
 	def _apply(c):
-		key = _ability_to_increase(c)
+		key = _ability_to_increase(c, dice=c.Dice_Bag( "Boon_of_Combat_Prowess.ability" ))
 		raise_stat(c, key, 1, cap=30)
 	return Feat(
 		name="Boon of Combat Prowess",
@@ -357,7 +358,7 @@ def BoonCombatProwess():
 
 def BoonDimensionalTravel():
 	def _apply(c):
-		key = _ability_to_increase(c)
+		key = _ability_to_increase(c, dice=c.Dice_Bag( "Boon_of_Dimensional_Travel.ability" ))
 		raise_stat(c, key, 1, cap=30)
 	return Feat(
 		name="Boon of Dimensional Travel",
@@ -371,24 +372,27 @@ def BoonDimensionalTravel():
 		level=19,
 		)
 
-def BoonEnergyResistance():
-	def Damages():
+def BoonEnergyResistance(char):
+	#-- the two damage types are drawn when the boon is built, as before,
+	#-- from the Character's own bag: a candidate boon no longer consumes
+	#-- the stream of the one actually taken
+	def Damages(dice):
 		dmg_types = [
 			"Acid", "Cold", "Fire", "Lightning", "Necrotic",
 			"Poison", "Psychic", "Radiant", "Thunder",
 			]
-		chosen = random.sample(dmg_types, 2)
+		chosen = dice.sample(dmg_types, 2)
 		return chosen[1], chosen[0]
 
 	def _apply(c):
-		key = _ability_to_increase(c)
+		key = _ability_to_increase(c, dice=c.Dice_Bag( "Boon_of_Energy_Resistance.ability" ))
 		raise_stat(c, key, 1, cap=30)
 
 
 
 		# store them so the damage-handling layer can look them up
 
-	dmg1, dmg2 = Damages()
+	dmg1, dmg2 = Damages(char.Dice_Bag( "Boon_of_Energy_Resistance.damage_types" ))
 	return Feat(
 		name="Boon of Energy Resistance",
 		apply=_apply,
@@ -406,7 +410,7 @@ def BoonEnergyResistance():
 
 def BoonFate():
 	def _apply(c):
-		key = _ability_to_increase(c)
+		key = _ability_to_increase(c, dice=c.Dice_Bag( "Boon_of_Fate.ability" ))
 		raise_stat(c, key, 1, cap=30)
 	return Feat(
 		name="Boon of Fate",
@@ -422,7 +426,7 @@ def BoonFate():
 
 def BoonFortitude():
 	def _apply(char):
-		key = _ability_to_increase(char)
+		key = _ability_to_increase(char, dice=char.Dice_Bag( "Boon_of_Fortitude.ability" ))
 		raise_stat(char, key, 1, cap=30)
 		# Add +40 to maximum health
 		print(char.base_health)
@@ -444,7 +448,7 @@ def BoonFortitude():
 def BoonSpellRecall():
 	def _apply(c):
 		# caster gate is enforced by BuildAvailableBoon
-		key = random.choice(["INT", "WIS", "CHA"])
+		key = c.Dice_Bag( "Boon_of_Spell_Recall.ability" ).choice(["INT", "WIS", "CHA"])
 		raise_stat(c, key, 1, cap=30)
 
 	return Feat(
@@ -461,7 +465,7 @@ def BoonSpellRecall():
 
 def BoonRecovery():
 	def _apply(c):
-		key = _ability_to_increase(c)
+		key = _ability_to_increase(c, dice=c.Dice_Bag( "Boon_of_Recovery.ability" ))
 		raise_stat(c, key, 1, cap=30)
 
 	return Feat(
@@ -480,8 +484,8 @@ def BoonRecovery():
 def BoonSkill():
 	def _apply(char):
 		grant_all_skill_proficiency(char)
-		grant_expertise_in_one_skill(char)
-		key = _ability_to_increase(char)
+		grant_expertise_in_one_skill(char, dice=char.Dice_Bag( "Boon_of_Skill.expertise" ))
+		key = _ability_to_increase(char, dice=char.Dice_Bag( "Boon_of_Skill.ability" ))
 		raise_stat(char, key, 1, cap=30)
 
 	return Feat(
@@ -498,7 +502,7 @@ def BoonSkill():
 
 def BoonSpeed():
 	def _apply(c):
-		key = _ability_to_increase(c)
+		key = _ability_to_increase(c, dice=c.Dice_Bag( "Boon_of_Speed.ability" ))
 		raise_stat(c, key, 1, cap=30)
 
 		c.speed += 30                      # assumes `char.speed` holds walk speed
@@ -517,7 +521,7 @@ def BoonSpeed():
 
 def BoonNightSpirit():
 	def _apply(c):
-		key = _ability_to_increase(c)
+		key = _ability_to_increase(c, dice=c.Dice_Bag( "Boon_of_the_Night_Spirit.ability" ))
 		raise_stat(c, key, 1, cap=30)
 
 	return Feat(
@@ -534,7 +538,7 @@ def BoonNightSpirit():
 
 def BoonTruesight():
 	def _apply(c):
-		key = _ability_to_increase(c)
+		key = _ability_to_increase(c, dice=c.Dice_Bag( "Boon_of_Truesight.ability" ))
 		raise_stat(c, key, 1, cap=30)
 		#c.senses.truesight = max(getattr(c.senses, "truesight", 0), 60)
 	return Feat(
@@ -552,7 +556,8 @@ def BoonTruesight():
 def ApplyRandomFeats(char, n=1):
 	print("Random Feat!")
 	available = list(BuildAvailableFeats(char))
-	chosen = random.sample(available, n)
+	dice = char.Dice_Bag( "General_Feat.choice" )
+	chosen = dice.sample(available, n)
 	for feat in chosen:
 		feat(char)   # apply .apply() mutation
 	return chosen
@@ -566,7 +571,7 @@ def BuildAvailableBoon(char):
 	if "Fighter" in char:
 		yield BoonIrresistibleOffense()
 		yield BoonCombatProwess()
-		yield BoonEnergyResistance()
+		yield BoonEnergyResistance(char)
 		yield BoonFortitude()
 		yield BoonRecovery()
 		yield BoonNightSpirit()
@@ -594,7 +599,7 @@ def BuildAvailableBoon(char):
 	if 'Paladin' in char:
 		yield BoonIrresistibleOffense()
 		yield BoonCombatProwess()
-		yield BoonEnergyResistance()
+		yield BoonEnergyResistance(char)
 		yield BoonFortitude()
 		yield BoonRecovery()
 		yield BoonSpellRecall()
@@ -608,21 +613,21 @@ def BuildAvailableBoon(char):
 		yield BoonIrresistibleOffense()
 		yield BoonCombatProwess()
 		yield BoonDimensionalTravel()
-		yield BoonEnergyResistance()
+		yield BoonEnergyResistance(char)
 		yield BoonFortitude()
 		yield BoonRecovery()
 		yield BoonNightSpirit()
 	if 'Druid' in char:
 		yield BoonCombatProwess()
 		yield BoonDimensionalTravel()
-		yield BoonEnergyResistance()
+		yield BoonEnergyResistance(char)
 		yield BoonRecovery()
 		yield BoonSpellRecall()
 		yield BoonNightSpirit()
 	if 'Warlock' in char:
 		yield BoonCombatProwess()
 		yield BoonDimensionalTravel()
-		yield BoonEnergyResistance()
+		yield BoonEnergyResistance(char)
 		yield BoonRecovery()
 		yield BoonNightSpirit()
 	if 'Sorcerer' in char:
@@ -631,7 +636,7 @@ def BuildAvailableBoon(char):
 		yield BoonNightSpirit()
 	if 'Barbarian' in char:
 		yield BoonIrresistibleOffense()
-		yield BoonEnergyResistance()
+		yield BoonEnergyResistance(char)
 		yield BoonFortitude()
 		yield BoonRecovery()
 		yield BoonNightSpirit()
@@ -644,11 +649,34 @@ def BuildAvailableBoon(char):
 def ApplyEpicBoon(char, n=1):
 	print("Epic Boom!")
 	available = list(BuildAvailableBoon(char))
-	chosen = random.sample(available, n)
+	dice = char.Dice_Bag( "Epic_Boon.choice" )
+	chosen = dice.sample(available, n)
 	for boon in chosen:
 		boon(char)
 		char.features.append(boon)
 	return chosen
+
+def Druidic_Warrior_Cantrips(char):
+	"""The two Druid cantrips a Ranger's Druidic Warrior style teaches.
+
+	One bag, ``Druidic_Warrior.cantrips``: every reading of the style table
+	names the same two.
+	"""
+	from AtlasLusoris.Grimoire_of_Spellcasters import SPELL_LISTS
+	druid_cantrips = SPELL_LISTS["Druid"][0]
+	dice = char.Dice_Bag( "Druidic_Warrior.cantrips" )
+	return dice.sample(druid_cantrips, k=2)
+
+def Blessed_Warrior_Cantrips(char):
+	"""The two Cleric cantrips a Paladin's Blessed Warrior style teaches.
+
+	One bag, ``Blessed_Warrior.cantrips``, read by the style table and by
+	add_new_fighting_style alike: the text names the cantrips granted.
+	"""
+	from AtlasLusoris.Grimoire_of_Spellcasters import SPELL_LISTS
+	cleric_cantrips = SPELL_LISTS["Cleric"][0]
+	dice = char.Dice_Bag( "Blessed_Warrior.cantrips" )
+	return dice.sample(cleric_cantrips, k=2)
 
 def Fighting_Styles(char=None):
 	styles = {
@@ -676,10 +704,8 @@ def Fighting_Styles(char=None):
 
 	# Only Rangers get access to Druidic Warrior:
 	if char and "Ranger" in char:
-		from AtlasLusoris.Grimoire_of_Spellcasters import SPELL_LISTS
-		# pick two distinct druid cantrips:
-		druid_cantrips = SPELL_LISTS["Druid"][0]
-		chosen = random.sample(druid_cantrips, k=2)
+		# the two druid cantrips, from the style's own bag:
+		chosen = Druidic_Warrior_Cantrips(char)
 
 		# render them as HTML blocks:
 		cantrip_html = "".join(f"<div class='spell'>{c}</div>" for c in chosen)
@@ -694,10 +720,8 @@ def Fighting_Styles(char=None):
 
 	# Paladins get access to Blessed Warrior (TCoE, and 2024 PHB):
 	if char and "Paladin" in char:
-		from AtlasLusoris.Grimoire_of_Spellcasters import SPELL_LISTS
-		# pick two distinct cleric cantrips:
-		cleric_cantrips = SPELL_LISTS["Cleric"][0]
-		chosen = random.sample(cleric_cantrips, k=2)
+		# the two cleric cantrips, from the style's own bag:
+		chosen = Blessed_Warrior_Cantrips(char)
 
 		# render them as HTML blocks:
 		cantrip_html = "".join(f"<div class='spell'>{c}</div>" for c in chosen)
@@ -713,8 +737,9 @@ def Fighting_Styles(char=None):
 def character_fighting_styles(char):
 	"""Return a set of fighting style names the character already has."""
 	style_names = set()
+	styles = Fighting_Styles(char)
 	for feat in getattr(char, "features", []):
-		if getattr(feat, "name", "") in Fighting_Styles(char):
+		if getattr(feat, "name", "") in styles:
 			style_names.add(feat.name)
 	return style_names
 
@@ -725,13 +750,13 @@ def add_new_fighting_style(char):
 	if not available:
 		print("No new fighting styles to grant!")
 		return None
-	chosen = random.choice(available)
+	dice = char.Dice_Bag( "Fighting_Style.choice" )
+	chosen = dice.choice(available)
 	
-	# Special handling for Blessed Warrior
+	# Special handling for Blessed Warrior: the cantrips granted are the
+	# ones the style table named (one bag, no second draw)
 	if chosen == "Blessed Warrior":
-		from AtlasLusoris.Grimoire_of_Spellcasters import SPELL_LISTS
-		cleric_cantrips = SPELL_LISTS["Cleric"][0]
-		chosen_cantrips = random.sample(cleric_cantrips, k=2)
+		chosen_cantrips = Blessed_Warrior_Cantrips(char)
 		
 		def apply_blessed_warrior(c):
 			"""Apply Blessed Warrior cantrips to character's spellcaster."""
@@ -814,6 +839,10 @@ def add_new_weapon_mastery(char):
 		print("No new weapon masteries to grant!")
 		return None
 
+	#-- dormant: nothing calls this legacy twin of Map_of_Weapon_Masteries
+	#-- (Weapon_Mastery.choice); it is outside QST-0144.6's live sites and
+	#-- keeps the shared stream until it is deleted or ported
+	import app.random as random
 	name = random.choice(available)
 	feat = Feat(
 		name=name,
@@ -1088,9 +1117,10 @@ def BuildAvailableInvocations(char):
 
 # Blueprints
 # ---- General Pattern for Features/Boons ----
-def generic_stat_boost_boon(name, desc):
+def generic_stat_boost_boon(name, desc, boon):
+	"""A +1 boon; ``boon`` is the Boon Tag's class name, whose ``.ability`` bag the raise draws from."""
 	def _apply(char):
-		key = _ability_to_increase(char)
+		key = _ability_to_increase(char, dice=char.Dice_Bag( f"{boon}.ability" ))
 		raise_stat(char, key, 1, cap=30)
 	return Feat(
 		name=name,

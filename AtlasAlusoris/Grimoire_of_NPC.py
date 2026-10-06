@@ -21,7 +21,7 @@ except ImportError:
 
 """		NPC class    """
 class NPC:
-	def __init__(npc, race = None, archetype = None, lvl=1, seed=random.randint(0, 2**8), light= False):
+	def __init__(npc, race = None, archetype = None, lvl=1, seed=None, light= False):
 		"""
 		INVOCATION OF A NEW Non Player Character.
 

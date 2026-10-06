@@ -13,12 +13,17 @@ import re
 
 
 
-def Dice(D: int = 6, N: int = 1, modifier: int = 0) -> int:
+def Dice(D: int = 6, N: int = 1, modifier: int = 0, *, dice=None) -> int:
 	'''	Cartography '''
 	"""
 	Rolls N dices with D sides each.
 	If D is 0, simulates a coin flip.
 	Adds the base modifier to the result.
+
+	``dice`` is an opened Dice Bag (a random.Random) the roll draws from:
+	a Character's roll passes the bag it opened for that purpose
+	(ruling 8, QST-0144.6).  Without it the roll falls back to the shared
+	app.random stream, which only code outside a Character's build may use.
 
 	Preconditions:
 	-	D >= 0 (Number of sides on each die)
@@ -29,24 +34,26 @@ def Dice(D: int = 6, N: int = 1, modifier: int = 0) -> int:
 	-	Returns the sum of the rolls plus the modifier.
 	"""
 	if N<1: 	N = 1
+	source = random if dice is None else dice
 	roll = 0
 
 	for _ in range(N):
 		if D >= 1:
-			throwing = random.randint(1, D)
+			throwing = source.randint(1, D)
 		else:
-			throwing = random.randint(D, 1)
+			throwing = source.randint(D, 1)
 		roll += throwing
 	#print(f"Rolling {N}d{D}: {roll}")
 	result = roll + modifier
 
 	if not isinstance(result, int):
-		raise DiceError(f"Unexpected result type: {type(result)}. Expected int.\n{e}")
+		raise DiceError(f"Unexpected result type: {type(result)}. Expected int.")
 	return result
 
-def Roll(text: str = "1d20") -> int:
+def Roll(text: str = "1d20", *, dice=None) -> int:
 	"""	Interprets a dice roll string (e.g., '2d6 + 3')
 	and executes the roll.
+	``dice`` is the opened Dice Bag handed on to Dice().
 	Preconditions:
 	-	Text is a string in 'NdM + X' format.
 	Postconditions:
@@ -61,7 +68,7 @@ def Roll(text: str = "1d20") -> int:
 	# Extracting the values
 	num_dice = int(match.group(1))
 	num_sides = int(match.group(2))
-	modifier = int(match.group(3))
+	modifier = match.group(3)
 
 	if modifier:
 		modifier = int(modifier)
@@ -69,7 +76,7 @@ def Roll(text: str = "1d20") -> int:
 		modifier = 0
 
 
-	result = Dice(D = num_sides, N = num_dice, modifier = modifier)
+	result = Dice(D = num_sides, N = num_dice, modifier = modifier, dice = dice)
 	if not isinstance(result, int): raise DiceError("Dice result not an integer.")
 	return result
 
@@ -106,3 +113,31 @@ def SelectDx(d=0, pb=2):
 def New_Stat():
 	rolls = [Dice(6) for _ in range(4)]
 	return sum(sorted(rolls)[1:])
+
+
+if __name__ == "__main__":
+	from random import Random
+
+	#-- a roll from an opened bag is the bag's own stream: it replays per
+	#-- bag and stays inside the die
+	first = [Dice(6, dice=Random(7)) for _ in range(5)]
+	second = [Dice(6, dice=Random(7)) for _ in range(5)]
+	assert first == second, (first, second)
+	assert all(1 <= value <= 6 for value in first), first
+
+	bag = Random(1)
+	expected = 2 + sum(bag.randint(1, 8) for _ in range(3))
+	assert Dice(8, N=3, modifier=2, dice=Random(1)) == expected
+
+	#-- Roll parses the text and rolls from the same bag
+	assert Roll("3d8 + 2", dice=Random(1)) == expected
+	assert 1 <= Roll("1d20", dice=Random(3)) <= 20
+
+	#-- the coin flip (D = 0) draws from the bag too
+	assert Dice(0, dice=Random(2)) in (0, 1)
+
+	#-- without a bag the shared stream still answers: combat code outside
+	#-- a Character's build keeps it for now (QST-0144.6)
+	assert 1 <= Dice(6) <= 6
+
+	print("OK - Map_of_Dice: a roll draws from the Dice Bag it is given.")

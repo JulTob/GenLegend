@@ -34,7 +34,8 @@ class Wizard(Progression):
 			character.skills.activate_expertise(
 				2,
 				["Arcana", "History",	"Investigation",	"Medicine",
-				"Nature",	"Religion"]
+				"Nature",	"Religion"],
+				dice=character.Dice_Bag( "Scholar.choice" ),
 				)
 		if level >= 3:
 			if subclass == "Evoker":
@@ -110,3 +111,45 @@ class Wizard(Progression):
 			level, you must expend a spell slot."""))
 		features.extend(feats)
 		return features
+
+
+if __name__ == "__main__":
+	from random import Random
+	from AtlasActorLudi.Grimoire_of_AbilityScores import AbilityScores
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+
+	class Probe:
+		"""A level 2 Wizard stand-in with the fields Wizard.features reads."""
+		def __init__(probe):
+			probe.Level = 2
+			probe.Subclass = None
+			probe.char_class = "Wizard"
+			probe.base_health = 6
+			probe.opened = []
+			probe.skills = Char_Skills(
+				AS=AbilityScores(10, 10, 10, 10, 10, 10),
+				ProficiencyBonus=2,
+				)
+
+		def Dice_Bag(probe, purpose):
+			probe.opened.append(purpose)
+			return Random(purpose)
+
+	scholar_skills = {"Arcana", "History", "Investigation", "Medicine", "Nature", "Religion"}
+
+	#-- level 2: the hit die rolls from Wizard.hit_points, then the Scholar
+	#-- lesson doubles two of its six skills from Scholar.choice
+	probe = Probe()
+	features = Wizard(probe).features(probe)
+	assert probe.opened == ["Wizard.hit_points", "Scholar.choice"], probe.opened
+	doubled = {skill.name for skill in probe.skills.get_all_skills() if skill.proficiency_level == 2}
+	assert len(doubled) == 2 and doubled <= scholar_skills, doubled
+	assert "Scholar" in [feature.name for feature in features]
+	assert 7 <= probe.base_health <= 12, probe.base_health
+
+	#-- the same Wizard doubles the same two skills again
+	again = Probe()
+	Wizard(again).features(again)
+	assert {skill.name for skill in again.skills.get_all_skills() if skill.proficiency_level == 2} == doubled
+
+	print("OK - Training/Wizard: the Scholar's Expertise draws from Scholar.choice.")
