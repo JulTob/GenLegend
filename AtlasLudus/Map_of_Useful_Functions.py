@@ -2,21 +2,36 @@ import random
 import AtlasAlusoris.Map_of_NPC as NPC
 
 
-def select1(options, weights=None):
+def select1(
+		options,
+		weights=None,
+		*,
+		dice=None,
+		):
 	"""
 	Selects one item from options using weights if provided.
+
+	``dice`` is the Dice Bag the draw comes from (ruling 8, QST-0144.6);
+	Map_of_Names hands down the name's own bag. Without one the draw comes
+	from the shared random module, as before: the NonPlayer callers
+	(Decree 0004, not ported yet) still bring none.
 	"""
+	source = (
+		dice
+		if dice is not None
+		else random
+		)
 	if not weights:
-		return random.choice(options)
+		return source.choice(options)
 	try:
-		result = random.choices(options, weights=weights, k=1)[0]
+		result = source.choices(options, weights=weights, k=1)[0]
 	except (ValueError, TypeError):
 		if len(options) > len(weights):
 			weights = list(weights) + [weights[-1]]
-			return select1(options, weights)
+			return select1(options, weights, dice=dice)
 		if len(options) < len(weights):
 			options = list(options) + [options[-1]]
-			return select1(options, weights)
+			return select1(options, weights, dice=dice)
 		raise
 	return result
 
@@ -112,3 +127,110 @@ def getGenus(lusor):
 		raise TypeError("Input must be a list or a NPC/PC object.")
 
 	return genus
+
+
+# ---------------------------------------------------------------------------
+# Self-test: select1 draws from the Dice Bag it is handed (QST-0144.6)
+# ---------------------------------------------------------------------------
+
+
+class _Recording_Dice:
+	"""A Dice Bag that remembers every pool it was asked to draw from."""
+
+	def __init__(
+			self,
+			bag,
+			):
+		self.bag = bag
+		self.calls = []
+
+	def choice(
+			self,
+			pool,
+			):
+		self.calls.append(
+			(
+				"choice",
+				list(pool),
+				),
+			)
+		return self.bag.choice(
+			pool,
+			)
+
+	def choices(
+			self,
+			pool,
+			weights=None,
+			k=1,
+			):
+		self.calls.append(
+			(
+				"choices",
+				list(pool),
+				list(weights),
+				k,
+				),
+			)
+		return self.bag.choices(
+			pool,
+			weights=weights,
+			k=k,
+			)
+
+
+def _test_select1_draws_from_the_given_dice():
+	"""select1 draws from the dice it is handed; the pool, the weights and k stay what they were."""
+	from AtlasActorLudi.CharactersKit import Character
+
+	def fresh_dice():
+		return _Recording_Dice(
+			Character(
+				seed=1,
+				).Dice_Bag(
+					"identity.name",
+					),
+			)
+
+	options = ["a", "b", "c"]
+
+	dice = fresh_dice()
+	assert select1(options, dice=dice) in options
+	assert dice.calls == [("choice", options)], dice.calls
+
+	dice = fresh_dice()
+	assert select1(options, [1, 2, 3], dice=dice) in options
+	assert dice.calls == [("choices", options, [1, 2, 3], 1)], dice.calls
+
+	#-- A short weights list is padded with its last weight; the dice stay the same.
+	dice = fresh_dice()
+	assert select1(options, [1, 2], dice=dice) in options
+	assert dice.calls[-1] == ("choices", options, [1, 2, 2], 1), dice.calls
+
+	#-- Same bag, same answer: the bag decides, not the process.
+	def pick(
+			seed,
+			):
+		return select1(
+			list("abcdefgh"),
+			dice=Character(
+				seed=seed,
+				).Dice_Bag(
+					"identity.name",
+					),
+			)
+
+	assert pick(5) == pick(5)
+
+
+def _test_select1_without_dice_keeps_the_old_behaviour():
+	"""No Dice Bag: the shared random module answers, as before the port."""
+	options = ["a", "b", "c"]
+	assert select1(options) in options
+	assert select1(options, [1, 2, 3]) in options
+
+
+if __name__ == "__main__":
+	_test_select1_draws_from_the_given_dice()
+	_test_select1_without_dice_keeps_the_old_behaviour()
+	print("Map_of_Useful_Functions: self-test passed")
