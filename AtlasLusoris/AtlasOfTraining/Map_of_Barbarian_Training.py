@@ -496,9 +496,7 @@ def Grant_Primal_Knowledge_Skill(
 	chosen = char.Pick(
 		untrained,
 		dice=char.Dice_Bag(
-			"barbarian.primal_knowledge",
-			version="1",
-			namespace="GenLegendTraining",
+			"Primal_Knowledge.choice",
 			),
 		)
 	getattr(
@@ -1035,3 +1033,142 @@ Rage_of_the_Gods = _path(
 			f"to {_rank( char )} instead."
 			),
 		)
+
+
+# ---------------------------------------------------------------------------
+# Self-test
+# ---------------------------------------------------------------------------
+
+
+def _self_test() -> None:
+	"""Primal Knowledge draws its skill from a bag named by the lesson (ruling 8)."""
+	from types import SimpleNamespace
+
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		bag = original(
+				char,
+				purpose,
+				**key,
+				)
+		opened.append(
+				(
+					purpose,
+					key,
+					bag,
+					)
+				)
+		return bag
+
+	def Purposes() -> list:
+		"""What was opened, as (purpose, key): a key of {} is the default."""
+		return [
+				(
+					purpose,
+					key,
+					)
+				for purpose, key, _ in opened
+				]
+
+	def Skeleton(
+			seed: int,
+			level: int,
+			):
+		"""A Character with a skill sheet and nothing else."""
+		char = Character(
+				seed=seed,
+				level=level,
+				)
+		char.skills = Char_Skills(
+				char,
+				SimpleNamespace(
+						STR=10,
+						DEX=10,
+						CON=10,
+						INT=10,
+						WIS=10,
+						CHA=10,
+						),
+				2,
+				)
+		return char
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Skeleton(
+				seed=7,
+				level=3,
+				)
+		char.skills.Athletics.set_proficiency()
+
+		Grant_Primal_Knowledge_Skill(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Primal_Knowledge.choice",
+					{},
+					),
+				], opened
+		untrained = [
+				name
+				for name in BARBARIAN_SKILLS
+				if name != "Athletics"
+				]
+		assert char.primal_knowledge_skill == char.Pick(
+				untrained,
+				dice=original(
+						char,
+						"Primal_Knowledge.choice",
+						),
+				)
+			#-- The pool is every Barbarian skill not yet trained, in the
+			#-- table's order; the answer is that bag's first draw over it.
+		assert getattr(
+				char.skills,
+				char.primal_knowledge_skill.replace(
+						" ",
+						"_",
+						),
+				).proficiency_level == 1
+		opened.clear()
+		Grant_Primal_Knowledge_Skill(
+				char,
+				)
+		assert opened == [], "a recorded skill is not drawn again"
+
+		trained = Skeleton(
+				seed=8,
+				level=3,
+				)
+		for name in BARBARIAN_SKILLS:
+			getattr(
+					trained.skills,
+					name.replace(
+							" ",
+							"_",
+							),
+					).set_proficiency()
+		Grant_Primal_Knowledge_Skill(
+				trained,
+				)
+		assert opened == [], "nothing to draw opens no bag"
+		assert trained.primal_knowledge_skill == ""
+	finally:
+		Character.Dice_Bag = original
+	print(
+			"Map_of_Barbarian_Training: self-test OK"
+			)
+
+
+if __name__ == "__main__":
+	_self_test()

@@ -105,9 +105,7 @@ def _apply_primal_order(
 					"Warden",
 					),
 			dice=char.Dice_Bag(
-					"training.Druid.primal_order",
-					version="2024",
-					namespace="GenLegendClass",
+					"Primal_Order.choice",
 					),
 			)
 
@@ -647,3 +645,114 @@ Full_of_Stars = _stars(
 			"gaining Resistance to Bludgeoning, Piercing, and Slashing damage."
 			),
 		)
+
+
+# ---------------------------------------------------------------------------
+# Self-test
+# ---------------------------------------------------------------------------
+
+
+def _self_test() -> None:
+	"""Primal Order draws from a bag named by its lesson (ruling 8)."""
+	from types import SimpleNamespace
+
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		bag = original(
+				char,
+				purpose,
+				**key,
+				)
+		opened.append(
+				(
+					purpose,
+					key,
+					bag,
+					)
+				)
+		return bag
+
+	def Purposes() -> list:
+		"""What was opened, as (purpose, key): a key of {} is the default."""
+		return [
+				(
+					purpose,
+					key,
+					)
+				for purpose, key, _ in opened
+				]
+
+	def Skeleton(
+			seed: int,
+			level: int,
+			):
+		"""A Character with a skill sheet and nothing else."""
+		char = Character(
+				seed=seed,
+				level=level,
+				)
+		char.skills = Char_Skills(
+				char,
+				SimpleNamespace(
+						STR=10,
+						DEX=10,
+						CON=10,
+						INT=10,
+						WIS=10,
+						CHA=10,
+						),
+				2,
+				)
+		return char
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Skeleton(
+				seed=7,
+				level=1,
+				)
+
+		_apply_primal_order(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Primal_Order.choice",
+					{},
+					),
+				], opened
+		assert char.primal_order == char.Pick(
+				(
+					"Magician",
+					"Warden",
+					),
+				dice=original(
+						char,
+						"Primal_Order.choice",
+						),
+				)
+			#-- The pool is the pair, in this order, and the answer is that
+			#-- bag's first draw over it: nothing else draws from this bag.
+		opened.clear()
+		_apply_primal_order(
+				char,
+				)
+		assert opened == [], "a settled Order is not drawn again"
+	finally:
+		Character.Dice_Bag = original
+	print(
+			"Map_of_Druid_Training: self-test OK"
+			)
+
+
+if __name__ == "__main__":
+	_self_test()

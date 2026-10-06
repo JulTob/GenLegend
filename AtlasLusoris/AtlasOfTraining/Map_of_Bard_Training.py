@@ -299,6 +299,8 @@ def _Trained_Skill_Names(
 def _Double_Two_Skills(
 		char,
 		lesson: str,
+		*,
+		purpose: str,
 		) -> None:
 	"""
 	Double the Proficiency Bonus on two more trained skills, and record them.
@@ -309,6 +311,10 @@ def _Double_Two_Skills(
 	should have held five, and the level 9 lesson regularly found nothing
 	left to double. A Training awakens after the Background has taught, so
 	the pool here is the whole sheet.
+
+	``purpose`` names the Dice Bag after the lesson that doubles them,
+	``Bard.Expertise.choice`` or ``Bard.Expertise_II.choice`` (ruling 8,
+	QST-0144.6): two lessons are two choices, so two bags.
 	"""
 	skills = getattr(
 			char,
@@ -325,6 +331,9 @@ def _Double_Two_Skills(
 	skills.activate_expertise(
 			2,
 			skills.get_proficient_skills(),
+			dice=char.Dice_Bag(
+					purpose,
+					),
 			)
 	_Ledger(
 			char,
@@ -344,6 +353,7 @@ def _apply_expertise(
 	_Double_Two_Skills(
 			char,
 			"Expertise",
+			purpose="Bard.Expertise.choice",
 			)
 
 
@@ -354,6 +364,7 @@ def _apply_expertise_II(
 	_Double_Two_Skills(
 			char,
 			"Expertise (II)",
+			purpose="Bard.Expertise_II.choice",
 			)
 
 
@@ -377,6 +388,9 @@ def _apply_bonus_proficiencies(
 			3,
 			_Untrained_Skill_Names(
 					skills,
+					),
+			dice=char.Dice_Bag(
+					"Bonus_Proficiencies.choice",
 					),
 			)
 	_Ledger(
@@ -470,6 +484,9 @@ def _apply_magical_discoveries(
 			char,
 			pool,
 			2,
+			dice=char.Dice_Bag(
+					"Magical_Discoveries.choice",
+					),
 			)
 	for spell in taken:
 		char.known_spells.append(
@@ -986,3 +1003,257 @@ Battle_Magic = _valor(
 		"make one attack with a weapon or Unarmed Strike as a Bonus Action."
 		),
 	)
+
+
+# ---------------------------------------------------------------------------
+# Self-test
+# ---------------------------------------------------------------------------
+
+
+def _self_test() -> None:
+	"""Every Bard lesson that chooses draws from a bag named by that lesson (ruling 8)."""
+	from types import SimpleNamespace
+
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		bag = original(
+				char,
+				purpose,
+				**key,
+				)
+		opened.append(
+				(
+					purpose,
+					key,
+					bag,
+					)
+				)
+		return bag
+
+	def Purposes() -> list:
+		"""What was opened, as (purpose, key): a key of {} is the default."""
+		return [
+				(
+					purpose,
+					key,
+					)
+				for purpose, key, _ in opened
+				]
+
+	def Skeleton(
+			seed: int,
+			level: int,
+			):
+		"""A Character with a skill sheet and nothing else."""
+		char = Character(
+				seed=seed,
+				level=level,
+				)
+		char.skills = Char_Skills(
+				char,
+				SimpleNamespace(
+						STR=10,
+						DEX=10,
+						CON=10,
+						INT=10,
+						WIS=10,
+						CHA=10,
+						),
+				2,
+				)
+		return char
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Skeleton(
+				seed=7,
+				level=9,
+				)
+		for name in (
+				"Athletics",
+				"Arcana",
+				"Performance",
+				):
+			getattr(
+					char.skills,
+					name,
+					).set_proficiency()
+		asked = []
+
+		def Recording_Expertise(
+				count,
+				names,
+				*,
+				dice=None,
+				):
+			asked.append(
+					(
+						"expertise",
+						count,
+						list(
+								names
+								),
+						dice,
+						)
+					)
+
+		def Recording_Proficiencies(
+				count,
+				names,
+				*,
+				dice=None,
+				):
+			asked.append(
+					(
+						"proficiencies",
+						count,
+						list(
+								names
+								),
+						dice,
+						)
+					)
+
+		char.skills.activate_expertise = Recording_Expertise
+		char.skills.activate_proficiencies = Recording_Proficiencies
+			#-- Char_Skills takes dice= on both once group 1 of QST-0144.6
+			#-- lands; the doubles record the ask, so this probe reads the
+			#-- same before and after.
+
+		_apply_expertise(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Bard.Expertise.choice",
+					{},
+					),
+				], opened
+		assert asked[-1] == (
+				"expertise",
+				2,
+				char.skills.get_proficient_skills(),
+				opened[0][2],
+				)
+			#-- The pool is every trained skill; the bag is the lesson's.
+		assert _Recall(
+				char,
+				"Expertise",
+				) == ()
+			#-- The double doubles nothing, so the ledger records nothing.
+
+		opened.clear()
+		_apply_expertise_II(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Bard.Expertise_II.choice",
+					{},
+					),
+				], opened
+		assert asked[-1] == (
+				"expertise",
+				2,
+				char.skills.get_proficient_skills(),
+				opened[0][2],
+				)
+
+		opened.clear()
+		_apply_bonus_proficiencies(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Bonus_Proficiencies.choice",
+					{},
+					),
+				], opened
+		assert asked[-1] == (
+				"proficiencies",
+				3,
+				_Untrained_Skill_Names(
+						char.skills,
+						),
+				opened[0][2],
+				)
+
+		import AtlasLusoris.Grimoire_of_Spellcasters as spellcasters
+
+		taken_from = []
+		kept = spellcasters._pick_distinct
+
+		def Recording_Pick_Distinct(
+				character,
+				ledger,
+				count,
+				*,
+				dice=None,
+				):
+			taken_from.append(
+					(
+						list(
+								ledger
+								),
+						count,
+						dice,
+						)
+					)
+			return list(
+					ledger
+					)[:count]
+
+		spellcasters._pick_distinct = Recording_Pick_Distinct
+			#-- _pick_distinct takes dice= once group 5 lands; same reason.
+		try:
+			opened.clear()
+			char.known_spells = []
+			_apply_magical_discoveries(
+					char,
+					)
+		finally:
+			spellcasters._pick_distinct = kept
+		assert Purposes() == [
+				(
+					"Magical_Discoveries.choice",
+					{},
+					),
+				], opened
+		pool, count, dice = taken_from[0]
+		assert count == 2
+		assert dice is opened[0][2]
+		assert [
+				spell.name
+				for spell in pool
+				] == [
+				spell.name
+				for spell in _Borrowable_Spells(
+						char,
+						)
+				]
+			#-- Nothing known yet, so the pool is every borrowable spell.
+		assert _Recall(
+				char,
+				"Magical Discoveries",
+				) == tuple(
+				spell.name
+				for spell in pool[:2]
+				)
+	finally:
+		Character.Dice_Bag = original
+	print(
+			"Map_of_Bard_Training: self-test OK"
+			)
+
+
+if __name__ == "__main__":
+	_self_test()
