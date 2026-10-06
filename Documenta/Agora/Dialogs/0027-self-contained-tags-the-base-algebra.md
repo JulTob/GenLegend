@@ -503,6 +503,11 @@ Making the identities Flags was planned as a change that prints nothing new. It 
 
 - **Station 5 measured the same night.** Four readers, a merge and two critics inventoried every live choice site on the branch after station 4: 104 of them, 49 through a named Dice Bag, 14 through a purpose derived from the caller's stack frame (a bare `Accept` always derives the same purpose, so all bare Accepts of a Character share one stream), 38 through the random module or `app.random` under `Isolated_Legacy_RNG` (one shared stream in draw order, the coupling that moved station 3's fingerprints), 2 through a private `random.Random`. QST-0144.6 carries the inventory and a four-commit plan; five questions are asked in chat before it runs.
 
+## 🗣️ Julio's answers, fourth round (2026-10-06, in chat)
+
+- **Station 5 in full.** *"The legacy should also be fix, yeah."* *"Sounds right"* (every Tag-owned purpose renamed at once). *"yes"* (Species Traits and Background Origin Feats are grants from the Imprint). *"Fix the Dice Bag by magic, bypass, or private streams, and ask clarifications if anything is strange."* So the frame-derived purposes, the shared-stream draws and the private streams all go in one declared difference, and the inventory's eight strange findings (QST-0144.6) are handled as proposed there.
+- **Where a Tag-owned choice lives.** *"Tag-owned choices should be at tag level or helper functions inside the tag file."* A choice is made on the Tag (Imprint or Action) or by a helper in the file that declares the Tag; never by an outer rite in another file. That is the rule of station 5's second pass, the move.
+
 ## ⚖️ Rulings needed from Julio
 
 Numbered so an answer can say "1: yes, 2: no". *(Three rounds answered above; station 3's difference accepted; the Dice Bag names ruled. Open: whether the Species and Background ports move their Traits and Origin Feats from Bases into Imprints as the second-round reading implies.)*
