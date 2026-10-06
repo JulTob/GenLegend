@@ -428,8 +428,13 @@ def _pick_boost_ability(
 	char,
 	pool,
 	scores,
+	*,
+	dice,
 	):
-	"""Prefer odd scores and the Character's Guild abilities."""
+	"""
+	Prefer odd scores and the Character's Guild abilities; a tie is broken
+	by ``dice``, the Background's ``<Background>.boost_ability`` bag.
+	"""
 	primary, secondary = guild_ability_prefs(
 		char
 		)
@@ -481,7 +486,8 @@ def _pick_boost_ability(
 
 	return (
 		char.Pick(
-			tied
+			tied,
+			dice=dice,
 			)
 		if len(
 			tied
@@ -492,10 +498,17 @@ def _pick_boost_ability(
 
 def _grant_ability_boosts(
 	char,
-	abilities=None,
+	tag=None,
 	):
-	"""Apply one Background's +2/+1 or +1/+1/+1 ability pattern."""
-	if abilities is None:
+	"""
+	Apply one Background's +2/+1 or +1/+1/+1 ability pattern.
+
+	The pattern and each tie-break come from the Background Tag's own bags,
+	``<Background>.boost_pattern`` and ``<Background>.boost_ability``
+	(QST-0144.6, ruling 8).  Without ``tag`` the Character's declared
+	Background is the Tag.
+	"""
+	if tag is None:
 		name = getattr(
 			char,
 			"background",
@@ -510,8 +523,7 @@ def _grant_ability_boosts(
 				"Ability boosts require a declared Background Tag."
 				)
 
-		abilities = tag.ABILITIES
-
+	abilities = tag.ABILITIES
 	pattern = char.Pick(
 		[
 			(
@@ -523,8 +535,15 @@ def _grant_ability_boosts(
 				1,
 				1,
 				),
-			]
+			],
+		dice=char.Dice_Bag(
+			f"{tag.__name__}.boost_pattern"
+			),
 		)
+	boost_dice = char.Dice_Bag(
+		f"{tag.__name__}.boost_ability"
+		)
+		#-- One bag for every tie-break of this Background, opened once.
 	pool = list(
 		abilities
 		)
@@ -556,6 +575,7 @@ def _grant_ability_boosts(
 			char,
 			remaining,
 			scores,
+			dice=boost_dice,
 			)
 		remaining.remove(
 			stat
@@ -729,7 +749,9 @@ def _grant_tool(
 				char,
 				menu,
 				),
-			purpose="background.tool",
+			dice=char.Dice_Bag(
+				f"{tag.__name__}.tool"
+				),
 			)
 
 	_commit_background_training(
@@ -823,7 +845,7 @@ def _awaken(
 	char.background = tag.NAME
 	_grant_ability_boosts(
 		char,
-		tag.ABILITIES,
+		tag,
 		)
 	_grant_skills(
 		char,
@@ -2847,6 +2869,9 @@ def _test_ability_boost_soft_opt():
 			"WIS",
 			],
 		character.AS,
+		dice=character.Dice_Bag(
+			"Test.boost_ability"
+			),
 		) == "DEX"
 
 
@@ -3069,6 +3094,100 @@ def _test_one_tool_is_never_spent_twice():
 			assert max( spent.values() ) == 1, ( name, seed, spent )
 
 
+def _test_background_bags_are_named_by_the_tag():
+	"""
+	A Background's choices come from bags named by its Tag's class name with
+	the default key: ``<Background>.boost_pattern``, ``.boost_ability`` and
+	``.tool`` (QST-0144.6, ruling 8); nothing derived, nothing counted.  The
+	pools are unchanged: one of the two patterns over the Tag's three
+	abilities, one tool from the Tag's menu.
+	"""
+	opened = []
+	original = Character.Dice_Bag
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original(
+			char,
+			purpose,
+			**key,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+
+	try:
+		character = Character(
+			seed=26
+			)
+		Player(
+			character
+			)
+		Entertainer(
+			character
+			)
+	finally:
+		Character.Dice_Bag = original
+
+	purposes = [
+		purpose
+		for purpose, _ in opened
+		]
+
+	assert purposes.count( "Entertainer.boost_pattern" ) == 1, purposes
+	assert purposes.count( "Entertainer.boost_ability" ) == 1, purposes
+	assert purposes.count( "Entertainer.tool" ) == 1, purposes
+	assert "Musician.choice" in purposes, purposes
+		#-- The Origin Feat awakens first, as a base of the Background Tag.
+	assert not any(
+		"#" in purpose
+		or purpose.startswith( "background." )
+		or purpose.startswith( "AtlasLusoris." )
+		for purpose in purposes
+		), purposes
+	assert all(
+		not key
+		for _, key in opened
+		), opened
+
+	pattern = sorted(
+		(
+			bonus
+			for _, bonus in character.background_asi
+			),
+		reverse=True,
+		)
+
+	assert pattern in (
+		[ 2, 1 ],
+		[ 1, 1, 1 ],
+		), pattern
+	assert {
+		stat
+		for stat, _ in character.background_asi
+		} <= set( Entertainer.ABILITIES ), character.background_asi
+
+	tool = next(
+		batch
+		for batch in Ensure_Training_Record(
+			character
+			).gains
+		if batch.grant_id == "Background.Entertainer.tool"
+		)
+
+	assert tool.grants[ 0 ].capability in Background_Tool_Menu(
+		Entertainer
+		), tool
+
+
 def _self_test():
 	_test_meta_fields()
 	_test_all_backgrounds()
@@ -3078,6 +3197,7 @@ def _self_test():
 	_test_official_hooks()
 	_test_background_training_reaches_the_ledger()
 	_test_one_tool_is_never_spent_twice()
+	_test_background_bags_are_named_by_the_tag()
 
 	print(
 		"OK — BackgroundKit MetaTOP self-test "

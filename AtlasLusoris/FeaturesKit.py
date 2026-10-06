@@ -771,10 +771,11 @@ def _Plan_Training(
 			)
 		)
 	dice = char.Dice_Bag(
-		f"{purpose}.{resolved_id}",
-		version="2024",
-		namespace="GenLegendTraining",
+		purpose
 		)
+		#-- The bag is the purpose the Tag passed, exactly, with the default
+		#-- key (QST-0144.6, ruling 8).  The grant id still names the batch
+		#-- in the ledger; it no longer names the stream.
 	selected = tuple(
 		dice.sample(
 			list(
@@ -825,6 +826,9 @@ def Plan_Feature_Training(
 		) -> Training_Batch | None:
 	"""
 	Plan a Feature gain from one homogeneous capability pool.
+
+	``purpose`` names the Dice Bag the draw comes from, ``<Tag>.<choice>``
+	from the offering Tag's class name, and is opened exactly as given.
 
 	Answers None only under ``allow_short``, and only when the pool holds
 	nothing the Character has yet to learn.
@@ -1020,7 +1024,7 @@ class Skillful(Trait):
 				SKILLS,
 				1,
 				source="Species Feature",
-				purpose="identity.species.Human.skillful",
+				purpose="Skillful.choice",
 				allow_short=True,
 				)
 			)
@@ -1125,7 +1129,7 @@ class Crafter(Origin_Feat):
 				ARTISAN_TOOLS,
 				3,
 				source="Origin Feat",
-				purpose="identity.feat.Crafter.tools",
+				purpose="Crafter.choice",
 				exclude=Reserved_Background_Training(
 					background_tag
 					),
@@ -1289,7 +1293,7 @@ class Musician(Origin_Feat):
 				MUSICAL_INSTRUMENTS,
 				3,
 				source="Origin Feat",
-				purpose="identity.feat.Musician.instruments",
+				purpose="Musician.choice",
 				exclude=Reserved_Background_Training(
 					background_tag
 					),
@@ -1604,7 +1608,7 @@ def Plan_Skilled_Gain(
 		SKILLED_POOL,
 		3,
 		source=source,
-		purpose="identity.feat.Skilled.training",
+		purpose="Skilled.choice",
 		grant_id=grant_id,
 		exclude=Reserved_Background_Training(
 			background_tag
@@ -1723,8 +1727,15 @@ def Grant_Origin_Feat(
 		feat=None,
 		*,
 		source: str = "Origin Feat",
+		dice=None,
 		):
-	"""Apply an Origin feat Tag (default: Pick from ORIGIN_FEATS)."""
+	"""
+	Apply an Origin feat Tag (default: Pick from ORIGIN_FEATS).
+
+	``dice`` is the opened Dice Bag the default draw comes from, named by the
+	Tag that owes the feat (QST-0144.6, ruling 8); without it the draw is a
+	bare Accept, kept only until that caller names its bag.
+	"""
 	if feat is None:
 		def imprint(
 				candidate,
@@ -1764,6 +1775,7 @@ def Grant_Origin_Feat(
 				ORIGIN_FEATS.values()
 				),
 			imprint=imprint,
+			dice=dice,
 			)
 
 	if isinstance(
@@ -2103,7 +2115,7 @@ def _test_a_short_pool_grants_what_is_left() -> None:
 			ARTISAN_TOOLS,
 			3,
 			source="Origin Feat",
-			purpose="identity.feat.Crafter.tools",
+			purpose="Crafter.choice",
 			allow_short=True,
 			)
 
@@ -2195,6 +2207,94 @@ def _test_skillful_survives_a_full_skill_list() -> None:
 	assert not char.skillful.gains
 	assert Skillful.INSPIRATION.strip() in entry.description
 	assert "You have proficiency in" not in entry.description
+
+
+def _test_training_bags_are_named_by_the_tag() -> None:
+	"""
+	Every pooled training draw opens the Character's Dice Bag with the
+	purpose its Tag passes, exactly, and with the default key (QST-0144.6,
+	ruling 8).  The pools and counts are what they were: one Skill out of
+	SKILLS for Skillful, three Artisan's Tools for Crafter, three Musical
+	Instruments for Musician, three of SKILLED_POOL for Skilled.
+	"""
+	opened = []
+	original = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			**key,
+			):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original(
+			char,
+			purpose,
+			**key,
+			)
+
+	expected = (
+		(
+			Skillful,
+			"Skillful.choice",
+			SKILLS,
+			1,
+			),
+		(
+			Crafter,
+			"Crafter.choice",
+			ARTISAN_TOOLS,
+			3,
+			),
+		(
+			Musician,
+			"Musician.choice",
+			MUSICAL_INSTRUMENTS,
+			3,
+			),
+		(
+			Skilled,
+			"Skilled.choice",
+			SKILLED_POOL,
+			3,
+			),
+		)
+	Character.Dice_Bag = recording_dice_bag
+
+	try:
+		for feature, purpose, pool, count in expected:
+			del opened[ : ]
+			char = Character( seed=31 )
+
+			if feature is Skilled:
+				Acquire_Skilled( char )
+			else:
+				feature( char )
+
+			assert [
+				name
+				for name, _ in opened
+				] == [ purpose ], ( feature.__name__, opened )
+			assert all(
+				not key
+				for _, key in opened
+				), ( feature.__name__, opened )
+			grants = New_Feature_Training_Record(
+				char,
+				feature,
+				).grants
+
+			assert len( grants ) == count, ( feature.__name__, grants )
+			assert all(
+				grant.capability in pool
+				for grant in grants
+				), ( feature.__name__, grants )
+	finally:
+		Character.Dice_Bag = original
 
 
 def _feature_tag_names() -> frozenset:
@@ -2394,6 +2494,7 @@ def _self_test():
 	_test_a_background_reserves_only_what_it_certainly_grants()
 	_test_a_short_pool_grants_what_is_left()
 	_test_skillful_survives_a_full_skill_list()
+	_test_training_bags_are_named_by_the_tag()
 	_test_feat_awakening_survives_bulk_generation()
 	print("OK — FeaturesKit self-test")
 
