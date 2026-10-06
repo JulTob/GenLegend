@@ -33,7 +33,10 @@ class Warlock(Progression):
 	def prepare_invocations(self):
 		n = Warlock.warlock_invocations_known(self.character.level)
 		available = list(BuildAvailableInvocations(self.character))
-		chosen = random.sample(available, min(n, len(available)))
+		dice = self.character.Dice_Bag(
+				"Eldritch_Invocations.choice",
+				)
+		chosen = dice.sample(available, min(n, len(available)))
 
 		self.character.invocations = []
 
@@ -76,7 +79,10 @@ class Warlock(Progression):
 		if level >= 3:
 
 			if subclass == "Celestial":
-				patron = random.choice([
+				patron_dice = character.Dice_Bag(
+						"Celestial.patron.name",
+						)
+				patron = patron_dice.choice([
 					"Solinar, the Sunforged Champion",         # an Empyrean who led the Bright Legion
 					"Seraphiel, the Radiant Guard",            # a six-winged seraph of Mount Celestia
 					"Mariel, the Trumpet Voice",               # trumpet-bearing Archon of the Fourth Spire
@@ -151,7 +157,10 @@ class Warlock(Progression):
 					""",
 					"Class: Warlock"))
 			if subclass == "Fiend":
-				patron = random.choice([
+				patron_dice = character.Dice_Bag(
+						"Fiend.patron",
+						)
+				patron = patron_dice.choice([
 					"The Infernal Librarian",	"The Hell Duke",	"The Throne of Chains",
 					"The Whisperer Beneath the Ashes", "The Lord of Flies", "The Soul Collector",
 					"The King of Rot",	"The Vermilion Herald", "The Sovereign",
@@ -179,7 +188,10 @@ class Warlock(Progression):
 					""",
 					"Class: Warlock"))
 			if subclass == "Great Old One":
-				patron = random.choice([
+				patron_dice = character.Dice_Bag(
+						"GreatOldOne.patron",
+						)
+				patron = patron_dice.choice([
 					"Tharizdun, the Chained God", "Zargon, the Returner",
 					"Hadar, the Dark Hunger", 'Cthulhu, The Great One',
 					"Yugiax, the Sleeper", "Karunash, The Fractured One",
@@ -305,7 +317,10 @@ class Warlock(Progression):
 					""",
 					"Class: Warlock"))
 			if subclass == "Archfey":
-				patron = random.choice([
+				patron_dice = character.Dice_Bag(
+						"Archfey.patron",
+						)
+				patron = patron_dice.choice([
 	"Aranella, the Spring Warden",
 	"Sylvenor, the Summer Flame",
 	"Cormora, the Autumn Harbinger",
@@ -675,3 +690,273 @@ finish 1d4 long rests.
 				features.extend(ApplyRandomFeats(character, n=1))
 
 		return features
+
+
+if __name__ == "__main__":
+	#-- Self-test (QST-0144.6, ruling 8).  The invocations a Warlock knows and
+	#-- the patron's name are drawn from the Character's Dice Bag, opened with
+	#-- the purpose of the Tag that offers each choice, with the default key,
+	#-- from the pools and with the sample size the builder had before the
+	#-- port; the shared random stream is never reached from this file.
+	import contextlib
+	import io
+	import os
+	import random as stdlib_random
+	import sys
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Map_of_Character_Generation import summon_player
+
+	THIS_FILE = os.path.realpath(
+			__file__
+			)
+	opened = []
+		#-- (purpose, version, namespace) of every bag opened from this file
+	drawn = {}
+		#-- purpose -> [(pool, result)] or [(pool, k, result)] of every draw
+	shared = []
+		#-- (function, line) of every shared-stream call made from this file
+
+	def from_this_file(
+			frame,
+			) -> bool:
+		return os.path.realpath(
+				frame.f_code.co_filename
+				) == THIS_FILE
+
+	class Probe_Dice(
+			stdlib_random.Random
+			):
+		"""A Dice Bag that remembers every pool it was asked to draw from."""
+
+		purpose = "?"
+
+		def choice(
+				dice,
+				population,
+				):
+			result = super().choice(
+					population
+					)
+			drawn.setdefault(
+					dice.purpose,
+					[],
+					).append(
+					(
+							list(
+									population
+									),
+							result,
+							)
+					)
+			return result
+
+		def sample(
+				dice,
+				population,
+				k,
+				**keywords,
+				):
+			result = super().sample(
+					population,
+					k,
+					**keywords,
+					)
+			drawn.setdefault(
+					dice.purpose,
+					[],
+					).append(
+					(
+							list(
+									population
+									),
+							k,
+							result,
+							)
+					)
+			return result
+
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				char,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		if not from_this_file(
+				sys._getframe(
+						1
+						)
+				):
+			return bag
+		opened.append(
+				(
+						purpose,
+						version,
+						namespace,
+						)
+				)
+		probe = Probe_Dice()
+		probe.setstate(
+				bag.getstate()
+				)
+		probe.purpose = purpose
+		return probe
+
+	def counting(
+			name,
+			):
+		original_function = getattr(
+				stdlib_random,
+				name,
+				)
+
+		def counted(
+				*arguments,
+				**keywords,
+				):
+			caller = sys._getframe(
+					1
+					)
+			if from_this_file(
+					caller
+					):
+				shared.append(
+						(
+								name,
+								caller.f_lineno,
+								)
+						)
+			return original_function(
+					*arguments,
+					**keywords,
+					)
+
+		return counted
+
+	WATCHED = (
+			"choice",
+			"sample",
+			"shuffle",
+			"random",
+			"randint",
+			"seed",
+			)
+	saved = {
+			name: getattr(
+					stdlib_random,
+					name,
+					)
+			for name in WATCHED
+			}
+
+	def summon(
+			**request,
+			):
+		with contextlib.redirect_stdout(
+				io.StringIO()
+				), contextlib.redirect_stderr(
+				io.StringIO()
+				):
+			return summon_player(
+					**request
+					)
+
+	#-- (Specialization, purpose, pool size, first name, last name), measured
+	#-- on the random-module pools before the port.
+	PATRON_POOLS = (
+			(
+					"Archfey",
+					"Archfey.patron",
+					105,
+					"Aranella, the Spring Warden",
+					"The Green Lord",
+					),
+			(
+					"Celestial",
+					"Celestial.patron.name",
+					44,
+					"Solinar, the Sunforged Champion",
+					"Ophiuchus, Archon of the Zodiac",
+					),
+			(
+					"Fiend",
+					"Fiend.patron",
+					22,
+					"The Infernal Librarian",
+					"Yeenoghu, Lord of Gnolls",
+					),
+			(
+					"Great Old One",
+					"GreatOldOne.patron",
+					24,
+					"Tharizdun, the Chained God",
+					"The Infinite Library",
+					),
+			)
+	LEVEL = 3
+
+	Character.Dice_Bag = recording_dice_bag
+	for name in WATCHED:
+		setattr(
+				stdlib_random,
+				name,
+				counting(
+						name
+						),
+				)
+	try:
+		for specialization, purpose, size, first, last in PATRON_POOLS:
+			opened.clear()
+			drawn.clear()
+			warlock = summon(
+					guild="Warlock",
+					specialization=specialization,
+					level=LEVEL,
+					seed=7,
+					)
+			assert sorted(
+					opened_purpose
+					for opened_purpose, _, _ in opened
+					) == sorted(
+					[ "Eldritch_Invocations.choice", purpose ]
+					), opened
+			assert all(
+					(version, namespace) == ("1", "GenLegend")
+					for _, version, namespace in opened
+					), opened
+			[ ( names, patron ) ] = drawn[ purpose ]
+			assert ( len( names ), names[ 0 ], names[ -1 ] ) == ( size, first, last ), (
+					len( names ),
+					names[ 0 ],
+					names[ -1 ],
+					)
+			assert patron in names, patron
+			[ ( available, k, chosen ) ] = drawn[ "Eldritch_Invocations.choice" ]
+			assert k == min(
+					Warlock.warlock_invocations_known( LEVEL ),
+					len( available ),
+					), ( k, len( available ) )
+			assert warlock.invocations == chosen, ( warlock.invocations, chosen )
+		assert shared == [], shared
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		for name, function in saved.items():
+			setattr(
+					stdlib_random,
+					name,
+					function,
+					)
+
+	print(
+			"OK: the Warlock's invocations and patron names come from the "
+			"Character's Dice Bag under Eldritch_Invocations.choice and the "
+			"Specializations' names, with their old pools and sample size."
+			)

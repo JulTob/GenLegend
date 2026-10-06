@@ -388,9 +388,7 @@ class Elements(Way):
 			bullet = character.Pick(
 				("🌪️", "🔥", "❄️", "🪨"),
 				dice=character.Dice_Bag(
-					"training.monk.elements.bullet",
-					version="2024",
-					namespace="GenLegendMonk",
+					"Elements.bullet",
 					),
 				)
 			feats.append(Feature("Elemental Attunement",
@@ -434,9 +432,7 @@ class OpenHand(Way):
 			bullet = character.Pick(
 				("🫸", "🫷", "🤚", "✋", "🫱", "🫲", "👋", ""),
 				dice=character.Dice_Bag(
-					"training.monk.open_hand.bullet",
-					version="2024",
-					namespace="GenLegendMonk",
+					"OpenHand.bullet",
 					),
 				)
 			feats.append(Feature("Open Hand Technique",
@@ -495,3 +491,207 @@ class OpenHand(Way):
 			(no action required)."""))
 
 		return feats
+
+
+if __name__ == "__main__":
+	#-- Self-test (QST-0144.6, ruling 8).  The two cosmetic bullets are drawn
+	#-- from the Character's Dice Bag under the Specialization's class name,
+	#-- with the default key, from the glyph pools they had before the rename;
+	#-- the shared random stream is never reached from this file.
+	import contextlib
+	import io
+	import os
+	import random as stdlib_random
+	import sys
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Map_of_Character_Generation import summon_player
+
+	THIS_FILE = os.path.realpath(
+			__file__
+			)
+	opened = []
+		#-- (purpose, version, namespace) of every bag opened from this file
+	drawn = {}
+		#-- purpose -> [(pool, result)] of every draw from those bags
+	shared = []
+		#-- (function, line) of every shared-stream call made from this file
+
+	def from_this_file(
+			frame,
+			) -> bool:
+		return os.path.realpath(
+				frame.f_code.co_filename
+				) == THIS_FILE
+
+	class Probe_Dice(
+			stdlib_random.Random
+			):
+		"""A Dice Bag that remembers every pool it was asked to draw from."""
+
+		purpose = "?"
+
+		def choice(
+				dice,
+				population,
+				):
+			result = super().choice(
+					population
+					)
+			drawn.setdefault(
+					dice.purpose,
+					[],
+					).append(
+					(
+							list(
+									population
+									),
+							result,
+							)
+					)
+			return result
+
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				char,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		if not from_this_file(
+				sys._getframe(
+						1
+						)
+				):
+			return bag
+		opened.append(
+				(
+						purpose,
+						version,
+						namespace,
+						)
+				)
+		probe = Probe_Dice()
+		probe.setstate(
+				bag.getstate()
+				)
+		probe.purpose = purpose
+		return probe
+
+	def counting(
+			name,
+			):
+		original_function = getattr(
+				stdlib_random,
+				name,
+				)
+
+		def counted(
+				*arguments,
+				**keywords,
+				):
+			caller = sys._getframe(
+					1
+					)
+			if from_this_file(
+					caller
+					):
+				shared.append(
+						(
+								name,
+								caller.f_lineno,
+								)
+						)
+			return original_function(
+					*arguments,
+					**keywords,
+					)
+
+		return counted
+
+	WATCHED = (
+			"choice",
+			"sample",
+			"shuffle",
+			"random",
+			"randint",
+			"seed",
+			)
+	saved = {
+			name: getattr(
+					stdlib_random,
+					name,
+					)
+			for name in WATCHED
+			}
+
+	def summon(
+			**request,
+			):
+		with contextlib.redirect_stdout(
+				io.StringIO()
+				), contextlib.redirect_stderr(
+				io.StringIO()
+				):
+			return summon_player(
+					**request
+					)
+
+	BULLET_POOLS = (
+			(
+					"Elements",
+					"Elements.bullet",
+					[ "🌪️", "🔥", "❄️", "🪨" ],
+					),
+			(
+					"Open Hand",
+					"OpenHand.bullet",
+					[ "🫸", "🫷", "🤚", "✋", "🫱", "🫲", "👋", "" ],
+					),
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	for name in WATCHED:
+		setattr(
+				stdlib_random,
+				name,
+				counting(
+						name
+						),
+				)
+	try:
+		for specialization, purpose, bullets in BULLET_POOLS:
+			opened.clear()
+			drawn.clear()
+			summon(
+					guild="Monk",
+					specialization=specialization,
+					level=3,
+					seed=7,
+					)
+			assert opened == [ ( purpose, "1", "GenLegend" ) ], opened
+			[ ( pool, bullet ) ] = drawn[ purpose ]
+			assert pool == bullets, pool
+			assert bullet in bullets, bullet
+		assert shared == [], shared
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		for name, function in saved.items():
+			setattr(
+					stdlib_random,
+					name,
+					function,
+					)
+
+	print(
+			"OK: the Elements and Open Hand bullets come from the Character's "
+			"Dice Bag under Elements.bullet and OpenHand.bullet, with their old "
+			"glyph pools and the default key."
+			)
