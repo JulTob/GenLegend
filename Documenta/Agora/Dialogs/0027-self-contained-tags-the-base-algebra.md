@@ -531,6 +531,8 @@ Making the identities Flags was planned as a change that prints nothing new. It 
 
 - **The title engine becomes a folder, one file per vocabulary.** *"by its size alone it could be a folder with init that has the functions classified by files, right? Some functions (like metal or location...) could be reused in the story generator."* So `AtlasEpica/Titles/` (a package): `__init__.py` exposes the title program (`Title`, `LastResortTitle`); each vocabulary lives in its own file (descriptors, ranks, places, artifacts, metals, animals, origins, elements, ...), a list keyed by the words it answers, the Species-kit shape; the story engine imports the vocabularies it reuses instead of carrying copies. The content review (QST-0144.9) lists the vocabularies first.
 
+- **Go on both.** *"fix the duplication in favor of epica and the modularity architecture"*; *"implement your strategy for the npcs"*. The old title and story copies are deleted now (their two old-tree call sites already fall back on an exception, so nothing live changes; measured by the default-grid fingerprint and sheet snapshot), the title engine is split into `AtlasEpica/Titles/` one file per vocabulary (a pure move, gated identical), and the non-player port runs on the plan in QST-0144.8.
+
 ## ⚖️ Rulings needed from Julio
 
 Numbered so an answer can say "1: yes, 2: no". *(Three rounds answered above; station 3's difference accepted; the Dice Bag names ruled. Open: whether the Species and Background ports move their Traits and Origin Feats from Bases into Imprints as the second-round reading implies.)*
