@@ -24,7 +24,8 @@ Run:
     .venv/bin/python scripts/verify_dice_purposes.py --check scripts/dice_purposes.txt
 
 ``--report`` lists what the grid opened and never fails.  ``--save`` writes the
-manifest of purposes, one per line, sorted.  ``--check`` fails when the grid
+manifest of purposes, one per line, sorted; a line ending in ``.*`` declares
+a family (``gear.title.*``: one bag per forged item, named by the item).  ``--check`` fails when the grid
 opens a purpose the manifest does not declare (a new choice must be declared),
 when any purpose is derived, and when any draw reaches a shared or a private
 stream.  The grid is the fingerprint grid: every Guild at the levels and seeds
@@ -429,6 +430,15 @@ def Check(
                     ).splitlines()
             if line.strip()
             )
+    families = tuple(
+            line[:-1]
+            for line in declared
+            if line.endswith(
+                    ".*"
+                    )
+            )
+        #-- A line ``gear.title.*`` declares a family: every purpose under
+        #-- that prefix, for the choices keyed by a thing's name (an item).
     opened = set(
             Manifest(
                     ledger
@@ -438,6 +448,10 @@ def Check(
     for purpose in sorted(
             opened - declared
             ):
+        if purpose.startswith(
+                families
+                ):
+            continue
         failures.append(
                 f"undeclared purpose: {purpose} "
                 f"(first at {ledger.purpose_callers[ purpose ]})"
@@ -445,6 +459,15 @@ def Check(
     for purpose in sorted(
             declared - opened
             ):
+        if purpose.endswith(
+                ".*"
+                ) and any(
+                opened_purpose.startswith(
+                        purpose[:-1]
+                        )
+                for opened_purpose in opened
+                ):
+            continue
         failures.append(
                 f"declared but never opened on this grid: {purpose}"
                 )
