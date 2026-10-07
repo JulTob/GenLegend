@@ -153,9 +153,8 @@ class Monk(Progression):
 			feats += ApplyRandomFeats(character, n=1, level=12)
 		# Level 13
 		if level >= 13:
-			feats.append(Feature("Tongue of Sun and Moon",  (
-				"You understand all spoken languages and any creature that can understand a language can understand you."
-				)))
+			#-- Tongue of the Sun and Moon is a 2014 feature the 2024 book
+			#-- removed; Deflect Energy stands at level 13 (QST-0144.10).
 			feats.append(Feature("Deflect Energy",  (
 				"""
 				You can now use your Deflect Attacks feature against attacks that deal any damage type, not just Bludgeoning, Piercing, or Slashing.
@@ -681,6 +680,22 @@ if __name__ == "__main__":
 			assert pool == bullets, pool
 			assert bullet in bullets, bullet
 		assert shared == [], shared
+
+		#-- Level 13 is Deflect Energy alone, the lesson's: Tongue of the Sun
+		#-- and Moon, the one legacy feature no lesson covered, is gone from
+		#-- the sheet (QST-0144.10).
+		from AtlasLusoris.AtlasOfTraining.Map_of_Monk_Training import Deflect_Energy
+		master = summon(
+				guild="Monk",
+				level=13,
+				seed=7,
+				)
+		assert master in Deflect_Energy
+		names = [
+				feature.name
+				for feature in master.features
+				]
+		assert "Tongue of Sun and Moon" not in names, names
 	finally:
 		Character.Dice_Bag = original_dice_bag
 		for name, function in saved.items():

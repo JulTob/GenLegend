@@ -25,6 +25,10 @@ class Tiefling(
 	):
 	"""A Humanoid carrying a fiendish legacy."""
 
+	TONGUE = "Infernal"
+		#-- The Species' own tongue, plain data (QST-0144.10): Rare, so it
+		#-- adds no faces at creation and waits for a later ruling.
+
 	@Pre
 	def Only_One_Species(
 		target,
@@ -41,3 +45,15 @@ class Tiefling(
 			Tiefling,
 			size,
 			)
+
+
+if __name__ == "__main__":
+	#-- The tongue is plain class data a reader can take with getattr, and
+	#-- it sits on the 2024 table it belongs to (QST-0144.10).
+	from AtlasLudus.Map_of_Languages import (
+			rare_languages,
+			standard_languages,
+			)
+	assert getattr( Tiefling, "TONGUE", None ) == "Infernal"
+	assert Tiefling.TONGUE in rare_languages
+	print( "OK: SpeciesKit.Tieflings.base self-test (TONGUE Infernal)" )

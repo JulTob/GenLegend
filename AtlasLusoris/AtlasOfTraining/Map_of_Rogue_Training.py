@@ -6,7 +6,8 @@ Thought pattern
 	2. Archetype lessons set ``path=…`` and awaken only for that Archetype.
 	3. Numbers (Sneak Attack dice) live as Chips and in callable Entries.
 	4. ASI / Epic Boon stay on legacy Progression.
-	5. Language grants (Thieves' Cant) stay in legacy.
+	5. Thieves' Cant grants its language and the one extra pick itself
+	   (QST-0144.10): the pick draws from Thieves_Cant.language.
 """
 
 from __future__ import annotations
@@ -198,6 +199,60 @@ Sneak_Attack = _core(
 				),
 		)
 
+def _apply_thieves_cant(
+		char,
+		) -> None:
+	"""
+	Know Thieves' Cant, and one more language from either table.
+
+	The extra pick draws from the lesson's own bag over the sorted pool of
+	every language not yet known, so it never lands on one already known
+	(Julio's ruling 2, QST-0144.10), and is recorded so the Entry can name
+	it.  Before the Character holds a Linguistics there is nothing to grant
+	to; a recorded pick is not drawn again.
+	"""
+	from AtlasLudus.Map_of_Languages import (
+			Linguistics_Of,
+			Record_Language_Grant,
+			all_languages,
+			)
+	languages = Linguistics_Of(
+			char
+			)
+	if languages is None:
+		return
+	if "Thieves' Cant" in (
+			getattr(
+					char,
+					"language_feature_grants",
+					None,
+					) or {}
+			):
+		return
+	languages.Add(
+			"Thieves' Cant"
+			)
+	pool = sorted(
+			all_languages - languages.langs
+			)
+	if not pool:
+		return
+	chosen = char.Pick(
+			pool,
+			dice=char.Dice_Bag(
+					"Thieves_Cant.language",
+					),
+			)
+	languages.Add(
+			chosen
+			)
+	Record_Language_Grant(
+			char,
+			"Thieves' Cant",
+			[ chosen ],
+			)
+
+
 def _thieves_cant_entry(
 		char,
 		) -> str:
@@ -216,18 +271,14 @@ def _thieves_cant_entry(
 			if name != "Thieves' Cant"
 			]
 	extra_text = (
-			f" You also learned **{extra[0]}**."
+			f", **{extra[0]}**."
 			if extra
-			else " You also learned one additional language."
+			else "."
 			)
 	return (
-		"You have learned **Thieves' Cant**, a secret mix of dialect, "
-		"jargon, and code that allows you to hide messages in "
-		"seemingly normal conversation. Only another creature who "
-		"knows Thieves' Cant understands such messages. It takes "
-		"four times longer to convey a message in Thieves' Cant "
-		"than in normal speech."
-		f"{extra_text}"
+		"You picked up various languages in the communities where you "
+		"plied your roguish talents. You know **Thieves' Cant** and one "
+		f"other language of your choice{extra_text}"
 		)
 
 
@@ -235,6 +286,7 @@ Thieves_Cant = _core(
 		name="Thieves' Cant",
 		min_level=1,
 		description=_thieves_cant_entry,
+		apply=_apply_thieves_cant,
 		)
 
 def _weapon_mastery_entry(
@@ -754,3 +806,102 @@ Thiefs_Reflexes = _thief(
 			"and your second turn at your Initiative minus 10."
 			),
 		)
+
+
+def _self_test() -> None:
+	"""Thieves' Cant grants its tongue and one pick from Thieves_Cant.language."""
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasLudus.Map_of_Languages import (
+			Linguistics,
+			all_languages,
+			)
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		opened.append(
+				(
+					purpose,
+					key,
+					)
+				)
+		return original(
+				char,
+				purpose,
+				**key,
+				)
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Character(
+				seed=7,
+				level=1,
+				)
+		#-- Before the Character holds a Linguistics the lesson grants
+		#-- nothing and opens no bag.
+		_apply_thieves_cant(
+				char,
+				)
+		assert opened == [], opened
+		assert getattr(
+				char,
+				"language_feature_grants",
+				None,
+				) is None
+
+		char.languages = Linguistics()
+		char.languages.Add(
+				(
+					"Common",
+					"Elvish",
+					"Orc",
+					)
+				)
+		_apply_thieves_cant(
+				char,
+				)
+		assert opened == [
+				(
+					"Thieves_Cant.language",
+					{},
+					),
+				], opened
+		[ extra ] = char.language_feature_grants[ "Thieves' Cant" ]
+		assert extra == char.Pick(
+				sorted(
+						all_languages - {"Common", "Elvish", "Orc", "Thieves' Cant"}
+						),
+				dice=original(
+						char,
+						"Thieves_Cant.language",
+						),
+				), extra
+			#-- The pool is every language of both tables not yet known, in
+			#-- sorted order; the answer is that bag's first draw over it.
+		assert char.languages.langs == {"Common", "Elvish", "Orc", "Thieves' Cant", extra}
+		assert f"**{extra}**" in _thieves_cant_entry(
+				char
+				)
+		assert "four times longer" not in _thieves_cant_entry(
+				char
+				)
+		opened.clear()
+		_apply_thieves_cant(
+				char,
+				)
+		assert opened == [], "a recorded pick is not drawn again"
+		assert len( char.languages.langs ) == 5
+	finally:
+		Character.Dice_Bag = original
+	print(
+			"Map_of_Rogue_Training: self-test OK"
+			)
+
+
+if __name__ == "__main__":
+	_self_test()

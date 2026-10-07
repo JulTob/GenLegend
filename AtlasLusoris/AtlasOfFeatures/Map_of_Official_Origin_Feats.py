@@ -346,49 +346,6 @@ def _proficiency_bonus(
 	return (level - 1) // 4 + 2
 
 
-def _grant_language(
-		char,
-		language: str,
-		) -> None:
-	"""
-	Carry a language onto the Character for the sheet's language line.
-
-	Spoken to through whatever the Character is holding.  Once features are
-	resolved that is a ``Linguistics``, which owns its own ``Add`` and de-
-	duplicates for itself; before then it is a plain list, or nothing at all.
-	Reaching past ``Add`` to append to internals is what broke every Origin Feat
-	that grants a language, so this asks rather than assumes.
-	"""
-	languages = getattr(
-		char,
-		"languages",
-		None,
-		)
-
-	if languages is None:
-		languages = []
-		char.languages = languages
-
-	add = getattr(
-		languages,
-		"Add",
-		None,
-		)
-
-	if callable(
-			add
-			):
-		add(
-			language
-			)
-		return
-
-	if language not in languages:
-		languages.append(
-			language
-			)
-
-
 def _proficiency_bonus(
 		char,
 		) -> int:
@@ -530,6 +487,46 @@ class Wildwarden(Origin_Feat):
 			)
 
 
+def _dragons_tongue(
+		char,
+		) -> str:
+	"""
+	Draconic, or one other language when Draconic is already known.
+
+	The other is drawn from the feat's own bag over the sorted pool of
+	every language not yet known (QST-0144.10).  "Already known" reads
+	whatever the Character holds: a Linguistics' ``langs`` or the plain
+	list of the background step; before any, Draconic.
+	"""
+	from AtlasLudus.Map_of_Languages import all_languages
+
+	held = getattr(
+		char,
+		"languages",
+		None,
+		)
+	known = set(
+		getattr(
+			held,
+			"langs",
+			held,
+			) or ()
+		)
+	if "Draconic" not in known:
+		return "Draconic"
+	pool = sorted(
+		all_languages - known
+		)
+	if not pool:
+		return "Draconic"
+	return char.Pick(
+		pool,
+		dice=char.Dice_Bag(
+			"Dragon_Cult_Initiate.language"
+			),
+		)
+
+
 # Based on the Cult of the Dragon Initiate feat
 # source: Forgotten Realms: Heroes of Faerûn
 class Dragon_Cult_Initiate(Origin_Feat):
@@ -553,7 +550,9 @@ class Dragon_Cult_Initiate(Origin_Feat):
 	def awaken(char):
 		_grant_language(
 			char,
-			"Draconic",
+			_dragons_tongue(
+				char
+				),
 			)
 		scores = getattr(
 			char,
@@ -2411,8 +2410,73 @@ def _test_the_same_seed_draws_the_same_feat_choices() -> None:
 		assert sheet( feat ) == sheet( feat ), feat.__name__
 
 
+def _test_dragon_cult_initiate_learns_another_tongue_when_draconic_is_known() -> None:
+	"""
+	Dragon's Tongue: Draconic, or one other language when Draconic is
+	already known, drawn from Dragon_Cult_Initiate.language over the sorted
+	pool of the languages not yet known (QST-0144.10).
+	"""
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasLudus.Map_of_Languages import (
+		Linguistics,
+		all_languages,
+		)
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			**key,
+			):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original(
+			char,
+			purpose,
+			**key,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		char = Character( seed=47 )
+		assert getattr( char, "languages", None ) is None
+		Dragon_Cult_Initiate( char )
+		assert char.languages == [ "Draconic" ], char.languages
+		assert opened == [], opened
+
+		char = Character( seed=47 )
+		char.languages = Linguistics()
+		char.languages.Add( ( "Common", "Draconic" ) )
+		Dragon_Cult_Initiate( char )
+		assert opened == [
+			(
+				"Dragon_Cult_Initiate.language",
+				{},
+				),
+			], opened
+		[ other ] = char.languages.langs - {"Common", "Draconic"}
+		assert other == char.Pick(
+			sorted(
+				all_languages - {"Common", "Draconic"}
+				),
+			dice=original(
+				char,
+				"Dragon_Cult_Initiate.language",
+				),
+			), other
+	finally:
+		Character.Dice_Bag = original
+
+
 def _self_test() -> None:
 	_test_echoing_soul_and_symbiotic_being_land_their_grants()
+	_test_dragon_cult_initiate_learns_another_tongue_when_draconic_is_known()
 	_test_every_bag_is_named_by_its_feat()
 	_test_the_same_seed_draws_the_same_feat_choices()
 	print(

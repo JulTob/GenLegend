@@ -212,4 +212,7 @@ def _test_dice_purpose() -> None:
 
 if __name__ == "__main__":
 	_test_dice_purpose()
+	assert getattr( Human, "TONGUE", None ) is None
+		#-- A Human has no Species tongue: the creation picks roll the plain
+		#-- d12 (QST-0144.10).
 	print( "OK: SpeciesKit.Humans self-test" )

@@ -1,10 +1,11 @@
 import random
 
 try:
-	from AtlasAlusoris.Map_of_NPC import generate_npcs, NPC
 	from AtlasLudus.Map_of_Dice import Dice
 except ImportError:
 	raise
+	#-- The old non-player tree (AtlasAlusoris.Map_of_NPC) was imported here
+	#-- and never used: the Player path does not load it (QST-0144.8, .10).
 
 def add_language(languages, language, chance=100, INT=0):
 	"""Try to add a language based on a dice roll and chance."""
@@ -1283,16 +1284,48 @@ def Language(npc):
 	return f"<i> {'<br> '.join(languages)} </i>"
 
 
-all_languages = {
-		"Dwarvish", "Elvish", "Giant", "Gnomish", "Goblin", "Halfling", "Orc",
-		"Abyssal", "Celestial", "Draconic", "Deep Speech", "Infernal",
-		"Primordial", "Sylvan", "Undercommon", "Common Sign Language",
+COMMON = "Common"
+	#-- Every Character knows Common (2024 PHB, Choose Languages).
+
+STANDARD_FACES = {
+		"Common Sign Language": 1,
+		"Draconic": 1,
+		"Dwarvish": 2,
+		"Elvish": 2,
+		"Giant": 1,
+		"Gnomish": 1,
+		"Goblin": 1,
+		"Halfling": 2,
+		"Orc": 1,
 		}
-standard_languages = {
-		"Dwarvish", "Elvish", "Giant", "Gnomish", "Goblin", "Halfling", "Orc",
-		"Common Sign Language",
-		}
-exotic_languages = all_languages.difference(standard_languages)
+	#-- The printed d12 of the 2024 Standard Languages table, as faces per
+	#-- language (QST-0144.10).  Draconic is Standard since 2024.
+
+SPECIES_TONGUE_FACES = 6
+	#-- The faces a Character's own Species tongue adds to each creation
+	#-- pick when that tongue is Standard: half a die, a nudge and not a
+	#-- filter (Julio's ruling 1, QST-0144.10; Decree 0005).
+
+standard_languages = frozenset(
+		STANDARD_FACES
+		)
+rare_languages = frozenset(
+		(
+			"Abyssal",
+			"Celestial",
+			"Deep Speech",
+			"Druidic",
+			"Infernal",
+			"Primordial",
+			"Sylvan",
+			"Thieves' Cant",
+			"Undercommon",
+			)
+		)
+all_languages = standard_languages | rare_languages
+exotic_languages = rare_languages
+	#-- The 2014 name of the Rare table, kept for the callers that read it.
+
 
 class Linguistics:
 	def __init__(lingua):
@@ -1324,28 +1357,44 @@ class Linguistics:
 			# Last resort: coerce to string
 			lingua.langs.add(str(language))
 
-	def AddAnyLanguage(lingua, langs=None, n = 1, *, dice=None):
-		"""Learn n languages drawn from langs that lingua does not know yet.
+	def AddAnyLanguage(
+			lingua,
+			langs=None,
+			n=1,
+			*,
+			dice,
+			):
+		"""
+		Learn n languages drawn from langs that lingua does not know yet.
 
-		``dice`` is the Dice Bag the caller opened for this grant
-		(``identity.languages``, ``Rogue.languages``, ``Ranger.languages``;
-		ruling 8, QST-0144.6).  The pool is sorted so the draw does not
-		depend on set order.  Without a bag the old set order decides, as
-		it did before: the one caller left without a bag is the legacy
-		Rogue training (Map_of_Classes/Training/Rogue.py), outside this
-		module, until it hands the Guild's bag down.
+		``dice`` is the Dice Bag the offering Tag opened for this grant
+		(ruling 8, QST-0144.6): there is no draw without one.  The pool is
+		sorted, so the answer depends on the bag alone and never on set
+		order.  Returns the names learned, in the order drawn.
 		"""
 		if langs is None:
 			langs = all_languages
-		unknown = langs - lingua.langs
-		if not unknown or n <= 0:	return
-		k = min(n, len(unknown))
-		if dice is None:
-			chosen = [unknown.pop() for _ in range(k)]
-		else:
-			chosen = dice.sample(sorted(unknown), k)
-		lingua.langs |= set(chosen)
+		unknown = sorted(
+				set( langs ) - lingua.langs
+				)
+		if not unknown or n <= 0:
+			return ()
+		k = min(
+				n,
+				len( unknown ),
+				)
+		chosen = tuple(
+				dice.sample(
+						unknown,
+						k,
+						)
+				)
+		lingua.langs |= set( chosen )
+		return chosen
 
+	def names(lingua):
+		"""The known languages, sorted: what the sheet and the lore read."""
+		return sorted( lingua.langs )
 
 	def AsListHTML(linguistics):
 		final = linguistics.langs
@@ -1370,119 +1419,372 @@ class Linguistics:
 		return linguistics.AsHTML()
 
 
-def choose_new_languages(known: set, options: set, n: int) -> set:
+def Linguistics_Of( char ):
 	"""
-	Choose up to n new languages from options, ignoring already known ones.
-	"""
-	available = options.difference(known)
-		# set difference
-	num_choices = min(n, len(available))
-	return set(random.sample(available, num_choices)) if available and n > 0 else set()
+	The Linguistics the Character holds, or None.
 
-def Character_Languages(char):
+	Before Character_Languages ran, ``char.languages`` is nothing or the
+	plain list an Origin Feat wrote; a lesson that grants a language asks
+	here first and does nothing when there is no Linguistics yet.
 	"""
-	Build and return a Linguistics object representing all language choices.
-	Other features can call .AddAlways or .AddChoice on the object later.
+	languages = getattr(
+			char,
+			"languages",
+			None,
+			)
+	if isinstance(
+			languages,
+			Linguistics,
+			):
+		return languages
+	return None
+
+
+def Record_Language_Grant(
+		char,
+		feature,
+		names,
+		):
+	"""
+	Write which languages ``feature`` granted, so its Entry can name them.
+
+	``char.language_feature_grants`` maps a feature's name to the list of
+	languages it granted (Thieves' Cant, Deft Explorer).
+	"""
+	grants = getattr(
+			char,
+			"language_feature_grants",
+			None,
+			)
+	if grants is None:
+		grants = {}
+		char.language_feature_grants = grants
+	grants[ feature ] = list( names )
+	return grants
+
+
+def Species_Tongue( char ):
+	"""
+	The tongue the Character's Species declares as ``TONGUE``, or None.
+
+	Each Species carries its tongue as plain class data in its own file
+	(Elf Elvish, Dwarf Dwarvish, ...; Human none).  The Species Tag is the
+	one the Character carries, read the way SpeciesKit reads it.
+	"""
+	from AtlasActorLudi.SpeciesKit.catalog import Current_Species
+	species = Current_Species( char )
+	return getattr(
+			species,
+			"TONGUE",
+			None,
+			)
+
+
+def Creation_Faces( tongue ):
+	"""
+	The faces of the creation die: the printed d12, the Species tongue added.
+
+	A Rare tongue (Infernal, Celestial) is not on the die and adds nothing.
+	"""
+	faces = dict( STANDARD_FACES )
+	if tongue in faces:
+		faces[ tongue ] += SPECIES_TONGUE_FACES
+	return faces
+
+
+def Creation_Languages(
+		char,
+		dice,
+		):
+	"""
+	The two Standard languages a Character learns at creation.
+
+	Each is one roll of the die of Creation_Faces, the Character's own
+	Species tongue weighing SPECIES_TONGUE_FACES more when it is Standard;
+	a roll that repeats the first language is rolled again, so the two are
+	distinct.  Every roll comes from ``dice``, the bag the caller opened
+	(``identity.languages``).  Returns the pair in the order rolled.
+	"""
+	faces = Creation_Faces(
+			Species_Tongue( char )
+			)
+	names = sorted( faces )
+	weights = [
+			faces[ name ]
+			for name in names
+			]
+	chosen = []
+	while len( chosen ) < 2:
+		[ name ] = dice.choices(
+				names,
+				weights=weights,
+				k=1,
+				)
+		if name not in chosen:
+			chosen.append( name )
+	return tuple( chosen )
+
+
+def Character_Languages( char ):
+	"""
+	Build the Linguistics of a Player and return it.
+
+	1. Common, always.
+	2. The two creation languages of Creation_Languages, rolled from the
+	   Character's ``identity.languages`` Dice Bag.
+	3. Fold in whatever language the Character already held: the ``langs``
+	   of a Linguistics, or the plain list an Origin Feat wrote during the
+	   background step (Agitator, Dragon Cult Initiate, the Dark Gifts), so
+	   that nothing granted before this rite is wiped (QST-0144.10).
+
+	Class languages (Thieves' Cant, Druidic, Deft Explorer) are not granted
+	here: each lesson Tag grants its own, after this rite, and draws from
+	its own bag.
 	"""
 	ling = Linguistics()
-
-	# 1. Always knows Common
-	ling.Add("Common")
-
-	# 2. Racial languages
-	if char == "Elf":		ling.Add("Elvish")
-	if char == "Dwarf":		ling.Add("Dwarvish")
-	if char == "Halfling":	ling.Add("Halfling")
-	if char == "Human":		ling.Add("Common Sign Language")
-	if char == "Dragonborn": ling.Add("Draconic")
-	if char == "Gnome":		ling.Add("Gnomish")
-	if char == "Orc":		ling.Add("Orc")
-	if char == "Tiefling":	ling.Add("Infernal")
-	if char == "Goliath":	ling.Add("Giant")
-	if char == "Aasimar":	ling.Add("Celestial")
-
-	# 3. Class languages: each Guild grant draws from its own Dice Bag
-	if char == "Rogue":
-		ling.Add("Thieves' Cant")
-		ling.AddAnyLanguage(
-			all_languages,
-			dice=char.Dice_Bag( "Rogue.languages" ),
+	ling.Add( COMMON )
+	ling.Add(
+			Creation_Languages(
+					char,
+					char.Dice_Bag( "identity.languages" ),
+					)
 			)
-	if char == "Druid":		ling.Add("Druidic")
-	if char == "Ranger" and char >= 2:
-		ling.AddAnyLanguage(
-			all_languages,
-			2,
-			dice=char.Dice_Bag( "Ranger.languages" ),
+	prior = getattr(
+			char,
+			"languages",
+			None,
 			)
-
-	# 4. One standard language for everyone: a Character rite, not a Tag's
-	ling.AddAnyLanguage(
-		standard_languages,
-		dice=char.Dice_Bag( "identity.languages" ),
-		)
-	return ling  # Return the Linguistics object itself
+	ling.Add(
+			getattr(
+					prior,
+					"langs",
+					prior,
+					)
+			)
+	return ling
 
 
 if __name__ == "__main__":
 	from random import Random
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.SpeciesKit import Apply_Species
 
-	class Probe:
-		"""A Character stand-in: Tags by name, a level, a recording Dice Bag."""
-		def __init__(probe, *names, level=1):
-			probe.names = set(names)
-			probe.level = level
-			probe.opened = []
+	#-- The tables are the 2024 ones: Draconic Standard, the two secret
+	#-- tongues Rare and listed.
+	assert sum( STANDARD_FACES.values() ) == 12, STANDARD_FACES
+	assert "Draconic" in standard_languages
+	assert {"Druidic", "Thieves' Cant"} <= rare_languages
+	assert not standard_languages & rare_languages
+	assert all_languages == standard_languages | rare_languages
+	assert exotic_languages == rare_languages
+	assert len( all_languages ) == 18, len( all_languages )
 
-		def __eq__(probe, name):
-			return name in probe.names
+	#-- The Species tongue adds half a die, and only when it is Standard.
+	assert Creation_Faces( "Elvish" )[ "Elvish" ] == 2 + SPECIES_TONGUE_FACES
+	assert Creation_Faces( "Infernal" ) == STANDARD_FACES
+	assert Creation_Faces( None ) == STANDARD_FACES
 
-		def __ge__(probe, level):
-			return probe.level >= level
+	opened = []
+	original = Character.Dice_Bag
 
-		def Dice_Bag(probe, purpose):
-			probe.opened.append(purpose)
-			return Random(f"{purpose}|{sorted( probe.names )}")
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		opened.append(
+				(
+					purpose,
+					key,
+					)
+				)
+		return original(
+				char,
+				purpose,
+				**key,
+				)
 
-	#-- everyone: Common, the Species tongue, one standard language from
-	#-- identity.languages
-	human = Probe("Human")
-	known = Character_Languages(human).langs
-	assert human.opened == ["identity.languages"], human.opened
-	assert {"Common", "Common Sign Language"} <= known
-	extra = known - {"Common", "Common Sign Language"}
-	assert len(extra) == 1 and extra <= standard_languages, extra
-	pool = sorted(standard_languages - {"Common", "Common Sign Language"})
-	assert extra == set(Random("identity.languages|['Human']").sample(pool, 1))
+	def Skeleton(
+			seed,
+			species,
+			):
+		char = Character(
+				seed=seed,
+				)
+		Apply_Species(
+				char,
+				species,
+				)
+		opened.clear()
+			#-- The Species opened its own bags (heritage, lineage); only the
+			#-- language rite's bag is under test.
+		return char
 
-	#-- the same Character draws the same languages again
-	assert Character_Languages(Probe("Human")).langs == known
+	def Replay(
+			char,
+			tongue,
+			):
+		"""The two creation picks, rolled again by hand from a fresh bag."""
+		faces = Creation_Faces( tongue )
+		names = sorted( faces )
+		weights = [
+				faces[ name ]
+				for name in names
+				]
+		bag = original(
+				char,
+				"identity.languages",
+				)
+		rolled = []
+		while len( rolled ) < 2:
+			[ name ] = bag.choices(
+					names,
+					weights=weights,
+					k=1,
+					)
+			if name not in rolled:
+				rolled.append( name )
+		return rolled
 
-	#-- the Rogue's any-language grant has its own bag
-	rogue = Probe("Rogue")
-	known = Character_Languages(rogue).langs
-	assert rogue.opened == ["Rogue.languages", "identity.languages"], rogue.opened
-	assert "Thieves' Cant" in known
-	assert len(known) == 4, known
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		#-- An Elf reads Elvish from its Species; the two picks come from
+		#-- identity.languages alone, with the default key, and replay.
+		elf = Skeleton(
+				seed=1,
+				species="Elf",
+				)
+		assert Species_Tongue( elf ) == "Elvish"
+		known = Character_Languages( elf )
+		assert opened == [
+				(
+					"identity.languages",
+					{},
+					),
+				], opened
+		assert isinstance( known, Linguistics )
+		assert COMMON in known.langs
+		extra = known.langs - {COMMON}
+		assert len( extra ) == 2 and extra <= standard_languages, extra
+		assert extra == set(
+				Replay(
+						elf,
+						"Elvish",
+						)
+				), extra
 
-	#-- the Ranger's two languages arrive at level 2, from Ranger.languages
-	ranger = Probe("Ranger", level=2)
-	known = Character_Languages(ranger).langs
-	assert ranger.opened == ["Ranger.languages", "identity.languages"], ranger.opened
-	assert len(known) == 4, known
-	novice = Probe("Ranger", level=1)
-	Character_Languages(novice)
-	assert novice.opened == ["identity.languages"], novice.opened
+		#-- The same Character rolls the same languages again.
+		opened.clear()
+		assert Character_Languages( elf ).langs == known.langs
 
-	#-- AddAnyLanguage never repeats a known language and stops at the pool
+		#-- A Rare tongue (Tiefling: Infernal) and no tongue (Human) roll the
+		#-- plain d12.
+		tiefling = Skeleton(
+				seed=1,
+				species="Tiefling",
+				)
+		assert Species_Tongue( tiefling ) == "Infernal"
+		assert Character_Languages( tiefling ).langs - {COMMON} == set(
+				Replay(
+						tiefling,
+						None,
+						)
+				)
+		human = Skeleton(
+				seed=1,
+				species="Human",
+				)
+		assert Species_Tongue( human ) is None
+		assert Character_Languages( human ).langs - {COMMON} == set(
+				Replay(
+						human,
+						None,
+						)
+				)
+
+		#-- The nudge: over the same seeds, Elves know Elvish more often than
+		#-- Humans do, and every Standard language stays possible for both.
+		seeds = range( 1, 121 )
+		elvish_elves = sum(
+				"Elvish" in Character_Languages(
+						Skeleton(
+								seed=seed,
+								species="Elf",
+								)
+						).langs
+				for seed in seeds
+				)
+		elvish_humans = sum(
+				"Elvish" in Character_Languages(
+						Skeleton(
+								seed=seed,
+								species="Human",
+								)
+						).langs
+				for seed in seeds
+				)
+		assert elvish_elves > elvish_humans, (elvish_elves, elvish_humans)
+		assert elvish_elves < len( seeds ), "a nudge, not a filter"
+
+		#-- A language written before the rite (an Origin Feat during the
+		#-- background step) is folded in, from a plain list or a Linguistics.
+		agitator = Skeleton(
+				seed=1,
+				species="Human",
+				)
+		agitator.languages = [ "Thieves' Cant" ]
+		folded = Character_Languages( agitator )
+		assert "Thieves' Cant" in folded.langs, folded.langs
+		assert folded.langs - {"Thieves' Cant"} == Character_Languages( human ).langs
+		agitator.languages = folded
+		assert Character_Languages( agitator ).langs == folded.langs
+	finally:
+		Character.Dice_Bag = original
+
+	#-- AddAnyLanguage draws from the sorted unknown pool, never repeats a
+	#-- known language, stops at the pool, and has no draw without a bag.
 	ling = Linguistics()
-	ling.Add("Common")
-	ling.AddAnyLanguage({"Common", "Elvish"}, 5, dice=Random(1))
-	assert ling.langs == {"Common", "Elvish"}, ling.langs
+	ling.Add( COMMON )
+	assert ling.AddAnyLanguage(
+			{COMMON, "Elvish"},
+			5,
+			dice=Random( 1 ),
+			) == ( "Elvish", )
+	assert ling.langs == {COMMON, "Elvish"}, ling.langs
+	learned = ling.AddAnyLanguage(
+			all_languages,
+			2,
+			dice=Random( 7 ),
+			)
+	assert learned == tuple(
+			Random( 7 ).sample(
+					sorted( all_languages - {"Elvish"} ),
+					2,
+					)
+			), learned
+	assert ling.names() == sorted( ling.langs )
+	try:
+		ling.AddAnyLanguage( all_languages )
+	except TypeError:
+		pass
+	else:
+		raise AssertionError( "AddAnyLanguage drew without a bag" )
 
-	#-- without a bag the old set order still answers, for the legacy Rogue
-	#-- training not yet ported (QST-0144.6)
-	ling.AddAnyLanguage({"Common", "Elvish", "Giant", "Orc"}, 2)
-	assert len(ling.langs) == 4 and ling.langs <= {"Common", "Elvish", "Giant", "Orc"}
+	#-- The helpers the lessons use.
+	class Holder:
+		pass
 
-	print("OK - Map_of_Languages: the extra languages draw from identity.languages, Rogue.languages and Ranger.languages.")
+	holder = Holder()
+	assert Linguistics_Of( holder ) is None
+	holder.languages = [ "Draconic" ]
+	assert Linguistics_Of( holder ) is None
+	holder.languages = ling
+	assert Linguistics_Of( holder ) is ling
+	Record_Language_Grant(
+			holder,
+			"Deft Explorer",
+			learned,
+			)
+	assert holder.language_feature_grants == {"Deft Explorer": list( learned )}
+
+	print( "OK - Map_of_Languages: Common and two d12 Standard languages from identity.languages, the Species tongue weighing in; prior grants folded." )

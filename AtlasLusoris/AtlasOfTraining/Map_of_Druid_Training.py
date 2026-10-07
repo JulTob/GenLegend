@@ -191,14 +191,36 @@ Spellcasting = _core(
 			),
 		)
 
+def _apply_druidic(
+		char,
+		) -> None:
+	"""
+	Know Druidic (2024 PHB; QST-0144.10).
+
+	A fixed grant, no draw.  Before the Character holds a Linguistics there
+	is nothing to grant to.
+	"""
+	from AtlasLudus.Map_of_Languages import Linguistics_Of
+	languages = Linguistics_Of(
+			char
+			)
+	if languages is None:
+		return
+	languages.Add(
+			"Druidic"
+			)
+
+
 Druidic = _core(
 		name="Druidic",
 		min_level=1,
 		description=(
-			"You know **Druidic**, the secret language of Druids. You can "
-			"speak it and use it to leave hidden messages. Creatures that "
-			"don't know Druidic automatically fail to detect these messages."
+			"You know **Druidic**, the secret language of Druids. While "
+			"learning this ancient tongue, you also unlocked the magic of "
+			"communicating with animals; you always have the *Speak with "
+			"Animals* spell prepared."
 			),
+		apply=_apply_druidic,
 		)
 
 Primal_Order = _core(
@@ -747,6 +769,28 @@ def _self_test() -> None:
 				char,
 				)
 		assert opened == [], "a settled Order is not drawn again"
+
+		#-- Druidic is a fixed grant onto the Linguistics the Character holds,
+		#-- with no draw; before there is one, nothing happens.
+		from AtlasLudus.Map_of_Languages import Linguistics
+		_apply_druidic(
+				char,
+				)
+		assert getattr(
+				char,
+				"languages",
+				None,
+				) is None
+		char.languages = Linguistics()
+		char.languages.Add(
+				"Common"
+				)
+		opened.clear()
+		_apply_druidic(
+				char,
+				)
+		assert opened == [], opened
+		assert char.languages.langs == {"Common", "Druidic"}, char.languages.langs
 	finally:
 		Character.Dice_Bag = original
 	print(

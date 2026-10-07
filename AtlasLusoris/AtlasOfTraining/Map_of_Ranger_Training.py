@@ -394,7 +394,79 @@ def _weapon_mastery_chip(
 			)
 
 
+def _apply_deft_explorer_languages(
+		char,
+		) -> None:
+	"""
+	Know two languages of either table (2024 PHB; QST-0144.10).
+
+	One bag, Deft_Explorer.languages, two draws over the sorted pool of
+	every language not yet known, the first removed before the second, so
+	the two are distinct.  Recorded so the Entry can name them; a recorded
+	pair is not drawn again.  Before the Character holds a Linguistics
+	there is nothing to grant to.
+	"""
+	from AtlasLudus.Map_of_Languages import (
+			Linguistics_Of,
+			Record_Language_Grant,
+			all_languages,
+			)
+	languages = Linguistics_Of(
+			char
+			)
+	if languages is None:
+		return
+	if "Deft Explorer" in (
+			getattr(
+					char,
+					"language_feature_grants",
+					None,
+					) or {}
+			):
+		return
+	pool = sorted(
+			all_languages - languages.langs
+			)
+	dice = char.Dice_Bag(
+			"Deft_Explorer.languages",
+			)
+	chosen = []
+	while pool and len(
+			chosen
+			) < 2:
+		name = char.Pick(
+				pool,
+				dice=dice,
+				)
+		pool.remove(
+				name
+				)
+		chosen.append(
+				name
+				)
+	languages.Add(
+			chosen
+			)
+	Record_Language_Grant(
+			char,
+			"Deft Explorer",
+			chosen,
+			)
+
+
 def _apply_deft_explorer(
+		char,
+		) -> None:
+	"""Deft Explorer: Expertise in one trained skill, and two languages."""
+	_apply_deft_explorer_expertise(
+			char,
+			)
+	_apply_deft_explorer_languages(
+			char,
+			)
+
+
+def _apply_deft_explorer_expertise(
 		char,
 		) -> None:
 	skills = getattr(
@@ -1351,9 +1423,104 @@ def _self_test() -> None:
 				)
 	finally:
 		Character.Dice_Bag = original
+	_self_test_deft_explorer_languages()
 	print(
 			"Map_of_Ranger_Training: self-test OK"
 			)
+
+
+def _self_test_deft_explorer_languages() -> None:
+	"""Deft Explorer's two languages come from one bag, Deft_Explorer.languages."""
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasLudus.Map_of_Languages import (
+			Linguistics,
+			all_languages,
+			)
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		opened.append(
+				(
+					purpose,
+					key,
+					)
+				)
+		return original(
+				char,
+				purpose,
+				**key,
+				)
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Character(
+				seed=7,
+				level=2,
+				)
+		#-- Nothing to grant to yet: no bag, no record.
+		_apply_deft_explorer_languages(
+				char,
+				)
+		assert opened == [], opened
+		assert getattr(
+				char,
+				"language_feature_grants",
+				None,
+				) is None
+
+		known = {"Common", "Dwarvish", "Giant"}
+		char.languages = Linguistics()
+		char.languages.Add(
+				known
+				)
+		_apply_deft_explorer_languages(
+				char,
+				)
+		assert opened == [
+				(
+					"Deft_Explorer.languages",
+					{},
+					),
+				], opened
+		first, second = char.language_feature_grants[ "Deft Explorer" ]
+		probe = original(
+				char,
+				"Deft_Explorer.languages",
+				)
+		pool = sorted(
+				all_languages - known
+				)
+		assert first == char.Pick(
+				pool,
+				dice=probe,
+				)
+		pool.remove(
+				first
+				)
+		assert second == char.Pick(
+				pool,
+				dice=probe,
+				)
+			#-- Two draws of one bag over the shrinking sorted pool of the
+			#-- languages of both tables not yet known.
+		assert char.languages.langs == known | {first, second}
+		assert f"**{first}** and **{second}**" in _deft_explorer_entry(
+				char
+				)
+		opened.clear()
+		_apply_deft_explorer_languages(
+				char,
+				)
+		assert opened == [], "a recorded pair is not drawn again"
+		assert len( char.languages.langs ) == 5
+	finally:
+		Character.Dice_Bag = original
 
 
 if __name__ == "__main__":
