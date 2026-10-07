@@ -262,55 +262,6 @@ class Character:
 					]
 			)
 
-	def Pick_Bag(
-			char,
-			purpose=None,
-			*,
-			version: str = "1",
-			namespace: str = "GenLegend",
-			):
-		"""
-		The Dice Bag one draw should come from, advanced per purpose.
-
-		Successive draws for the same purpose open ``purpose#0``,
-		``purpose#1`` and so on. Different purposes stay independent.
-		A bare call derives purpose from the caller's module.function.
-		"""
-		if purpose is None:
-			from sys import _getframe
-
-			frame = _getframe(
-				2
-				)
-			purpose = (
-				f"{frame.f_globals.get('__name__', '?')}"
-				f".{frame.f_code.co_qualname}"
-				)
-
-		counts = getattr(
-			char,
-			"_pick_draws",
-			None,
-			)
-
-		if counts is None:
-			counts = {}
-			char._pick_draws = counts
-
-		drawn = counts.get(
-			purpose,
-			0,
-			)
-		counts[
-			purpose
-			] = drawn + 1
-
-		return char.Dice_Bag(
-			f"{purpose}#{drawn}",
-			version=version,
-			namespace=namespace,
-			)
-
 	def Pick(
 			char,
 			ledger,
@@ -320,21 +271,32 @@ class Character:
 			dice=None,
 			):
 		"""
-		Pick one item from a named Dice Bag.
+		Pick one item from a Dice Bag named by the Tag that offers the choice.
 
-		``dice`` takes an already-opened Bag; ``purpose`` names one to open.
-		Neither is required: a bare ``Pick`` still draws deterministically
-		via ``Pick_Bag``.
+		``dice`` takes an already-opened Bag (open it once when one choice
+		draws several times); ``purpose`` opens ``char.Dice_Bag( purpose )``
+		fresh for this one draw.  One of the two is required: a bare Pick
+		is refused, because a purpose nobody wrote would have to be derived
+		from the caller's frame, and that moved draws whenever code moved
+		(ruling 8, Dialog 0027; QST-0144.6).
 		"""
 		if not ledger:
 			raise ValueError(
 				"Pick: empty ledger"
 				)
 
+		if dice is None and purpose is None:
+			raise ValueError(
+				"Pick: name the Dice Bag. Pass dice=char.Dice_Bag( "
+				"\"<Tag>.<choice>\" ) or purpose=\"<Tag>.<choice>\"; "
+				"every choice of a Character draws from a bag named by the "
+				"Tag that offers it (QST-0144.6)."
+				)
+
 		source = (
 			dice
 			if dice is not None
-			else char.Pick_Bag(
+			else char.Dice_Bag(
 				purpose
 				)
 			)
@@ -725,6 +687,59 @@ def _test_dice_bags():
 
 	assert first_choice == progressed_choice
 	assert first.dices.getstate() == dice_state
+
+	#-- A bare draw is refused: nobody derives a purpose for it.
+	try:
+		first.Pick(
+			(
+				"North",
+				"South",
+				),
+			)
+	except ValueError as refusal:
+		assert "QST-0144.6" in str(
+			refusal
+			)
+	else:
+		raise AssertionError(
+			"a bare Pick must be refused"
+			)
+	assert not hasattr(
+		first,
+		"Pick_Bag",
+		)
+
+	#-- purpose= opens the named bag fresh: the same answer every time.
+	by_purpose = tuple(
+		first.Pick(
+			(
+				"North",
+				"South",
+				"East",
+				"West",
+				),
+			purpose="identity.direction",
+			)
+		for _ in range(
+			3
+			)
+		)
+	assert len(
+		set(
+			by_purpose
+			)
+		) == 1
+	assert by_purpose[ 0 ] == first.Pick(
+		(
+			"North",
+			"South",
+			"East",
+			"West",
+			),
+		dice=first.Dice_Bag(
+			"identity.direction"
+			),
+		)
 
 
 def _test_level():

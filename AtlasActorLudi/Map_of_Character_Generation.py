@@ -13,7 +13,6 @@ from typing import Any
 from Minion import chronicler, minion
 
 from AtlasActorLudi.CharactersKit import Player
-from AtlasActorLudi.Tools_of_Legacy_RNG import Isolated_Legacy_RNG
 from AtlasLusoris.Grimoire_of_Characters import (
     Character,
     awaken_player,
@@ -108,23 +107,20 @@ def _attempt_player(
             1,
             )
 
-    with Isolated_Legacy_RNG(
-            seed
-            ):
-        character = Character(
-                seed=seed,
-                level=level,
-                )
+    character = Character(
+            seed=seed,
+            level=level,
+            )
 
-        Player(
-                character
-                )
+    Player(
+            character
+            )
 
-        return awaken_player(
-                character,
-                level=level,
-                **request,
-                )
+    return awaken_player(
+            character,
+            level=level,
+            **request,
+            )
 
 
 @chronicler

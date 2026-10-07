@@ -419,7 +419,10 @@ def Make_Invocation(
 					pick_familiar,
 					)
 			target.pact_familiar = pick_familiar(
-					target
+					target,
+					dice=target.Dice_Bag(
+							"Pact_Familiar.familiar"
+							),
 					)
 		if origin_feat:
 			target.owed_origin_feats = getattr(
@@ -639,6 +642,12 @@ def Apply_Warlock_Invocations(
 	applied.extend(
 			already
 			)
+	dice = char.Dice_Bag(
+			"Eldritch_Invocations.choice"
+			)
+		#-- one bag for the whole set of invocations, the one the lesson
+		#-- Eldritch_Invocations names (QST-0144.6); opened once, drawn from
+		#-- at every pass
 	while len(
 			applied
 			) < need:
@@ -648,7 +657,8 @@ def Apply_Warlock_Invocations(
 		if not pool:
 			break
 		pick = char.Accept(
-				pool
+				pool,
+				dice=dice,
 				)
 		if (
 				char in pick

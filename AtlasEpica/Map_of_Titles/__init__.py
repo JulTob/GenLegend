@@ -41,8 +41,7 @@ def LastResortTitle(lusor):
 		return lusor.Pick(
 			LAST_RESORT_TITLES,
 			dice=lusor.Dice_Bag(
-				"Epica.Title.LastResort",
-				version="1",
+				"identity.title.last_resort",
 				),
 			)
 	except Exception as exc:
@@ -97,8 +96,7 @@ patterns that needed it and leaves the rest standing, so one gap in the
 vocabulary costs a shade of the title instead of all of it.
 '''
 	dice = lusor.Dice_Bag(
-		"Epica.Title",
-		version="1",
+		"identity.title",
 		)
 
 	descriptor = _part(lusor, Descriptor, dice)

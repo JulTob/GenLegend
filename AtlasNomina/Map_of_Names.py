@@ -546,7 +546,7 @@ def LoadRace(trait):
 		return _plantilla()
 
 NAME_PURPOSE = "identity.name"
-	#-- The one Dice Bag a name is drawn from, as Epica.Title is for the title:
+	#-- The one Dice Bag a name is drawn from, as identity.title is for the title:
 	#-- the name is one choice of the Character with several steps.
 
 

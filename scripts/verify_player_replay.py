@@ -17,7 +17,6 @@ import contextlib
 import difflib
 import io
 import json
-import random
 import sys
 from collections.abc import Iterator
 from pathlib import Path
@@ -38,11 +37,8 @@ if str(
             )
 
 
-import app.random as app_random
-
 from AtlasActorLudi import Map_of_Character_Generation as player_generation
 from AtlasActorLudi.SkillsKit import SKILLS
-from AtlasActorLudi.Tools_of_Legacy_RNG import Isolated_Legacy_RNG
 
 
 PLAYER_REQUEST = {
@@ -447,45 +443,6 @@ def summon_seeded_player(
                 )
 
 
-def assert_rng_state_restored(
-        ) -> None:
-    """Verify both temporary global RNG states survive success and failure."""
-    stdlib_before = random.getstate()
-    app_before = app_random.getstate()
-
-    try:
-        with Isolated_Legacy_RNG(
-                42
-                ):
-            random.random()
-            app_random.random()
-
-        assert random.getstate() == stdlib_before
-        assert app_random.getstate() == app_before
-
-        try:
-            with Isolated_Legacy_RNG(
-                    42
-                    ):
-                random.random()
-                app_random.random()
-                raise RuntimeError(
-                        "expected context failure"
-                        )
-        except RuntimeError:
-            pass
-
-        assert random.getstate() == stdlib_before
-        assert app_random.getstate() == app_before
-    finally:
-        random.setstate(
-                stdlib_before
-                )
-        app_random.setstate(
-                app_before
-                )
-
-
 def assert_explicit_seed_is_not_retried(
         ) -> None:
     """Verify a public explicit seed reaches production exactly once."""
@@ -528,7 +485,6 @@ def assert_explicit_seed_is_not_retried(
 def main(
         ) -> None:
     """Run the public replay and entropy-isolation contracts."""
-    assert_rng_state_restored()
     assert_explicit_seed_is_not_retried()
 
     first_character = summon_seeded_player()

@@ -459,6 +459,8 @@ def summon_familiar(
 		char,
 		level: int | None = None,
 		kind: str | None = None,
+		*,
+		dice,
 		) -> Summoned_Familiar:
 	"""
 	Build one exotic familiar for this caster.
@@ -504,6 +506,7 @@ def summon_familiar(
 		kind = char.Pick(
 			names,
 			weights,
+			dice=dice,
 			)
 
 	record = TYPES[
@@ -526,7 +529,8 @@ def summon_familiar(
 		chosen
 		) < bonus:
 		trait = char.Pick(
-			pool
+			pool,
+			dice=dice,
 			)
 		chosen.append(
 			trait
@@ -548,7 +552,8 @@ def summon_familiar(
 		look=char.Pick(
 			list(
 				record.looks
-				)
+				),
+			dice=dice,
 			),
 		traits=tuple(
 			sorted(
