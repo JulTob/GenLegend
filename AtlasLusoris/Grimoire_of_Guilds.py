@@ -992,10 +992,9 @@ def _grant_guild_tools(
 	if count == 0:
 		return
 
+	#-- Named by the Guild Tag that offers the tools: its class name.
 	dice = char.Dice_Bag(
-		f"identity.guild.{tag.NAME}.tools",
-		version="2024",
-		namespace="GenLegendTraining",
+		f"{tag.__name__}.tools",
 		)
 	selected = tuple(
 		dice.sample(
@@ -2371,13 +2370,12 @@ def Apply_Casting_Variant(
 				char
 				)
 
+	#-- Named by the Guild Tag whose Variants are on offer: its class name.
 	chosen = char.Accept(
 			options,
 			weights,
 			dice=char.Dice_Bag(
-					"guild.casting.variant",
-					version="1",
-					namespace="GenLegendActor",
+					f"{guild.__name__}.casting_variant",
 					),
 			imprint=imprint,
 			)
@@ -2556,10 +2554,12 @@ def Apply_Specialization(
 			tag = current[ 0 ]
 			selected_name = tag.NAME
 		else:
+			#-- Named by the Guild Tag whose Shapes are on offer: its class name.
+			guild_tag = GUILDS[
+				guild_name
+				]
 			dice_bag = character.Dice_Bag(
-				"identity.specialization",
-				version="1",
-				namespace="GenLegendClass",
+				f"{guild_tag.__name__}.specialization",
 				)
 			tag = character.Accept(
 				tuple(
@@ -3081,10 +3081,10 @@ def Apply_Guild(
 			None,
 			)
 	if not name:
+		#-- Character identity, not a Tag's choice: the Guild draw precedes
+		#-- every Guild Tag, so the purpose keeps its identity name.
 		dice_bag = char.Dice_Bag(
 			"identity.guild",
-			version="1",
-			namespace="GenLegendActor",
 			)
 		tag = char.Accept(
 			tuple(
@@ -3755,6 +3755,203 @@ def _self_test():
 				tag.GUILD is guild
 				for tag in guild.SPECIALIZATIONS
 				)
+	#-- QST-0144.6, ruling 8: the Guild's own choices draw from bags named by
+	#-- the Guild Tag's class name, opened with the default key, over the
+	#-- pools they always had; the identity draw of the Guild keeps its name.
+	#-- Summoned through the generator, which reads the kits' copy of this
+	#-- module (see above): a bag counts when this file opened it, whichever
+	#-- copy ran, and the catalogue is read from that live copy.
+	import contextlib
+	import io
+	import os
+	import random as stdlib_random
+	import sys
+	import AtlasLusoris.Grimoire_of_Guilds as live_guilds
+	from AtlasActorLudi.CharactersKit import Character as Summoned_Character
+	from AtlasActorLudi.Map_of_Character_Generation import summon_player
+
+	this_file = os.path.realpath(
+			__file__
+			)
+	opened = []
+		#-- (purpose, version, namespace) of every bag opened from this file
+	drawn = {}
+		#-- purpose -> [(method, pool, weights or k)] of every draw from them
+
+	class Probe_Dice(
+			stdlib_random.Random
+			):
+		purpose = "?"
+
+		def choice(
+				dice,
+				population,
+				):
+			drawn.setdefault( dice.purpose, [] ).append(
+					( "choice", list( population ), None )
+					)
+			return super().choice(
+					population
+					)
+
+		def choices(
+				dice,
+				population,
+				weights=None,
+				*,
+				cum_weights=None,
+				k=1,
+				):
+			drawn.setdefault( dice.purpose, [] ).append(
+					( "choices", list( population ), tuple( weights ) )
+					)
+			return super().choices(
+					population,
+					weights,
+					cum_weights=cum_weights,
+					k=k,
+					)
+
+		def sample(
+				dice,
+				population,
+				k,
+				*,
+				counts=None,
+				):
+			drawn.setdefault( dice.purpose, [] ).append(
+					( "sample", list( population ), k )
+					)
+			return super().sample(
+					population,
+					k,
+					counts=counts,
+					)
+
+	original_dice_bag = Summoned_Character.Dice_Bag
+
+	def recording_dice_bag(
+			character,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				character,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		caller = os.path.realpath(
+				sys._getframe( 1 ).f_code.co_filename
+				)
+		if caller != this_file:
+			return bag
+		opened.append(
+				( purpose, version, namespace )
+				)
+		probe = Probe_Dice()
+		probe.setstate(
+				bag.getstate()
+				)
+		probe.purpose = purpose
+		return probe
+
+	def summon(
+			**request,
+			):
+		opened.clear()
+		drawn.clear()
+		with contextlib.redirect_stdout(
+				io.StringIO()
+				), contextlib.redirect_stderr(
+				io.StringIO()
+				):
+			return summon_player(
+					**request
+					)
+
+	def purposes_opened(
+			):
+		assert all(
+				( version, namespace ) == ( "1", "GenLegend" )
+				for _, version, namespace in opened
+				), opened
+		return sorted(
+				purpose
+				for purpose, _, _ in opened
+				)
+
+	Summoned_Character.Dice_Bag = recording_dice_bag
+	try:
+		#-- A Warlock: the Casting Variant (the plain Guild or one Variant,
+		#-- weighted by the share the Variants claim) and the Specialization.
+		summon(
+				species="Human",
+				guild="Warlock",
+				level=1,
+				seed=3,
+				)
+		assert purposes_opened() == [
+				"Warlock.casting_variant",
+				"Warlock.specialization",
+				], opened
+		( method, pool, weights ) = drawn[ "Warlock.casting_variant" ][ 0 ]
+		variants = live_guilds.casting_variants(
+				live_guilds.GUILDS[ "Warlock" ]
+				)
+		assert method == "choices" and variants, ( method, variants )
+		assert pool == [ None, *variants ], pool
+		assert weights == (
+				100 - sum( tag.CASTING_WEIGHT for tag in variants ),
+				*( tag.CASTING_WEIGHT for tag in variants ),
+				), weights
+		( method, pool, _ ) = drawn[ "Warlock.specialization" ][ 0 ]
+		assert method == "choice", method
+		assert pool == [
+				GuildKit.Specialization_Tag( "Warlock", name )
+				for name in GuildKit.Specialization_Choices( "Warlock" )
+				], pool
+
+		#-- A Bard: its three tool proficiencies, sampled from the Guild's tools
+		#-- the Character has no training in (a Human has none yet), and the
+		#-- Specialization.
+		summon(
+				species="Human",
+				guild="Bard",
+				level=1,
+				seed=3,
+				)
+		assert purposes_opened() == [
+				"Bard.specialization",
+				"Bard.tools",
+				], opened
+		[ ( method, pool, k ) ] = drawn[ "Bard.tools" ]
+		assert method == "sample" and k == 3, ( method, k )
+		assert pool == list( GuildKit.GUILDS[ "Bard" ].TOOLS ), pool
+
+		#-- No Guild asked for: the Guild itself is Character identity, drawn
+		#-- before any Guild Tag, so that bag keeps its name and its pool, every
+		#-- Guild in name order; the Guild drawn then draws its own.
+		char = summon(
+				species="Human",
+				level=1,
+				seed=3,
+				)
+		assert opened.count(
+				( "identity.guild", "1", "GenLegend" )
+				) == 1, opened
+		( method, pool, _ ) = drawn[ "identity.guild" ][ 0 ]
+		assert method == "choice", method
+		assert pool == [
+				GuildKit.GUILDS[ name ]
+				for name in sorted( GuildKit.GUILDS )
+				], pool
+		assert f"{char.char_class}.specialization" in purposes_opened(), opened
+	finally:
+		Summoned_Character.Dice_Bag = original_dice_bag
+
 	print(
 			"OK — GuildKit self-test (2024 + multiclass prep)"
 			)

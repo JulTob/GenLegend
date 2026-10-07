@@ -7,8 +7,19 @@ def _pick_distinct(
 		character,
 		ledger,
 		count,
+		*,
+		dice=None,
 		):
-	"""Pick distinct entries through the owning Character."""
+	"""
+	Pick ``count`` distinct entries of ``ledger``, one draw at a time.
+
+	``dice`` is the Dice Bag the offering Tag opened for this one choice
+	(ruling 8, QST-0144.6): every entry of the list comes out of that bag,
+	from the candidates in the ledger's order.  Without it the Character's
+	Pick derives a purpose from this frame, which the ruling forbids; the
+	keyword is optional only until the last caller outside this Grimoire,
+	the Bard's Magical Discoveries lesson, passes its own bag.
+	"""
 	available = list(
 		ledger
 		)
@@ -18,7 +29,8 @@ def _pick_distinct(
 			selected
 			) < count:
 		entry = character.Pick(
-			available
+			available,
+			dice=dice,
 			)
 		available.remove(
 			entry
@@ -33,13 +45,17 @@ def _pick_distinct(
 def _shuffled_by_character(
 		character,
 		ledger,
+		*,
+		dice=None,
 		):
+	"""The whole ledger, in the order ``dice`` draws it (see _pick_distinct)."""
 	return _pick_distinct(
 		character,
 		ledger,
 		len(
 			ledger
 			),
+		dice=dice,
 		)
 
 
@@ -1015,14 +1031,23 @@ class Wizard(Spellcaster):
 			for spell in available
 			if spell.level > 0
 			]
+		#-- One bag per kind, named by the Wizard's Spellcasting lesson.
+		cantrip_dice = caster.character.Dice_Bag(
+			"Wizard.Spellcasting.cantrips"
+			)
+		spell_dice = caster.character.Dice_Bag(
+			"Wizard.Spellcasting.known"
+			)
 		caster.spells_known = _pick_distinct(
 			caster.character,
 			cantrips,
 			min(len(cantrips), caster.get_stats("cantrips")),
+			dice=cantrip_dice,
 			) + _pick_distinct(
 			caster.character,
 			higher,
 			min(len(higher), caster.get_stats("spells")),
+			dice=spell_dice,
 			)
 
 	def modifier(caster):
@@ -1165,6 +1190,9 @@ class Druid(Spellcaster):
 			caster.character,
 			pool,
 			min(len(pool), num_spells),
+			dice=caster.character.Dice_Bag(
+				"Druid.Spellcasting.known"
+				),
 			)
 		known_names = {
 			getattr(spell, "name", None)
@@ -1321,6 +1349,13 @@ class Cleric(Spellcaster):
 			for spell in available
 			if spell.level > 0
 			]
+		#-- One bag per kind, named by the Cleric's Spellcasting lesson.
+		cantrip_dice = caster.character.Dice_Bag(
+			"Cleric.Spellcasting.cantrips"
+			)
+		spell_dice = caster.character.Dice_Bag(
+			"Cleric.Spellcasting.known"
+			)
 		caster.spells_known = _pick_distinct(
 			caster.character,
 			cantrips,
@@ -1332,6 +1367,7 @@ class Cleric(Spellcaster):
 					"cantrips"
 					),
 				),
+			dice=cantrip_dice,
 			) + _pick_distinct(
 			caster.character,
 			higher,
@@ -1343,6 +1379,7 @@ class Cleric(Spellcaster):
 					"spells"
 					),
 				),
+			dice=spell_dice,
 			)
 
 	def modifier(caster):
@@ -1456,6 +1493,9 @@ class Ranger(Spellcaster):
 		available = _shuffled_by_character(
 			caster.character,
 			available,
+			dice=caster.character.Dice_Bag(
+				"Ranger.Spellcasting.known"
+				),
 			)
 		caster.spells_known = available[:n]
 
@@ -1576,6 +1616,13 @@ class Sorcerer(Spellcaster):
 		cantrip_pool   = [s for s in pool if s.level == 0]
 		leveled_pool   = [s for s in pool if s.level > 0]
 
+		#-- One bag per kind, named by the Sorcerer's Spellcasting lesson.
+		cantrip_dice = self.character.Dice_Bag(
+			"Sorcerer.Spellcasting.cantrips"
+			)
+		spell_dice = self.character.Dice_Bag(
+			"Sorcerer.Spellcasting.known"
+			)
 		self.spells_known = (
 			_pick_distinct(
 				self.character,
@@ -1586,6 +1633,7 @@ class Sorcerer(Spellcaster):
 						cantrip_pool
 						),
 					),
+				dice=cantrip_dice,
 				)
 			+ _pick_distinct(
 				self.character,
@@ -1596,6 +1644,7 @@ class Sorcerer(Spellcaster):
 						leveled_pool
 						),
 					),
+				dice=spell_dice,
 				)
 			)
 
@@ -1872,17 +1921,14 @@ class EldritchKnight(Spellcaster):
 					spell.name,
 					)
 			)
+		#-- Named by the Specialization that offers the choice (its class name).
 		caster.character.Dice_Bag(
-			"magic.eldritch_knight.cantrips",
-			version="2024",
-			namespace="GenLegendMagic",
+			"EldritchKnight.cantrips"
 			).shuffle(
 				cantrip_pool
 				)
 		caster.character.Dice_Bag(
-			"magic.eldritch_knight.prepared",
-			version="2024",
-			namespace="GenLegendMagic",
+			"EldritchKnight.spells"
 			).shuffle(
 				leveled_pool
 				)
@@ -2043,6 +2089,9 @@ class ArcaneTrickster(Spellcaster):
 			remaining = _shuffled_by_character(
 				trickster.character,
 				remaining,
+				dice=trickster.character.Dice_Bag(
+					"ArcaneTrickster.Spellcasting.cantrips"
+					),
 				)
 			chosen += remaining
 			trickster.spells_known += chosen[:needed]
@@ -2062,6 +2111,9 @@ class ArcaneTrickster(Spellcaster):
 		remaining = _shuffled_by_character(
 			trickster.character,
 			remaining,
+			dice=trickster.character.Dice_Bag(
+				"ArcaneTrickster.Spellcasting.known"
+				),
 			)
 		chosen_prepared += remaining[:max(0, n_prepared - len(chosen_prepared))]
 		trickster.spells_known += chosen_prepared[:n_prepared]
@@ -2220,6 +2272,8 @@ class Warlock(Spellcaster):
 		# Warlocks can change prepared spells on level-up/long rest
 		available = caster.available_spells()
 		# Random for demo; in-app, let user select!
+		#-- One bag per kind, named by the Warlock's Pact_Magic lesson (the
+		#-- name a reader types for it).
 		chosen = _pick_distinct(
 			caster.character,
 			available,
@@ -2228,6 +2282,9 @@ class Warlock(Spellcaster):
 				len(
 					available
 					),
+				),
+			dice=caster.character.Dice_Bag(
+				"Warlock.Pact_Magic.known"
 				),
 			)
 
@@ -2243,6 +2300,9 @@ class Warlock(Spellcaster):
 				caster.get_stats(
 					"cantrips"
 					),
+				),
+			dice=caster.character.Dice_Bag(
+				"Warlock.Pact_Magic.cantrips"
 				),
 			)
 
@@ -2319,13 +2379,20 @@ class Warlock(Spellcaster):
 		caster.mystic_arcanum = []
 		arcanum_requirements = {6: 11, 7: 13, 8: 15, 9: 17}
 		warlock_table = SPELL_LISTS.get(caster.character.char_class, {})
+		#-- One bag for the whole choice, named by the Mystic_Arcanum lesson
+		#-- (the name a reader types for it): up to four draws, one per slot
+		#-- level, from that one stream.
+		arcanum_dice = caster.character.Dice_Bag(
+			"Mystic_Arcanum.choice"
+			)
 		for lvl, req_level in arcanum_requirements.items():
 			if caster.level >= req_level:
 				pool = warlock_table.get(lvl, [])
 				if pool:
 					caster.mystic_arcanum.append(
 						caster.character.Pick(
-							pool
+							pool,
+							dice=arcanum_dice,
 							)
 						)
 
@@ -2484,6 +2551,15 @@ class Bard(Spellcaster):
 				0,
 				[],
 				)
+		#-- One bag per kind, named by the Bard's Spellcasting lesson; the
+		#-- spells known are one choice drawn in two steps (the Bard list,
+		#-- then any list), so both steps draw from the one spell bag.
+		cantrip_dice = self.character.Dice_Bag(
+			"Bard.Spellcasting.cantrips"
+			)
+		spell_dice = self.character.Dice_Bag(
+			"Bard.Spellcasting.known"
+			)
 		self.cantrips_known = _pick_distinct(
 			self.character,
 			bard_cantrips,
@@ -2493,6 +2569,7 @@ class Bard(Spellcaster):
 					bard_cantrips
 					),
 				),
+			dice=cantrip_dice,
 			)
 
 		# 2. baseline: up to level‑10 cap (14) must be Bard spells
@@ -2513,6 +2590,7 @@ class Bard(Spellcaster):
 					bard_spell_pool
 					),
 				),
+			dice=spell_dice,
 			)
 
 		# 3. any extra slots (lvl >10) ⇒ may draw from *any* list
@@ -2536,6 +2614,7 @@ class Bard(Spellcaster):
 						any_pool
 						),
 					),
+				dice=spell_dice,
 				)
 		else:
 			extra_choices = []
@@ -2904,6 +2983,7 @@ class Artificer(Spellcaster):
 		n_prepared = self.get_stats(
 				"prepared"
 				)
+		#-- One bag per kind, named by the Artificer's Spellcasting lesson.
 		cantrips = _pick_distinct(
 				self.character,
 				cantrip_pool,
@@ -2913,10 +2993,16 @@ class Artificer(Spellcaster):
 								cantrip_pool
 								),
 						),
+				dice=self.character.Dice_Bag(
+						"Artificer.Spellcasting.cantrips"
+						),
 				)
 		leveled_pool = _shuffled_by_character(
 				self.character,
 				leveled_pool,
+				dice=self.character.Dice_Bag(
+						"Artificer.Spellcasting.known"
+						),
 				)
 		prepared = leveled_pool[
 				:n_prepared
@@ -3119,6 +3205,9 @@ class Paladin(Spellcaster):
 		pool = _shuffled_by_character(
 				self.character,
 				pool,
+				dice=self.character.Dice_Bag(
+						"Paladin.Spellcasting.known"
+						),
 				)
 
 		# merge always-prepared with randomly prepared spells
@@ -3198,3 +3287,318 @@ class Paladin(Spellcaster):
           {cantrip_cards}
           {spell_cards}
           """
+
+
+if __name__ == "__main__":
+	#-- Self-test (QST-0144.6, ruling 8).  Every spells-known draw comes
+	#-- from one bag per caster per kind, named by the lesson or the
+	#-- Specialization that offers the choice (its class name), with the
+	#-- default key, drawn one entry at a time without replacement from the
+	#-- candidates the caster had before: no purpose is derived any more.
+	import contextlib
+	import io
+	import os
+	import random as stdlib_random
+	import sys
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Map_of_Character_Generation import summon_player
+
+	THIS_FILE = os.path.realpath(
+			__file__
+			)
+	opened = []
+		#-- (purpose, version, namespace) of every bag opened from this file
+	drawn = {}
+		#-- purpose -> [(method, pool, k)] of every draw from those bags
+
+	def from_this_file(
+			frame,
+			) -> bool:
+		return os.path.realpath(
+				frame.f_code.co_filename
+				) == THIS_FILE
+
+	class Probe_Dice(
+			stdlib_random.Random
+			):
+		purpose = "?"
+
+		def choice(
+				dice,
+				population,
+				):
+			drawn.setdefault( dice.purpose, [] ).append(
+					( "choice", list( population ), 1 )
+					)
+			return super().choice(
+					population
+					)
+
+		def shuffle(
+				dice,
+				population,
+				):
+			drawn.setdefault( dice.purpose, [] ).append(
+					( "shuffle", list( population ), len( population ) )
+					)
+			return super().shuffle(
+					population
+					)
+
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				char,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		if not from_this_file(
+				sys._getframe( 1 )
+				):
+			return bag
+		opened.append(
+				( purpose, version, namespace )
+				)
+		probe = Probe_Dice()
+		probe.setstate(
+				bag.getstate()
+				)
+		probe.purpose = purpose
+		return probe
+
+	def summon(
+			**request,
+			):
+		with contextlib.redirect_stdout(
+				io.StringIO()
+				), contextlib.redirect_stderr(
+				io.StringIO()
+				):
+			return summon_player(
+					**request
+					)
+
+	def one_list_one_at_a_time(
+			purpose,
+			level_test=None,
+			):
+		"""
+		Every draw of the bag removes one entry of the same candidate list.
+
+		A caster whose prepare_spells runs twice per summon (the Sorcerer)
+		starts a second run from the full list again; the bag being keyed,
+		both runs draw the same spells.
+		"""
+		draws = drawn.get(
+				purpose,
+				[],
+				)
+		assert draws, f"{purpose} drew nothing"
+		first = None
+		remaining = None
+		for method, pool, _ in draws:
+			assert method == "choice", ( purpose, method )
+			if remaining is None or len( pool ) >= remaining + 1:
+				first = pool
+				remaining = len( pool )
+			assert len( pool ) == remaining, ( purpose, len( pool ), remaining )
+			assert set( pool ) <= set( first ), purpose
+			if level_test is not None:
+				assert all(
+						level_test( int( spell.level ) )
+						for spell in pool
+						), ( purpose, [ spell.name for spell in pool ] )
+			remaining -= 1
+		return draws
+
+	def distinct_in_order(
+			pairs,
+			):
+		return tuple(
+				dict.fromkeys(
+						pairs
+						)
+				)
+
+	#-- (request, the purposes this file opens for it, in order)
+	CASTERS = (
+			(
+					{ "guild": "Wizard", "level": 5, "seed": 7 },
+					( "Wizard.Spellcasting.cantrips", "Wizard.Spellcasting.known" ),
+					),
+			(
+					{ "guild": "Cleric", "level": 5, "seed": 7 },
+					( "Cleric.Spellcasting.cantrips", "Cleric.Spellcasting.known" ),
+					),
+			(
+					{ "guild": "Sorcerer", "level": 5, "seed": 7 },
+					( "Sorcerer.Spellcasting.cantrips", "Sorcerer.Spellcasting.known" ),
+					),
+			(
+					{ "guild": "Artificer", "level": 5, "seed": 7 },
+					( "Artificer.Spellcasting.cantrips", "Artificer.Spellcasting.known" ),
+					),
+			(
+					{ "guild": "Druid", "level": 5, "seed": 7 },
+					( "Druid.Spellcasting.known", ),
+					),
+			(
+					{ "guild": "Ranger", "level": 5, "seed": 7 },
+					( "Ranger.Spellcasting.known", ),
+					),
+			(
+					{ "guild": "Paladin", "level": 5, "seed": 7 },
+					( "Paladin.Spellcasting.known", ),
+					),
+			(
+					{ "guild": "Bard", "level": 11, "seed": 7 },
+					( "Bard.Spellcasting.cantrips", "Bard.Spellcasting.known" ),
+					),
+			(
+					{ "guild": "Warlock", "level": 17, "seed": 7 },
+					(
+							"Warlock.Pact_Magic.known",
+							"Warlock.Pact_Magic.cantrips",
+							"Mystic_Arcanum.choice",
+							),
+					),
+			(
+					{ "guild": "Fighter", "specialization": "Eldritch Knight", "level": 3, "seed": 7 },
+					( "EldritchKnight.cantrips", "EldritchKnight.spells" ),
+					),
+			(
+					{ "guild": "Rogue", "specialization": "Arcane Trickster", "level": 3, "seed": 7 },
+					(
+							"ArcaneTrickster.Spellcasting.cantrips",
+							"ArcaneTrickster.Spellcasting.known",
+							),
+					),
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		for request, purposes in CASTERS:
+			opened.clear()
+			drawn.clear()
+			char = summon(
+					**request
+					)
+			assert distinct_in_order(
+					purpose
+					for purpose, _, _ in opened
+					) == purposes, ( request, opened )
+				#-- these bags, in this order, once per run of prepare_spells
+			assert all(
+					( version, namespace ) == ( "1", "GenLegend" )
+					for _, version, namespace in opened
+					), opened
+			for purpose in purposes:
+				if purpose.endswith( ".cantrips" ) and "EldritchKnight" not in purpose:
+					one_list_one_at_a_time(
+							purpose,
+							lambda level: level == 0,
+							)
+				elif purpose in (
+						"Ranger.Spellcasting.known",
+						"Paladin.Spellcasting.known",
+						"ArcaneTrickster.Spellcasting.known",
+						):
+					one_list_one_at_a_time(
+							purpose,
+							lambda level: level > 0,
+							)
+				elif purpose.endswith( ".known" ):
+					one_list_one_at_a_time(
+							purpose
+							)
+
+		#-- The Bard's spells known are one choice in two steps, one bag:
+		#-- fifteen draws at level 11, from the Bard list then from any list.
+		opened.clear()
+		drawn.clear()
+		bard = summon(
+				guild="Bard",
+				level=11,
+				seed=7,
+				)
+		bard_runs = opened.count(
+				( "Bard.Spellcasting.known", "1", "GenLegend" )
+				)
+		assert bard_runs >= 1, opened
+		assert len(
+				drawn[ "Bard.Spellcasting.known" ]
+				) == bard_runs * Bard.SPELLS_KNOWN_BY_LEVEL[ 11 ], len( drawn[ "Bard.Spellcasting.known" ] )
+
+		#-- The Mystic Arcanum: one bag, one draw per unlocked slot level,
+		#-- each from that level's table, at level 17 all four.
+		opened.clear()
+		drawn.clear()
+		warlock = summon(
+				guild="Warlock",
+				level=17,
+				seed=7,
+				)
+		arcanum_runs = opened.count(
+				( "Mystic_Arcanum.choice", "1", "GenLegend" )
+				)
+		assert arcanum_runs >= 1, opened
+		arcanum_draws = drawn[ "Mystic_Arcanum.choice" ]
+		warlock_table = SPELL_LISTS[ "Warlock" ]
+		assert [
+				[ spell.name for spell in pool ]
+				for _, pool, _ in arcanum_draws
+				] == [
+				[ spell.name for spell in warlock_table[ level ] ]
+				for level in ( 6, 7, 8, 9 )
+				] * arcanum_runs, arcanum_draws
+		assert len( warlock.spellcaster.mystic_arcanum ) == 4
+
+		#-- The Eldritch Knight shuffles its two sorted pools, once each.
+		opened.clear()
+		drawn.clear()
+		summon(
+				guild="Fighter",
+				specialization="Eldritch Knight",
+				level=3,
+				seed=7,
+				)
+		( cantrip_method, cantrip_pool, _ ) = drawn[ "EldritchKnight.cantrips" ][ 0 ]
+		( leveled_method, leveled_pool, _ ) = drawn[ "EldritchKnight.spells" ][ 0 ]
+		assert ( cantrip_method, leveled_method ) == ( "shuffle", "shuffle" )
+		assert all(
+				pool == cantrip_pool
+				for _, pool, _ in drawn[ "EldritchKnight.cantrips" ]
+				) and all(
+				pool == leveled_pool
+				for _, pool, _ in drawn[ "EldritchKnight.spells" ]
+				), "a second run shuffled a different list"
+		assert cantrip_pool == sorted(
+				cantrip_pool,
+				key=lambda spell: spell.name,
+				) and all(
+				int( spell.level ) == 0
+				for spell in cantrip_pool
+				)
+		assert leveled_pool == sorted(
+				leveled_pool,
+				key=lambda spell: ( int( spell.level ), spell.name ),
+				) and all(
+				int( spell.level ) > 0
+				for spell in leveled_pool
+				)
+	finally:
+		Character.Dice_Bag = original_dice_bag
+
+	print(
+			"OK: every spells-known draw comes from one bag per caster per "
+			"kind, named by its lesson or Specialization, drawn one entry at "
+			"a time from the candidates it had."
+			)

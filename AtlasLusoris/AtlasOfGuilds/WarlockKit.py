@@ -166,10 +166,9 @@ def CELESTIAL_DESCRIPTION(
 			IDEALS,
 			)
 
+	#-- Named by the Specialization that offers the patron: its class name.
 	dice = character.Dice_Bag(
-		"warlock.patron.celestial",
-		version="1",
-		namespace="GenLegendClass",
+		"Celestial.patron",
 		)
 	descent = character.Pick(
 		list(
@@ -315,3 +314,101 @@ CASTING_VARIANTS = (
 	Covenantor,
 	Occultist,
 	)
+
+
+def _self_test() -> None:
+	"""
+	The Celestial patron paragraph draws its kind and Ideal from one bag.
+
+	QST-0144.6, ruling 8: the bag is named by the Specialization that offers
+	the patron (its class name), opened with the default key, and the two
+	draws come from the Aasimar's own pools, unchanged.  Run through an
+	import: as a script this kit declares its Specializations twice.
+	"""
+	import random as stdlib_random
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.SpeciesKit.Aasimar.Map_of_Ideals import (
+			DESCENTS,
+			IDEALS,
+			)
+
+	opened = []
+		#-- (purpose, version, namespace) of every bag opened
+	drawn = {}
+		#-- purpose -> [pool] of every draw from those bags
+
+	class Probe_Dice(
+			stdlib_random.Random
+			):
+		purpose = "?"
+
+		def choice(
+				dice,
+				population,
+				):
+			drawn.setdefault( dice.purpose, [] ).append(
+					list( population )
+					)
+			return super().choice(
+					population
+					)
+
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				char,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		opened.append(
+				( purpose, version, namespace )
+				)
+		probe = Probe_Dice()
+		probe.setstate(
+				bag.getstate()
+				)
+		probe.purpose = purpose
+		return probe
+
+	char = Character(
+			seed=3
+			)
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		paragraph = CELESTIAL_DESCRIPTION(
+				char
+				)
+	finally:
+		Character.Dice_Bag = original_dice_bag
+
+	assert opened == [
+			( "Celestial.patron", "1", "GenLegend" ),
+			], opened
+	[ descents, ideals ] = drawn[ "Celestial.patron" ]
+	assert descents == list( DESCENTS ), descents
+	assert ideals == list( IDEALS.values() ), ideals
+	assert any(
+			f"the {descent.kind} of " in paragraph
+			for descent in DESCENTS
+			), paragraph
+	assert paragraph == CELESTIAL_DESCRIPTION(
+			char
+			), "the patron moved between two renderings of one Character"
+	assert Celestial.__name__ == "Celestial"
+
+	print(
+			"OK: the Celestial patron comes from one Celestial.patron bag, "
+			"from the Aasimar's descents and Ideals."
+			)
+
+
+if __name__ == "__main__":
+	_self_test()

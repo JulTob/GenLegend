@@ -584,8 +584,6 @@ def _stable_choices(
 		)
 	dice_bag = character.Dice_Bag(
 		bag_purpose,
-		version="1",
-		namespace="GenLegendFighter",
 		)
 	dice_bag.shuffle(
 		options
@@ -602,35 +600,22 @@ def _stable_choices(
 def Resolve_Battle_Master_Choices(
 		character,
 		) -> tuple[str, ...]:
-	"""Resolve stable maneuver, tool, and skill Records."""
+	"""
+	Resolve the stable Maneuver Records.
+
+	Named by the Specialization that offers the choice, BattleMaster, the
+	name a reader types for it.  The Student of War tool and skill are the
+	lesson's own choice (Map_of_Fighter_Training, drawn against what the
+	Character already holds); the provisional draws that stood here before
+	the skills existed were overwritten by it every time and are gone.
+	"""
 	maneuver_choice = BATTLE_MASTER_CHOICES[0]
 	maneuver_names = _stable_choices(
 		character,
 		maneuver_choice,
-		"fighter.battle_master.maneuvers",
+		"BattleMaster.maneuvers",
 		)
 	character.maneuvers = maneuver_names
-
-	tool = _stable_choices(
-		character,
-		BATTLE_MASTER_CHOICES[1],
-		"fighter.battle_master.student.tool",
-		)
-	skill = _stable_choices(
-		character,
-		BATTLE_MASTER_CHOICES[2],
-		"fighter.battle_master.student.skill",
-		)
-	character.battle_master_tool = (
-		tool[0]
-		if tool
-		else None
-		)
-	character.battle_master_skill = (
-		skill[0]
-		if skill
-		else None
-		)
 	return maneuver_names
 
 
@@ -1137,6 +1122,72 @@ def _self_test() -> None:
 		"Eldritch Knight",
 		"Psi Warrior",
 		}
+	#-- QST-0144.6, ruling 8: the maneuvers come from one bag named by the
+	#-- Specialization that offers them (BattleMaster, the name a reader
+	#-- types for it), opened with the default key, shuffling the whole
+	#-- catalogue and keeping the level's share.  The Student of War tool and
+	#-- skill are the lesson's draw, not this Kit's.
+	from AtlasActorLudi.CharactersKit import Character
+
+	opened = []
+	shuffled = []
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			character,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+			character,
+			purpose,
+			version=version,
+			namespace=namespace,
+			)
+		opened.append(
+			( purpose, version, namespace )
+			)
+		bag_shuffle = bag.shuffle
+
+		def recording_shuffle(
+				population,
+				):
+			shuffled.append(
+				list( population )
+				)
+			return bag_shuffle(
+				population
+				)
+
+		bag.shuffle = recording_shuffle
+		return bag
+
+	recruit = Character(
+		seed=1
+		)
+	recruit.level = 7
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		maneuvers = Resolve_Battle_Master_Choices(
+			recruit
+			)
+	finally:
+		Character.Dice_Bag = original_dice_bag
+	assert opened == [
+		( "BattleMaster.maneuvers", "1", "GenLegend" ),
+		], opened
+	assert shuffled == [
+		list( MANEUVERS ),
+		], shuffled
+	assert len( maneuvers ) == BATTLE_MASTER_CHOICES[0].total_at( 7 ) == 5
+	assert len( set( maneuvers ) ) == 5 and set( maneuvers ) <= set( MANEUVERS )
+	assert recruit.maneuvers == maneuvers
+	assert not hasattr( recruit, "battle_master_tool" )
+	assert not hasattr( recruit, "battle_master_skill" )
+	assert BattleMaster.__name__ == "BattleMaster"
+
 	print(
 		"OK — FighterKit self-test"
 		)

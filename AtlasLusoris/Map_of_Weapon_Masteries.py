@@ -7,7 +7,6 @@ trained, not a blank "choose 2" rule dump.
 
 from __future__ import annotations
 
-import random
 from typing import Any
 
 from TopKit import Pin, Pre, Record, Tag
@@ -191,32 +190,19 @@ def mastery_blurb(
 
 
 def _mastery_stream(
-		char: Any,
-		):
-	"""Use one Character Dice Bag so a seed repeats the same drills."""
-	if hasattr(
 		char,
-		"Dice_Bag",
 		):
-		return char.Dice_Bag(
-			"fighter.weapon_masteries",
-			version="2024",
-			namespace="GenLegendFighter",
-			)
-	seed = getattr(
-			char,
-			"seed",
-			None,
-			)
-	if seed is None:
-		seed = getattr(
-				char,
-				"name",
-				"",
-				) or 0
-	return random.Random(
-			f"{seed}:weapon_masteries"
-			)
+	"""
+	The one Dice Bag a Character drills its masteries from.
+
+	Named by the Weapon_Mastery lesson that offers the drills (the name a
+	reader types for it, the same lesson in every martial Guild), so a seed
+	repeats the same order whether the planner is reached from
+	Outfit_Player or from the lesson's apply.
+	"""
+	return char.Dice_Bag(
+		"Weapon_Mastery.choice",
+		)
 
 
 # 2024 PHB: Barbarian and Paladin train Weapon Mastery on Melee weapons only.
@@ -972,6 +958,59 @@ def _self_test():
 	assert tuple(
 			Declared_Mastery[:]
 			) == minted, "a Character's drills mint nothing new"
+
+	#-- QST-0144.6, ruling 8: the drills are shuffled by one bag named by the
+	#-- Weapon_Mastery lesson (the name a reader types for it), opened with
+	#-- the default key, over the allowed weapons the Character neither
+	#-- wields nor carries, in name order before the shuffle.
+	opened = []
+	shuffled = []
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			character,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				character,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		opened.append(
+				( purpose, version, namespace )
+				)
+		bag_shuffle = bag.shuffle
+
+		def recording_shuffle(
+				population,
+				):
+			shuffled.append(
+					list( population )
+					)
+			return bag_shuffle(
+					population
+					)
+
+		bag.shuffle = recording_shuffle
+		return bag
+
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		candidates = mastery_candidates( char )
+	finally:
+		Character.Dice_Bag = original_dice_bag
+	assert opened == [
+			( "Weapon_Mastery.choice", "1", "GenLegend" ),
+			], opened
+	[ rest ] = shuffled
+	assert rest == sorted( rest ) and len( set( rest ) ) == len( rest ), rest
+	assert set( rest ) <= set( WEAPON_MASTERIES ), rest
+	assert sorted( candidates ) == rest, ( candidates, rest )
+		#-- no gear: every candidate is a drill, in the bag's order
 
 	print(
 			f"Map_of_Weapon_Masteries: {len( minted )} masteries declared, "
