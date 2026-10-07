@@ -47,11 +47,7 @@ def _resolve_keen_senses(
 			available
 			or Keen_Senses.SKILLS
 			)
-		dice_bag = target.Dice_Bag(
-			"identity.species.Elf.keen_senses",
-			version="2024",
-			namespace="GenLegendActor",
-			)
+		dice_bag = target.Dice_Bag( "Keen_Senses.choice" )
 		selected = target.Pick(
 			pool,
 			dice=dice_bag,
@@ -291,3 +287,120 @@ def Resolve_Elf_Features(
 			),
 		level=1,
 		)
+
+
+def _test_dice_purpose() -> None:
+	#-- Ruling 8 (QST-0144.6): the Keen Senses skill comes from one Dice Bag
+	#-- opened as "Keen_Senses.choice" with the default key, over the skills
+	#-- the Character is not yet proficient in, as before.
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Grimoire_of_AbilityScores import AbilityScores
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+	from AtlasActorLudi.Map_of_Scores import PB
+
+	def character_with_skills(
+		seed,
+		):
+		character = Character(
+			seed=seed,
+			)
+		character.AS = AbilityScores(
+			STR=10,
+			DEX=12,
+			CON=14,
+			INT=16,
+			WIS=15,
+			CHA=13,
+			character=character,
+			)
+		character.proficiency_bonus = PB( character.level )
+		character.skills = Char_Skills(
+			character,
+			character.AS,
+			character.proficiency_bonus,
+			)
+		return character
+
+	opened = []
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+	original_pick = Character.Pick
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+
+	def recording_pick(
+		char,
+		ledger,
+		weights=None,
+		**options,
+		):
+		drawn.append(
+			tuple(
+				ledger
+				)
+			)
+		return original_pick(
+			char,
+			ledger,
+			weights,
+			**options,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	Character.Pick = recording_pick
+	try:
+		untrained = character_with_skills( 7 )
+		chosen = _resolve_keen_senses( untrained )
+		perceptive = character_with_skills( 8 )
+		perceptive.skills.Perception.set_proficiency()
+		narrowed = _resolve_keen_senses( perceptive )
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		Character.Pick = original_pick
+
+	assert opened == [
+		(
+			"Keen_Senses.choice",
+			{},
+			),
+		(
+			"Keen_Senses.choice",
+			{},
+			),
+		], opened
+	assert drawn == [
+		Keen_Senses.SKILLS,
+		(
+			"Insight",
+			"Survival",
+			),
+		], drawn
+	assert chosen in Keen_Senses.SKILLS
+	assert narrowed in (
+		"Insight",
+		"Survival",
+		)
+	assert getattr(
+		untrained.skills,
+		chosen,
+		).proficiency_level >= 1
+
+
+if __name__ == "__main__":
+	_test_dice_purpose()
+	print( "OK: SpeciesKit.Elves.resolution self-test" )

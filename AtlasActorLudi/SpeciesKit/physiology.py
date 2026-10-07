@@ -35,11 +35,7 @@ def _selected_size(
 				"SIZE_WEIGHTS",
 				None,
 				)
-			dice_bag = target.Dice_Bag(
-				f"identity.species.{species.__name__}.size",
-				version="2024",
-				namespace="GenLegendActor",
-				)
+			dice_bag = target.Dice_Bag( f"{species.__name__}.size" )
 			selected = dice_bag.choices(
 				options,
 				weights=weights,
@@ -149,3 +145,112 @@ def Imprint_Heritage(
 		"_",
 		" ",
 		)
+
+
+def _test_dice_purpose() -> None:
+	#-- Ruling 8 (QST-0144.6): a Size the Species leaves open comes from one
+	#-- Dice Bag opened as "<Species>.size" with the default key, over the
+	#-- Species' options with its weights; a single option opens no bag.
+	from random import Random
+
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.SpeciesKit.Elves.base import Elf
+	from AtlasActorLudi.SpeciesKit.Humans import Human
+
+	opened = []
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+
+	class Recording_Dice(
+		Random
+		):
+		def choices(
+			dice,
+			population,
+			weights=None,
+			*,
+			cum_weights=None,
+			k=1,
+			):
+			drawn.append(
+				(
+					tuple(
+						population
+						),
+					None
+					if weights is None
+					else tuple(
+						weights
+						),
+					k,
+					)
+				)
+			return Random.choices(
+				dice,
+				population,
+				weights,
+				cum_weights=cum_weights,
+				k=k,
+				)
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		bag = original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+		probe = Recording_Dice()
+		probe.setstate(
+			bag.getstate()
+			)
+		return probe
+
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		character = Character(
+			seed=7,
+			)
+		elf_size = _selected_size(
+			character,
+			Elf,
+			None,
+			)
+		assert elf_size == "Medium"
+		assert opened == [], opened
+		human_size = _selected_size(
+			character,
+			Human,
+			None,
+			)
+	finally:
+		Character.Dice_Bag = original_dice_bag
+
+	assert human_size in Human.SIZE_OPTIONS
+	assert opened == [
+		(
+			"Human.size",
+			{},
+			),
+		], opened
+	assert drawn == [
+		(
+			Human.SIZE_OPTIONS,
+			Human.SIZE_WEIGHTS,
+			1,
+			),
+		], drawn
+
+
+if __name__ == "__main__":
+	_test_dice_purpose()
+	print( "OK: SpeciesKit.physiology self-test" )

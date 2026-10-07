@@ -163,11 +163,7 @@ def Gender_Reveal(
 		gender=None,
 		):
 	"""Apply one Gender Shape while preserving the current naming token."""
-	dice_bag = target.Dice_Bag(
-		"identity.gender",
-		version="1",
-		namespace="GenLegendActor",
-		)
+	dice_bag = target.Dice_Bag( "identity.gender" )
 	selected_gender = (
 		gender
 		or getattr(
@@ -210,6 +206,76 @@ def Gender_Reveal(
 	return gender_tag
 
 
+def _test_dice_purpose():
+	#-- Ruling 8 (QST-0144.6): an unrequested gender comes from one Dice Bag
+	#-- opened as "identity.gender" with the default key, from the pool it had.
+	opened = []
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+	original_pick = Character.Pick
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+
+	def recording_pick(
+		char,
+		ledger,
+		weights=None,
+		**options,
+		):
+		drawn.append(
+			tuple(
+				ledger
+				)
+			)
+		return original_pick(
+			char,
+			ledger,
+			weights,
+			**options,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	Character.Pick = recording_pick
+	try:
+		character = Character(
+			seed=12,
+			)
+		tag = Gender_Reveal( character )
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		Character.Pick = original_pick
+
+	assert tag is Current_Gender( character )
+	assert opened == [
+		(
+			"identity.gender",
+			{},
+			),
+		], opened
+	assert drawn == [
+		(
+			"They",
+			"He",
+			"She",
+			),
+		], drawn
+
+
 def _self_test():
 	character = Character(
 		seed=11,
@@ -229,6 +295,7 @@ def _self_test():
 	assert Find_Gender( character ) == "Female"
 	assert f"{character:Gender}" == "Female"
 
+	_test_dice_purpose()
 	print( "OK — GendersKit self-test" )
 
 

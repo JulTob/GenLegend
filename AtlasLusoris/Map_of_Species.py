@@ -8,6 +8,7 @@ from AtlasActorLudi.AtlasAlusoris.Map_of_Races import (
 	Humans
 	)
 from AtlasActorLudi.SpeciesKit import SPECIES_WEIGHTS
+from AtlasActorLudi.SpeciesKit.Dragonborn.Map_of_Ancestors import draconic_ancestor
 
 from AtlasLusoris.Grimoire_of_Features import  *
 
@@ -124,14 +125,12 @@ def species_to_race_and_subrace(
 		species_name == "Human"
 		and character is not None
 		):
+		#-- One choice, one bag: the Human culture is drawn from the bag
+		#-- opened here and handed to Map_of_Races.Humans, which draws from it.
+		culture_dice = character.Dice_Bag( "Human.culture" )
 		subrace = Humans(
 			character,
-			dice=
-			character.Dice_Bag(
-				"identity.species.Human.nomina_culture",
-				version="1",
-				namespace="GenLegendNomina",
-				)
+			dice=culture_dice,
 			)
 
 	return (
@@ -182,7 +181,6 @@ def apply_species_features(char, species_name):
 def DragonbornFeats(
 	character,
 	):
-	colors = ["Black",	"Blue",	"Brass" ,	"Bronze", "Copper", 	"Gold", "Green", 	"Red", "Silver", "White"]
 	damage = {
 		"Black":	"Acid",
 		"Blue":		"Lightning",
@@ -194,15 +192,9 @@ def DragonbornFeats(
 		"Red":		"Fire",
 		"Silver":	"Cold",
 		"White":	"Cold"}
-	dice_bag = character.Dice_Bag(
-		"identity.species.Dragonborn.ancestry",
-		version="2024",
-		namespace="GenLegendActor",
-		)
-	color = character.Pick(
-		colors,
-		dice=dice_bag,
-		)
+	#-- One choice, one bag: the colour is the one Draconic_Ancestry drew, or
+	#-- draws now from its own bag; never a second draw for the same ancestor.
+	color, _damage_type = draconic_ancestor( character )
 	dragonborn = Feature(name="Dragonborn",
 		description="""Legends and myth shrouds the origins of the Dragonborn, but one thing is certain: They are the children of dragons.
 		Their colors and features are reminiscent of their draconic ancestors, nontheless, their origins do not determine their destiny.
@@ -255,3 +247,164 @@ def creature_type_label(features=None, default="Humanoid"):
 		if getattr(feature, "name", "") == "Creature Type":
 			return getattr(feature, "description", default) or default
 	return default
+
+
+def _test_dice_purpose() -> None:
+	#-- Ruling 8 (QST-0144.6): the Human culture on the sheet comes from one
+	#-- Dice Bag opened here as "Human.culture" with the default key and
+	#-- handed to Map_of_Races.Humans, which draws from it and nothing else.
+	from AtlasActorLudi.CharactersKit import Character
+
+	opened = []
+	purpose_of_bag = {}
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+	original_pick = Character.Pick
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		bag = original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		purpose_of_bag[
+			id(
+				bag
+				)
+			] = purpose
+		return bag
+
+	def recording_pick(
+		char,
+		ledger,
+		weights=None,
+		**options,
+		):
+		drawn.append(
+			(
+				purpose_of_bag.get(
+					id(
+						options.get(
+							"dice"
+							)
+						)
+					),
+				tuple(
+					ledger
+					),
+				None
+				if weights is None
+				else tuple(
+					weights
+					),
+				)
+			)
+		return original_pick(
+			char,
+			ledger,
+			weights,
+			**options,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	Character.Pick = recording_pick
+	try:
+		character = Character(
+			seed=7,
+			)
+		race, subrace = species_to_race_and_subrace(
+			"Human",
+			character,
+			)
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		Character.Pick = original_pick
+
+	cultures = (
+		"Local",
+		"Foreigner",
+		"Highlander",
+		"Nomad",
+		"Islander",
+		"Forester",
+		"Plainsfolk",
+		"Urbanite",
+		"Northerner",
+		"Southerner",
+		"Easterner",
+		"Westerner",
+		)
+	assert race == "Human"
+	assert subrace in cultures
+	assert opened == [
+		(
+			"Human.culture",
+			{},
+			),
+		], opened
+	assert drawn == [
+		(
+			"Human.culture",
+			cultures,
+			( 30, 25, 20, 20, 16, 16, 15, 14, 20, 20, 20, 20 ),
+			),
+		], drawn
+
+
+def _test_dragonborn_feats_read_the_standing_ancestor() -> None:
+	#-- The legacy Dragonborn Entries read the ancestor Draconic_Ancestry
+	#-- drew; they open no second bag for the same choice.
+	from AtlasActorLudi.CharactersKit import Character
+
+	opened = []
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		opened.append( purpose )
+		return original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		character = Character(
+			seed=7,
+			)
+		character.draconic_ancestor = "Gold"
+		features = species_features(
+			"Dragonborn",
+			character,
+			)
+	finally:
+		Character.Dice_Bag = original_dice_bag
+
+	ancestry = next(
+		feature
+		for feature in features
+		if feature.name == "Draconic Ancestry"
+		)
+	assert opened == [], opened
+	assert "Gold Dragon" in ancestry.description
+	assert "Fire damage" in ancestry.description
+
+
+if __name__ == "__main__":
+	_test_dice_purpose()
+	_test_dragonborn_feats_read_the_standing_ancestor()
+	print( "OK: Map_of_Species self-test" )

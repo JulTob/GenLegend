@@ -216,11 +216,7 @@ def _alignment_tags(
 def _random_alignment_tags(
 		character,
 		):
-	dice_bag = character.Dice_Bag(
-			"identity.alignment",
-			version="2",
-			namespace="GenLegendActor",
-			)
+	dice_bag = character.Dice_Bag( "identity.alignment" )
 	return tuple(
 			tag
 			for tag in (
@@ -423,6 +419,83 @@ def _test_character_dice_bag(
 	assert second.dices.getstate() == second_dice_state
 
 
+def _test_dice_purpose(
+		):
+	#-- Ruling 8 (QST-0144.6): both axes come from one Dice Bag opened as
+	#-- "identity.alignment" with the default key, from the pools they had.
+	opened = []
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+	original_pick = Character.Pick
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			**key,
+			):
+		opened.append(
+				(
+						purpose,
+						key,
+						)
+				)
+		return original_dice_bag(
+				char,
+				purpose,
+				**key,
+				)
+
+	def recording_pick(
+			char,
+			ledger,
+			weights=None,
+			**options,
+			):
+		drawn.append(
+				tuple(
+						ledger
+						)
+				)
+		return original_pick(
+				char,
+				ledger,
+				weights,
+				**options,
+				)
+
+	Character.Dice_Bag = recording_dice_bag
+	Character.Pick = recording_pick
+	try:
+		character = Character(
+				seed=24,
+				)
+		New_Alignment(
+				character,
+				)
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		Character.Pick = original_pick
+
+	assert opened == [
+			(
+					"identity.alignment",
+					{},
+					),
+			], opened
+	assert drawn == [
+			(
+					None,
+					Good,
+					Evil,
+					),
+			(
+					None,
+					Lawful,
+					Chaotic,
+					),
+			], drawn
+
+
 def _self_test(
 		):
 	_test_independent_axes()
@@ -431,6 +504,7 @@ def _self_test(
 	_test_axis_conflicts()
 	_test_alignment_inputs()
 	_test_character_dice_bag()
+	_test_dice_purpose()
 	print(
 			"OK — AlignmentKit self-test"
 			)
