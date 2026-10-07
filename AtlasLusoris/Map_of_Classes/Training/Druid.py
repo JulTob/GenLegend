@@ -308,7 +308,7 @@ class Druid(Progression):
 					f"You gain the subclass features of the Circle of the {subclass}.",
 					"Class: Druid"))
 		if level >= 4:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=4)
 		if level >= 5:
 			feats.append(Feature(f"Wild Resurgence",
 				f"""
@@ -349,11 +349,11 @@ class Druid(Progression):
 					"Class: Druid"))
 
 		if level >= 8:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=8)
 		if level >= 12:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=12)
 		if level >= 16:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=16)
 		if level >= 19:
 			feats += ApplyEpicBoon(character)
 		if level >= 20:

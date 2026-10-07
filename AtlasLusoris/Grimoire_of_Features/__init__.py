@@ -553,10 +553,18 @@ def BoonTruesight():
 	)
 
 # ------------- Selector ------------
-def ApplyRandomFeats(char, n=1):
+def ApplyRandomFeats(char, n=1, *, level):
+	"""
+	Deal ``n`` General Feats at one Ability Score Improvement level.
+
+	``level`` is the class level that offers the feat.  The same Character
+	takes a feat at 4, 8, 12 and 16: four choices, so four bags, each named
+	by its level (``General_Feat.choice.4``); one bag reopened four times
+	would deal the same card every time the pool allowed it (QST-0144.6).
+	"""
 	print("Random Feat!")
 	available = list(BuildAvailableFeats(char))
-	dice = char.Dice_Bag( "General_Feat.choice" )
+	dice = char.Dice_Bag( f"General_Feat.choice.{level}" )
 	chosen = dice.sample(available, n)
 	for feat in chosen:
 		feat(char)   # apply .apply() mutation
@@ -743,14 +751,21 @@ def character_fighting_styles(char):
 			style_names.add(feat.name)
 	return style_names
 
-def add_new_fighting_style(char):
+def add_new_fighting_style(char, *, level):
+	"""
+	Grant one Fighting Style the Character does not own yet.
+
+	``level`` is the class level that offers the style: a Fighter learns one
+	at 1 and a Champion another at 7, two choices and two bags
+	(``Fighting_Style.choice.1``, ``Fighting_Style.choice.7``; QST-0144.6).
+	"""
 	# Find styles not possessed yet
 	owned = character_fighting_styles(char)
 	available = [name for name in Fighting_Styles(char) if name not in owned]
 	if not available:
 		print("No new fighting styles to grant!")
 		return None
-	dice = char.Dice_Bag( "Fighting_Style.choice" )
+	dice = char.Dice_Bag( f"Fighting_Style.choice.{level}" )
 	chosen = dice.choice(available)
 	
 	# Special handling for Blessed Warrior: the cantrips granted are the

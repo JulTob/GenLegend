@@ -75,7 +75,7 @@ class Monk(Progression):
 		# Level 4
 		if level >= 4:
 			character.set()
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=4)
 			feats.append(Feature("Slow Fall", (
 				"You can take a Reaction when you fall to reduce any damage you take from the fall by an amount equal to five times your Monk level."
 				)))
@@ -119,7 +119,7 @@ class Monk(Progression):
 		# Level 8
 		if level >= 8:
 			character.set()
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=8)
 		# Level 9
 		if level >= 9:
 			feats.append(Feature("Acrobatic Movement", (
@@ -150,7 +150,7 @@ class Monk(Progression):
 		# Level 12
 		if level >= 12:
 			character.set()
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=12)
 		# Level 13
 		if level >= 13:
 			feats.append(Feature("Tongue of Sun and Moon",  (
@@ -181,7 +181,7 @@ class Monk(Progression):
 		# Level 16
 		if level >= 16:
 			character.set()
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=16)
 		# Level 18
 		if level >= 18:
 			feats.append(Feature("Superior Defense", (

@@ -32,9 +32,11 @@ from AtlasLusoris.Grimoire_of_Features import (
 
 DECLARED_PURPOSES = frozenset(
 		{
-				"General_Feat.choice",
+				"General_Feat.choice.4",
 				"Epic_Boon.choice",
-				"Fighting_Style.choice",
+				"Fighting_Style.choice.1",
+				"Fighting_Style.choice.2",
+				"Fighting_Style.choice.7",
 				"Blessed_Warrior.cantrips",
 				"Druidic_Warrior.cantrips",
 				"Boon_of_Skill.expertise",
@@ -162,7 +164,8 @@ def test_ability_to_increase() -> None:
 
 
 def test_general_feats() -> None:
-	#-- one bag, General_Feat.choice, over the pool BuildAvailableFeats gives
+	#-- one bag per level, General_Feat.choice.4 at the level 4 improvement,
+	#-- over the pool BuildAvailableFeats gives
 	probe = Probe(
 			"Fighter",
 			level=4,
@@ -176,8 +179,9 @@ def test_general_feats() -> None:
 	chosen = ApplyRandomFeats(
 			probe,
 			n=1,
+			level=4,
 			)
-	assert probe.opened == ["General_Feat.choice"], probe.opened
+	assert probe.opened == ["General_Feat.choice.4"], probe.opened
 	assert len(
 			chosen
 			) == 1 and chosen[0].name in pool, (chosen, pool)
@@ -196,9 +200,10 @@ def test_general_feats() -> None:
 	assert ApplyRandomFeats(
 			again,
 			n=1,
+			level=4,
 			)[0].name == chosen[0].name, "the same Character takes the same feat"
 	assert Random(
-			"7|General_Feat.choice"
+			"7|General_Feat.choice.4"
 			).sample(
 			pool,
 			1,
@@ -375,21 +380,23 @@ def test_fighting_styles() -> None:
 					)
 			)
 
-	#-- the style learned comes from Fighting_Style.choice over the styles
-	#-- not yet owned; a second call cannot return the first style again
+	#-- the style learned comes from Fighting_Style.choice.<level> over the
+	#-- styles not yet owned; a second call at a later level opens its own
+	#-- bag and cannot return the first style again
 	fighter = Probe(
 			"Fighter",
 			level=1,
 			)
 	first = add_new_fighting_style(
-			fighter
+			fighter,
+			level=1,
 			)
-	assert fighter.opened == ["Fighting_Style.choice"], fighter.opened
+	assert fighter.opened == ["Fighting_Style.choice.1"], fighter.opened
 	assert first.name in Fighting_Styles(
 			fighter
 			)
 	assert first.name == Random(
-			"7|Fighting_Style.choice"
+			"7|Fighting_Style.choice.1"
 			).choice(
 			list(
 					Fighting_Styles(
@@ -404,9 +411,14 @@ def test_fighting_styles() -> None:
 			fighter
 			) == {first.name}
 	second = add_new_fighting_style(
-			fighter
+			fighter,
+			level=7,
 			)
 	assert second.name != first.name
+	assert fighter.opened == [
+			"Fighting_Style.choice.1",
+			"Fighting_Style.choice.7",
+			], fighter.opened
 
 	#-- a Paladin who draws Blessed Warrior is granted the cantrips the text
 	#-- names: the same bag, no second draw
@@ -419,7 +431,8 @@ def test_fighting_styles() -> None:
 				seed=seed,
 				)
 		feat = add_new_fighting_style(
-				paladin
+				paladin,
+				level=2,
 				)
 		if feat.name != "Blessed Warrior":
 			continue
@@ -432,7 +445,7 @@ def test_fighting_styles() -> None:
 				), paladin.known_spells
 		assert set(
 				paladin.opened
-				) == {"Blessed_Warrior.cantrips", "Fighting_Style.choice"}
+				) == {"Blessed_Warrior.cantrips", "Fighting_Style.choice.2"}
 		break
 	else:
 		raise AssertionError(

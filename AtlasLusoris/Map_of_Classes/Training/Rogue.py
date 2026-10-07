@@ -155,7 +155,7 @@ class Rogue(Progression):
 					"""))
 		# === LEVEL 4 ===
 		if level >= 4:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=4)
 		# === LEVEL 5 ===
 		if level >= 5:
 			feats.append(Feature("Cunning Strike", 5,
@@ -203,7 +203,7 @@ if you have the Incapacitated condition.
 				))
 		# === LEVEL 8 ===
 		if level >= 8:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=8)
 		# === LEVEL 9 ===
 		if level >= 9:
 
@@ -236,7 +236,7 @@ You gain the following Cunning Strike option. <br>
 					"""))
 		# === LEVEL 10 ===
 		if level >= 10:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=10)
 		# === LEVEL 11 ===
 		if level >= 11:
 			feats.append(Feature(
@@ -252,7 +252,7 @@ You can use up to two Cunning Strike effects when you deal Sneak Attack damage, 
 			))
 		# === LEVEL 12 ===
 		if level >= 12:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=12)
 		# === LEVEL 13 ===
 		if level >= 13:
 
@@ -312,7 +312,7 @@ Your cunning mind is exceptionally difficult to control. You gain proficiency in
 			))
 		# === LEVEL 16 ===
 		if level >= 16:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=16)
 		# === LEVEL 17 ===
 		if level >= 17:
 			if character.subclass == "Arcane Trickster":

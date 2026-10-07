@@ -365,12 +365,14 @@ def _test_human_grants_are_stable() -> None:
 
 
 def _test_human_stateful_grants() -> None:
+	#-- Seeds pinned to the bags of QST-0144.6: from Versatile.choice, seed 7
+	#-- draws Skilled and seed 10 draws Tough (probe: seeds 1..79).
 	skilled = Character(
-		seed=19,
+		seed=7,
 		level=5,
 		)
 	tough = Character(
-		seed=1,
+		seed=10,
 		level=5,
 		)
 

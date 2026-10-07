@@ -54,7 +54,7 @@ class Ranger(Progression):
 			features.append(Feature("Deft Explorer",
 				"""Gain Expertise in one skill you know, and learn 2 extra languages of your choice."""))
 
-			fs = add_new_fighting_style(self.char)
+			fs = add_new_fighting_style(self.char, level=2)
 			features.append(fs or Feature("Fighting Style",
 				"""Choose a Fighting Style or the Druidic Warrior option for 2 cantrips.""" ))
 
@@ -89,7 +89,7 @@ class Ranger(Progression):
 					"""While a creature is marked by Hunter’s Mark, you learn any Immunities, Resistances, or Vulnerabilities it has.""" ))
 
 		if level >= 4:
-			features.extend(ApplyRandomFeats(character, n=1))
+			features.extend(ApplyRandomFeats(character, n=1, level=4))
 
 		if level >= 5:
 			features.append(Feature("Extra Attack",
@@ -117,7 +117,7 @@ class Ranger(Progression):
 					"""Choose one: <b>Escape the Horde</b> (disadv. on OA vs you) or <b>Multiattack Defense</b> (disadv. after hit). Can switch after a rest.""" ))
 
 		if level >= 8:
-			features.extend(ApplyRandomFeats(character, n=1))
+			features.extend(ApplyRandomFeats(character, n=1, level=8))
 
 		if level >= 9:
 			features.append(Feature("Expertise",
@@ -145,7 +145,7 @@ class Ranger(Progression):
 					"""When you damage a creature marked by Hunter's Mark, you may apply the extra damage to a different creature within 30 ft.""" ))
 
 		if level >= 12:
-			features.extend(ApplyRandomFeats(character, n=1))
+			features.extend(ApplyRandomFeats(character, n=1, level=12))
 
 		if level >= 13:
 			features.append(Feature("Relentless Hunter",
@@ -173,7 +173,7 @@ class Ranger(Progression):
 					"""When taking damage, you may use a Reaction to gain Resistance to it and to all damage of same type until end of turn.""" ))
 
 		if level >= 16:
-			features.extend(ApplyRandomFeats(character, n=1))
+			features.extend(ApplyRandomFeats(character, n=1, level=16))
 
 		if level >= 17:
 			features.append(Feature("Precise Hunter",

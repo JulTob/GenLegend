@@ -687,7 +687,7 @@ finish 1d4 long rests.
 
 		for asi_level in [4,8,12,16,19]:
 			if level >= asi_level:
-				features.extend(ApplyRandomFeats(character, n=1))
+				features.extend(ApplyRandomFeats(character, n=1, level=asi_level))
 
 		return features
 

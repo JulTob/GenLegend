@@ -1753,8 +1753,6 @@ class Monk(Spellcaster):
 		features = caster.spells_known
 		dice_bag = caster.character.Dice_Bag(
 			"presentation.spellcaster.focus_symbol",
-			version="1",
-			namespace="GenLegendActor",
 			)
 		symb = caster.character.Pick(["☯","☯︎","࿊","࿋","࿌","࿅", "☮",
 			"☥", "☣", "𓂀", "𖥂", "𖨢", "⧊", "⧋","⚳", "⚴", "⚸",

@@ -159,8 +159,7 @@ def _steady_pick(
 		return lusor.Pick(
 			roster,
 			dice=lusor.Dice_Bag(
-				"Nomina.LastResort",
-				version="1",
+				"identity.name.last_resort",
 				),
 			)
 	except Exception as exc:

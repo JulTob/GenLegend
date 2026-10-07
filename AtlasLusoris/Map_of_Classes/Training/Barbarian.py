@@ -172,7 +172,7 @@ class Barbarian(Progression):
 							"""))
 		# ---------------- Level 4 ----------------
 		if lvl >= 4:
-			feats.extend(ApplyRandomFeats(self.char, n=1))
+			feats.extend(ApplyRandomFeats(self.char, n=1, level=4))
 		# ---------------- Level 5 ----------------
 		if lvl >= 5:
 			feats.extend([
@@ -206,7 +206,7 @@ class Barbarian(Progression):
 			])
 		# ---------------- Level 8 ----------------
 		if lvl >= 8:
-			feats.extend(ApplyRandomFeats(self.char, n=1))
+			feats.extend(ApplyRandomFeats(self.char, n=1, level=8))
 		# ---------------- Level 9 ----------------
 		if lvl >= 9:
 			feats.append(Feature("Brutal Strike",
@@ -235,7 +235,7 @@ class Barbarian(Progression):
 				the DC resets to 10."""))
 		# ---------------- Level 12 ----------------
 		if lvl >= 12:
-			feats.extend(ApplyRandomFeats(self.char, n=1))
+			feats.extend(ApplyRandomFeats(self.char, n=1, level=12))
 		# ---------------- Level 13 ----------------
 		if lvl >= 13:
 			feats.append(Feature("Improved Brutal Strike",
@@ -278,7 +278,7 @@ class Barbarian(Progression):
 			<br>In addition, your Rage is so fierce that it now lasts for 10 minutes without you needing to do anything to extend it from round to round. Your Rage ends early if you have the Unconscious condition (not just the Incapacitated condition) or don Heavy armor."""))
 		# ---------------- Level 16 ----------------
 		if lvl >= 16:
-			feats.extend(ApplyRandomFeats(self.char, n=1))
+			feats.extend(ApplyRandomFeats(self.char, n=1, level=16))
 		# ---------------- Level 17 ----------------
 		if lvl >= 17:
 			feats.append(Feature("Improved Brutal Strike",

@@ -39,7 +39,7 @@ class Fighter(Progression):
 You can use this feature {secondWinds} times. You regain one expended use when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest."""))
 			features.append(Feature("Weapon Mastery",
 			f"""Your training with weapons allows you to use the mastery properties of {WeaponMasteries} kinds of Simple or Martial weapons of your choice. Whenever you finish a Long Rest, you can practice weapon drills and change one of those weapon choices."""))
-			style_feat = add_new_fighting_style(self.char)
+			style_feat = add_new_fighting_style(self.char, level=1)
 			if style_feat:
 				features.append(style_feat)
 			else:
@@ -63,7 +63,7 @@ You can use this feature {secondWinds} times. You regain one expended use when y
 						Once you have bonded a weapon to yourself, you can't be disarmed of that weapon unless you have the Incapacitated condition. If it is on the same plane of existence, you can summon that weapon as a Bonus Action, causing it to teleport instantly to your hand.
 						You can have up to two bonded weapons, but you can summon only one at a time with a Bonus Action. If you attempt to bond with a third weapon, you must break the bond with one of the other two."""))
 		if level >= 4:
-			feats = ApplyRandomFeats(self.char, n=1)
+			feats = ApplyRandomFeats(self.char, n=1, level=4)
 			features.extend(feats)
 		if level >= 5:
 			extra = "twice"
@@ -80,11 +80,11 @@ You can use this feature {secondWinds} times. You regain one expended use when y
 				half your Speed without provoking
 				Opportunity Attacks."""))
 		if level >= 6:
-			feats = ApplyRandomFeats(self.char, n=1)
+			feats = ApplyRandomFeats(self.char, n=1, level=6)
 			features.extend(feats)
 		if level >= 7:
 			if subclass == "Champion":
-				style_feat = add_new_fighting_style(self.char)
+				style_feat = add_new_fighting_style(self.char, level=7)
 				if style_feat: features.append(style_feat)
 				else: 
 					features.append(FightingStyleFeat(self.char))
@@ -96,7 +96,7 @@ You can use this feature {secondWinds} times. You regain one expended use when y
 					with a casting of one of your Wizard cantrips
 					that has a casting time of an action."""))
 		if level >= 8:
-			feats = ApplyRandomFeats(self.char, n=1)
+			feats = ApplyRandomFeats(self.char, n=1, level=8)
 			features.extend(feats)
 		if level >= 9:
 			extra = """you can't use this feature
@@ -130,7 +130,7 @@ You can use this feature {secondWinds} times. You regain one expended use when y
 		if level >= 11:
 			pass
 		if level >= 12:
-			feats = ApplyRandomFeats(self.char, n=1)
+			feats = ApplyRandomFeats(self.char, n=1, level=12)
 			features.extend(feats)
 		if level >= 13:
 			features.append(Feature("Studied Attacks",
@@ -141,7 +141,7 @@ You can use this feature {secondWinds} times. You regain one expended use when y
 				before the end of your next turn.
 				"""))
 		if level >= 14:
-			feats = ApplyRandomFeats(self.char, n=1)
+			feats = ApplyRandomFeats(self.char, n=1, level=14)
 			features.extend(feats)
 		if level >= 15:
 			if subclass == "Champion":
@@ -156,7 +156,7 @@ You can use this feature {secondWinds} times. You regain one expended use when y
 				features.append(Feature("Arcane Charge",
 					"""When you use your Action Surge, you can teleport up to 30 feet to an unoccupied space you can see. You can teleport before or after the additional action."""))
 		if level >= 16:
-			feats = ApplyRandomFeats(self.char, n=1)
+			feats = ApplyRandomFeats(self.char, n=1, level=16)
 			features.extend(feats)
 		if level >= 17:
 			pass

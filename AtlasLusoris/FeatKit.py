@@ -434,7 +434,13 @@ def _raise_one_of(
 		keys: tuple[str, ...],
 		amount: int = 1,
 		cap: int = 20,
+		*,
+		purpose: str,
 		) -> str | None:
+	"""
+	Raise one of ``keys`` by ``amount``; ``purpose`` names the feat Tag's
+	bag (``<Feat>.ability``) the tie-break shuffle draws from (QST-0144.6).
+	"""
 	viable = [
 			key
 			for key in keys
@@ -462,12 +468,7 @@ def _raise_one_of(
 	# Character's own preference order decide.  Sorting is stable, so the
 	# shuffle survives as the tie-break among abilities nobody asked for.
 	char.Dice_Bag(
-		"feat.ability."
-		+ ".".join(
-				keys
-				),
-		version="1",
-		namespace="GenLegendFeat",
+		purpose
 		).shuffle(
 			ordered
 			)
@@ -499,6 +500,8 @@ def _raise_any(
 		char,
 		amount: int = 1,
 		cap: int = 30,
+		*,
+		purpose: str,
 		) -> str | None:
 	return _raise_one_of(
 			char,
@@ -512,6 +515,7 @@ def _raise_any(
 					),
 			amount=amount,
 			cap=cap,
+			purpose=purpose,
 			)
 
 
@@ -808,6 +812,7 @@ def Make_General_Feat(
 					asi,
 					amount=asi_amount,
 					cap=asi_cap,
+					purpose=f"{feat_tag.__name__}.ability",
 					)
 			if key:
 				raised.append(
@@ -822,12 +827,16 @@ def Make_General_Feat(
 					target,
 					amount=1,
 					cap=asi_cap,
+					purpose=f"{feat_tag.__name__}.ability",
 					)
 			second = _raise_any(
 					target,
 					amount=1,
 					cap=asi_cap,
+					purpose=f"{feat_tag.__name__}.ability.2",
 					)
+				#-- two raises, two bags: the second may land on the same
+				#-- score (the +2 case) or on another (the two +1 case)
 			if first:
 				raised.append(
 						(
@@ -1011,6 +1020,7 @@ def Make_Epic_Boon(
 				keys,
 				amount=1,
 				cap=30,
+				purpose=f"{boon_tag.__name__}.ability",
 				)
 		raised = [
 				(
@@ -1310,8 +1320,6 @@ def _stable_available(
 		)
 	char.Dice_Bag(
 		bag_purpose,
-		version="2024",
-		namespace="GenLegendFeat",
 		).shuffle(
 			ordered
 			)
@@ -1352,7 +1360,7 @@ def Apply_Fighting_Styles(
 			available_fighting_styles(
 					char
 					),
-			"feat.fighting_style",
+			"Fighting_Style.choice",
 				)
 		if not pool:
 			break
@@ -1389,7 +1397,7 @@ def Apply_General_Feats(
 			available_general_feats(
 					char
 					),
-			"feat.general",
+			"General_Feat.choice",
 				)
 		if not pool:
 			break
@@ -1419,7 +1427,7 @@ def Apply_Epic_Boons(
 			available_epic_boons(
 					char
 					),
-			"feat.epic_boon",
+			"Epic_Boon.choice",
 				)
 		if not pool:
 			break
@@ -1602,26 +1610,27 @@ def _self_test():
 	assert len(
 			boons
 			) == 1
-	#-- The accessors answer as they did before the port (QST-0144.5):
+	#-- The picks are pinned to the bags named by the Tags (QST-0144.6:
+	#-- Fighting_Style.choice, General_Feat.choice, Epic_Boon.choice):
 	#-- the same picks for the same seeds.
 	assert [
 			tag.NAME
 			for tag in styles
 			] == [
-			"Interception",
+			"Great Weapon Fighting",
 			]
 	assert [
 			tag.NAME
 			for tag in feats
 			] == [
 			"Skill Expert",
-			"Martial Weapon Training",
+			"Fey-Touched",
 			]
 	assert [
 			tag.NAME
 			for tag in boons
 			] == [
-			"Boon of Recovery",
+			"Boon of Dimensional Travel",
 			]
 	print(
 			"OK — FeatKit self-test:",

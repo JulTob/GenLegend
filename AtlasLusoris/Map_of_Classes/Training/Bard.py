@@ -54,6 +54,7 @@ class Bard(Progression):
 						ApplyRandomFeats(
 							self.char,
 							n=1,
+							level=asi_level,
 							)
 						)
 

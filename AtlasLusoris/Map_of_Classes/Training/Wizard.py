@@ -48,7 +48,7 @@ class Wizard(Progression):
 					When you cast a cantrip at a creature and you miss with the attack roll or the target succeeds on a saving throw against the cantrip,
 					the target takes half the cantrip's damage (if any) but suffers no additional effect from the cantrip."""))
 		if level >= 4:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=4)
 		if level >= 5:
 			features.append(Feature("Memorize Spell", 
 				"""Whenever you finish a Short Rest,
@@ -66,12 +66,12 @@ class Wizard(Progression):
 			and they take no damage if they would normally take half damage
 			on a successful save."""))
 		if level >= 8:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=8)
 		if level >= 10 and subclass == "Evoker":
 			features.append(Feature("Empowered Evocation", 
 			"Whenever you cast a Wizard spell from the Evocation school, you can add your Intelligence modifier to one damage roll of that spell."))
 		if level >= 12:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=12)
 		if level >= 14 and subclass == "Evoker":
 			features.append(Feature("Empowered Evocation", 
 			"""You can increase the power of your spells.
@@ -87,7 +87,7 @@ class Wizard(Progression):
 			Long Rest, the Necrotic damage per spell level increases by
 			<b>1d12</b>."""))
 		if level >= 16:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=16)
 		if level >= 18:
 			features.append(Feature("Spell Mastery", 
 			"""You have achieved such mastery over certain spells that you

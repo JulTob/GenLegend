@@ -1594,6 +1594,38 @@ def Resolve_Skillful(
 	return char.skillful.grants[ 0 ].capability.key
 
 
+def _Skilled_Purpose(
+		char,
+		grant_id: str | None,
+		) -> str:
+	"""
+	The bag one Skilled gain draws from.
+
+	Skilled is repeatable: the first gain draws from ``Skilled.choice``, the
+	n-th from ``Skilled.choice.<n>``, so a repeat never reopens the bag the
+	first gain emptied (one choice, one bag; QST-0144.6).  The occurrence is
+	the one the grant id names ("Skilled:2", "Feature:Skilled:2") or, when
+	no id was given, the next one after the gains the ledger already holds.
+	"""
+	if grant_id is not None:
+		occurrence = int(
+			grant_id.rsplit(
+				":",
+				1,
+				)[ -1 ]
+			)
+	else:
+		occurrence = len(
+			_Feature_Gains(
+				char,
+				Skilled,
+				)
+			) + 1
+	if occurrence <= 1:
+		return "Skilled.choice"
+	return f"Skilled.choice.{occurrence}"
+
+
 def Plan_Skilled_Gain(
 		char,
 		*,
@@ -1608,7 +1640,10 @@ def Plan_Skilled_Gain(
 		SKILLED_POOL,
 		3,
 		source=source,
-		purpose="Skilled.choice",
+		purpose=_Skilled_Purpose(
+			char,
+			grant_id,
+			),
 		grant_id=grant_id,
 		exclude=Reserved_Background_Training(
 			background_tag
