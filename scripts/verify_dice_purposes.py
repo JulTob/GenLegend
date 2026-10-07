@@ -456,6 +456,7 @@ def Check(
                 f"undeclared purpose: {purpose} "
                 f"(first at {ledger.purpose_callers[ purpose ]})"
                 )
+    unopened = []
     for purpose in sorted(
             declared - opened
             ):
@@ -468,9 +469,11 @@ def Check(
                 for opened_purpose in opened
                 ):
             continue
-        failures.append(
-                f"declared but never opened on this grid: {purpose}"
+        unopened.append(
+                purpose
                 )
+            #-- a narrower grid opens fewer purposes than the wide one the
+            #-- manifest was saved on: noted, not failed (QST-0144.6)
     for purpose in sorted(
             opened
             ):
@@ -501,6 +504,11 @@ def Check(
             ):
         failures.append(
                 f"private stream opened: {site} ({opened_count})"
+                )
+    if unopened:
+        print(
+                f"note: {len( unopened )} declared purposes never opened on this "
+                f"grid (saved on the wide grid): {', '.join( unopened )}"
                 )
     if failures:
         print(
