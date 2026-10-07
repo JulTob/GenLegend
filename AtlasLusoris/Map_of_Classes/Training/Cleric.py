@@ -37,6 +37,7 @@ class Cleric(Progression):
 						ApplyRandomFeats(
 							character,
 							n=1,
+							level=threshold,
 							) or ()
 						)
 				except Exception:

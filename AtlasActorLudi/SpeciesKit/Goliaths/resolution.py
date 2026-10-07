@@ -49,11 +49,9 @@ def _resolve_giant_heritage(
 	if current is not None:
 		return current
 
-	dice_bag = target.Dice_Bag(
-		"identity.species.Goliath.giant_heritage",
-		version="2024",
-		namespace="GenLegendActor",
-		)
+	#-- Named by the Trait the six outcomes share, Giant_Heritage, the way
+	#-- Keen_Senses names the Elf's skill and Versatile the Human's feat.
+	dice_bag = target.Dice_Bag( "Giant_Heritage.choice" )
 	selected = target.Pick(
 		GOLIATH_GIANT_HERITAGES,
 		dice=dice_bag,
@@ -270,3 +268,92 @@ def Resolve_Goliath_Features(
 		)
 	_project_powerful_build( target )
 	_project_large_form( target )
+
+
+def _test_dice_purpose() -> None:
+	#-- Ruling 8 (QST-0144.6): the Giant Heritage comes from one Dice Bag
+	#-- opened as "Giant_Heritage.choice" with the default key, over every
+	#-- heritage the Goliath declares; a second ask opens nothing.
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.SpeciesKit import Apply_Species
+	from AtlasActorLudi.SpeciesKit.Goliaths import Current_Giant_Heritage
+	from AtlasActorLudi.SpeciesKit.Goliaths import GOLIATH_GIANT_HERITAGES
+	from AtlasActorLudi.SpeciesKit.Goliaths import Goliath
+
+	opened = []
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+	original_pick = Character.Pick
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+
+	def recording_pick(
+		char,
+		ledger,
+		weights=None,
+		**options,
+		):
+		drawn.append(
+			tuple(
+				ledger
+				)
+			)
+		return original_pick(
+			char,
+			ledger,
+			weights,
+			**options,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	Character.Pick = recording_pick
+	try:
+		character = Character(
+			seed=7,
+			)
+		Apply_Species(
+			character,
+			Goliath,
+			)
+		#-- The Species itself leaves nothing to chance (one Size, no
+		#-- Heritage), so every bag recorded below is the resolver's.
+		assert opened == [], opened
+		heritage = _resolve_giant_heritage( character )
+		again = _resolve_giant_heritage( character )
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		Character.Pick = original_pick
+
+	assert again is heritage
+	assert Current_Giant_Heritage( character ) is heritage
+	assert opened == [
+		(
+			"Giant_Heritage.choice",
+			{},
+			),
+		], opened
+	assert drawn == [
+		tuple(
+			GOLIATH_GIANT_HERITAGES
+			),
+		], drawn
+
+
+if __name__ == "__main__":
+	_test_dice_purpose()
+	print( "OK: SpeciesKit.Goliaths.resolution self-test" )

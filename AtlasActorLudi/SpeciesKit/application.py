@@ -14,11 +14,7 @@ def _random_species(
 	character,
 	):
 	available = Playable_Species()
-	dice_bag = character.Dice_Bag(
-		"identity.species",
-		version="2024",
-		namespace="GenLegendActor",
-		)
+	dice_bag = character.Dice_Bag( "identity.species" )
 
 	return character.Pick(
 		available,
@@ -36,11 +32,9 @@ def _random_heritage(
 	available,
 	size=None,
 	):
-	dice_bag = character.Dice_Bag(
-		f"identity.species.{species.__name__}.heritage",
-		version="2024",
-		namespace="GenLegendActor",
-		)
+	#-- The Species offers its Heritages, so the bag carries the Species'
+	#-- class name: Elf.heritage, Gnome.heritage, Tiefling.heritage.
+	dice_bag = character.Dice_Bag( f"{species.__name__}.heritage" )
 
 	def imprint(
 		tag,
@@ -199,3 +193,124 @@ def Apply_Species(
 		character.creature_type = creature_type.__name__
 
 	return selected
+
+
+def _test_dice_purposes() -> None:
+	#-- Ruling 8 (QST-0144.6): the Species comes from "identity.species" with
+	#-- the default key, weighted as before; the Heritage from the bag the
+	#-- Species names, "<Species>.heritage", over every Heritage it declares.
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.SpeciesKit.Elves.base import Elf
+
+	opened = []
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+	original_pick = Character.Pick
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+
+	def recording_pick(
+		char,
+		ledger,
+		weights=None,
+		**options,
+		):
+		drawn.append(
+			(
+				tuple(
+					ledger
+					),
+				None
+				if weights is None
+				else tuple(
+					weights
+					),
+				)
+			)
+		return original_pick(
+			char,
+			ledger,
+			weights,
+			**options,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	Character.Pick = recording_pick
+	try:
+		character = Character(
+			seed=7,
+			)
+		species = _random_species( character )
+		opened_for_species = list( opened )
+		drawn_for_species = list( drawn )
+		opened.clear()
+		drawn.clear()
+		Apply_Species(
+			character,
+			Elf,
+			)
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		Character.Pick = original_pick
+
+	available = tuple(
+		Playable_Species()
+		)
+	assert species in available
+	assert opened_for_species == [
+		(
+			"identity.species",
+			{},
+			),
+		], opened_for_species
+	assert drawn_for_species == [
+		(
+			available,
+			tuple(
+				tag.WEIGHT
+				for tag in available
+				),
+			),
+		], drawn_for_species
+	heritages = tuple(
+		Heritages_By_Species()[
+			Elf
+			]
+		)
+	#-- The Heritage bag opens first and once; the Heritage's own Imprint
+	#-- opens the lineage bag after it.
+	assert opened[ 0 ] == (
+		"Elf.heritage",
+		{},
+		), opened
+	assert opened.count(
+		(
+			"Elf.heritage",
+			{},
+			)
+		) == 1, opened
+	assert drawn[ 0 ] == (
+		heritages,
+		None,
+		), drawn
+	assert Current_Heritage( character ) in heritages
+
+
+if __name__ == "__main__":
+	_test_dice_purposes()
+	print( "OK: SpeciesKit.application self-test" )

@@ -12,7 +12,7 @@ VENV_PYTHON := $(VENV)/bin/python
 PYTHON := $(PYTHON_BIN)
 
 ifeq ($(PYTHON),)
-PYTHON := $(shell command -v python3.14 2>/dev/null || command -v python3.13 2>/dev/null || command -v python3.12 2>/dev/null || command -v python3.11 2>/dev/null || command -v python3.10 2>/dev/null || command -v python3 2>/dev/null)
+PYTHON := $(shell command -v python3.14 2>/dev/null || command -v python3.13 2>/dev/null || command -v python3.12 2>/dev/null || command -v python3 2>/dev/null)
 endif
 
 # Homebrew headers and libraries on Apple Silicon, for any dependency built from source.
@@ -30,7 +30,7 @@ dev: setup
 setup: $(SHINY)
 
 $(SHINY):
-	@test -n "$(PYTHON)" || (echo "Python 3.10+ not found (3.14 recommended: brew install python@3.14)." && exit 1)
+	@test -n "$(PYTHON)" || (echo "Python 3.12+ not found (3.14 recommended: brew install python@3.14)." && exit 1)
 	$(PYTHON) -m venv $(VENV)
 	$(PIP) install --upgrade pip setuptools wheel
 	$(PIP) install -r requirements.txt

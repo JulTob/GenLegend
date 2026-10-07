@@ -12,7 +12,7 @@ Tickets (questae) live in `Documenta/Questae/` (new) and `Curia/Questae/` (older
 make run
 ```
 
-`make setup` builds `.venv` from `requirements.txt` the first time (Python 3.10+, 3.14 recommended). `make dev` reloads on edits. The server is `app.main:app`; there is no other entry point.
+`make setup` builds `.venv` from `requirements.txt` the first time (Python 3.12+, 3.14 recommended; TopKit 0.2.0a4 needs 3.12). `make dev` reloads on edits. The server is `app.main:app`; there is no other entry point.
 
 ## Prove
 

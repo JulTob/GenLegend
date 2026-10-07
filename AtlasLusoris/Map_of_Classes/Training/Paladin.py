@@ -52,15 +52,11 @@ class Paladin(Progression):
 		# Level 2
 		if level >= 2:
 			roll_health(self.char)
-			style_feat = add_new_fighting_style(self.char)
+			style_feat = add_new_fighting_style(self.char, level=2)
 			if style_feat:
 				feats.append(style_feat)
 			else:
-				style_feat = add_new_fighting_style(self.char)
-				if style_feat:
-					feats.append(style_feat)
-				else:
-					feats.append(Feature("Fighting Style", "No new fighting styles available."))
+				feats.append(Feature("Fighting Style", "No new fighting styles available."))
 			feats.append(Feature(
 					"Paladin's Smite",
 					"""<strong>Spell</strong> – Always prepared; you can cast <em>Divine Smite</em> once per Long
@@ -111,7 +107,7 @@ On a successful save, the target is immune to this effect for 24 hours."""))
 
 		# Level 4
 		if level >= 4:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=4)
 
 		# Level 5
 		if level >= 5:
@@ -160,7 +156,7 @@ On a successful save, the target is immune to this effect for 24 hours."""))
 
 		# Level 8
 		if level >= 8:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=8)
 
 		# Level 9
 		if level >= 9:
@@ -194,7 +190,7 @@ At 18th level, the range of this aura increases to 30 feet."""))
 
 		# Level 12
 		if level >= 12:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=12)
 
 		# Level 13
 		if level >= 13:
@@ -223,7 +219,7 @@ At 18th level, the range of this aura increases to 30 feet."""))
 
 		# Level 16
 		if level >= 16:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=16)
 
 		# Level 17
 		if level >= 17:

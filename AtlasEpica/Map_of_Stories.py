@@ -62,8 +62,6 @@ TOKEN = re.compile(r"{([a-zA-Z_][a-zA-Z0-9_]*)}")
 def Story(hero):
 	rng = hero.Dice_Bag(
 		"identity.story",
-		version="1",
-		namespace="GenLegendStory",
 		)
 
 	result = Choice(

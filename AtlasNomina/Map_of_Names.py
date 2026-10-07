@@ -1,6 +1,4 @@
-import random
 import time
-from contextlib import contextmanager
 from collections import defaultdict, Counter
 from Minion import guardian, watcher, warden, spy, minion, changeling, report_bug, print_record, CHANGELING_MINION, CHANGELING_COLOR
 
@@ -161,8 +159,7 @@ def _steady_pick(
 		return lusor.Pick(
 			roster,
 			dice=lusor.Dice_Bag(
-				"Nomina.LastResort",
-				version="1",
+				"identity.name.last_resort",
 				),
 			)
 	except Exception as exc:
@@ -247,7 +244,15 @@ def LastResortWord(
 
 
 @changeling(LastResortWord)
-def NewWord(    names ,    prefix,    fix,    suffix,    depth = 0):
+def NewWord(
+		names,
+		prefix,
+		fix,
+		suffix,
+		depth=0,
+		*,
+		dice,
+		):
 	'''
 	Generates a new word based on the lists in a Lexicon object
 	It uses different methods selected at random:
@@ -257,6 +262,10 @@ def NewWord(    names ,    prefix,    fix,    suffix,    depth = 0):
 	- Markov Generator: Weighted Random Probability for the next letter
 	- Remixing leters of a name to generate a new name.
 	- Choosing a name directly from the lexicon.
+
+	``dice`` is the Dice Bag of the name under construction, ``identity.name``,
+	opened once in NewName: the order of the strategies and every draw inside
+	them come from it, so no step reaches the shared generator (ruling 8).
 	'''
 
 	strategies = [
@@ -273,69 +282,69 @@ def NewWord(    names ,    prefix,    fix,    suffix,    depth = 0):
 		# "EchoMorphology", ### Commented out: Feels weird
 		]
 	if depth > MAX_DEPTH:
-		return random.choice(names)
+		return dice.choice(names)
 
 	choices = strategies[:]
-	random.shuffle(choices)
+	dice.shuffle(choices)
 	HEAVY = {"Markov", "PhonotacticWeighted", "WeightExtraction"}
 	for strategy in choices:
 		try:
 			if strategy == "EntropyUp":
-				name = random.choice(names)
-				newName = mutate_entropy(name, increase_entropy, names)
+				name = dice.choice(names)
+				newName = mutate_entropy(name, increase_entropy, names, dice=dice)
 				if is_valid_name(newName, strategy): return newName
 				else: return name
 			elif strategy == "EntropyDown":
-				name = random.choice(names) # NewWord(names, prefix, fix, suffix, depth)
-				newName = mutate_entropy(name, reduce_entropy, names)
+				name = dice.choice(names) # NewWord(names, prefix, fix, suffix, depth)
+				newName = mutate_entropy(name, reduce_entropy, names, dice=dice)
 				if is_valid_name(newName, strategy): return newName
 				else: return name
 			elif strategy == "Entropify":
-				name = random.choice(names)# NewWord(names, prefix, fix, suffix, depth)
-				newName = mutate_entropy(name, to_mean_entropy, names)
+				name = dice.choice(names)# NewWord(names, prefix, fix, suffix, depth)
+				newName = mutate_entropy(name, to_mean_entropy, names, dice=dice)
 				if is_valid_name(newName, strategy): return newName
 				else: return name
 			elif strategy == "Mutate":
-				name = random.choice(names)
-				newName1 = mutate_entropy(name, increase_entropy, names)
-				newName2 = mutate_entropy(newName1, reduce_entropy, names)
-				newName3 = mutate_entropy(newName2, to_mean_entropy, names)
+				name = dice.choice(names)
+				newName1 = mutate_entropy(name, increase_entropy, names, dice=dice)
+				newName2 = mutate_entropy(newName1, reduce_entropy, names, dice=dice)
+				newName3 = mutate_entropy(newName2, to_mean_entropy, names, dice=dice)
 				if is_valid_name(newName3, strategy): return newName3
 				elif is_valid_name(newName2, strategy): return newName2
 				elif is_valid_name(newName1, strategy): return newName1
 				else: return name
 			elif strategy == "Extraction":
 				for _ in range(MAX_ATTEMPTS):
-					name = SyllabicComposition(names, min_syllables=2, max_syllables=6)
+					name = SyllabicComposition(names, min_syllables=2, max_syllables=6, dice=dice)
 					if name and is_valid_name(name, strategy):
-						name_ent = entropify(name, names)
+						name_ent = entropify(name, names, dice=dice)
 						if name_ent and is_valid_name(name, strategy):
 							name = name_ent
 						return name
 			elif strategy == "Mix":
-				name = Mixer(names, prefix, fix, suffix, depth + 1)
+				name = Mixer(names, prefix, fix, suffix, depth + 1, dice=dice)
 				name_b = name
 				if name and is_valid_name(name, strategy):
 					return name
 			elif strategy == "EchoMorphology":
-				name = random.choice(names) # NewWord(names, prefix, fix, suffix, depth + 1)
+				name = dice.choice(names) # NewWord(names, prefix, fix, suffix, depth + 1)
 				for i in range(MAX_ATTEMPTS):
-					name = EchoMorphology(name)
+					name = EchoMorphology(name, dice=dice)
 					if name and is_valid_name(name, strategy):
 						pass
-					name = entropify(name, names)
+					name = entropify(name, names, dice=dice)
 					if name and is_valid_name(name, strategy):
 						return name
-				return random.choice(names) # NewWord(names, prefix, fix, suffix, depth + 1)
+				return dice.choice(names) # NewWord(names, prefix, fix, suffix, depth + 1)
 			elif strategy == "Syllabic":
-				name = Syllabic(prefix, fix, suffix)
+				name = Syllabic(prefix, fix, suffix, dice=dice)
 				if name:
 					return name
 			elif strategy == "Choose":
-				name = random.choice(names)
+				name = dice.choice(names)
 				return name
 			elif strategy == "Markov":
-					markov = MarkovNameGenerator(names)
+					markov = MarkovNameGenerator(names, dice=dice)
 					for _ in range(MAX_ATTEMPTS):
 						name = markov.generate_name()
 						if name and is_valid_name(name, strategy):
@@ -343,35 +352,22 @@ def NewWord(    names ,    prefix,    fix,    suffix,    depth = 0):
 			elif strategy == "PhonotacticWeighted":
 					phonotactics = ExtractWeightedPhonotacticElements(names)
 					for i in range(MAX_ATTEMPTS):
-						name = GenerateFromWeightedPhonotactics(phonotactics)
+						name = GenerateFromWeightedPhonotactics(phonotactics, dice=dice)
 						if name and is_valid_name(name, strategy):
 							return name
 			else:
-				name = random.choice(names)
+				name = dice.choice(names)
 				return name
 
 		except Exception:
-			return random.choice(names)
-	return random.choice(names)
+			return dice.choice(names)
+	return dice.choice(names)
 
-def Surnamer(lusor,  i=0):
-	"""Deterministic surname: we just offset the seed by +1."""
-	with deterministic(lusor.seed + i):
-		random.seed(lusor.seed + i)
-		surnames = SurnamesList(lusor)
-		o, n, c = Surphonotactic(lusor)
-		surname = NewWord(surnames, o, n, c)
-	return surname.capitalize()
-
-def Namer(lusor, i=0):
-	with deterministic(lusor.seed + i):
-			random.seed(lusor.seed + i)
-			names = NamesList(lusor)
-			o, n, c = Phonotactic(lusor)
-			name = NewWord(names, o, n, c)
-	return name.capitalize()
-
-def EchoMorphology(base_name):
+def EchoMorphology(
+		base_name,
+		*,
+		dice,
+		):
 	pattern = []
 	for c in base_name.lower():
 		if c in 'aei':
@@ -391,17 +387,17 @@ def EchoMorphology(base_name):
 	name = ''
 	for p in pattern:
 		if p == 'A':
-			name += random.choice('aei')
+			name += dice.choice('aei')
 		if p == 'O':
-			name += random.choice('ou')
+			name += dice.choice('ou')
 		if p == 'B':
-			name += random.choice('bdptv')
+			name += dice.choice('bdptv')
 		if p == 'C':
-			name += random.choice('csx')
+			name += dice.choice('csx')
 		if p == 'G':
-			name += random.choice('gjy')
+			name += dice.choice('gjy')
 		if p == 'M':
-			name += random.choice('lmn')
+			name += dice.choice('lmn')
 	return name.capitalize()
 
 def ExtractWeightedPhonotacticElements(name_list):
@@ -432,31 +428,29 @@ def ExtractWeightedPhonotacticElements(name_list):
 		'suffix_weights': list(suffix_counts.values()),
 	}
 
-def GenerateFromWeightedPhonotactics(phonotactics, syllable_count=2):
-	import random
-
+def GenerateFromWeightedPhonotactics(
+		phonotactics,
+		syllable_count=2,
+		*,
+		dice,
+		):
 	name = ''
 	for _ in range(syllable_count):
-		o = random.choices(phonotactics['prefix'], weights=phonotactics['prefix_weights'])[0]
-		n = random.choices(phonotactics['fix'], weights=phonotactics['fix_weights'])[0]
-		c = random.choices(phonotactics['suffix'], weights=phonotactics['suffix_weights'])[0]
+		o = dice.choices(phonotactics['prefix'], weights=phonotactics['prefix_weights'])[0]
+		n = dice.choices(phonotactics['fix'], weights=phonotactics['fix_weights'])[0]
+		c = dice.choices(phonotactics['suffix'], weights=phonotactics['suffix_weights'])[0]
 		name += o + n[-1] + c[-1]  # basic syllable smoothing
 	return name.capitalize()
 
-@contextmanager
-def deterministic(seed: int):
-	"""
-	Temporarily seed the global random module so that every random.*
-	call inside the with‑block is repeatable, then restore the old state.
-	"""
-	state = random.getstate()
-	random.seed(seed)
-	try:
-		yield
-	finally:
-		random.setstate(state)
-
-def first_valid(strategy_fns, validator, fallback_names, retries=2, timeout=2.0):
+def first_valid(
+		strategy_fns,
+		validator,
+		fallback_names,
+		retries=2,
+		timeout=2.0,
+		*,
+		dice,
+		):
 	"""
 	Run strategy_fns (list of callables) in parallel with timeout.
 	Return the first valid result or fallback to a name from fallback_names.
@@ -493,7 +487,7 @@ def first_valid(strategy_fns, validator, fallback_names, retries=2, timeout=2.0)
 
 
 	# All attempts failed or timed out; fallback to predefined list
-	fallback_name = random.choice(fallback_names)
+	fallback_name = dice.choice(fallback_names)
 	return fallback_name
 
 def LoadRace(trait):
@@ -551,6 +545,44 @@ def LoadRace(trait):
 			)
 		return _plantilla()
 
+NAME_PURPOSE = "identity.name"
+	#-- The one Dice Bag a name is drawn from, as identity.title is for the title:
+	#-- the name is one choice of the Character with several steps.
+
+
+def Naming_Dice(
+		lusor,
+		):
+	"""
+	The Dice Bag every draw of this lusor's name comes from.
+
+	A Character opens its own bag on ``identity.name`` (ruling 8, QST-0144.6)
+	and NewName hands it down the whole ladder as ``dice``: the order of the
+	strategies, the base names, the Markov walk, the entropy swaps, the
+	syllables and the full-name format all draw from it in turn.
+
+	A lusor that is not a Character is the legacy NonPlayer of Decree 0004,
+	not ported yet. It brings no Dice Bag and seeds ``app.random`` on its own
+	seed before asking for a name, so it keeps drawing from that stream,
+	deterministic per seed as before, until its own port.
+	"""
+	from AtlasActorLudi.CharactersKit import Character
+
+	if isinstance(
+			lusor,
+			Character,
+			):
+		return lusor.Dice_Bag(
+			NAME_PURPOSE,
+			)
+
+	import app.random as legacy_shared_stream
+		#-- Imported here, not at the top: the integrator deletes app/random.py
+		#-- once no summon reaches it, and this branch leaves with the NonPlayer port.
+
+	return legacy_shared_stream
+
+
 @changeling(LastResortName)
 def NewName(lusor):
 	"""
@@ -560,13 +592,18 @@ def NewName(lusor):
 	retry drew the same numbers and met the same wall: a hundred attempts at a
 	failure that never had a second outcome. A Changeling steps aside to
 	LastResortName instead, and the sheet gets a name either way.
+
+	One Dice Bag, ``identity.name``, is opened here and handed down as ``dice``
+	to every word and every strategy. It replaces a reseed of the global
+	generator on the lusor's seed, which made every draw of the name depend
+	on its place in the order of the draws (QST-0144.6).
 	"""
-	from random import seed
 	import AtlasNomina.Races.plantilla as fallback
 
 	genus = lusor.genus
-	seeding = lusor.seed
-	seed(seeding)
+	dice = Naming_Dice(
+		lusor,
+		)
 
 	race = LoadRace(lusor.race)
 
@@ -586,47 +623,52 @@ def NewName(lusor):
 	CELESTIAL =     "Celestial"        in genus
 	BEAST =         ("Beast" in genus) and not("folk" in genus)
 	if  "Giant"        in genus:
-		name = NewWord(names, o, n, c).capitalize()
-		surname = NewWord(surnames, os, ns, cs).capitalize()
+		name = NewWord(names, o, n, c, dice=dice).capitalize()
+		surname = NewWord(surnames, os, ns, cs, dice=dice).capitalize()
 		FullName =  f"{name} {surname}son"
 	elif "Elemental"    in genus:
-		random.seed(seeding)
-		name = NewWord(names, o, n, c).capitalize()
-		surname = NewWord(surnames, os, ns, cs).capitalize()
+		name = NewWord(names, o, n, c, dice=dice).capitalize()
+		surname = NewWord(surnames, os, ns, cs, dice=dice).capitalize()
 		FullName = f"{name} {surname}"
 	elif BEAST or MONSTER:
-		name = NewWord(names, o, n, c).capitalize()
+		name = NewWord(names, o, n, c, dice=dice).capitalize()
 		FullName = name
 	elif "Construct"     in genus:
-		name = NewWord(names, o, n, c).capitalize()
-		surname = NewWord(surnames, os, ns, cs).capitalize()
-		FullName = select1([
-			f"{name}-{surname}",
-			f"{name} {surname}",
-			f"{name}:{surname}",
-			f"{name}_{surname}",
-			])
+		name = NewWord(names, o, n, c, dice=dice).capitalize()
+		surname = NewWord(surnames, os, ns, cs, dice=dice).capitalize()
+		FullName = select1(
+			[
+				f"{name}-{surname}",
+				f"{name} {surname}",
+				f"{name}:{surname}",
+				f"{name}_{surname}",
+				],
+			dice=dice,
+			)
 	elif "Dwarf"         in genus:
-		name = NewWord(names, o, n, c).capitalize()
-		name2 = NewWord(names, o, n, c).capitalize()
-		surname = NewWord(surnames, os, ns, cs).capitalize()
-		surname2 = NewWord(surnames, os, ns, cs).capitalize()
-		FullName = select1([
-			f"{name} {name2} {surname} {surname2}",
-			])
+		name = NewWord(names, o, n, c, dice=dice).capitalize()
+		name2 = NewWord(names, o, n, c, dice=dice).capitalize()
+		surname = NewWord(surnames, os, ns, cs, dice=dice).capitalize()
+		surname2 = NewWord(surnames, os, ns, cs, dice=dice).capitalize()
+		FullName = select1(
+			[
+				f"{name} {name2} {surname} {surname2}",
+				],
+			dice=dice,
+			)
 	elif "Gnome"         in genus:
-		name = NewWord(names, o, n, c).capitalize()
-		name2 = NewWord(names, o, n, c).capitalize()
-		name3 = NewWord(names, o, n, c).capitalize()
-		surname = NewWord(surnames, os, ns, cs).capitalize()
+		name = NewWord(names, o, n, c, dice=dice).capitalize()
+		name2 = NewWord(names, o, n, c, dice=dice).capitalize()
+		name3 = NewWord(names, o, n, c, dice=dice).capitalize()
+		surname = NewWord(surnames, os, ns, cs, dice=dice).capitalize()
 		FullName =  f"{name} {name2} {name3} {surname}"
 	elif "Vampire"         in genus:
-		name = NewWord(names, o, n, c).capitalize()
-		surname = NewWord(surnames, os, ns, cs).capitalize()
+		name = NewWord(names, o, n, c, dice=dice).capitalize()
+		surname = NewWord(surnames, os, ns, cs, dice=dice).capitalize()
 		FullName = f"{name} {surname}"
 	else:
-		name = NewWord(names, o, n, c).capitalize()
-		surname = NewWord(surnames, os, ns, cs).capitalize()
+		name = NewWord(names, o, n, c, dice=dice).capitalize()
+		surname = NewWord(surnames, os, ns, cs, dice=dice).capitalize()
 		FullName = f"{name} {surname}"
 
 	if "Noble"         in genus:
@@ -696,14 +738,20 @@ def SurnamesList(lusor):
 # No @guardian. NewWord's ladder already gives every method METHOD_ATTEMPTS
 # goes with fresh dice, and nesting a second retry inside the first turns three
 # tries into thirty, each one reported. One mechanism, owned by the caller.
-def Syllabic(prefix,fix,suffix):
+def Syllabic(
+		prefix,
+		fix,
+		suffix,
+		*,
+		dice,
+		):
 	'''
 	-- Syllabic Union. --
 	Creates a syllabic union from the prefix, fix, and suffix lists.
 	'''
-	pre = random.choice(prefix)
-	fix = random.choice(fix)
-	suf = random.choice(suffix)
+	pre = dice.choice(prefix)
+	fix = dice.choice(fix)
+	suf = dice.choice(suffix)
 
 	result = f"{pre}{fix}{suf}"
 	return result
@@ -780,7 +828,15 @@ def is_valid_name(name, strategy=""):
 
 DEPTH = 3
 
-def Mixer(names,prefix,fix,suffix, depth = 15):
+def Mixer(
+		names,
+		prefix,
+		fix,
+		suffix,
+		depth=15,
+		*,
+		dice,
+		):
 	"""
 	Mixes names by transforming the sound-alike letters in a name.
 	"""
@@ -790,7 +846,7 @@ def Mixer(names,prefix,fix,suffix, depth = 15):
 	sound_mappings = Linguistics.sound_mapping()
 
 	# Generate a base name using NewWord and pass the seed for consistency
-	Name =  NewWord(names,prefix,fix,suffix, depth-1)
+	Name =  NewWord(names,prefix,fix,suffix, depth-1, dice=dice)
 
 	name_list = list(Name)
 		# Transforms the name string into a list of letters
@@ -799,20 +855,26 @@ def Mixer(names,prefix,fix,suffix, depth = 15):
 	for i in range(len(name_list)):
 		original_letter = name_list[i].lower()
 		# Decide whether to switch the letter (Weights=[switch,stay])
-		if random.choices([True, False], weights=[7, 15])[0]:
+		if dice.choices([True, False], weights=[7, 15])[0]:
 			# Get the sound-alike options for the selected letter
 			sound_alike_options = sound_mappings.get(original_letter, [])
 			# If there are options, replace the letter
 			if sound_alike_options:
-				name_list[i] = random.choice(sound_alike_options)
+				name_list[i] = dice.choice(sound_alike_options)
 	# Join the list back into a string
 	result = ''.join(name_list).capitalize()
-	result = entropify(result, names)
+	result = entropify(result, names, dice=dice)
 	return result
 
-def mutate_entropy(base, fn, names):
+def mutate_entropy(
+		base,
+		fn,
+		names,
+		*,
+		dice,
+		):
 	for _ in range(MAX_ATTEMPTS**2):
-		new = fn(base, names)
+		new = fn(base, names, dice=dice)
 		if new and is_valid_name(new, fn.__name__):
 			return new
 	return base
@@ -841,12 +903,19 @@ def SyllabicExtraction(names):
 
 	return list(syllables)
 
-def SyllabicComposition(names, min_syllables=2, max_syllables=6):
+def SyllabicComposition(
+		names,
+		min_syllables=2,
+		max_syllables=6,
+		*,
+		dice,
+		):
 	syllables = SyllabicExtraction(names)
 	if not syllables:
-		return random.choice(names)
-	selected = random.choices(syllables, k=random.randint(min_syllables, max_syllables))
+		return dice.choice(names)
+	selected = dice.choices(syllables, k=dice.randint(min_syllables, max_syllables))
 	return ''.join(selected).capitalize()
+
 
 def SyllabicWeightedExtraction(names):
 	syllable_weights = defaultdict(int)
@@ -858,12 +927,18 @@ def SyllabicWeightedExtraction(names):
 				syllable_weights[syllable] += 1
 	return syllable_weights
 
-def SyllabicWeightedName(names, min_syllables=2, max_syllables=6):
+def SyllabicWeightedName(
+		names,
+		min_syllables=2,
+		max_syllables=6,
+		*,
+		dice,
+		):
 	# Extracting syllables and their weights
 	syllables_with_weights = SyllabicWeightedExtraction(names)
 
 	if not syllables_with_weights:
-		return random.choice(names)
+		return dice.choice(names)
 
 	syllables = list(syllables_with_weights.keys())
 	weights   = list(syllables_with_weights.values())
@@ -871,8 +946,8 @@ def SyllabicWeightedName(names, min_syllables=2, max_syllables=6):
 	attempts = 0
 	while attempts < 10:
 		# pick between min_syllables and max_syllables chunks
-		k = random.randint(min_syllables, max_syllables)
-		selected_syllables = random.choices(population = syllables, weights=weights, k=k)
+		k = dice.randint(min_syllables, max_syllables)
+		selected_syllables = dice.choices(population = syllables, weights=weights, k=k)
 		name = ''.join(selected_syllables).capitalize()
 		if is_valid_name(name, "SyllabicWeighted"):
 			return name
@@ -891,6 +966,302 @@ def SyllabicExtraction__Legacy(names):
 			syllables.add(name[i:].lower())
 	return list(syllables)
 
-def SyllabicName__Legacy(syllables, min_syllables=2, max_syllables=8):
-	name = ''.join(random.choice(syllables) for _ in range(random.randint(min_syllables, max_syllables)))
+def SyllabicName__Legacy(
+		syllables,
+		min_syllables=2,
+		max_syllables=8,
+		*,
+		dice,
+		):
+	name = ''.join(dice.choice(syllables) for _ in range(dice.randint(min_syllables, max_syllables)))
 	return name.capitalize()
+
+
+# ---------------------------------------------------------------------------
+# Self-test: the naming ladder under ruling 8 (QST-0144.6)
+# ---------------------------------------------------------------------------
+
+
+class _Recording_Dice:
+	"""A Dice Bag that remembers every pool it was asked to draw from."""
+
+	def __init__(
+			self,
+			bag,
+			):
+		self.bag = bag
+		self.calls = []
+
+	def choice(
+			self,
+			pool,
+			):
+		self.calls.append(
+			(
+				"choice",
+				list(pool),
+				),
+			)
+		return self.bag.choice(
+			pool,
+			)
+
+	def choices(
+			self,
+			pool,
+			weights=None,
+			k=1,
+			):
+		self.calls.append(
+			(
+				"choices",
+				list(pool),
+				k,
+				),
+			)
+		return self.bag.choices(
+			pool,
+			weights=weights,
+			k=k,
+			)
+
+	def shuffle(
+			self,
+			pool,
+			):
+		self.calls.append(
+			(
+				"shuffle",
+				list(pool),
+				),
+			)
+		self.bag.shuffle(
+			pool,
+			)
+
+	def randint(
+			self,
+			low,
+			high,
+			):
+		self.calls.append(
+			(
+				"randint",
+				low,
+				high,
+				),
+			)
+		return self.bag.randint(
+			low,
+			high,
+			)
+
+
+def _probe_lusor(
+		seed,
+		level=1,
+		):
+	"""A bare Character carrying the three attributes NewName reads."""
+	from AtlasActorLudi.CharactersKit import Character
+
+	class Lusor(Character):
+		def __init__(
+				self,
+				seed,
+				level,
+				):
+			super().__init__(
+				seed=seed,
+				level=level,
+				)
+			self.genus = "Elf , Rogue , They"
+			self.race = "Elf"
+			self.gender = "They"
+
+	return Lusor(
+		seed,
+		level,
+		)
+
+
+def _test_new_name_opens_one_bag():
+	"""NewName opens exactly one Dice Bag, identity.name, and the shared streams never move."""
+	import random
+	import app.random as app_random
+	from AtlasActorLudi.CharactersKit import Character
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		opened.append(
+			(
+				purpose,
+				version,
+				namespace,
+				),
+			)
+		return original(
+			char,
+			purpose,
+			version=version,
+			namespace=namespace,
+			)
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	stdlib_state = random.getstate()
+	app_state = app_random.getstate()
+	try:
+		name = NewName(
+			_probe_lusor(
+				seed=7,
+				),
+			)
+	finally:
+		Character.Dice_Bag = original
+
+	assert opened == [
+		(
+			"identity.name",
+			"1",
+			"GenLegend",
+			),
+		], opened
+	assert random.getstate() == stdlib_state, "the stdlib stream moved"
+	assert app_random.getstate() == app_state, "app.random moved"
+	assert isinstance(
+		name,
+		str,
+		) and name.strip(), name
+
+
+def _test_name_is_keyed_by_the_bag():
+	"""Same seed, same name, whatever the level or the state of the main bag."""
+	first = _probe_lusor(
+		seed=11,
+		)
+	again = _probe_lusor(
+		seed=11,
+		level=20,
+		)
+	again.dices.random()
+		#-- the main bag has moved; the name must not care
+	assert NewName(first) == NewName(again)
+	assert NewName(
+		_probe_lusor(
+			seed=12,
+			),
+		) != NewName(first)
+
+
+def _test_new_word_pools_are_what_they_were():
+	"""The strategy shuffle and every base draw come from the pools they always did."""
+	from AtlasActorLudi.CharactersKit import Character
+
+	names = list(LAST_RESORT_NAMES)
+	prefix, fix, suffix = LAST_RESORT_PHONOTACTIC
+	known_pools = (
+		names,
+		list(prefix),
+		list(fix),
+		list(suffix),
+		)
+	for seed in range(1, 13):
+		dice = _Recording_Dice(
+			Character(
+				seed=seed,
+				).Dice_Bag(
+					NAME_PURPOSE,
+					),
+			)
+		word = NewWord(
+			names,
+			prefix,
+			fix,
+			suffix,
+			dice=dice,
+			)
+		assert word, seed
+		assert dice.calls[0] == (
+			"shuffle",
+			[
+				"Entropify",
+				"EntropyDown",
+				"Mutate",
+				"Markov",
+				"Syllabic",
+				"Choose",
+				],
+			), dice.calls[0]
+		for call in dice.calls[1:]:
+			if call[0] == "choice":
+				is_markov_start = all(
+					set(state) == {"^"}
+					for state in call[1]
+					)
+				assert call[1] in known_pools or is_markov_start, call
+			elif call[0] == "choices":
+				assert call[2] == 1, call
+					#-- the Markov walk: one next character at a time
+
+
+def _test_syllabic_draws_prefix_fix_suffix():
+	"""Syllabic draws one prefix, one fix and one suffix, in that order, from the dice."""
+	from AtlasActorLudi.CharactersKit import Character
+
+	prefix, fix, suffix = LAST_RESORT_PHONOTACTIC
+	dice = _Recording_Dice(
+		Character(
+			seed=2,
+			).Dice_Bag(
+				NAME_PURPOSE,
+				),
+		)
+	word = Syllabic(
+		prefix,
+		fix,
+		suffix,
+		dice=dice,
+		)
+	assert word
+	assert dice.calls == [
+		("choice", list(prefix)),
+		("choice", list(fix)),
+		("choice", list(suffix)),
+		], dice.calls
+
+
+def _test_a_lusor_without_a_bag_keeps_the_shared_stream():
+	"""The legacy NonPlayer (no Dice Bag) still names itself from app.random, deterministic per seed."""
+	import app.random as app_random
+
+	class Legacy_Lusor:
+		genus = "Elf , Rogue , They"
+		race = "Elf"
+		gender = "They"
+		seed = 5
+
+	assert Naming_Dice(
+		Legacy_Lusor(),
+		) is app_random
+	app_random.seed(5)
+	first_lusor = Legacy_Lusor()
+	first = NewName(first_lusor)
+	assert hasattr(first_lusor, "_name"), "NewName did not answer itself"
+	app_random.seed(5)
+	assert NewName(Legacy_Lusor()) == first
+
+
+if __name__ == "__main__":
+	_test_new_name_opens_one_bag()
+	_test_name_is_keyed_by_the_bag()
+	_test_new_word_pools_are_what_they_were()
+	_test_syllabic_draws_prefix_fix_suffix()
+	_test_a_lusor_without_a_bag_keeps_the_shared_stream()
+	print("Map_of_Names: self-test passed")

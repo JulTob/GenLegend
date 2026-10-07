@@ -199,6 +199,7 @@ class NonPlayer(Character_NonPlayer):
 			weights=tuple(
 				race_weights.values()
 				),
+				purpose="NonPlayer.Finish_Awakening",
 			)
 
 		Apply_Race(
@@ -213,13 +214,15 @@ class NonPlayer(Character_NonPlayer):
 		selected_guild = guild or npc.Pick(
 			tuple(
 				GUILDS
-				)
+				),
+				purpose="NonPlayer.Finish_Awakening.2",
 			)
 
 		selected_background = background or npc.Pick(
 			tuple(
 				NONPLAYER_BACKGROUNDS
-				)
+				),
+				purpose="NonPlayer.Finish_Awakening.3",
 			)
 
 		Apply_Guild(
@@ -474,7 +477,7 @@ class NonPlayer(Character_NonPlayer):
 			from AtlasNomina.Map_of_Names import NewName
 			return NewName(npc)
 		except Exception:
-			return npc.Pick([*("Zax", "Jon", "Nix", "Max", "Tod", "Raz", "Mox")])
+			return npc.Pick([*("Zax", "Jon", "Nix", "Max", "Tod", "Raz", "Mox")], purpose="NonPlayer.Naming")
 
 	def SetAC(npc) -> int:
 		"""

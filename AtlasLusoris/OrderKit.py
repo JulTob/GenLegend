@@ -31,9 +31,7 @@ from __future__ import annotations
 
 from random import Random
 
-from TopKit import Imprint, Pre, Tag
-
-from AtlasActorLudi.CharactersKit import Report_Of
+from TopKit import Imprint, Pin, Pre, Record, Tag
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasLusoris.AtlasOfOrders.Map_of_Domains import DOMAINS
@@ -611,7 +609,112 @@ class Sworn(Tag):
 			)
 
 
-_ORDER_TAGS: dict[str, type[Sworn]] = {}
+@Pin
+class Declared_Order(Tag):
+	"""
+	Root Pin for the Sworn Tags minted per Order.
+
+	This is a Pin rather than a dictionary: ``order_tag`` classifies the
+	Tag it mints by applying this Pin *to that Tag*, and
+	``Declared_Order[:]`` is then the catalogue of every Order anyone has
+	sworn to, in minting order.  The Records below land on the minted Tag
+	as Reports (``tag.TITLE``, ``tag.TRADITION``, ``tag.DOMAINS``),
+	validated here instead of written blind into a class namespace.
+	"""
+
+	NAME = "Declared Order"
+
+	@Pre
+	def Sworn_Tag_Only(
+			target,
+			):
+		return (
+			isinstance(
+				target,
+				type,
+				)
+			and issubclass(
+				target,
+				Sworn,
+				)
+			and target is not Sworn
+			)
+
+	@Record
+	def TITLE(
+			target,
+			*,
+			title=None,
+			) -> str:
+		"""The Order's title: what follows "of" in its name."""
+		if (
+			not isinstance(
+				title,
+				str,
+				)
+			or not title.strip()
+			):
+			raise ValueError(
+				"An Order's title must be non-empty text."
+				)
+
+		return title
+
+	@Record
+	def TRADITION(
+			target,
+			*,
+			tradition=None,
+			) -> str:
+		"""The name of the Tradition the Order collapsed into."""
+		if (
+			not isinstance(
+				tradition,
+				str,
+				)
+			or not tradition.strip()
+			):
+			raise ValueError(
+				"An Order's Tradition must be a non-empty name."
+				)
+
+		return tradition
+
+	@Record
+	def DOMAINS(
+			target,
+			*,
+			domains=(),
+			) -> tuple[str, ...]:
+		"""The names of the Order's Domains, in the order it drew them."""
+		resolved = tuple(
+			domains or ()
+			)
+
+		if any(
+			not isinstance(
+				domain,
+				str,
+				)
+			or not domain.strip()
+			for domain in resolved
+			):
+			raise ValueError(
+				"An Order's Domains must be non-empty names."
+				)
+
+		if len(
+			set(
+				resolved
+				)
+			) != len(
+				resolved
+				):
+			raise ValueError(
+				"An Order cannot hold one Domain twice."
+				)
+
+		return resolved
 
 
 def _class_name(
@@ -632,11 +735,18 @@ def _class_name(
 def order_tag(
 		order: Order,
 		) -> type[Sworn]:
-	"""Mint (once) the Tag that means "sworn to this particular Order"."""
+	"""
+	Mint (once) the Tag that means "sworn to this particular Order".
+
+	The Field of ``Declared_Order`` is the memo: an Order already minted is
+	found there by NAME, so a second call answers the same Tag.  The Tag
+	is built with only its identity, and the Pin lands the rest.
+	"""
 	key = order.name
 
-	if key in _ORDER_TAGS:
-		return _ORDER_TAGS[key]
+	for tag in Declared_Order[:]:
+		if tag.NAME == key:
+			return tag
 
 	tag = type(
 		_class_name(
@@ -647,23 +757,19 @@ def order_tag(
 			),
 		{
 			"NAME": key,
-			"TITLE": Report_Of(
-				order.title
-				),
-			"TRADITION": Report_Of(
-				order.tradition.name
-				),
-			"DOMAINS": Report_Of(
-				tuple(
-					domain.name
-					for domain in order.domains
-					)
-				),
 			"__doc__": f"Sworn to {key}.",
 			"__module__": __name__,
 			},
 		)
-	_ORDER_TAGS[key] = tag
+	Declared_Order(
+		tag,
+		title=order.title,
+		tradition=order.tradition.name,
+		domains=tuple(
+			domain.name
+			for domain in order.domains
+			),
+		)
 
 	return tag
 
@@ -718,9 +824,7 @@ def order_feat(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": Report_Of(
-				description
-				),
+			"DESCRIPTION": description,
 			"awaken": awaken,
 			"__module__": __name__,
 			},
@@ -746,7 +850,7 @@ class Sign_of_the_Order(Origin_Feat):
 	"""
 
 	NAME = "Sign of the Order"
-	DESCRIPTION = Report_Of(
+	DESCRIPTION = (
 		"An initiate's mark, conferred at swearing. What it grants depends "
 		"on which Order conferred it."
 		)
@@ -917,6 +1021,8 @@ def _test_variety():
 
 
 def _test_swearing():
+	import gc
+
 	from AtlasActorLudi.CharactersKit import Player
 
 	char = Character(
@@ -930,6 +1036,12 @@ def _test_swearing():
 		)
 	assert char in Sworn
 	assert char.order is order
+	#-- The memo is the Pin's Field, held weakly: the Character carrying
+	#-- the sigil keeps it findable, so this holds after a sweep too.
+	gc.collect()
+	assert char in order_tag(
+		order
+		)
 	names = [
 		getattr(
 			feature,
@@ -942,11 +1054,105 @@ def _test_swearing():
 	assert order.feat_name() in names
 
 
+def _test_declared_orders():
+	"""The Pin's Field is the catalogue the memo dictionary used to be."""
+	from TopKit import TagCompositionError
+
+	orders = tuple(
+		Order(
+			seed=seed
+			)
+		for seed in (
+			11,
+			12,
+			13,
+			)
+		)
+	before = tuple(
+		Declared_Order[:]
+		)
+	minted = tuple(
+		order_tag(
+			order
+			)
+		for order in orders
+		)
+
+	#-- The Field holds what the old dictionary held: every minted Tag, in
+	#-- minting order, keyed by NAME, nothing twice.
+	assert tuple(
+		Declared_Order[:]
+		) == before + minted
+	assert tuple(
+		tag.NAME
+		for tag in minted
+		) == tuple(
+			order.name
+			for order in orders
+			)
+	assert len(
+		{
+			tag.NAME
+			for tag in Declared_Order[:]
+			}
+		) == len(
+			Declared_Order[:]
+			)
+
+	for order, tag in zip(
+		orders,
+		minted,
+		):
+		#-- The memo: a second call answers the same Tag, not a sibling.
+		assert order_tag(
+			order
+			) is tag
+		assert tag in Declared_Order
+		assert issubclass(
+			tag,
+			Sworn,
+			)
+		#-- The Reports the namespace used to carry, now landed by the Pin.
+		assert tag.TITLE == order.title
+		assert tag.TRADITION == order.tradition.name
+		assert tag.DOMAINS == tuple(
+			domain.name
+			for domain in order.domains
+			)
+
+	#-- A declaration the Pin refuses never joins the Field.
+	stray = type(
+		"Stray_Order",
+		(
+			Sworn,
+			),
+		{
+			"NAME": "Stray Order",
+			"__module__": __name__,
+			},
+		)
+	try:
+		Declared_Order(
+			stray,
+			title="",
+			tradition="Arcane",
+			domains=(),
+			)
+	except TagCompositionError:
+		pass
+	else:
+		raise AssertionError(
+			"Declared_Order accepted a blank title"
+			)
+	assert stray not in Declared_Order
+
+
 def _self_test():
 	_test_reproducible()
 	_test_shape()
 	_test_variety()
 	_test_swearing()
+	_test_declared_orders()
 	print(
 		"OK — OrderKit self-test"
 		)
@@ -959,6 +1165,7 @@ if __name__ == "__main__":
 __all__ = (
 	"Order",
 	"Sworn",
+	"Declared_Order",
 	"Swear",
 	"Forge_Order",
 	"Resolve_Order_Features",

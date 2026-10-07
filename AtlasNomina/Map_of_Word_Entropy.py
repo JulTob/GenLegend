@@ -4,7 +4,6 @@ import math
 from Minion import print_record
 
 from Minion import print_record
-import random
 
 sample = [
 	"Caderan",		"Zore",			"Ariel",		"Mernaz", 		"Zurvan", 		"Zania",		"Artemisia", 	"Aidenia", "Artemia", "Ardenia", "Alia",	"Artenia", "Alstroemeria", "Celestia", "Calliopia", "Dalia",	"Elisia", "Elyria", "Ejamia", "Gazania", "Jusia",	"Nala", "Nusia", "Nalia", "Nusia", "Naussia",		"Nubia", "Numia", 'Aveley','Asaelfr','Aredhel',	'Alveradis','Alva','Alfros','Alfridh','Alfin','Alflaug','Alfífa',	'Alfeizer',	'Alfagert',	'Alfadis',	'Albrun',	'Albegundi',	'Albelinda',	'Eldalote',		'Elfaru',		'Elferun',		'Alfil',		'Alfiz',		'Afelina',		'Elfreda',		'Alfilde',		'Aelfwynn','Aelfswif','Lili','Alba','Aelflaed',	'Aelfif','Aafje','Siofra','Arezu','Aria','Asal',	'Ava',	"Fariba",	"Faride",	"Gol",	"Golbahar","Golnar",	"Mitra","Mozgan","Nahid","Narges","Nasrin","Nazanin",		"Nazli","Neda","Negar","Negin","Nima","Niuxa","Nouxa",	"Paniz",	"Pari",	"Parisa",	"Parvane",	"Rana",	"Reza",			"Roxan",		"Roxas",		"Saba",			"Sajar",	"Sajar",		"Sanaz",		"Setar",		"Xiva",			"Sima",			"Simin",		"Sina",		"Soraya",		"Turaya",		"Vida",			"Yasaman",		"Jasaman",	"Yasamin",	"Jasmin",	"Balian",		"Caladwen", "Caspian", "Cian", "Deirdre",	"Einar",	 "Emrys",	"Eolande",	 "Faelan",	"Gael",  "Haldir", "Isolde",	"Kaelan", "Kaia", "Kian",	"Lorcan", "Lorien", "Luzien", "Maelis", "Maeve",		"Mitran", 		"Naida", 		"Niam", 		"Nuala", "Oisin",		"Orin", "Rianon", 		"Rordan", 		"Rogan", 		"Sable",	"Sirse", "Sariel", 		"Serafina", 	"Sorca", 		"Taran",		"Tariel", 	"Tarin", 		"Talia", 		"Tandor", 		"Tiranduil",	"Tirian", 		"Vanora", "Varian",	"Zarek", 	"Zarina", 	"Zelen", "Zorion", 		"Zephyr",	"Ardashir", "Azar", "Behzad", "Cyra", "Darius",		"Elara", "Farzin", "Golnar", "Jahan", "Jaleh",		"Kaven", 		"Kian", 		"Lalek", 		"Maxin", 		"Mitra",		"Neda", "Pari", "Ramin", "Roxana", "Shirin",	"Soraya", 		"Tamine", 		"Vayid", 		"Yasmine", 		"Zarir",		"Elfiridia", "Elefric", 		"Oforil", 		"Edric", 	"Etheltan",	"Horothigar", 	"Beowulf", 	"Hilda", 		"Alfred", 		"Friga",		"Areliana", 	"Ajeron", 		"Alila", 		"Aislin", 	"Aithne",	"Anwen", "Arlen", 	"Aurnia", 	"Bard", 	"Bevin",		"Blade", 		"Bran", 		"Briana", 		"Brin", 		"Celan", 		"Citriona", 	"Cime", 		"Catal", "Cianan",	"Ciara", "Conall", "Conloc", 		"Dagda", 		"Daraja",		"Dervila", 		"Devin", 	"Darmud", 		"Dillon", 	"Donovan",	"Druantia", "Amon", 		"Iblin", "Ezne", 		"Enda",		"Etain", 		"Fergus", "Finian", 		"Fion", 	"Graine",		"Keira", 		"Laise", 		"Lir", 			"Maebel", 		"Maire",		"Merin", 		"Neala", 		"Nial", 		"Nola", 		"Odran",		"Orlet", 		"Padrig", 		"Rona", 		"Rosin", 	"Ronan",	"Ruaidhri", "Saoirse", "Soban", 		"Sorca", 		"Talesin",		"Tiernan", 		"Turluj", 		"Una", 		"Seultan", 	"Zaira",		"Azade", 		"Baram", "Bardia", "Cyrus", "Daria",		"Darius", 	"Daric", 		"Elam", 		"Fara", 	"Feretan",	"Golshan", 		"Haleh", "Hamid", 		"Hoda", 	"Javane",		"Kamran", 		"Kian", 		"Ladan", 		"Leila", 		"Manaz",		"Merdad", 		"Narin", 		"Navid", 		"Parisa",		"Roxan", 		"Sajar", 		"Xaram", 		"Sapour", 		"Simin",		"Sorux", 		"Tamuras", 		"Yasmin", 		"Zara", 		"Zartos",		"Zefir", 	"Zalex",
@@ -13,24 +12,29 @@ sample = [
 syze_SYMBOL = 3
 STEPS = 1
 
-def reduce_entropy(name, names = sample):
-	return down_entropy(name, names, syze = syze_SYMBOL)
-def increase_entropy(name, names = sample):
-	return up_entropy(name, names, syze = syze_SYMBOL)
-def to_mean_entropy(name, names = sample):
-	return entropify(name, names, syze = syze_SYMBOL)
+# Every mutation below takes ``dice``, the Dice Bag of the name under
+# construction (``identity.name``, opened once in Map_of_Names.NewName): the
+# two shuffles of replace_symbol are the only draws here, and they come from
+# it, never from the shared generator (ruling 8, QST-0144.6).
 
-def down_entropy(name, names=sample, steps=STEPS, syze=3):
+def reduce_entropy(name, names = sample, *, dice):
+	return down_entropy(name, names, syze = syze_SYMBOL, dice=dice)
+def increase_entropy(name, names = sample, *, dice):
+	return up_entropy(name, names, syze = syze_SYMBOL, dice=dice)
+def to_mean_entropy(name, names = sample, *, dice):
+	return entropify(name, names, syze = syze_SYMBOL, dice=dice)
+
+def down_entropy(name, names=sample, steps=STEPS, syze=3, *, dice):
 	symbol_entropies = calculate_symbol_entropies(names, syze=syze)
-	name = replace_symbol(name, symbol_entropies, target='lower', syze=syze)
+	name = replace_symbol(name, symbol_entropies, target='lower', syze=syze, dice=dice)
 	return name.capitalize()
 
-def up_entropy(name, names = sample, steps=STEPS, syze=3):
+def up_entropy(name, names = sample, steps=STEPS, syze=3, *, dice):
 	symbol_entropies = calculate_symbol_entropies(names, syze=syze)
-	name = replace_symbol(name, symbol_entropies, target='higher', syze=syze)
+	name = replace_symbol(name, symbol_entropies, target='higher', syze=syze, dice=dice)
 	return name.capitalize()
 
-def entropify(name, names = sample, steps=STEPS, syze = 3):
+def entropify(name, names = sample, steps=STEPS, syze = 3, *, dice):
 	"""
 	Adjusts the entropy of a name to be closer to the average entropy of the list of names.
 	"""
@@ -42,18 +46,26 @@ def entropify(name, names = sample, steps=STEPS, syze = 3):
 	current_entropy = calculate_name_entropy(name, symbol_entropies, syze=syze)
 	for _ in range(20):  # bounded: replace_symbol can plateau on a name it can't improve further
 		if current_entropy <= average_entropy*0.75:
-			name = up_entropy(name, names, 1, syze=syze)
+			name = up_entropy(name, names, 1, syze=syze, dice=dice)
 			current_entropy = calculate_name_entropy(name, symbol_entropies, syze=syze)
 		elif current_entropy >= average_entropy*1.25:
-			name = down_entropy(name, names, 1, syze=syze)
+			name = down_entropy(name, names, 1, syze=syze, dice=dice)
 			current_entropy = calculate_name_entropy(name, symbol_entropies, syze=syze)
 		else: break
 	return name.capitalize()
 
 
 def main():
+	"""Self-test: every shuffle of a mutation comes from the Dice Bag it is handed."""
+	from AtlasActorLudi.CharactersKit import Character
+
 	# Sample list of names
 	names = sample
+	bag = Character(
+		seed=1,
+		).Dice_Bag(
+			"identity.name",
+			)
 
 	symbol_entropies = calculate_symbol_entropies(names, syze=syze_SYMBOL)
 	sorted_items = sorted(symbol_entropies.items(), key=lambda item: item[1], reverse=True)
@@ -70,25 +82,118 @@ def main():
 
 
 	# Decrease entropy
-	decreased_name = down_entropy(original_name, names, steps=STEPS)
+	decreased_name = down_entropy(original_name, names, steps=STEPS, dice=bag)
 	print(f"Name after decreasing entropy: {decreased_name} {calculate_name_entropy(decreased_name,symbol_entropies)}")
 	# Increase entropy
-	increased_name = up_entropy(original_name, names, steps=STEPS)
+	increased_name = up_entropy(original_name, names, steps=STEPS, dice=bag)
 	print(f"Name after increasing entropy: {increased_name} {calculate_name_entropy(increased_name,symbol_entropies)}")
 
 	# Entropify
-	entropified_name = entropify(original_name, names, steps=STEPS)
+	entropified_name = entropify(original_name, names, steps=STEPS, dice=bag)
 	print(f"Name after entropify: {entropified_name} {calculate_name_entropy(entropified_name,symbol_entropies)}")
 
 
 	print("Legolas: V")
-	print(down_entropy("Legolas", steps=1, syze=3))
+	print(down_entropy("Legolas", steps=1, syze=3, dice=bag))
 	print("Alia: ^")
-	print(up_entropy("Alia",     steps=1, syze=3))
+	print(up_entropy("Alia",     steps=1, syze=3, dice=bag))
 	print("Xzyq: ~")
-	print(entropify("Xzyq",      steps=1, syze=3))
+	print(entropify("Xzyq",      steps=1, syze=3, dice=bag))
 
-def replace_symbol(name, symbol_entropies, target='lower', syze=3):
+	_test_replace_symbol_shuffles_from_the_dice(
+		symbol_entropies,
+		)
+	_test_mutation_is_keyed_by_the_bag()
+	print("Map_of_Word_Entropy: self-test passed")
+
+
+class _Recording_Dice:
+	"""A Dice Bag that remembers every pool it was asked to shuffle."""
+
+	def __init__(
+			self,
+			bag,
+			):
+		self.bag = bag
+		self.calls = []
+
+	def shuffle(
+			self,
+			pool,
+			):
+		self.calls.append(
+			(
+				"shuffle",
+				list(pool),
+				),
+			)
+		self.bag.shuffle(
+			pool,
+			)
+
+
+def _test_replace_symbol_shuffles_from_the_dice(
+		symbol_entropies,
+		):
+	"""replace_symbol shuffles the name's substrings, then the candidate symbols, from the dice only."""
+	import random
+	from AtlasActorLudi.CharactersKit import Character
+
+	stdlib_state = random.getstate()
+	dice = _Recording_Dice(
+		Character(
+			seed=1,
+			).Dice_Bag(
+				"identity.name",
+				),
+		)
+	result = replace_symbol(
+		"Legolas",
+		symbol_entropies,
+		target="lower",
+		syze=3,
+		dice=dice,
+		)
+	assert random.getstate() == stdlib_state, "the stdlib stream moved"
+	assert result, result
+	assert dice.calls, "replace_symbol drew nothing"
+	assert {call[0] for call in dice.calls} == {"shuffle"}, dice.calls
+
+	substrings = sorted(
+		find_substrings(
+			"legolas",
+			3,
+			),
+		)
+	candidates = set(
+		symbol_entropies,
+		) | set(
+			substrings,
+			)
+	assert sorted(dice.calls[0][1]) == substrings, dice.calls[0]
+	for kind, pool in dice.calls[1:]:
+		assert sorted(pool) == substrings or set(pool) <= candidates, pool
+
+
+def _test_mutation_is_keyed_by_the_bag():
+	"""Same seed, same mutation: the bag decides, not the process."""
+	from AtlasActorLudi.CharactersKit import Character
+
+	def mutate(
+			seed,
+			):
+		return entropify(
+			"Xzyq",
+			dice=Character(
+				seed=seed,
+				).Dice_Bag(
+					"identity.name",
+					),
+			)
+
+	assert mutate(2) == mutate(2)
+
+def replace_symbol(name, symbol_entropies, target='lower', syze=3, *, dice):
 	"""
 	Attempts to improve entropy by randomly selecting a substring in the name
 	and trying replacements. Stops as soon as a valid entropy improvement
@@ -111,7 +216,7 @@ def replace_symbol(name, symbol_entropies, target='lower', syze=3):
 			# Assign an extreme entropy so the correction process knows what to do
 			symbol_entropies[substr] = max_entropy if target == 'lower' else min_entropy
 			# After correction, remove the artificial entry so it doesn't stay in the dict
-			corrected = replace_symbol(name, symbol_entropies, target=target, syze=syze)
+			corrected = replace_symbol(name, symbol_entropies, target=target, syze=syze, dice=dice)
 			del symbol_entropies[substr]
 			return corrected
 
@@ -121,13 +226,13 @@ def replace_symbol(name, symbol_entropies, target='lower', syze=3):
 	improved = False
 
 	# Candidates for replacement are those with valid entropy, and not the same as the current substr
-	random.shuffle(substrings)
+	dice.shuffle(substrings)
 	for substr in substrings:
 		idx = name.lower().find(substr)
 		if idx == -1:
 			continue
 
-		random.shuffle(candidates)
+		dice.shuffle(candidates)
 		for candidate in candidates:
 			if candidate == substr:
 				continue
@@ -154,11 +259,11 @@ def replace_symbol(name, symbol_entropies, target='lower', syze=3):
 	# If no improvement found, return original name
 	return name
 
-def replace_low_entropy_symbol(name, symbol_entropies, syze=syze_SYMBOL):
-	return replace_symbol(name, symbol_entropies, target='lower', syze=syze)
+def replace_low_entropy_symbol(name, symbol_entropies, syze=syze_SYMBOL, *, dice):
+	return replace_symbol(name, symbol_entropies, target='lower', syze=syze, dice=dice)
 
-def replace_high_entropy_symbol(name, symbol_entropies, syze=syze_SYMBOL):
-	return replace_symbol(name, symbol_entropies, target='higher', syze=syze)
+def replace_high_entropy_symbol(name, symbol_entropies, syze=syze_SYMBOL, *, dice):
+	return replace_symbol(name, symbol_entropies, target='higher', syze=syze, dice=dice)
 
 def get_symbols_in_name(name, symbol_entropies, syze):
 	"""

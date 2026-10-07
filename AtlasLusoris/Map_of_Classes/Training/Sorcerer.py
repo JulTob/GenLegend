@@ -88,13 +88,13 @@ f"You gain the **{subtype}** sorcerous origin; see PHB ’24 pp145-150.", "Class
 
 		# ---------- LEVEL 4, 8, 12, 16 ASI --------------------------------
 		if lvl >= 4:
-			feats += ApplyRandomFeats(c, n=1)
+			feats += ApplyRandomFeats(c, n=1, level=4)
 		if lvl >= 8:
-			feats += ApplyRandomFeats(c, n=1)
+			feats += ApplyRandomFeats(c, n=1, level=8)
 		if lvl >= 12:
-			feats += ApplyRandomFeats(c, n=1)
+			feats += ApplyRandomFeats(c, n=1, level=12)
 		if lvl >= 16:
-			feats += ApplyRandomFeats(c, n=1)
+			feats += ApplyRandomFeats(c, n=1, level=16)
 
 		# ---------- LEVEL 5 -----------------------------------------------
 		if lvl >= 5:

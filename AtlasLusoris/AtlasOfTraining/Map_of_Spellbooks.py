@@ -266,40 +266,6 @@ def Character_Tools(
 		)
 
 
-def _a_language(
-		char,
-		) -> str:
-	"""
-	One language this Character actually knows, for a form that names one.
-
-	Common is skipped when there is anything else, because a book written in
-	the language everybody reads is not saying much about its writer.
-	"""
-	try:
-		known = [
-			name
-			for name in char.languages.names()
-			if name
-			]
-	except Exception:
-		return "Common"
-	choices = [
-		name
-		for name in known
-		if name != "Common"
-		] or known or [
-		"Common",
-		]
-	return char.Pick(
-			choices,
-			dice=char.Dice_Bag(
-				"wizard.spellbook.hand",
-				version="1",
-				namespace="GenLegendLusoris",
-				),
-			)
-
-
 def Draw_Spellbook(
 		char,
 		) -> str:
@@ -353,10 +319,119 @@ def Draw_Spellbook(
 	form = char.Pick(
 			pool,
 			dice=char.Dice_Bag(
-				"wizard.spellbook",
-				version="1",
-				namespace="GenLegendLusoris",
+				"Spellbook.form",
 				),
 			)
 	char.spellbook_form = form.opening
 	return form.opening
+
+
+# ---------------------------------------------------------------------------
+# Self-test
+# ---------------------------------------------------------------------------
+
+
+def _self_test() -> None:
+	"""The book's form is drawn from a bag named by the Spellbook lesson (ruling 8)."""
+	from types import SimpleNamespace
+
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		bag = original(
+				char,
+				purpose,
+				**key,
+				)
+		opened.append(
+				(
+					purpose,
+					key,
+					bag,
+					)
+				)
+		return bag
+
+	def Purposes() -> list:
+		"""What was opened, as (purpose, key): a key of {} is the default."""
+		return [
+				(
+					purpose,
+					key,
+					)
+				for purpose, key, _ in opened
+				]
+
+	def Skeleton(
+			seed: int,
+			level: int,
+			):
+		"""A Character with a skill sheet and nothing else."""
+		char = Character(
+				seed=seed,
+				level=level,
+				)
+		char.skills = Char_Skills(
+				char,
+				SimpleNamespace(
+						STR=10,
+						DEX=10,
+						CON=10,
+						INT=10,
+						WIS=10,
+						CHA=10,
+						),
+				2,
+				)
+		return char
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Skeleton(
+				seed=7,
+				level=1,
+				)
+
+		first = Draw_Spellbook(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Spellbook.form",
+					{},
+					),
+				], opened
+		assert first == char.Pick(
+				list(
+						PLAIN_FORMS
+						),
+				dice=original(
+						char,
+						"Spellbook.form",
+						),
+				).opening
+			#-- A Character trained with no tool draws from the plain forms,
+			#-- in the table's order: that bag's first draw over the pool.
+		assert char.spellbook_form == first
+		opened.clear()
+		assert Draw_Spellbook(
+				char,
+				) == first
+		assert opened == [], "a settled book is not drawn again"
+	finally:
+		Character.Dice_Bag = original
+	print(
+			"Map_of_Spellbooks: self-test OK"
+			)
+
+
+if __name__ == "__main__":
+	_self_test()

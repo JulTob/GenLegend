@@ -510,11 +510,7 @@ def celestial_marks(
 	if standing is not None:
 		return standing
 
-	dice = char.Dice_Bag(
-		"aasimar.descent",
-		version="1",
-		namespace="GenLegendActor",
-		)
+	dice = char.Dice_Bag( "Aasimar.descent" )
 	pool = list(
 		IDEALS
 		)
@@ -559,11 +555,7 @@ def celestial_marks(
 			),
 		dice=dice,
 		)
-	pronoun_dice = char.Dice_Bag(
-		"aasimar.descent.ancestor_possessive",
-		version="1",
-		namespace="GenLegendActor",
-		)
+	pronoun_dice = char.Dice_Bag( "Aasimar.descent.pronoun" )
 	mark = Celestial_Mark(
 		ideals=ideals,
 		# The kind and one of its names, told together the way anyone would.
@@ -642,3 +634,122 @@ __all__ = (
 	"Perch",
 	"celestial_marks",
 	)
+
+
+def _test_dice_purposes() -> None:
+	#-- Ruling 8 (QST-0144.6): the descent comes from one Dice Bag opened as
+	#-- "Aasimar.descent" and the ancestor's pronoun from its own,
+	#-- "Aasimar.descent.pronoun", both with the default key and from the
+	#-- pools they always had; a second ask returns the standing mark.
+	from AtlasActorLudi.CharactersKit import Character
+
+	opened = []
+	purpose_of_bag = {}
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+	original_pick = Character.Pick
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		bag = original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		purpose_of_bag[
+			id(
+				bag
+				)
+			] = purpose
+		return bag
+
+	def recording_pick(
+		char,
+		ledger,
+		weights=None,
+		**options,
+		):
+		drawn.append(
+			(
+				purpose_of_bag.get(
+					id(
+						options.get(
+							"dice"
+							)
+						)
+					),
+				tuple(
+					ledger
+					),
+				)
+			)
+		return original_pick(
+			char,
+			ledger,
+			weights,
+			**options,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	Character.Pick = recording_pick
+	try:
+		character = Character(
+			seed=7,
+			)
+		mark = celestial_marks( character )
+		again = celestial_marks( character )
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		Character.Pick = original_pick
+
+	assert again is mark
+	assert opened == [
+		(
+			"Aasimar.descent",
+			{},
+			),
+		(
+			"Aasimar.descent.pronoun",
+			{},
+			),
+		], opened
+	kind = next(
+		descent
+		for descent in DESCENTS
+		if mark.ancestor.startswith(
+			f"the {descent.kind} "
+			)
+		)
+	plumages = (
+		PLUMAGES
+		if len(
+			mark.ideals
+			) == 2
+		else SINGLE_PLUMAGES
+		)
+	assert drawn == [
+		( "Aasimar.descent", tuple( IDEALS ) ),
+		( "Aasimar.descent", tuple( IDEALS ) ),
+		( "Aasimar.descent", tuple( DESCENTS ) ),
+		( "Aasimar.descent", tuple( kind.names ) ),
+		( "Aasimar.descent", tuple( PERCHES ) ),
+		( "Aasimar.descent", tuple( plumages ) ),
+		( "Aasimar.descent", tuple( ideal.tell for ideal in mark.ideals ) ),
+		( "Aasimar.descent.pronoun", ( "his", "her", "their", "its" ) ),
+		( "Aasimar.descent", ( 0, 1, 2, 3 ) ),
+		( "Aasimar.descent", ( 0, 1, 2, 3 ) ),
+		], drawn
+
+
+if __name__ == "__main__":
+	_test_dice_purposes()
+	print( "OK: SpeciesKit.Aasimar.Map_of_Ideals self-test" )

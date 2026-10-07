@@ -27,11 +27,7 @@ class Fiendish_Legacy(Trait):
 			)
 
 		if selected is None:
-			dice_bag = target.Dice_Bag(
-				"identity.species.Tiefling.fiendish_legacy.ability",
-				version="2024",
-				namespace="GenLegendActor",
-				)
+			dice_bag = target.Dice_Bag( "Fiendish_Legacy.spellcasting_ability" )
 			selected = target.Pick(
 				Fiendish_Legacy.SPELLCASTING_ABILITIES,
 				dice=dice_bag,
@@ -83,3 +79,83 @@ def Imprint_Fiendish_Heritage(
 	target.fiendish_legacy_damage_resistance = (
 		heritage.DAMAGE_RESISTANCE
 		)
+
+
+def _test_dice_purpose() -> None:
+	#-- Ruling 8 (QST-0144.6): the lineage ability comes from one Dice Bag
+	#-- opened as "Fiendish_Legacy.spellcasting_ability" with the default key,
+	#-- from the three abilities the Trait declares.
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.SpeciesKit.Tieflings import traits
+		#-- The catalog's module: under ``python -m`` this file loads twice,
+		#-- and the Tag the Heritages carry is the catalog's, not the twin's.
+
+	opened = []
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+	original_pick = Character.Pick
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+
+	def recording_pick(
+		char,
+		ledger,
+		weights=None,
+		**options,
+		):
+		drawn.append(
+			tuple(
+				ledger
+				)
+			)
+		return original_pick(
+			char,
+			ledger,
+			weights,
+			**options,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	Character.Pick = recording_pick
+	try:
+		character = Character(
+			seed=7,
+			)
+		traits.Fiendish_Legacy( character )
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		Character.Pick = original_pick
+
+	assert opened == [
+		(
+			"Fiendish_Legacy.spellcasting_ability",
+			{},
+			),
+		], opened
+	assert drawn == [
+		traits.Fiendish_Legacy.SPELLCASTING_ABILITIES,
+		], drawn
+	assert (
+		character.species_spellcasting_ability
+		in traits.Fiendish_Legacy.SPELLCASTING_ABILITIES
+		)
+
+
+if __name__ == "__main__":
+	_test_dice_purpose()
+	print( "OK: SpeciesKit.Tieflings.traits self-test" )

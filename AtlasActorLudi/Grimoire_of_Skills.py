@@ -501,446 +501,461 @@ class Char_Skills:
 	def Passive(self,skill,ProficiencyBonus):
 		return 10+skill.modifier(ProficiencyBonus)
 
-	def activate_proficiencies(self, n, skill_names):
+	def activate_proficiencies(self, n, skill_names, *, dice=None):
 			"""
 			Activates proficiency in `n` skills from the provided skill_list.
+
+			``dice`` is the Dice Bag the caller opened for this choice
+			(``<Guild>.skills``, ``Bonus_Proficiencies.choice``; ruling 8,
+			QST-0144.6).  Without it the draw falls back to the shared
+			app.random stream, for the callers not yet ported.
 			"""
 			# ----- nothing to do? bail out early -----
 			if n <= 0 or not skill_names:
 				return
 			# Randomly pick a skill from the list
-			s = random.choice(skill_names)
+			source = random if dice is None else dice
+			s = source.choice(skill_names)
 
 			if s == "Athletics":
 				if self.Athletics.proficiency_level < 1:
 					self.Athletics.proficiency_level = 1  # Or call self.Athletics.set_proficient()
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 
 
 			elif s == "Acrobatics":
 				if self.Acrobatics.proficiency_level < 1:
 					self.Acrobatics.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Sleight of Hand":
 				if self.Sleight_of_Hand.proficiency_level < 1:
 					self.Sleight_of_Hand.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Stealth":
 				if self.Stealth.proficiency_level < 1:
 					self.Stealth.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Arcana":
 				if self.Arcana.proficiency_level < 1:
 					self.Arcana.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "History":
 				if self.History.proficiency_level < 1:
 					self.History.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Investigation":
 				if self.Investigation.proficiency_level < 1:
 					self.Investigation.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Nature":
 				if self.Nature.proficiency_level < 1:
 					self.Nature.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Religion":
 				if self.Religion.proficiency_level < 1:
 					self.Religion.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Animal Handling":
 				if self.Animal_Handling.proficiency_level < 1:
 					self.Animal_Handling.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Insight":
 				if self.Insight.proficiency_level < 1:
 					self.Insight.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Medicine":
 				if self.Medicine.proficiency_level < 1:
 					self.Medicine.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Survival":
 				if self.Survival.proficiency_level < 1:
 					self.Survival.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Perception":
 				if self.Perception.proficiency_level < 1:
 					self.Perception.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Deception":
 				if self.Deception.proficiency_level < 1:
 					self.Deception.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Intimidation":
 				if self.Intimidation.proficiency_level < 1:
 					self.Intimidation.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Persuasion":
 				if self.Persuasion.proficiency_level < 1:
 					self.Persuasion.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Performance":
 				if self.Performance.proficiency_level < 1:
 					self.Performance.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 
 
 			elif s == "Thieves' Tools":
 				if self.Thieves_Tools.proficiency_level < 1:
 					self.Thieves_Tools.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Disguise Kit":
 				if self.Disguise_Kit.proficiency_level < 1:
 					self.Disguise_Kit.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 
 			elif s == "Alchemist's Supplies":
 				if self.Alchemist_Supplies.proficiency_level < 1:
 					self.Alchemist_Supplies.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Brewer's Supplies":
 				if self.Brewer_Supplies.proficiency_level < 1:
 					self.Brewer_Supplies.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 			elif s == "Calligrapher's Supplies":
 				if self.Calligrapher_Supplies.proficiency_level < 1:
 					self.Calligrapher_Supplies.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 
 			elif s in ("Cartographer's Tools", "Navigator's Tools"):
 				if self.Cartographer_Tools.proficiency_level < 1:
 					self.Cartographer_Tools.proficiency_level = 1
 					skill_names.remove(s)
-					return self.activate_proficiencies(n-1,skill_names)
+					return self.activate_proficiencies(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_proficiencies(n,skill_names)
+					return self.activate_proficiencies(n, skill_names, dice=dice)
 
 
 			skill_names.remove(s)
 			n -= 1
-			self.activate_proficiencies(n, skill_names)
+			self.activate_proficiencies(n, skill_names, dice=dice)
 
-	def activate_expertise(self, n, skill_names):
+	def activate_expertise(self, n, skill_names, *, dice=None):
+		"""
+		Doubles proficiency (Expertise) in `n` skills from the provided list.
+
+		``dice`` is the Dice Bag the caller opened for this choice
+		(``Rogue.Expertise.choice``, ``Scholar.choice``, the Bard and Ranger
+		Expertise lessons; ruling 8, QST-0144.6).  Without it the draw falls
+		back to the shared app.random stream, for the callers not yet ported.
+		"""
 		# ----- nothing to do? bail out early (mirrors activate_proficiencies;
 		# the recursion ends on an empty list, which must not reach choice) -----
 		if n <= 0 or not skill_names:
 			return
 		# Randomly pick a skill from the list
-		s = random.choice(skill_names)
+		source = random if dice is None else dice
+		s = source.choice(skill_names)
 
 		if n>0 and skill_names:
 			if s == "Athletics":
 				if self.Athletics.proficiency_level < 2:
 					self.Athletics.proficiency_level = 2  # Or call self.Athletics.set_proficient()
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 
 			elif s == "Acrobatics":
 				if self.Acrobatics.proficiency_level < 2:
 					self.Acrobatics.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Sleight of Hand":
 				if self.Sleight_of_Hand.proficiency_level < 2:
 					self.Sleight_of_Hand.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Stealth":
 				if self.Stealth.proficiency_level < 2:
 					self.Stealth.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Arcana":
 				if self.Arcana.proficiency_level < 2:
 					self.Arcana.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "History":
 				if self.History.proficiency_level < 2:
 					self.History.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Investigation":
 				if self.Investigation.proficiency_level < 2:
 					self.Investigation.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Nature":
 				if self.Nature.proficiency_level < 2:
 					self.Nature.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Religion":
 				if self.Religion.proficiency_level < 2:
 					self.Religion.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Animal Handling":
 				if self.Animal_Handling.proficiency_level < 2:
 					self.Animal_Handling.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Insight":
 				if self.Insight.proficiency_level < 2:
 					self.Insight.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Medicine":
 				if self.Medicine.proficiency_level < 2:
 					self.Medicine.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Survival":
 				if self.Survival.proficiency_level < 2:
 					self.Survival.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Perception":
 				if self.Perception.proficiency_level < 2:
 					self.Perception.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Deception":
 				if self.Deception.proficiency_level < 2:
 					self.Deception.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Intimidation":
 				if self.Intimidation.proficiency_level < 2:
 					self.Intimidation.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 			elif s == "Persuasion":
 				if self.Persuasion.proficiency_level < 2:
 					self.Persuasion.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 			elif s == "Performance":
 				if self.Performance.proficiency_level < 2:
 					self.Performance.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 
 			elif s == "Thieves' Tools":
 				if self.Thieves_Tools.proficiency_level < 2:
 					self.Thieves_Tools.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 			elif s == "Disguise Kit":
 				if self.Disguise_Kit.proficiency_level < 2:
 					self.Disguise_Kit.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s == "Alchemist's Supplies":
 				if self.Alchemist_Supplies.proficiency_level < 2:
 					self.Alchemist_Supplies.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 			elif s == "Brewer's Supplies":
 				if self.Brewer_Supplies.proficiency_level < 2:
 					self.Brewer_Supplies.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 			elif s == "Calligrapher's Supplies":
 				if self.Calligrapher_Supplies.proficiency_level < 2:
 					self.Calligrapher_Supplies.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 			elif s in ("Cartographer's Tools", "Navigator's Tools"):
 				if self.Cartographer_Tools.proficiency_level < 2:
 					self.Cartographer_Tools.proficiency_level = 2
 					skill_names.remove(s)
-					return self.activate_expertise(n-1,skill_names)
+					return self.activate_expertise(n-1, skill_names, dice=dice)
 				else:
 					skill_names.remove(s)
-					return self.activate_expertise(n,skill_names)
+					return self.activate_expertise(n, skill_names, dice=dice)
 
 
 			skill_names.remove(s)
 			n -= 1
-			self.activate_expertise(n, skill_names)
+			self.activate_expertise(n, skill_names, dice=dice)
 
 	def get_proficient_skills(self):
 		"""
@@ -1015,3 +1030,47 @@ def get_other_proficiencies(skills, character=None):
 			result.append(arm.name)
 
 	return result
+
+
+if __name__ == "__main__":
+	from random import Random
+	from AtlasActorLudi.Grimoire_of_AbilityScores import AbilityScores
+
+	def fresh_skills():
+		return Char_Skills(
+			AS=AbilityScores(10, 10, 10, 10, 10, 10),
+			ProficiencyBonus=2,
+			)
+
+	offered = ["Acrobatics", "Athletics", "History", "Insight", "Perception"]
+
+	#-- the proficiencies come from the bag the caller opened: the same bag
+	#-- seats the same skills, n of them, all from the offered list
+	first = fresh_skills()
+	first.activate_proficiencies(2, list(offered), dice=Random(11))
+	second = fresh_skills()
+	second.activate_proficiencies(2, list(offered), dice=Random(11))
+	assert first.get_proficient_skills() == second.get_proficient_skills()
+	assert len(first.get_proficient_skills()) == 2, first.get_proficient_skills()
+	assert set(first.get_proficient_skills()) <= set(offered)
+	assert Random(11).choice(list(offered)) in first.get_proficient_skills()
+
+	#-- a bag that first names a skill already seated draws again
+	third = fresh_skills()
+	third.Athletics.proficiency_level = 1
+	third.activate_proficiencies(1, ["Athletics", "History"], dice=Random(0))
+	assert len(third.get_proficient_skills()) == 2, third.get_proficient_skills()
+
+	#-- Expertise doubles n of the given skills from its own bag
+	first.activate_expertise(1, first.get_proficient_skills(), dice=Random(5))
+	doubled = [skill.name for skill in first.get_all_skills() if skill.proficiency_level == 2]
+	assert len(doubled) == 1, doubled
+	assert doubled[0] in second.get_proficient_skills()
+
+	#-- without a bag the shared stream still answers, for the callers not
+	#-- yet ported (QST-0144.6)
+	fourth = fresh_skills()
+	fourth.activate_proficiencies(1, list(offered))
+	assert len(fourth.get_proficient_skills()) == 1
+
+	print("OK - Grimoire_of_Skills: proficiencies and Expertise draw from the bag they are given.")

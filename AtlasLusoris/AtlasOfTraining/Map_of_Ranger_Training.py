@@ -174,8 +174,16 @@ def _choose_named(
 		char,
 		key: str,
 		options: dict[str, str],
+		*,
+		purpose: str,
 		) -> tuple[str, str]:
-	"""Decide one named option, once. Called only from a Training's apply."""
+	"""
+	Decide one named option, once. Called only from a Training's apply.
+
+	``purpose`` names the Dice Bag after the lesson that offers the choice
+	(``Hunters_Prey.choice``, ``Defensive_Tactics.choice``, ...; ruling 8,
+	QST-0144.6).  ``key`` only names the ledger entry the sheet reads back.
+	"""
 	bag = _picks(
 			char
 			)
@@ -185,7 +193,10 @@ def _choose_named(
 	name = char.Pick(
 			list(
 					options
-					)
+					),
+			dice=char.Dice_Bag(
+					purpose
+					),
 			)
 	bag[key] = name
 	return name, options[name]
@@ -222,6 +233,8 @@ def _chosen_named(
 def _choose_on_awaken(
 		key: str,
 		options: dict[str, str],
+		*,
+		purpose: str,
 		):
 	"""An apply step that makes this Training's one named choice."""
 	def apply(
@@ -231,6 +244,7 @@ def _choose_on_awaken(
 				char,
 				key,
 				options,
+				purpose=purpose,
 				)
 	return apply
 
@@ -380,7 +394,79 @@ def _weapon_mastery_chip(
 			)
 
 
+def _apply_deft_explorer_languages(
+		char,
+		) -> None:
+	"""
+	Know two languages of either table (2024 PHB; QST-0144.10).
+
+	One bag, Deft_Explorer.languages, two draws over the sorted pool of
+	every language not yet known, the first removed before the second, so
+	the two are distinct.  Recorded so the Entry can name them; a recorded
+	pair is not drawn again.  Before the Character holds a Linguistics
+	there is nothing to grant to.
+	"""
+	from AtlasLudus.Map_of_Languages import (
+			Linguistics_Of,
+			Record_Language_Grant,
+			all_languages,
+			)
+	languages = Linguistics_Of(
+			char
+			)
+	if languages is None:
+		return
+	if "Deft Explorer" in (
+			getattr(
+					char,
+					"language_feature_grants",
+					None,
+					) or {}
+			):
+		return
+	pool = sorted(
+			all_languages - languages.langs
+			)
+	dice = char.Dice_Bag(
+			"Deft_Explorer.languages",
+			)
+	chosen = []
+	while pool and len(
+			chosen
+			) < 2:
+		name = char.Pick(
+				pool,
+				dice=dice,
+				)
+		pool.remove(
+				name
+				)
+		chosen.append(
+				name
+				)
+	languages.Add(
+			chosen
+			)
+	Record_Language_Grant(
+			char,
+			"Deft Explorer",
+			chosen,
+			)
+
+
 def _apply_deft_explorer(
+		char,
+		) -> None:
+	"""Deft Explorer: Expertise in one trained skill, and two languages."""
+	_apply_deft_explorer_expertise(
+			char,
+			)
+	_apply_deft_explorer_languages(
+			char,
+			)
+
+
+def _apply_deft_explorer_expertise(
 		char,
 		) -> None:
 	skills = getattr(
@@ -395,12 +481,17 @@ def _apply_deft_explorer(
 			)
 	if not pool:
 		return
+	dice = char.Dice_Bag(
+			"Deft_Explorer.choice",
+			)
 	chosen = char.Pick(
-			pool
+			pool,
+			dice=dice,
 			)
 	skills.activate_expertise(
 			1,
 			[chosen],
+			dice=dice,
 			)
 	_picks(
 			char
@@ -466,12 +557,16 @@ def _apply_expertise(
 					pool
 					),
 			)
+	dice = char.Dice_Bag(
+			"Ranger.Expertise.choice",
+			)
 	chosen = []
 	while pool and len(
 			chosen
 			) < count:
 		skill = char.Pick(
-			pool
+			pool,
+			dice=dice,
 			)
 		pool.remove(
 			skill
@@ -484,6 +579,7 @@ def _apply_expertise(
 			list(
 					chosen
 					),
+			dice=dice,
 			)
 	_picks(
 			char
@@ -1051,6 +1147,7 @@ Hunters_Prey = _hunter(
 		apply=_choose_on_awaken(
 				"Hunter's Prey",
 				_HUNTERS_PREY,
+				purpose="Hunters_Prey.choice",
 				),
 		)
 
@@ -1061,6 +1158,7 @@ Defensive_Tactics = _hunter(
 		apply=_choose_on_awaken(
 				"Defensive Tactics",
 				_DEFENSIVE_TACTICS,
+				purpose="Defensive_Tactics.choice",
 				),
 		)
 
@@ -1071,6 +1169,7 @@ Superior_Hunters_Prey = _hunter(
 		apply=_choose_on_awaken(
 				"Superior Hunter's Prey",
 				_SUPERIOR_PREY,
+				purpose="Superior_Hunters_Prey.choice",
 				),
 		)
 
@@ -1081,5 +1180,348 @@ Superior_Hunters_Defense = _hunter(
 		apply=_choose_on_awaken(
 				"Superior Hunter's Defense",
 				_SUPERIOR_DEFENSE,
+				purpose="Superior_Hunters_Defense.choice",
 				),
 		)
+
+
+# ---------------------------------------------------------------------------
+# Self-test
+# ---------------------------------------------------------------------------
+
+
+def _self_test() -> None:
+	"""Every Ranger lesson that chooses draws from a bag named by that lesson (ruling 8)."""
+	from types import SimpleNamespace
+
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		bag = original(
+				char,
+				purpose,
+				**key,
+				)
+		opened.append(
+				(
+					purpose,
+					key,
+					bag,
+					)
+				)
+		return bag
+
+	def Purposes() -> list:
+		"""What was opened, as (purpose, key): a key of {} is the default."""
+		return [
+				(
+					purpose,
+					key,
+					)
+				for purpose, key, _ in opened
+				]
+
+	def Skeleton(
+			seed: int,
+			level: int,
+			):
+		"""A Character with a skill sheet and nothing else."""
+		char = Character(
+				seed=seed,
+				level=level,
+				)
+		char.skills = Char_Skills(
+				char,
+				SimpleNamespace(
+						STR=10,
+						DEX=10,
+						CON=10,
+						INT=10,
+						WIS=10,
+						CHA=10,
+						),
+				2,
+				)
+		return char
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Skeleton(
+				seed=7,
+				level=9,
+				)
+		for name in (
+				"Athletics",
+				"Perception",
+				"Survival",
+				):
+			getattr(
+					char.skills,
+					name,
+					).set_proficiency()
+		asked = []
+
+		def Recording_Expertise(
+				count,
+				names,
+				*,
+				dice=None,
+				):
+			asked.append(
+					(
+						count,
+						list(
+								names
+								),
+						dice,
+						)
+					)
+
+		char.skills.activate_expertise = Recording_Expertise
+			#-- Char_Skills.activate_expertise takes dice= once group 1 of
+			#-- QST-0144.6 lands; the double records the ask, so this probe
+			#-- reads the same before and after.
+
+		for key, options, purpose in (
+				(
+					"Hunter's Prey",
+					_HUNTERS_PREY,
+					"Hunters_Prey.choice",
+					),
+				(
+					"Defensive Tactics",
+					_DEFENSIVE_TACTICS,
+					"Defensive_Tactics.choice",
+					),
+				(
+					"Superior Hunter's Prey",
+					_SUPERIOR_PREY,
+					"Superior_Hunters_Prey.choice",
+					),
+				(
+					"Superior Hunter's Defense",
+					_SUPERIOR_DEFENSE,
+					"Superior_Hunters_Defense.choice",
+					),
+				):
+			opened.clear()
+			apply = _choose_on_awaken(
+					key,
+					options,
+					purpose=purpose,
+					)
+			apply(
+					char,
+					)
+			assert Purposes() == [
+					(
+						purpose,
+						{},
+						),
+					], opened
+			assert _read_picks(
+					char,
+					)[key] == char.Pick(
+					list(
+							options
+							),
+					dice=original(
+							char,
+							purpose,
+							),
+					), key
+				#-- The pool is the lesson's table, in its order; the answer
+				#-- is that bag's first draw over it.
+			opened.clear()
+			apply(
+					char,
+					)
+			assert opened == [], f"{key}: a recorded choice is not drawn again"
+
+		opened.clear()
+		_apply_deft_explorer(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Deft_Explorer.choice",
+					{},
+					),
+				], opened
+		pool = list(
+				char.skills.get_proficient_skills()
+				)
+		chosen = _read_picks(
+				char,
+				)["Deft Explorer"]
+		assert chosen == char.Pick(
+				pool,
+				dice=original(
+						char,
+						"Deft_Explorer.choice",
+						),
+				)
+		assert asked[-1] == (
+				1,
+				[
+					chosen,
+					],
+				opened[0][2],
+				)
+			#-- The same bag doubles the skill: one choice, one bag.
+
+		opened.clear()
+		_apply_expertise(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Ranger.Expertise.choice",
+					{},
+					),
+				], opened
+		probe = original(
+				char,
+				"Ranger.Expertise.choice",
+				)
+		pool = list(
+				char.skills.get_proficient_skills()
+				)
+		first = char.Pick(
+				pool,
+				dice=probe,
+				)
+		pool.remove(
+				first
+				)
+		second = char.Pick(
+				pool,
+				dice=probe,
+				)
+		assert _read_picks(
+				char,
+				)["Expertise"] == [
+				first,
+				second,
+				]
+			#-- Two draws of one bag over the shrinking pool of trained skills.
+		assert asked[-1] == (
+				2,
+				[
+					first,
+					second,
+					],
+				opened[0][2],
+				)
+	finally:
+		Character.Dice_Bag = original
+	_self_test_deft_explorer_languages()
+	print(
+			"Map_of_Ranger_Training: self-test OK"
+			)
+
+
+def _self_test_deft_explorer_languages() -> None:
+	"""Deft Explorer's two languages come from one bag, Deft_Explorer.languages."""
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasLudus.Map_of_Languages import (
+			Linguistics,
+			all_languages,
+			)
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		opened.append(
+				(
+					purpose,
+					key,
+					)
+				)
+		return original(
+				char,
+				purpose,
+				**key,
+				)
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Character(
+				seed=7,
+				level=2,
+				)
+		#-- Nothing to grant to yet: no bag, no record.
+		_apply_deft_explorer_languages(
+				char,
+				)
+		assert opened == [], opened
+		assert getattr(
+				char,
+				"language_feature_grants",
+				None,
+				) is None
+
+		known = {"Common", "Dwarvish", "Giant"}
+		char.languages = Linguistics()
+		char.languages.Add(
+				known
+				)
+		_apply_deft_explorer_languages(
+				char,
+				)
+		assert opened == [
+				(
+					"Deft_Explorer.languages",
+					{},
+					),
+				], opened
+		first, second = char.language_feature_grants[ "Deft Explorer" ]
+		probe = original(
+				char,
+				"Deft_Explorer.languages",
+				)
+		pool = sorted(
+				all_languages - known
+				)
+		assert first == char.Pick(
+				pool,
+				dice=probe,
+				)
+		pool.remove(
+				first
+				)
+		assert second == char.Pick(
+				pool,
+				dice=probe,
+				)
+			#-- Two draws of one bag over the shrinking sorted pool of the
+			#-- languages of both tables not yet known.
+		assert char.languages.langs == known | {first, second}
+		assert f"**{first}** and **{second}**" in _deft_explorer_entry(
+				char
+				)
+		opened.clear()
+		_apply_deft_explorer_languages(
+				char,
+				)
+		assert opened == [], "a recorded pair is not drawn again"
+		assert len( char.languages.langs ) == 5
+	finally:
+		Character.Dice_Bag = original
+
+
+if __name__ == "__main__":
+	_self_test()

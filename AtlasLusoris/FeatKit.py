@@ -3,6 +3,10 @@ FeatKit
 
 TOP catalogues for Fighting Style feats, General feats, and Epic Boons.
 Origin feats stay in FeaturesKit; Invocations stay in InvocationKit.
+
+The catalogue is the Field of the ``Declared_Feat`` Pin: each factory builds
+its feat Tag with only its behaviour and pins it, and the three families are
+that one Field read by root.
 """
 
 from __future__ import annotations
@@ -11,9 +15,8 @@ import re
 from collections.abc import Callable
 from typing import Any
 
-from TopKit import Imprint, Post, Pre, Record, Tag
+from TopKit import Imprint, Pin, Post, Pre, Record, Tag
 
-from AtlasActorLudi.CharactersKit import Report_Of
 from AtlasVenustas import Chip
 
 from AtlasActorLudi.CharactersKit import Character
@@ -70,9 +73,245 @@ class Epic_Boon_Feat(Feat_Root):
 	NAME = "Epic Boon"
 
 
-_FIGHTING_STYLE_DECLARATIONS: list[type[Fighting_Style_Feat]] = []
-_GENERAL_FEAT_DECLARATIONS: list[type[General_Feat]] = []
-_EPIC_BOON_DECLARATIONS: list[type[Epic_Boon_Feat]] = []
+_FEAT_ROOTS = (
+		Fighting_Style_Feat,
+		General_Feat,
+		Epic_Boon_Feat,
+		)
+
+
+def _distinct_names(
+		values,
+		what: str,
+		) -> tuple[str, ...]:
+	"""A tuple of distinct, non-empty names, or the ValueError naming ``what``."""
+	resolved = tuple(
+			values or ()
+			)
+	if any(
+			not isinstance(
+					value,
+					str,
+					)
+			or not value.strip()
+			for value in resolved
+			):
+		raise ValueError(
+				f"{what} must be non-empty strings, not {resolved!r}."
+				)
+	if len(
+			set(
+					resolved
+					)
+			) != len(
+					resolved
+					):
+		raise ValueError(
+				f"{what} cannot list one entry twice: {resolved!r}."
+				)
+	return resolved
+
+
+def _yes_or_no(
+		value,
+		what: str,
+		) -> bool:
+	if not isinstance(
+			value,
+			bool,
+			):
+		raise ValueError(
+				f"{what} must be True or False, not {value!r}."
+				)
+	return value
+
+
+def _positive_integer(
+		value,
+		what: str,
+		) -> int:
+	if (
+		isinstance(
+				value,
+				bool,
+				)
+		or not isinstance(
+				value,
+				int,
+				)
+		or value < 1
+		):
+		raise ValueError(
+				f"{what} must be a positive integer, not {value!r}."
+				)
+	return value
+
+
+@Pin
+class Declared_Feat(Tag):
+	"""
+	Root Pin for the feats this Kit catalogues.
+
+	A feat is catalogued by applying this Pin *to the feat Tag*, and
+	``Declared_Feat[:]`` is then the catalogue, in declaration order.  The
+	three families are that one Field read by root: ``all_fighting_styles``,
+	``all_general_feats`` and ``all_epic_boons`` each filter it on their own
+	root Tag, so nothing is listed twice and a new feat is real the moment
+	its factory pins it.
+
+	The constants the factories used to write into a class namespace are
+	Records here.  Each is validated once, at the pin, and lands on the feat
+	Tag as a Report (``Archery.GUILDS``, ``Chef.MIN_LEVEL``).  A Record whose
+	input the pin does not give keeps its default.
+	"""
+
+	@Pre
+	def Feat_Tag_Only(
+			target,
+			):
+		return (
+			isinstance(
+					target,
+					type,
+					)
+			and issubclass(
+					target,
+					_FEAT_ROOTS,
+					)
+			and target not in _FEAT_ROOTS
+			)
+
+	@Record
+	def GUILDS(
+			target,
+			*,
+			guilds=None,
+			) -> tuple[str, ...] | None:
+		"""Guild names allowed the feat; None leaves every Guild in."""
+		if guilds is None:
+			return None
+		return _distinct_names(
+				guilds,
+				"Feat Guild names",
+				)
+
+	@Record
+	def SOURCE(
+			target,
+			*,
+			source=None,
+			) -> str:
+		if (
+			not isinstance(
+					source,
+					str,
+					)
+			or not source.strip()
+			):
+			raise ValueError(
+					f"A feat source must be non-empty text, not {source!r}."
+					)
+		return source
+
+	@Record
+	def MIN_LEVEL(
+			target,
+			*,
+			min_level=None,
+			) -> int | None:
+		"""
+		The level floor a General feat declares.
+
+		Fighting Styles and Epic Boons gate their level in their factory
+		and declare none here, so the Report stays None for them.
+		"""
+		if min_level is None:
+			return None
+		return _positive_integer(
+				min_level,
+				"A feat minimum level",
+				)
+
+	@Record
+	def REPEATABLE(
+			target,
+			*,
+			repeatable=False,
+			) -> bool:
+		return _yes_or_no(
+				repeatable,
+				"REPEATABLE",
+				)
+
+	@Record
+	def ABILITY_ANY(
+			target,
+			*,
+			ability_any=None,
+			) -> tuple[str, ...] | None:
+		"""Ability keys of which one must reach ABILITY_MIN; None asks nothing."""
+		if ability_any is None:
+			return None
+		resolved = _distinct_names(
+				ability_any,
+				"Feat ability prerequisites",
+				)
+		unknown = tuple(
+				key
+				for key in resolved
+				if key not in _ABILITY_FULL
+				)
+		if unknown:
+			raise ValueError(
+					f"Feat ability prerequisites name no ability: {unknown!r}; "
+					f"expected keys among {tuple( _ABILITY_FULL )!r}."
+					)
+		return resolved
+
+	@Record
+	def ABILITY_MIN(
+			target,
+			*,
+			ability_min=13,
+			) -> int:
+		return _positive_integer(
+				ability_min,
+				"A feat ability minimum",
+				)
+
+	@Record
+	def REQUIRES_SPELLCASTING(
+			target,
+			*,
+			requires_spellcasting=False,
+			) -> bool:
+		return _yes_or_no(
+				requires_spellcasting,
+				"REQUIRES_SPELLCASTING",
+				)
+
+	@Record
+	def REQUIRES_FEAT_ANY(
+			target,
+			*,
+			requires_feat_any=(),
+			) -> tuple[str, ...]:
+		"""Feat NAMEs of which owning any one satisfies the prerequisite."""
+		return _distinct_names(
+				requires_feat_any,
+				"Feat prerequisite feat names",
+				)
+
+	@Record
+	def REQUIRES_WEAPON_MASTERY(
+			target,
+			*,
+			requires_weapon_mastery=False,
+			) -> bool:
+		return _yes_or_no(
+				requires_weapon_mastery,
+				"REQUIRES_WEAPON_MASTERY",
+				)
 
 
 def _class_name(
@@ -195,7 +434,13 @@ def _raise_one_of(
 		keys: tuple[str, ...],
 		amount: int = 1,
 		cap: int = 20,
+		*,
+		purpose: str,
 		) -> str | None:
+	"""
+	Raise one of ``keys`` by ``amount``; ``purpose`` names the feat Tag's
+	bag (``<Feat>.ability``) the tie-break shuffle draws from (QST-0144.6).
+	"""
 	viable = [
 			key
 			for key in keys
@@ -223,12 +468,7 @@ def _raise_one_of(
 	# Character's own preference order decide.  Sorting is stable, so the
 	# shuffle survives as the tie-break among abilities nobody asked for.
 	char.Dice_Bag(
-		"feat.ability."
-		+ ".".join(
-				keys
-				),
-		version="1",
-		namespace="GenLegendFeat",
+		purpose
 		).shuffle(
 			ordered
 			)
@@ -260,6 +500,8 @@ def _raise_any(
 		char,
 		amount: int = 1,
 		cap: int = 30,
+		*,
+		purpose: str,
 		) -> str | None:
 	return _raise_one_of(
 			char,
@@ -273,6 +515,7 @@ def _raise_any(
 					),
 			amount=amount,
 			cap=cap,
+			purpose=purpose,
 			)
 
 
@@ -402,20 +645,16 @@ def Make_Fighting_Style(
 					),
 			{
 					"NAME": name,
-					"GUILDS": Report_Of(
-							allowed
-							),
-					"SOURCE": Report_Of(
-							source
-							),
 					"Fighting_Style_Feature": Fighting_Style_Feature,
 					"Guild_Allowed": Guild_Allowed,
 					"Awaken": Awaken,
 					"__module__": __name__,
 					},
 			)
-	_FIGHTING_STYLE_DECLARATIONS.append(
-			style_tag
+	Declared_Feat(
+			style_tag,
+			guilds=allowed,
+			source=source,
 			)
 	return style_tag
 
@@ -573,6 +812,7 @@ def Make_General_Feat(
 					asi,
 					amount=asi_amount,
 					cap=asi_cap,
+					purpose=f"{feat_tag.__name__}.ability",
 					)
 			if key:
 				raised.append(
@@ -587,12 +827,16 @@ def Make_General_Feat(
 					target,
 					amount=1,
 					cap=asi_cap,
+					purpose=f"{feat_tag.__name__}.ability",
 					)
 			second = _raise_any(
 					target,
 					amount=1,
 					cap=asi_cap,
+					purpose=f"{feat_tag.__name__}.ability.2",
 					)
+				#-- two raises, two bags: the second may land on the same
+				#-- score (the +2 case) or on another (the two +1 case)
 			if first:
 				raised.append(
 						(
@@ -642,30 +886,6 @@ def Make_General_Feat(
 
 	namespace = {
 		"NAME": name,
-		"MIN_LEVEL": Report_Of(
-			min_level
-			),
-		"REPEATABLE": Report_Of(
-			repeatable
-			),
-		"ABILITY_ANY": Report_Of(
-			ability_any
-			),
-		"ABILITY_MIN": Report_Of(
-			ability_min
-			),
-		"REQUIRES_SPELLCASTING": Report_Of(
-			requires_spellcasting
-			),
-		"REQUIRES_FEAT_ANY": Report_Of(
-			requires_feat_any
-			),
-		"REQUIRES_WEAPON_MASTERY": Report_Of(
-			requires_weapon_mastery
-			),
-		"SOURCE": Report_Of(
-			source
-			),
 		"Rank_Reached": Rank_Reached,
 		"Ability_Met": Ability_Met,
 		"Spellcasting_Met": Spellcasting_Met,
@@ -710,9 +930,17 @@ def Make_General_Feat(
 			),
 		namespace,
 		)
-	_GENERAL_FEAT_DECLARATIONS.append(
-			feat_tag
-			)
+	Declared_Feat(
+		feat_tag,
+		min_level=min_level,
+		repeatable=repeatable,
+		ability_any=ability_any,
+		ability_min=ability_min,
+		requires_spellcasting=requires_spellcasting,
+		requires_feat_any=requires_feat_any,
+		requires_weapon_mastery=requires_weapon_mastery,
+		source=source,
+		)
 	return feat_tag
 
 
@@ -792,6 +1020,7 @@ def Make_Epic_Boon(
 				keys,
 				amount=1,
 				cap=30,
+				purpose=f"{boon_tag.__name__}.ability",
 				)
 		raised = [
 				(
@@ -823,39 +1052,52 @@ def Make_Epic_Boon(
 					),
 			{
 					"NAME": name,
-					"REQUIRES_SPELLCASTING": Report_Of(
-							requires_spellcasting
-							),
-					"SOURCE": Report_Of(
-							source
-							),
 					"Rank_Reached": Rank_Reached,
 					"Spellcasting_Met": Spellcasting_Met,
 					"Awaken": Awaken,
 					"__module__": __name__,
 					},
 			)
-	_EPIC_BOON_DECLARATIONS.append(
-			boon_tag
+	Declared_Feat(
+			boon_tag,
+			requires_spellcasting=requires_spellcasting,
+			source=source,
 			)
 	return boon_tag
 
 
-def all_fighting_styles() -> tuple[type[Fighting_Style_Feat], ...]:
+def _feats_of_kind(
+		root,
+		) -> tuple:
+	"""One family of the catalogue: the Field, read by its root Tag."""
 	return tuple(
-			_FIGHTING_STYLE_DECLARATIONS
+			tag
+			for tag in Declared_Feat[:]
+			if issubclass(
+					tag,
+					root,
+					)
+			)
+
+
+def all_fighting_styles() -> tuple[type[Fighting_Style_Feat], ...]:
+	"""Every declared Fighting Style feat, in declaration order."""
+	return _feats_of_kind(
+			Fighting_Style_Feat
 			)
 
 
 def all_general_feats() -> tuple[type[General_Feat], ...]:
-	return tuple(
-			_GENERAL_FEAT_DECLARATIONS
+	"""Every declared General feat, in declaration order."""
+	return _feats_of_kind(
+			General_Feat
 			)
 
 
 def all_epic_boons() -> tuple[type[Epic_Boon_Feat], ...]:
-	return tuple(
-			_EPIC_BOON_DECLARATIONS
+	"""Every declared Epic Boon, in declaration order."""
+	return _feats_of_kind(
+			Epic_Boon_Feat
 			)
 
 
@@ -875,7 +1117,7 @@ def available_fighting_styles(
 			None,
 			)
 	found = []
-	for tag in _FIGHTING_STYLE_DECLARATIONS:
+	for tag in all_fighting_styles():
 		if tag.NAME in owned:
 			continue
 		allowed = getattr(
@@ -941,7 +1183,7 @@ def available_general_feats(
 					) or 1
 			)
 	found = []
-	for tag in _GENERAL_FEAT_DECLARATIONS:
+	for tag in all_general_feats():
 		min_level = int(
 				getattr(
 						tag,
@@ -1032,7 +1274,7 @@ def available_epic_boons(
 			) < 19:
 		return []
 	found = []
-	for tag in _EPIC_BOON_DECLARATIONS:
+	for tag in all_epic_boons():
 		if tag.NAME in owned:
 			continue
 		if getattr(
@@ -1078,8 +1320,6 @@ def _stable_available(
 		)
 	char.Dice_Bag(
 		bag_purpose,
-		version="2024",
-		namespace="GenLegendFeat",
 		).shuffle(
 			ordered
 			)
@@ -1103,7 +1343,7 @@ def Apply_Fighting_Styles(
 			) if n is None else n
 	owned = [
 			tag
-			for tag in _FIGHTING_STYLE_DECLARATIONS
+			for tag in all_fighting_styles()
 			if char in tag or tag.NAME in _owned_feat_names(
 					char
 					)
@@ -1116,11 +1356,11 @@ def Apply_Fighting_Styles(
 			) < need:
 		pool = _stable_available(
 			char,
-			_FIGHTING_STYLE_DECLARATIONS,
+			all_fighting_styles(),
 			available_fighting_styles(
 					char
 					),
-			"feat.fighting_style",
+			"Fighting_Style.choice",
 				)
 		if not pool:
 			break
@@ -1153,11 +1393,11 @@ def Apply_General_Feats(
 			):
 		pool = _stable_available(
 			char,
-			_GENERAL_FEAT_DECLARATIONS,
+			all_general_feats(),
 			available_general_feats(
 					char
 					),
-			"feat.general",
+			"General_Feat.choice",
 				)
 		if not pool:
 			break
@@ -1183,11 +1423,11 @@ def Apply_Epic_Boons(
 			):
 		pool = _stable_available(
 			char,
-			_EPIC_BOON_DECLARATIONS,
+			all_epic_boons(),
 			available_epic_boons(
 					char
 					),
-			"feat.epic_boon",
+			"Epic_Boon.choice",
 				)
 		if not pool:
 			break
@@ -1227,6 +1467,111 @@ def _self_test():
 			all_epic_boons()
 			) >= 12
 
+	#-- QST-0144.5: the catalogue is the Pin's Field.  Each family is that
+	#-- Field read by root, in the order its Map declares it (the order the
+	#-- registry lists kept), every pinned Tag is in exactly one family, and
+	#-- the roots themselves are not catalogued.
+	from AtlasLusoris.AtlasOfFeats import Map_of_Epic_Boons
+	from AtlasLusoris.AtlasOfFeats import Map_of_Fighting_Styles
+	from AtlasLusoris.AtlasOfFeats import Map_of_General_Feats
+	from TopKit import TagCompositionError
+
+	def declared_in(
+			module,
+			root,
+			):
+		return tuple(
+				dict.fromkeys(
+						value
+						for value in vars(
+								module
+								).values()
+						if (
+							isinstance(
+									value,
+									type,
+									)
+							and issubclass(
+									value,
+									root,
+									)
+							and value is not root
+							)
+						)
+				)
+
+	assert all_fighting_styles() == declared_in(
+			Map_of_Fighting_Styles,
+			Fighting_Style_Feat,
+			)
+	assert all_general_feats() == declared_in(
+			Map_of_General_Feats,
+			General_Feat,
+			)
+	assert all_epic_boons() == declared_in(
+			Map_of_Epic_Boons,
+			Epic_Boon_Feat,
+			)
+	assert len(
+			Declared_Feat[:]
+			) == (
+			len( all_fighting_styles() )
+			+ len( all_general_feats() )
+			+ len( all_epic_boons() )
+			)
+	assert not any(
+			root in Declared_Feat
+			for root in _FEAT_ROOTS
+			)
+
+	#-- The constants the factories wrote are Reports now, with the values
+	#-- the Maps declare, and a default where a Map says nothing.
+	assert Map_of_Fighting_Styles.Archery.GUILDS is None
+	assert Map_of_Fighting_Styles.Archery.SOURCE == "Fighting Style"
+	assert Map_of_Fighting_Styles.BlessedWarrior.GUILDS == (
+			"Paladin",
+			)
+	assert Map_of_General_Feats.Grappler.MIN_LEVEL == 4
+	assert Map_of_General_Feats.Grappler.ABILITY_ANY == (
+			"STR",
+			"DEX",
+			)
+	assert Map_of_General_Feats.Grappler.ABILITY_MIN == 13
+	assert Map_of_General_Feats.Grappler.SOURCE == "Feat"
+	assert Map_of_General_Feats.ElementalAdept.REPEATABLE is True
+	assert Map_of_General_Feats.ElementalAdept.REQUIRES_SPELLCASTING is True
+	assert Map_of_General_Feats.FieldMarshal.REQUIRES_FEAT_ANY == (
+			"Field Lieutenant",
+			"Martial Weapon Training",
+			)
+	assert Map_of_General_Feats.FieldMarshal.REQUIRES_WEAPON_MASTERY is True
+	assert Map_of_Epic_Boons.BoonOfFate.SOURCE == "Epic Boon"
+	assert Map_of_Epic_Boons.BoonOfFate.REQUIRES_SPELLCASTING is False
+	assert all(
+			tag.MIN_LEVEL is None
+			for tag in all_fighting_styles() + all_epic_boons()
+			)
+
+	#-- A declaration the Records refuse never joins the Field.
+	catalogued = tuple(
+			Declared_Feat[:]
+			)
+	try:
+		Make_General_Feat(
+				name="Unfounded",
+				description="A feat with no level floor at all.",
+				min_level=0,
+				)
+	except TagCompositionError:
+		pass
+	else:
+		raise AssertionError(
+				"Declared_Feat accepted a General feat with min_level=0."
+				)
+	assert tuple(
+			Declared_Feat[:]
+			) == catalogued
+
 	fighter = Character(
 			seed=2
 			)
@@ -1265,6 +1610,28 @@ def _self_test():
 	assert len(
 			boons
 			) == 1
+	#-- The picks are pinned to the bags named by the Tags (QST-0144.6:
+	#-- Fighting_Style.choice, General_Feat.choice, Epic_Boon.choice):
+	#-- the same picks for the same seeds.
+	assert [
+			tag.NAME
+			for tag in styles
+			] == [
+			"Great Weapon Fighting",
+			]
+	assert [
+			tag.NAME
+			for tag in feats
+			] == [
+			"Skill Expert",
+			"Fey-Touched",
+			]
+	assert [
+			tag.NAME
+			for tag in boons
+			] == [
+			"Boon of Dimensional Travel",
+			]
 	print(
 			"OK — FeatKit self-test:",
 			[tag.NAME for tag in styles],

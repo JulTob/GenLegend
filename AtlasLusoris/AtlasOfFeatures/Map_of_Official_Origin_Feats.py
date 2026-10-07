@@ -8,8 +8,6 @@ dedicated Feature implementation.
 
 from TopKit import Imprint, Post, Record
 
-from AtlasActorLudi.CharactersKit import Report_Of
-
 from AtlasActorLudi.ProficiencyKit import (
 	Commit_Training_Gain,
 	Feature_Training_Record,
@@ -80,18 +78,10 @@ def Make_Catalogued_Origin_Feat(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": Report_Of(
-				description
-				),
-			"SOURCE_TITLE": Report_Of(
-				source_title
-				),
-			"SOURCE_URL": Report_Of(
-				source_url
-				),
-			"MECHANICS_STATUS": Report_Of(
-				"catalogued"
-				),
+			"DESCRIPTION": description,
+			"SOURCE_TITLE": source_title,
+			"SOURCE_URL": source_url,
+			"MECHANICS_STATUS": "catalogued",
 			"Awaken": Awaken,
 			"__module__": __name__,
 			},
@@ -308,7 +298,7 @@ def _grant_training(
 		pool,
 		1,
 		source=source,
-		purpose=f"feat.{feature.__name__}.training",
+		purpose=f"{feature.__name__}.choice",
 		allow_trained=True,
 		rank=rank,
 		exclude=(
@@ -354,49 +344,6 @@ def _proficiency_bonus(
 		)
 
 	return (level - 1) // 4 + 2
-
-
-def _grant_language(
-		char,
-		language: str,
-		) -> None:
-	"""
-	Carry a language onto the Character for the sheet's language line.
-
-	Spoken to through whatever the Character is holding.  Once features are
-	resolved that is a ``Linguistics``, which owns its own ``Add`` and de-
-	duplicates for itself; before then it is a plain list, or nothing at all.
-	Reaching past ``Add`` to append to internals is what broke every Origin Feat
-	that grants a language, so this asks rather than assumes.
-	"""
-	languages = getattr(
-		char,
-		"languages",
-		None,
-		)
-
-	if languages is None:
-		languages = []
-		char.languages = languages
-
-	add = getattr(
-		languages,
-		"Add",
-		None,
-		)
-
-	if callable(
-			add
-			):
-		add(
-			language
-			)
-		return
-
-	if language not in languages:
-		languages.append(
-			language
-			)
 
 
 def _proficiency_bonus(
@@ -509,7 +456,10 @@ class Wildwarden(Origin_Feat):
 	def awaken(char):
 		from AtlasMagia.Lodge_of_Spells import SpeakwithAnimals
 
-		ability = _pick_mental_casting_ability(char)
+		ability = _pick_mental_casting_ability(
+			char,
+			Wildwarden,
+			)
 		_grant_known_cantrip(char, SpeakwithAnimals)
 		description = (
 			"<b>Speak with Animals.</b> You always have the <i>Speak with Animals</i> "
@@ -537,6 +487,46 @@ class Wildwarden(Origin_Feat):
 			)
 
 
+def _dragons_tongue(
+		char,
+		) -> str:
+	"""
+	Draconic, or one other language when Draconic is already known.
+
+	The other is drawn from the feat's own bag over the sorted pool of
+	every language not yet known (QST-0144.10).  "Already known" reads
+	whatever the Character holds: a Linguistics' ``langs`` or the plain
+	list of the background step; before any, Draconic.
+	"""
+	from AtlasLudus.Map_of_Languages import all_languages
+
+	held = getattr(
+		char,
+		"languages",
+		None,
+		)
+	known = set(
+		getattr(
+			held,
+			"langs",
+			held,
+			) or ()
+		)
+	if "Draconic" not in known:
+		return "Draconic"
+	pool = sorted(
+		all_languages - known
+		)
+	if not pool:
+		return "Draconic"
+	return char.Pick(
+		pool,
+		dice=char.Dice_Bag(
+			"Dragon_Cult_Initiate.language"
+			),
+		)
+
+
 # Based on the Cult of the Dragon Initiate feat
 # source: Forgotten Realms: Heroes of Faerûn
 class Dragon_Cult_Initiate(Origin_Feat):
@@ -560,7 +550,9 @@ class Dragon_Cult_Initiate(Origin_Feat):
 	def awaken(char):
 		_grant_language(
 			char,
-			"Draconic",
+			_dragons_tongue(
+				char
+				),
 			)
 		scores = getattr(
 			char,
@@ -621,16 +613,32 @@ class Bastion(Origin_Feat):
 			)
 
 
-def _pick_mental_casting_ability(char) -> str:
-	"""Choose Intelligence, Wisdom, or Charisma — prefer the Character's strongest."""
+def _pick_mental_casting_ability(
+		char,
+		feat,
+		) -> str:
+	"""
+	Choose Intelligence, Wisdom, or Charisma for one feat's spellcasting,
+	preferring the Character's strongest.
+
+	The draw, when one is needed, comes from the feat's own Dice Bag,
+	``<Feat>.casting_ability``: eight feats share this helper, and each
+	keeps its own stream (QST-0144.6, ruling 8).
+	"""
 	labels = (
 		"Intelligence",
 		"Wisdom",
 		"Charisma",
 		)
+	dice = char.Dice_Bag(
+		f"{feat.__name__}.casting_ability"
+		)
 	scores = getattr(char, "AS", None) or getattr(char, "abilities", None)
 	if scores is None:
-		return char.Pick(list(labels))
+		return char.Pick(
+			list(labels),
+			dice=dice,
+			)
 	keys = (
 		"INT",
 		"WIS",
@@ -686,7 +694,10 @@ def _pick_mental_casting_ability(char) -> str:
 				)
 			)
 		]
-	return char.Pick(leaders)
+	return char.Pick(
+		leaders,
+		dice=dice,
+		)
 
 
 def _grant_known_cantrip(char, spell) -> None:
@@ -829,7 +840,10 @@ class Arcane_Conduit(Origin_Feat):
 	def awaken(char):
 		from AtlasMagia.Lodge_of_Spells import SacredFlame
 
-		ability = _pick_mental_casting_ability(char)
+		ability = _pick_mental_casting_ability(
+			char,
+			Arcane_Conduit,
+			)
 		_grant_known_cantrip(char, SacredFlame)
 		uses = getattr(char, "proficiency_bonus", None)
 		if uses is None:
@@ -933,6 +947,9 @@ class Mutant_Aberration(Origin_Feat):
 				AcidSplash,
 				PoisonSpray,
 				],
+			dice=char.Dice_Bag(
+				"Mutant_Aberration.cantrip"
+				),
 			)
 		spell = char.Pick(
 			[
@@ -941,6 +958,9 @@ class Mutant_Aberration(Origin_Feat):
 				WitchBolt,
 				RayofSickness,
 				],
+			dice=char.Dice_Bag(
+				"Mutant_Aberration.spell"
+				),
 			)
 		_grant_known_cantrip(char, cantrip)
 		_grant_known_cantrip(char, spell)
@@ -1095,9 +1115,7 @@ class Spared(Origin_Feat):
 class Dark_Gift(Origin_Feat):
 	"""A boon that arrived uninvited and kept a share of you."""
 
-	CATEGORY = Report_Of(
-		"Dark Gift"
-		)
+	CATEGORY = "Dark Gift"
 
 
 # Based on the Gathered Whispers dark gift
@@ -1133,7 +1151,8 @@ class Gathered_Whispers(Dark_Gift):
 		from AtlasMagia.Lodge_of_Spells import Augury, Message
 
 		ability = _pick_mental_casting_ability(
-			char
+			char,
+			Gathered_Whispers,
 			)
 		uses = _proficiency_bonus(
 			char
@@ -1429,7 +1448,8 @@ class Aurora(Origin_Feat):
 		from AtlasMagia.Lodge_of_Spells import FaerieFire
 
 		ability = _pick_mental_casting_ability(
-			char
+			char,
+			Aurora,
 			)
 		_grant_known_cantrip(char, FaerieFire)
 		description = (
@@ -1479,7 +1499,8 @@ class Jinx(Origin_Feat):
 		from AtlasMagia.Lodge_of_Spells import Hex
 
 		ability = _pick_mental_casting_ability(
-			char
+			char,
+			Jinx,
 			)
 		bonus = _proficiency_bonus(
 			char
@@ -1607,7 +1628,7 @@ class Echoing_Soul(Dark_Gift):
 			background_tag,
 			):
 		bonus = _proficiency_bonus(char)
-		from AtlasLudus.Map_of_Languages import STANDARD_LANGUAGES
+		from AtlasLudus.Map_of_Languages import standard_languages
 
 		untrained = tuple(
 			skill
@@ -1640,9 +1661,7 @@ class Echoing_Soul(Dark_Gift):
 				if skill not in reserved
 				)
 		dice = char.Dice_Bag(
-			"feat.Echoing_Soul.training",
-			version="2024",
-			namespace="GenLegendTraining",
+			"Echoing_Soul.choice"
 			)
 		selected = tuple(
 			dice.sample(
@@ -1701,7 +1720,16 @@ class Echoing_Soul(Dark_Gift):
 			skill.name
 			for skill in selected
 			)
-		tongue = char.Pick(list(STANDARD_LANGUAGES))
+		tongue = char.Pick(
+			sorted(
+				standard_languages
+				),
+			dice=char.Dice_Bag(
+				"Echoing_Soul.language"
+				),
+			)
+			#-- standard_languages is a set; sorted, the pool has a stable
+			#-- order and the bag a stable answer.
 		_grant_language(char, tongue)
 		grant(
 			char,
@@ -1773,7 +1801,10 @@ class Living_Shadow(Dark_Gift):
 	def awaken(char):
 		from AtlasMagia.Lodge_of_Spells import MageHand
 
-		ability = _pick_mental_casting_ability(char)
+		ability = _pick_mental_casting_ability(
+			char,
+			Living_Shadow,
+			)
 		bonus = _proficiency_bonus(char)
 		_grant_known_cantrip(char, MageHand)
 		grant(
@@ -1819,7 +1850,10 @@ class Touch_of_Death(Dark_Gift):
 	def awaken(char):
 		from AtlasMagia.Lodge_of_Spells import ChillTouch
 
-		ability = _pick_mental_casting_ability(char)
+		ability = _pick_mental_casting_ability(
+			char,
+			Touch_of_Death,
+			)
 		_grant_known_cantrip(char, ChillTouch)
 		grant(
 			char,
@@ -1925,9 +1959,17 @@ class Second_Skin(Dark_Gift):
 	def awaken(char):
 		from AtlasMagia.Lodge_of_Spells import AlterSelf
 
-		ability = _pick_mental_casting_ability(char)
+		ability = _pick_mental_casting_ability(
+			char,
+			Second_Skin,
+			)
 		bonus = _proficiency_bonus(char)
-		catalyst = char.Pick(list(Second_Skin.CATALYSTS))
+		catalyst = char.Pick(
+			list(Second_Skin.CATALYSTS),
+			dice=char.Dice_Bag(
+				"Second_Skin.catalyst"
+				),
+			)
 		_grant_known_cantrip(char, AlterSelf)
 		grant(
 			char,
@@ -2000,7 +2042,7 @@ class Symbiotic_Being(Dark_Gift):
 			char,
 			background_tag,
 			):
-		from AtlasLudus.Map_of_Languages import STANDARD_LANGUAGES
+		from AtlasLudus.Map_of_Languages import standard_languages
 
 		bonus = _proficiency_bonus(char)
 		gain = _grant_training(
@@ -2011,7 +2053,14 @@ class Symbiotic_Being(Dark_Gift):
 			background_tag=background_tag,
 			)
 		trained = gain.grants[ 0 ].capability.name
-		tongue = char.Pick(list(STANDARD_LANGUAGES))
+		tongue = char.Pick(
+			sorted(
+				standard_languages
+				),
+			dice=char.Dice_Bag(
+				"Symbiotic_Being.language"
+				),
+			)
 		_grant_language(char, tongue)
 		grant(
 			char,
@@ -2136,3 +2185,305 @@ __all__ = (
 	"Make_Catalogued_Origin_Feat",
 	"OFFICIAL_ORIGIN_FEATS",
 	)
+
+
+# ---------------------------------------------------------------------------
+# Self-test
+# ---------------------------------------------------------------------------
+
+
+def _record_dice_bags(
+		opened,
+		):
+	"""Replace ``Character.Dice_Bag`` with one that records every purpose."""
+	from AtlasActorLudi.CharactersKit import Character
+
+	original = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			**key,
+			):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original(
+			char,
+			purpose,
+			**key,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+
+	return original
+
+
+def _test_echoing_soul_and_symbiotic_being_land_their_grants() -> None:
+	"""
+	Both Dark Gifts awaken to the end (Julio, 2026-10-06: "Fix the origin
+	feats").  Their awakens imported a name Map_of_Languages never had, so
+	neither feat landed a grant.  Now a Character given Echoing Soul holds two
+	Skills, one with Expertise, and a language it did not have; one given
+	Symbiotic Being holds one of its Skills and a language it did not have.
+	"""
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasLudus.Map_of_Languages import standard_languages
+
+	char = Character( seed=41 )
+
+	assert getattr( char, "languages", None ) is None
+
+	Echoing_Soul( char )
+	grants = char.echoing_soul.grants
+
+	assert char in Echoing_Soul
+	assert len( grants ) == 2, grants
+	assert sorted(
+		grant.rank.name
+		for grant in grants
+		) == [ "EXPERTISE", "PROFICIENT" ], grants
+	assert all(
+		grant.capability in SKILLS
+		for grant in grants
+		), grants
+	for grant in grants:
+		assert Find_Training_Rank(
+			char,
+			grant.capability,
+			) is grant.rank
+	assert len( char.languages ) == 1, char.languages
+	assert char.languages[ 0 ] in standard_languages, char.languages
+
+	char = Character( seed=43 )
+
+	assert getattr( char, "languages", None ) is None
+
+	Symbiotic_Being( char )
+	grants = char.symbiotic_being.grants
+
+	assert char in Symbiotic_Being
+	assert len( grants ) == 1, grants
+	assert grants[ 0 ].capability.key in Symbiotic_Being.SKILLS, grants
+	assert grants[ 0 ].rank is Training_Rank.PROFICIENT
+	assert len( char.languages ) == 1, char.languages
+	assert char.languages[ 0 ] in standard_languages, char.languages
+
+
+def _test_every_bag_is_named_by_its_feat() -> None:
+	"""
+	Every choice an Origin Feat makes comes from the Character's Dice Bag,
+	opened with ``<Feat>.<choice>`` and the default key (QST-0144.6, ruling
+	8): no purpose derived from a frame, no counter, no version or namespace.
+	The pools are what they were: the Mutant Aberration shortlists, the
+	Second Skin catalysts, the three mental abilities.
+	"""
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasMagia.Lodge_of_Spells import (
+		AcidSplash,
+		ChaosBolt,
+		ChillTouch,
+		MagicMissile,
+		MindSliver,
+		PoisonSpray,
+		RayofSickness,
+		ShockingGrasp,
+		WitchBolt,
+		)
+
+	expected = {
+		Agitator: { "Agitator.choice" },
+		Field_Lieutenant: { "Field_Lieutenant.choice" },
+		Aberrant_Anatomy: { "Aberrant_Anatomy.choice" },
+		Symbiotic_Being: {
+			"Symbiotic_Being.choice",
+			"Symbiotic_Being.language",
+			},
+		Echoing_Soul: {
+			"Echoing_Soul.choice",
+			"Echoing_Soul.language",
+			},
+		Wildwarden: { "Wildwarden.casting_ability" },
+		Arcane_Conduit: { "Arcane_Conduit.casting_ability" },
+		Gathered_Whispers: { "Gathered_Whispers.casting_ability" },
+		Aurora: { "Aurora.casting_ability" },
+		Jinx: { "Jinx.casting_ability" },
+		Living_Shadow: { "Living_Shadow.casting_ability" },
+		Touch_of_Death: { "Touch_of_Death.casting_ability" },
+		Second_Skin: {
+			"Second_Skin.casting_ability",
+			"Second_Skin.catalyst",
+			},
+		Mutant_Aberration: {
+			"Mutant_Aberration.cantrip",
+			"Mutant_Aberration.spell",
+			},
+		}
+	opened = []
+	original = _record_dice_bags(
+		opened
+		)
+
+	try:
+		for feat, purposes in expected.items():
+			del opened[ : ]
+			char = Character( seed=47 )
+			feat( char )
+			names = [
+				name
+				for name, _ in opened
+				]
+
+			assert set( names ) == purposes, ( feat.__name__, names )
+			assert len( names ) == len( purposes ), ( feat.__name__, names )
+			assert all(
+				not key
+				for _, key in opened
+				), ( feat.__name__, opened )
+	finally:
+		Character.Dice_Bag = original
+
+	char = Character( seed=47 )
+	Mutant_Aberration( char )
+	cantrip, spell = char.known_spells
+
+	assert cantrip in (
+		MindSliver,
+		ChillTouch,
+		ShockingGrasp,
+		AcidSplash,
+		PoisonSpray,
+		), cantrip
+	assert spell in (
+		ChaosBolt,
+		MagicMissile,
+		WitchBolt,
+		RayofSickness,
+		), spell
+
+	char = Character( seed=47 )
+	Second_Skin( char )
+	entry = next(
+		feature
+		for feature in char.features
+		if feature.name == Second_Skin.NAME
+		)
+
+	assert any(
+		catalyst in entry.description
+		for catalyst in Second_Skin.CATALYSTS
+		), entry.description
+	assert any(
+		f"<b>{ability}</b> is your spellcasting ability" in entry.description
+		for ability in (
+			"Intelligence",
+			"Wisdom",
+			"Charisma",
+			)
+		), entry.description
+
+
+def _test_the_same_seed_draws_the_same_feat_choices() -> None:
+	"""A purpose-keyed bag answers the same for the same seed, every time."""
+	from AtlasActorLudi.CharactersKit import Character
+
+	def sheet(
+			feat,
+			):
+		char = Character( seed=53 )
+		feat( char )
+		return tuple(
+			feature.description
+			for feature in char.features
+			)
+
+	for feat in (
+		Echoing_Soul,
+		Symbiotic_Being,
+		Mutant_Aberration,
+		Second_Skin,
+		Jinx,
+		):
+		assert sheet( feat ) == sheet( feat ), feat.__name__
+
+
+def _test_dragon_cult_initiate_learns_another_tongue_when_draconic_is_known() -> None:
+	"""
+	Dragon's Tongue: Draconic, or one other language when Draconic is
+	already known, drawn from Dragon_Cult_Initiate.language over the sorted
+	pool of the languages not yet known (QST-0144.10).
+	"""
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasLudus.Map_of_Languages import (
+		Linguistics,
+		all_languages,
+		)
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			**key,
+			):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original(
+			char,
+			purpose,
+			**key,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		char = Character( seed=47 )
+		assert getattr( char, "languages", None ) is None
+		Dragon_Cult_Initiate( char )
+		assert char.languages == [ "Draconic" ], char.languages
+		assert opened == [], opened
+
+		char = Character( seed=47 )
+		char.languages = Linguistics()
+		char.languages.Add( ( "Common", "Draconic" ) )
+		Dragon_Cult_Initiate( char )
+		assert opened == [
+			(
+				"Dragon_Cult_Initiate.language",
+				{},
+				),
+			], opened
+		[ other ] = char.languages.langs - {"Common", "Draconic"}
+		assert other == char.Pick(
+			sorted(
+				all_languages - {"Common", "Draconic"}
+				),
+			dice=original(
+				char,
+				"Dragon_Cult_Initiate.language",
+				),
+			), other
+	finally:
+		Character.Dice_Bag = original
+
+
+def _self_test() -> None:
+	_test_echoing_soul_and_symbiotic_being_land_their_grants()
+	_test_dragon_cult_initiate_learns_another_tongue_when_draconic_is_known()
+	_test_every_bag_is_named_by_its_feat()
+	_test_the_same_seed_draws_the_same_feat_choices()
+	print(
+		"OK — Map_of_Official_Origin_Feats self-test "
+		f"({len( REAL_SETTING_FEATS )} implemented Origin Feats)"
+		)
+
+
+if __name__ == "__main__":
+	_self_test()

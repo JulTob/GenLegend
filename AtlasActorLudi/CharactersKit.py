@@ -30,6 +30,8 @@ assert "Player" in charlie      # Player is a @Flag: it answers by name
 
 """
 
+from collections.abc import Mapping
+
 from TopKit import Flag, Pre, Report, Tag, TagPreconditionError
 
 
@@ -48,14 +50,18 @@ def Report_Of(
 		value,
 		):
 	"""
-	A Report that always gives back one fixed value.
+	A Report that always gives back one fixed value, for a value that is a Tag or a function.
 
-	TopKit 0.2.0a3 builds Reports from functions (``@Report def X(tag)``) and
-	no longer accepts ``Report( value )``.  A factory that declares Tags from
-	data needs the value form, so this wraps the value in a builder.  A plain
-	value would mostly do, but a function stored as plain class data becomes
-	an Action on the Character; a Report keeps it a plain value on the Tag.
-	Proposed upstream in QST-0093.10.
+	A plain value written on a Tag class (``NAME = "Rage"``, a number, a
+	tuple) already is a Report in effect: readable on the Tag, never on the
+	Character.  Write those as plain class data (Julio, Dialog 0027,
+	2026-10-05: "supposed to be just a normal report"; QST-0144.2).
+
+	A Tag class or a function stored as plain class data is different: TopKit
+	turns a callable into an Action on the Character.  Wrap only those, so
+	the Tag keeps them as a value: a Training's ``PATH`` (a Tag), a
+	Background's ``ORIGIN_FEAT`` (a Tag), a Specialization's generic
+	``reports=`` hook (anything).
 	"""
 	def Builder(
 			tag,
@@ -65,6 +71,55 @@ def Report_Of(
 	return Report(
 		Builder
 		)
+
+
+class Field_Index(Mapping):
+	"""
+	A read-only Mapping that is a live view of a Pin's Field.
+
+	A Pin's Field (``Declared_Guild[:]``) is the catalogue of a family, in
+	declaration order.  Readers that want it by name get one of these instead
+	of a second dictionary: ``index`` reads the Field and keys it, and every
+	read calls it again, so a Tag is in the Mapping the moment it is pinned
+	and nothing is listed twice (QST-0144.5).  ``GUILDS`` and ``MANEUVERS``
+	are Field_Index views keyed by NAME: ``GUILDS[ name ]``, ``name in GUILDS``
+	and ``sorted( GUILDS )`` keep their spelling and never hold a copy.
+	"""
+
+	__slots__ = (
+		"_index",
+		)
+
+	def __init__(
+			view,
+			index,
+			):
+		view._index = index
+
+	def __getitem__(
+			view,
+			key,
+			):
+		return view._index()[ key ]
+
+	def __iter__(
+			view,
+			):
+		return iter(
+				view._index()
+				)
+
+	def __len__(
+			view,
+			):
+		return len(
+				view._index()
+				)
+
+	def __repr__(
+			view,
+			) -> str:
+		return f"{type( view ).__name__}({dict( view )!r})"
 
 
 # ---------------------------------------------------------------------------
@@ -207,55 +262,6 @@ class Character:
 					]
 			)
 
-	def Pick_Bag(
-			char,
-			purpose=None,
-			*,
-			version: str = "1",
-			namespace: str = "GenLegend",
-			):
-		"""
-		The Dice Bag one draw should come from, advanced per purpose.
-
-		Successive draws for the same purpose open ``purpose#0``,
-		``purpose#1`` and so on. Different purposes stay independent.
-		A bare call derives purpose from the caller's module.function.
-		"""
-		if purpose is None:
-			from sys import _getframe
-
-			frame = _getframe(
-				2
-				)
-			purpose = (
-				f"{frame.f_globals.get('__name__', '?')}"
-				f".{frame.f_code.co_qualname}"
-				)
-
-		counts = getattr(
-			char,
-			"_pick_draws",
-			None,
-			)
-
-		if counts is None:
-			counts = {}
-			char._pick_draws = counts
-
-		drawn = counts.get(
-			purpose,
-			0,
-			)
-		counts[
-			purpose
-			] = drawn + 1
-
-		return char.Dice_Bag(
-			f"{purpose}#{drawn}",
-			version=version,
-			namespace=namespace,
-			)
-
 	def Pick(
 			char,
 			ledger,
@@ -265,21 +271,32 @@ class Character:
 			dice=None,
 			):
 		"""
-		Pick one item from a named Dice Bag.
+		Pick one item from a Dice Bag named by the Tag that offers the choice.
 
-		``dice`` takes an already-opened Bag; ``purpose`` names one to open.
-		Neither is required: a bare ``Pick`` still draws deterministically
-		via ``Pick_Bag``.
+		``dice`` takes an already-opened Bag (open it once when one choice
+		draws several times); ``purpose`` opens ``char.Dice_Bag( purpose )``
+		fresh for this one draw.  One of the two is required: a bare Pick
+		is refused, because a purpose nobody wrote would have to be derived
+		from the caller's frame, and that moved draws whenever code moved
+		(ruling 8, Dialog 0027; QST-0144.6).
 		"""
 		if not ledger:
 			raise ValueError(
 				"Pick: empty ledger"
 				)
 
+		if dice is None and purpose is None:
+			raise ValueError(
+				"Pick: name the Dice Bag. Pass dice=char.Dice_Bag( "
+				"\"<Tag>.<choice>\" ) or purpose=\"<Tag>.<choice>\"; "
+				"every choice of a Character draws from a bag named by the "
+				"Tag that offers it (QST-0144.6)."
+				)
+
 		source = (
 			dice
 			if dice is not None
-			else char.Pick_Bag(
+			else char.Dice_Bag(
 				purpose
 				)
 			)
@@ -484,9 +501,10 @@ class Role(Tag):
 	"""Root Tag for a Character's play role.
 
 	Role, Player and NonPlayer are Flags: ``"Player" in char`` answers by
-	name.  A Character's first Tag is its Role, and that matters today:
-	TopKit 0.2.0a3 installs name lookups only when a Character's first Tag is
-	a Flag (QST-0093.10, a Suggest-to-TopKit questa).
+	name.  A Character's first Tag is its Role, by design: everything after
+	it may ask what the Character is for.  (Until TopKit 0.2.0a4 the order
+	was also load-bearing, because a Flag applied after another Tag did not
+	answer by name: QST-0093.10 §1, fixed upstream.)
 	"""
 
 	@Pre
@@ -669,6 +687,59 @@ def _test_dice_bags():
 
 	assert first_choice == progressed_choice
 	assert first.dices.getstate() == dice_state
+
+	#-- A bare draw is refused: nobody derives a purpose for it.
+	try:
+		first.Pick(
+			(
+				"North",
+				"South",
+				),
+			)
+	except ValueError as refusal:
+		assert "QST-0144.6" in str(
+			refusal
+			)
+	else:
+		raise AssertionError(
+			"a bare Pick must be refused"
+			)
+	assert not hasattr(
+		first,
+		"Pick_Bag",
+		)
+
+	#-- purpose= opens the named bag fresh: the same answer every time.
+	by_purpose = tuple(
+		first.Pick(
+			(
+				"North",
+				"South",
+				"East",
+				"West",
+				),
+			purpose="identity.direction",
+			)
+		for _ in range(
+			3
+			)
+		)
+	assert len(
+		set(
+			by_purpose
+			)
+		) == 1
+	assert by_purpose[ 0 ] == first.Pick(
+		(
+			"North",
+			"South",
+			"East",
+			"West",
+			),
+		dice=first.Dice_Bag(
+			"identity.direction"
+			),
+		)
 
 
 def _test_level():

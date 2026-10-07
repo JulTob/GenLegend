@@ -6,7 +6,7 @@ from time import time_ns
 from random import choices
 from AtlasOfMapmaking.Kit_of_HandDrawing import add_edge_shading, add_parchment_background, add_hand_drawn_filter, add_icon_filter, handdrawn_emoji
 from AtlasNomina.Map_of_Names import NamesList, Phonotactic, SurnamesList, SurPhonotactic, NewWord
-from AtlasNomina.Map_of_Titles import Descriptor, Rank, Title
+from AtlasEpica.Map_of_Titles import Descriptor, Rank, Title
 from AtlasAlusoris.Map_of_Races  		import Race
 from AtlasAlusoris.Map_of_Archetypes	import Archetype
 from AtlasActorLudi.Map_of_Gender  		import NewGender

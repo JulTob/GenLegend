@@ -371,8 +371,6 @@ CULTURE_DOMAIN_PRAYERS = {
 	}
 
 
-
-
 # ---------------------------------------------------------------------------
 # Resolution
 # ---------------------------------------------------------------------------
@@ -561,6 +559,32 @@ def prayer_ledger(
 		)
 
 
+def prayer_purpose(
+		domain: str | None,
+		) -> str:
+	"""
+	The Dice Bag purpose of a Domain's prayer: the Domain Tag's class name.
+
+	The Domain is a Cleric Specialization; its Tag offers the prayer, so
+	the purpose is that Tag's class name (``Life.prayer``, ``War.prayer``),
+	never the display name.  A prayer with no Domain has no Tag to name
+	it and is refused.
+	"""
+	from AtlasLusoris.GuildKit import Specialization_Tag
+
+	if not domain:
+		raise ValueError(
+			"A prayer is drawn for a Cleric Domain; none was given or carried."
+			)
+
+	domain_tag = Specialization_Tag(
+		"Cleric",
+		domain,
+		)
+
+	return f"{domain_tag.__name__}.prayer"
+
+
 def pick_prayer(
 		character,
 		domain: str | None = None,
@@ -576,40 +600,19 @@ def pick_prayer(
 			0
 			]
 
+	resolved_domain = _domain_of(
+		character,
+		domain,
+		)
 	dice = character.Dice_Bag(
-		"cleric.prayer",
-		version="1",
-		namespace="GenLegendClass",
+		prayer_purpose(
+			resolved_domain
+			),
 		)
 
 	return character.Pick(
 		ledger,
 		dice=dice,
-		)
-
-
-def domain_wisdom(
-		character,
-		domain: str | None = None,
-		) -> str:
-	"""
-	A compact closer, if a caller wants the old one-line form.
-
-	Domain voice on the sheet uses ``voice_of_domain`` instead.
-	"""
-	resolved = _domain_of(
-		character,
-		domain,
-		) or "Cleric"
-
-	prayer = pick_prayer(
-		character,
-		domain=resolved,
-		)
-
-	return (
-		f"{prayer}, "
-		f"that's the wisdom of the {resolved} Domain."
 		)
 
 
@@ -771,8 +774,128 @@ __all__ = (
 	"CULTURE_DOMAIN_PRAYERS",
 	"CLERIC_DESCRIPTION",
 	"prayer_ledger",
+	"prayer_purpose",
 	"pick_prayer",
-	"domain_wisdom",
 	"voice_of_domain",
 	"bind_cleric_voice",
 	)
+
+
+if __name__ == "__main__":
+	#-- Self-test (QST-0144.6, ruling 8).  A Domain's prayer is drawn from
+	#-- one bag named by the Domain Tag's class name, with the default key,
+	#-- from the ledger assembled for that Character and Domain.
+	import random as stdlib_random
+	from AtlasActorLudi.CharactersKit import Character
+
+	assert prayer_purpose( "Life" ) == "Life.prayer"
+	assert prayer_purpose( "War" ) == "War.prayer"
+	for missing in ( None, "" ):
+		try:
+			prayer_purpose(
+					missing
+					)
+		except ValueError as error:
+			assert "Cleric Domain" in str( error )
+		else:
+			raise AssertionError(
+					"prayer_purpose named a bag for no Domain."
+					)
+	try:
+		prayer_purpose(
+				"Nonesuch"
+				)
+	except KeyError as error:
+		assert "has no Specialization" in str( error )
+	else:
+		raise AssertionError(
+				"prayer_purpose named a bag for a Domain nobody declared."
+				)
+
+	opened = []
+		#-- (purpose, version, namespace) of every bag opened
+	drawn = {}
+		#-- purpose -> [pool] of every draw from those bags
+
+	class Probe_Dice(
+			stdlib_random.Random
+			):
+		purpose = "?"
+
+		def choice(
+				dice,
+				population,
+				):
+			drawn.setdefault( dice.purpose, [] ).append(
+					list( population )
+					)
+			return super().choice(
+					population
+					)
+
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				char,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		opened.append(
+				( purpose, version, namespace )
+				)
+		probe = Probe_Dice()
+		probe.setstate(
+				bag.getstate()
+				)
+		probe.purpose = purpose
+		return probe
+
+	char = Character(
+			seed=1
+			)
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		for domain in ( "Life", "Light", "Trickery", "War" ):
+			opened.clear()
+			drawn.clear()
+			prayer = pick_prayer(
+					char,
+					domain=domain,
+					)
+			assert opened == [
+					( f"{domain}.prayer", "1", "GenLegend" ),
+					], opened
+			[ pool ] = drawn[ f"{domain}.prayer" ]
+			assert pool == list(
+					prayer_ledger(
+							char,
+							domain=domain,
+							)
+					), domain
+			assert prayer in pool
+		#-- The voice seated on a Domain Tag draws the same bag.
+		opened.clear()
+		text = voice_of_domain(
+				"Life"
+				)(
+				char
+				)
+		assert opened == [
+				( "Life.prayer", "1", "GenLegend" ),
+				], opened
+		assert text
+	finally:
+		Character.Dice_Bag = original_dice_bag
+
+	print(
+			"OK: a Domain's prayer comes from one <Domain>.prayer bag, from "
+			"the ledger assembled for the Character."
+			)

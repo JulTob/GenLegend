@@ -515,18 +515,22 @@ def _untrained_choice(
 		*,
 		options: tuple[str, ...],
 		attributes: dict[str, str],
-		bag_purpose: str,
+		dice,
 		) -> str:
+	"""
+	The first option the Character is not trained in, in the bag's order.
+
+	``dice`` is the Dice Bag the lesson opened for this one choice
+	(``Student_of_War.skill`` or ``Student_of_War.tool``; ruling 8,
+	QST-0144.6).  The whole table is shuffled by that bag and the first
+	untrained name wins; when every option is trained, the first stands.
+	"""
 	ordered = list(
 		options
 		)
-	char.Dice_Bag(
-		bag_purpose,
-		version="1",
-		namespace="GenLegendFighter",
-		).shuffle(
-			ordered
-			)
+	dice.shuffle(
+		ordered
+		)
 	for name in ordered:
 		proficiency = getattr(
 			char.skills,
@@ -553,13 +557,17 @@ def _apply_student_of_war(
 		char,
 		options=FIGHTER_SKILLS,
 		attributes=_SKILL_ATTRIBUTES,
-		bag_purpose="fighter.battle_master.student.skill",
+		dice=char.Dice_Bag(
+			"Student_of_War.skill",
+			),
 		)
 	char.battle_master_tool = _untrained_choice(
 		char,
 		options=ARTISAN_TOOLS,
 		attributes=_TOOL_ATTRIBUTES,
-		bag_purpose="fighter.battle_master.student.tool",
+		dice=char.Dice_Bag(
+			"Student_of_War.tool",
+			),
 		)
 	getattr(
 		char.skills,
@@ -1555,3 +1563,182 @@ Telekinetic_Master = _psi_warrior(
 			),
 		apply=_apply_telekinetic_master,
 		)
+
+
+# ---------------------------------------------------------------------------
+# Self-test
+# ---------------------------------------------------------------------------
+
+
+def _self_test() -> None:
+	"""Student of War draws its skill and tool from bags named by the lesson (ruling 8)."""
+	from types import SimpleNamespace
+
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		bag = original(
+				char,
+				purpose,
+				**key,
+				)
+		opened.append(
+				(
+					purpose,
+					key,
+					bag,
+					)
+				)
+		return bag
+
+	def Purposes() -> list:
+		"""What was opened, as (purpose, key): a key of {} is the default."""
+		return [
+				(
+					purpose,
+					key,
+					)
+				for purpose, key, _ in opened
+				]
+
+	def Skeleton(
+			seed: int,
+			level: int,
+			):
+		"""A Character with a skill sheet and nothing else."""
+		char = Character(
+				seed=seed,
+				level=level,
+				)
+		char.skills = Char_Skills(
+				char,
+				SimpleNamespace(
+						STR=10,
+						DEX=10,
+						CON=10,
+						INT=10,
+						WIS=10,
+						CHA=10,
+						),
+				2,
+				)
+		return char
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Skeleton(
+				seed=7,
+				level=3,
+				)
+		char.skills.Athletics.set_proficiency()
+
+		_apply_student_of_war(
+				char,
+				)
+		assert [
+				(
+					purpose,
+					key,
+					)
+				for purpose, key in Purposes()
+				if purpose.startswith(
+						"Student_of_War.",
+						)
+				] == [
+				(
+					"Student_of_War.skill",
+					{},
+					),
+				(
+					"Student_of_War.tool",
+					{},
+					),
+				], opened
+			#-- Apply_Battle_Master_Choices opens the Specialization's own
+			#-- bags first; this probe reads only the lesson's two.
+		skills_in_bag_order = list(
+				FIGHTER_SKILLS
+				)
+		original(
+				char,
+				"Student_of_War.skill",
+				).shuffle(
+				skills_in_bag_order
+				)
+		assert char.battle_master_skill == next(
+				name
+				for name in skills_in_bag_order
+				if name != "Athletics"
+				)
+			#-- The whole table shuffled by the bag; the first untrained wins.
+		tools_in_bag_order = list(
+				ARTISAN_TOOLS
+				)
+		original(
+				char,
+				"Student_of_War.tool",
+				).shuffle(
+				tools_in_bag_order
+				)
+		assert char.battle_master_tool == tools_in_bag_order[0]
+			#-- No tool was trained, so the first of the shuffle wins.
+		assert getattr(
+				char.skills,
+				_SKILL_ATTRIBUTES[
+						char.battle_master_skill
+						],
+				).proficiency_level == 1
+		assert getattr(
+				char.skills,
+				_TOOL_ATTRIBUTES[
+						char.battle_master_tool
+						],
+				).proficiency_level == 1
+
+		trained = Skeleton(
+				seed=9,
+				level=3,
+				)
+		for name in FIGHTER_SKILLS:
+			getattr(
+					trained.skills,
+					_SKILL_ATTRIBUTES[
+							name
+							],
+					).set_proficiency()
+		ordered = list(
+				FIGHTER_SKILLS
+				)
+		original(
+				trained,
+				"Student_of_War.skill",
+				).shuffle(
+				ordered
+				)
+		assert _untrained_choice(
+				trained,
+				options=FIGHTER_SKILLS,
+				attributes=_SKILL_ATTRIBUTES,
+				dice=original(
+						trained,
+						"Student_of_War.skill",
+						),
+				) == ordered[0]
+			#-- Every option trained: the first of the shuffle stands.
+	finally:
+		Character.Dice_Bag = original
+	print(
+			"Map_of_Fighter_Training: self-test OK"
+			)
+
+
+if __name__ == "__main__":
+	_self_test()

@@ -7,7 +7,6 @@ from AtlasLusoris.Grimoire_of_Features import (
 	ApplyRandomFeats,
 	ApplyEpicBoon
 	)
-import random
 
 
 class Warlock(Progression):
@@ -33,7 +32,10 @@ class Warlock(Progression):
 	def prepare_invocations(self):
 		n = Warlock.warlock_invocations_known(self.character.level)
 		available = list(BuildAvailableInvocations(self.character))
-		chosen = random.sample(available, min(n, len(available)))
+		dice = self.character.Dice_Bag(
+				"Eldritch_Invocations.choice",
+				)
+		chosen = dice.sample(available, min(n, len(available)))
 
 		self.character.invocations = []
 
@@ -76,7 +78,10 @@ class Warlock(Progression):
 		if level >= 3:
 
 			if subclass == "Celestial":
-				patron = random.choice([
+				patron_dice = character.Dice_Bag(
+						"Celestial.patron.name",
+						)
+				patron = patron_dice.choice([
 					"Solinar, the Sunforged Champion",         # an Empyrean who led the Bright Legion
 					"Seraphiel, the Radiant Guard",            # a six-winged seraph of Mount Celestia
 					"Mariel, the Trumpet Voice",               # trumpet-bearing Archon of the Fourth Spire
@@ -151,7 +156,10 @@ class Warlock(Progression):
 					""",
 					"Class: Warlock"))
 			if subclass == "Fiend":
-				patron = random.choice([
+				patron_dice = character.Dice_Bag(
+						"Fiend.patron",
+						)
+				patron = patron_dice.choice([
 					"The Infernal Librarian",	"The Hell Duke",	"The Throne of Chains",
 					"The Whisperer Beneath the Ashes", "The Lord of Flies", "The Soul Collector",
 					"The King of Rot",	"The Vermilion Herald", "The Sovereign",
@@ -179,7 +187,10 @@ class Warlock(Progression):
 					""",
 					"Class: Warlock"))
 			if subclass == "Great Old One":
-				patron = random.choice([
+				patron_dice = character.Dice_Bag(
+						"GreatOldOne.patron",
+						)
+				patron = patron_dice.choice([
 					"Tharizdun, the Chained God", "Zargon, the Returner",
 					"Hadar, the Dark Hunger", 'Cthulhu, The Great One',
 					"Yugiax, the Sleeper", "Karunash, The Fractured One",
@@ -216,96 +227,11 @@ class Warlock(Progression):
 					When you cast a Warlock spell that deals damage, you can change its damage type to Psychic. In addition, when you cast a Warlock spell that is an Enchantment or Illusion, you can do so without Verbal or Somatic components.
 					""",
 					"Class: Warlock"))
-			if subclass == "Genie":
-				random.seed(character.seed)
-				patron = random.choice([
-					"Dao", "Djinni", "Efreeti", "Marid"
-					])
-
-				features.append(Feature("Genie Patron",
-					f"""You have made a pact with one of the rarest kinds of genie, a noble {patron} genie. Such entities rule vast fiefs on the Elemental Planes and have great influence over lesser genies and elemental creatures. Noble genies are varied in their motivations, but most are arrogant and wield power that rivals that of lesser deities. They delight in turning the table on mortals, who often bind genies into servitude, and readily enter into pacts that expand their reach.
-					""",
-					"Class: Warlock"))
-				if patron == "Djinni":
-					extra_damage = "thunder"
-					vessel = random.choice([
-						"ring", "necklace", "lamp", "bottle", "horn",
-						'bone flute', 'pan flute', 'astrolabe',
-						'mirror', 'vial of sand', 'perfume bottle',
-						'silver mirror', 'quill', 'music box',
-						'hourglass',   'compass', 'sundial',
-						'diadem',	'tiara', 'crown', 'amulet', 'pendant',
-						'coin amulet'
-						])
-				if patron == "Efreeti":
-					extra_damage = "fire"
-					vessel = random.choice([
-						"ring", "necklace", "lamp", "bottle", 'incense censer',
-						'lantern', 'lighter', 'spice censer', 'snuffbox',
-						'spice jar', 'teapot', 'spice grinder', 'grinder',
-						'medallion', "brazier",  'amulet', 'sundial', 'pendant',
-						'dice', 'rosary', 'coin', 'spice shaker', 'skeleton key',
-						'coin amulet', 'figurine'
-						])
-				if patron == "Marid":
-					extra_damage = "cold"
-					vessel = random.choice([
-						"ring", "necklace", "lamp", "bottle", 'conch shell',
-						'chalice', 'calligraphy pen', 'goblet', 'coral',
-						'teapot', 'flask', 'shell horn', 'mirror',
-						'locket',  'amulet', 'snowball',
-						])
-				if patron == "Dao":
-					extra_damage = "bludgeoning"
-					vessel = random.choice([
-						"ring", "necklace", "lamp", "bottle", "diamond",
-						'hourglass', 'game piece', 'vial of sand', 'diadem',
-						'tiara', 'crown', 'book',  'amulet', 'coin', 'salt shaker',
-						'dice', 'skeleton key', 'figurine'
-						])
-				features.append(Feature(f"Genie's Vessel",
-					f"""
-					Your {patron} patron gifts you an ornate {vessel}.
-					A magical vessel that grants you a measure of the genie's power.
-					<br>The {vessel} is a Tiny object, and you can use it
-					as a spellcasting focus for your warlock spells.
-					<br> While you are touching the vessel, you can use any one of its magic features.
-					""",
-					"Class: Warlock"))
-				features.append(Feature("Bottled Respite",
-					f"""
-					As an action, you can magically vanish and enter your {vessel},
-					which remains in the space you left. The interior of the
-					vessel is an extradimensional space in the shape of a
-					20-foot-radius cylinder, 20 feet high, and resembles
-					your {vessel}. The interior is appointed with
-					cushions and low tables and is a comfortable temperature.
-					While inside, you can hear the area around your {vessel} as if you were in its space. You can remain inside the vessel up to a number of hours equal to twice your proficiency bonus. You exit the vessel early if you use a bonus action to leave, if you die, or if the vessel is destroyed. When you exit the vessel, you appear in the unoccupied space closest to it. Any objects left in the vessel remain there until carried out, and if the vessel is destroyed, every object stored there harmlessly appears in the unoccupied spaces closest to the vessel's former space. Once you enter the vessel, you can't enter again until you finish a long rest.
-					""",
-					"Class: Warlock"))
-				features.append(Feature("Genie's Wrath.",
-					f"""
-					Once during each of your turns when you hit with an
-					attack roll, you can deal extra {extra_damage} damage to
-					the target equal to your proficiency bonus.
-					""",
-					"Class: Warlock"))
-				features.append(Feature("The Vessel",
-					f"""
-					The {vessel}'s AC equals your spell save DC.
-					Its hit points equal your warlock level plus your
-					proficiency bonus, and it is immune to poison and
-					psychic damage. <br>
-					If the vessel is destroyed or you lose it, you can
-					perform a 1-hour ceremony to receive a replacement
-					from your patron. This ceremony can be performed
-					during a short or long rest, and the previous
-					vessel is destroyed if it still exists. The vessel
-					vanishes in a flare of elemental power when you die.
-					""",
-					"Class: Warlock"))
 			if subclass == "Archfey":
-				patron = random.choice([
+				patron_dice = character.Dice_Bag(
+						"Archfey.patron",
+						)
+				patron = patron_dice.choice([
 	"Aranella, the Spring Warden",
 	"Sylvenor, the Summer Flame",
 	"Cormora, the Autumn Harbinger",
@@ -508,18 +434,6 @@ Once you use this feature, you can't use it again until you
 finish a Short or Long Rest unless you expend a Pact Magic
 spell slot (no action required) to restore your use of it.					""",
 					"Class: Warlock"))
-			if subclass == "Genie":
-					features.append(Feature("Elemental Resistance",
-						f"""
-						You have resistance to {extra_damage} damage.
-						""",
-						"Class: Warlock"))
-					features.append(Feature("Elemental Gift",
-						f"""
-As a bonus action, you can give yourself a flying speed of 30 feet that lasts for 10 minutes, during which you can hover.
-<br> You can use this bonus action a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.
-						""",
-						"Class: Warlock"))
 			if subclass == "Celestial":
 				features.append(Feature("Radiant Soul",
 					f"""
@@ -583,25 +497,6 @@ Psychic damage to you, that creature takes the same amount of damage that you ta
 					"""
 					"Class: Warlock"))
 
-			if subclass == "Genie":
-				features.append(Feature("Sanctuary Vessel",
-					f"""
-When you enter your Genie's Vessel, the {vessel} via the Bottled Respite
-feature, you can now choose up to five willing creatures that you
-can see within 30 feet of you, and the chosen creatures are
-drawn into the vessel with you.
-<br>
-As a bonus action, you can eject any number of creatures from
-the vessel, and everyone is ejected if you leave or die or
-if the vessel is destroyed.
-<br>
-In addition, anyone (including you) who remains within the {vessel}
-for at least 10 minutes gains the benefit of finishing
-a short rest, and anyone can add your proficiency bonus
- to the number of hit points they regain if they spend any
-  Hit Dice as part of a short rest there.
-					""",
-					"Class: Warlock"))
 
 		if level >= 14:
 			if subclass == "Archfey":
@@ -642,21 +537,6 @@ occupied or the nearest unoccupied space.
 Once you use this feature, you can't use it again until you finish a Long Rest unless you expend a Pact Magic spell slot (no action required) to restore your use of it.
 					"""
 					"Class: Warlock"))
-			if subclass == "Genie":
-				features.append(Feature("Limited Wish",
-					f"""
-You entreat your patron to grant you a small wish. As an action,
- you can speak your desire to your Genie's Vessel, requesting
- the effect of one spell that is 6th level or lower and has
- a casting time of 1 action. The spell can be from any class's
- spell list, and you don't need to meet the requirements in
- that spell, including costly components; the spell simply
- takes effect as part of this action.
-<br>
-Once you use this feature, you can't use it again until you
-finish 1d4 long rests.
-""",
-					"Class: Warlock"))
 
 		if level >= 19:
 			feats = ApplyEpicBoon(character)
@@ -672,6 +552,276 @@ finish 1d4 long rests.
 
 		for asi_level in [4,8,12,16,19]:
 			if level >= asi_level:
-				features.extend(ApplyRandomFeats(character, n=1))
+				features.extend(ApplyRandomFeats(character, n=1, level=asi_level))
 
 		return features
+
+
+if __name__ == "__main__":
+	#-- Self-test (QST-0144.6, ruling 8).  The invocations a Warlock knows and
+	#-- the patron's name are drawn from the Character's Dice Bag, opened with
+	#-- the purpose of the Tag that offers each choice, with the default key,
+	#-- from the pools and with the sample size the builder had before the
+	#-- port; the shared random stream is never reached from this file.
+	import contextlib
+	import io
+	import os
+	import random as stdlib_random
+	import sys
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Map_of_Character_Generation import summon_player
+
+	THIS_FILE = os.path.realpath(
+			__file__
+			)
+	opened = []
+		#-- (purpose, version, namespace) of every bag opened from this file
+	drawn = {}
+		#-- purpose -> [(pool, result)] or [(pool, k, result)] of every draw
+	shared = []
+		#-- (function, line) of every shared-stream call made from this file
+
+	def from_this_file(
+			frame,
+			) -> bool:
+		return os.path.realpath(
+				frame.f_code.co_filename
+				) == THIS_FILE
+
+	class Probe_Dice(
+			stdlib_random.Random
+			):
+		"""A Dice Bag that remembers every pool it was asked to draw from."""
+
+		purpose = "?"
+
+		def choice(
+				dice,
+				population,
+				):
+			result = super().choice(
+					population
+					)
+			drawn.setdefault(
+					dice.purpose,
+					[],
+					).append(
+					(
+							list(
+									population
+									),
+							result,
+							)
+					)
+			return result
+
+		def sample(
+				dice,
+				population,
+				k,
+				**keywords,
+				):
+			result = super().sample(
+					population,
+					k,
+					**keywords,
+					)
+			drawn.setdefault(
+					dice.purpose,
+					[],
+					).append(
+					(
+							list(
+									population
+									),
+							k,
+							result,
+							)
+					)
+			return result
+
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				char,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		if not from_this_file(
+				sys._getframe(
+						1
+						)
+				):
+			return bag
+		opened.append(
+				(
+						purpose,
+						version,
+						namespace,
+						)
+				)
+		probe = Probe_Dice()
+		probe.setstate(
+				bag.getstate()
+				)
+		probe.purpose = purpose
+		return probe
+
+	def counting(
+			name,
+			):
+		original_function = getattr(
+				stdlib_random,
+				name,
+				)
+
+		def counted(
+				*arguments,
+				**keywords,
+				):
+			caller = sys._getframe(
+					1
+					)
+			if from_this_file(
+					caller
+					):
+				shared.append(
+						(
+								name,
+								caller.f_lineno,
+								)
+						)
+			return original_function(
+					*arguments,
+					**keywords,
+					)
+
+		return counted
+
+	WATCHED = (
+			"choice",
+			"sample",
+			"shuffle",
+			"random",
+			"randint",
+			"seed",
+			)
+	saved = {
+			name: getattr(
+					stdlib_random,
+					name,
+					)
+			for name in WATCHED
+			}
+
+	def summon(
+			**request,
+			):
+		with contextlib.redirect_stdout(
+				io.StringIO()
+				), contextlib.redirect_stderr(
+				io.StringIO()
+				):
+			return summon_player(
+					**request
+					)
+
+	#-- (Specialization, purpose, pool size, first name, last name), measured
+	#-- on the random-module pools before the port.
+	PATRON_POOLS = (
+			(
+					"Archfey",
+					"Archfey.patron",
+					105,
+					"Aranella, the Spring Warden",
+					"The Green Lord",
+					),
+			(
+					"Celestial",
+					"Celestial.patron.name",
+					44,
+					"Solinar, the Sunforged Champion",
+					"Ophiuchus, Archon of the Zodiac",
+					),
+			(
+					"Fiend",
+					"Fiend.patron",
+					22,
+					"The Infernal Librarian",
+					"Yeenoghu, Lord of Gnolls",
+					),
+			(
+					"Great Old One",
+					"GreatOldOne.patron",
+					24,
+					"Tharizdun, the Chained God",
+					"The Infinite Library",
+					),
+			)
+	LEVEL = 3
+
+	Character.Dice_Bag = recording_dice_bag
+	for name in WATCHED:
+		setattr(
+				stdlib_random,
+				name,
+				counting(
+						name
+						),
+				)
+	try:
+		for specialization, purpose, size, first, last in PATRON_POOLS:
+			opened.clear()
+			drawn.clear()
+			warlock = summon(
+					guild="Warlock",
+					specialization=specialization,
+					level=LEVEL,
+					seed=7,
+					)
+			assert sorted(
+					opened_purpose
+					for opened_purpose, _, _ in opened
+					) == sorted(
+					[ "Eldritch_Invocations.choice", purpose ]
+					), opened
+			assert all(
+					(version, namespace) == ("1", "GenLegend")
+					for _, version, namespace in opened
+					), opened
+			[ ( names, patron ) ] = drawn[ purpose ]
+			assert ( len( names ), names[ 0 ], names[ -1 ] ) == ( size, first, last ), (
+					len( names ),
+					names[ 0 ],
+					names[ -1 ],
+					)
+			assert patron in names, patron
+			[ ( available, k, chosen ) ] = drawn[ "Eldritch_Invocations.choice" ]
+			assert k == min(
+					Warlock.warlock_invocations_known( LEVEL ),
+					len( available ),
+					), ( k, len( available ) )
+			assert warlock.invocations == chosen, ( warlock.invocations, chosen )
+		assert shared == [], shared
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		for name, function in saved.items():
+			setattr(
+					stdlib_random,
+					name,
+					function,
+					)
+
+	print(
+			"OK: the Warlock's invocations and patron names come from the "
+			"Character's Dice Bag under Eldritch_Invocations.choice and the "
+			"Specializations' names, with their old pools and sample size."
+			)

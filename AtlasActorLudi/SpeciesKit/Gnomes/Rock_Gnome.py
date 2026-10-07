@@ -1,5 +1,6 @@
 """The 2024 Rock Gnome Heritage Shape."""
 
+from TopKit import Flag
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
@@ -10,6 +11,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
+@Flag( "Rock Gnome", "Rock" )
 class Rock_Gnome(
 	Gnome,
 	Heritage,

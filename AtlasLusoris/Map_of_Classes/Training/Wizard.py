@@ -34,7 +34,8 @@ class Wizard(Progression):
 			character.skills.activate_expertise(
 				2,
 				["Arcana", "History",	"Investigation",	"Medicine",
-				"Nature",	"Religion"]
+				"Nature",	"Religion"],
+				dice=character.Dice_Bag( "Scholar.choice" ),
 				)
 		if level >= 3:
 			if subclass == "Evoker":
@@ -47,7 +48,7 @@ class Wizard(Progression):
 					When you cast a cantrip at a creature and you miss with the attack roll or the target succeeds on a saving throw against the cantrip,
 					the target takes half the cantrip's damage (if any) but suffers no additional effect from the cantrip."""))
 		if level >= 4:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=4)
 		if level >= 5:
 			features.append(Feature("Memorize Spell", 
 				"""Whenever you finish a Short Rest,
@@ -65,12 +66,12 @@ class Wizard(Progression):
 			and they take no damage if they would normally take half damage
 			on a successful save."""))
 		if level >= 8:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=8)
 		if level >= 10 and subclass == "Evoker":
 			features.append(Feature("Empowered Evocation", 
 			"Whenever you cast a Wizard spell from the Evocation school, you can add your Intelligence modifier to one damage roll of that spell."))
 		if level >= 12:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=12)
 		if level >= 14 and subclass == "Evoker":
 			features.append(Feature("Empowered Evocation", 
 			"""You can increase the power of your spells.
@@ -86,7 +87,7 @@ class Wizard(Progression):
 			Long Rest, the Necrotic damage per spell level increases by
 			<b>1d12</b>."""))
 		if level >= 16:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=16)
 		if level >= 18:
 			features.append(Feature("Spell Mastery", 
 			"""You have achieved such mastery over certain spells that you
@@ -110,3 +111,45 @@ class Wizard(Progression):
 			level, you must expend a spell slot."""))
 		features.extend(feats)
 		return features
+
+
+if __name__ == "__main__":
+	from random import Random
+	from AtlasActorLudi.Grimoire_of_AbilityScores import AbilityScores
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+
+	class Probe:
+		"""A level 2 Wizard stand-in with the fields Wizard.features reads."""
+		def __init__(probe):
+			probe.Level = 2
+			probe.Subclass = None
+			probe.char_class = "Wizard"
+			probe.base_health = 6
+			probe.opened = []
+			probe.skills = Char_Skills(
+				AS=AbilityScores(10, 10, 10, 10, 10, 10),
+				ProficiencyBonus=2,
+				)
+
+		def Dice_Bag(probe, purpose):
+			probe.opened.append(purpose)
+			return Random(purpose)
+
+	scholar_skills = {"Arcana", "History", "Investigation", "Medicine", "Nature", "Religion"}
+
+	#-- level 2: the hit die rolls from Wizard.hit_points, then the Scholar
+	#-- lesson doubles two of its six skills from Scholar.choice
+	probe = Probe()
+	features = Wizard(probe).features(probe)
+	assert probe.opened == ["Wizard.hit_points", "Scholar.choice"], probe.opened
+	doubled = {skill.name for skill in probe.skills.get_all_skills() if skill.proficiency_level == 2}
+	assert len(doubled) == 2 and doubled <= scholar_skills, doubled
+	assert "Scholar" in [feature.name for feature in features]
+	assert 7 <= probe.base_health <= 12, probe.base_health
+
+	#-- the same Wizard doubles the same two skills again
+	again = Probe()
+	Wizard(again).features(again)
+	assert {skill.name for skill in again.skills.get_all_skills() if skill.proficiency_level == 2} == doubled
+
+	print("OK - Training/Wizard: the Scholar's Expertise draws from Scholar.choice.")

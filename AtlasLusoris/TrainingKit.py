@@ -11,7 +11,10 @@ Thought pattern (read this before the code)
 	   as class data (Decree 0009, QST-0142 station 3): one ``ENTRIES``
 	   Entry in the Guild section at its ``MIN_LEVEL``, and its ``CHIPS``.
 	   The sheet reads them through ``Find_Build``; nothing is written to
-	   ``char.features``.
+	   ``char.features``.  Its table constants (``GUILD_NAME``,
+	   ``MIN_LEVEL``, ``PATH``, ``SOURCE``) are Records of the
+	   ``Declared_Lesson`` Pin, landed on the Tag as Reports, and the
+	   catalogue is that Pin's Field: ``Declared_Lesson[:]``.
 	4. Subclass lessons stay out until a later pass — core Guild
 	   Trainings first (reference: Fighter Second Wind).
 
@@ -27,9 +30,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from typing import Any
 
-from TopKit import Imprint, Pre, Tag
-
-from AtlasActorLudi.CharactersKit import Report_Of
+from TopKit import Imprint, Pin, Pre, Record, Tag
 
 from AtlasActorLudi.CharactersKit import Character
 from AtlasVenustas import Chip
@@ -46,7 +47,8 @@ class Training(Tag):
 	"""
 	A lesson from Guild training (D&D class feature).
 
-	Concrete Trainings declare GUILD_NAME and MIN_LEVEL as Reports.
+	Concrete Trainings carry GUILD_NAME, MIN_LEVEL, PATH and SOURCE as
+	Reports, landed by the ``Declared_Lesson`` Pin below.
 	"""
 
 	NAME = "Training"
@@ -79,7 +81,124 @@ class Training(Tag):
 			target.features = []
 
 
-_TRAINING_DECLARATIONS: list[type[Training]] = []
+@Pin
+class Declared_Lesson(Tag):
+	"""
+	Pin for the Training Tags known to the generator.
+
+	``Make_Training`` applies it to every lesson it builds, so the
+	catalogue is this Pin's Field, ``Declared_Lesson[:]``, in declaration
+	order: no list is kept beside the Maps, and a lesson is discoverable
+	the moment it is declared.  Its Records land on the lesson as Reports,
+	readable on the Tag and never on the Character; that is what lets
+	``PATH`` hold a Tag class, which as plain class data would have become
+	an Action.
+	"""
+
+	@Pre
+	def Training_Tag_Only(
+			target,
+			):
+		return (
+			isinstance(
+					target,
+					type,
+					)
+			and issubclass(
+					target,
+					Training,
+					)
+			and target is not Training
+			)
+
+	@Record
+	def GUILD_NAME(
+			target,
+			*,
+			guild_name=None,
+			) -> str:
+		if (
+			not isinstance(
+					guild_name,
+					str,
+					)
+			or not guild_name.strip()
+			):
+			raise ValueError(
+					f"{target.__name__}: guild_name must be a non-empty "
+					"Guild name."
+					)
+		return guild_name
+
+	@Record
+	def MIN_LEVEL(
+			target,
+			*,
+			min_level=1,
+			) -> int:
+		if (
+			isinstance(
+					min_level,
+					bool,
+					)
+			or not isinstance(
+					min_level,
+					int,
+					)
+			or min_level < 1
+			):
+			raise ValueError(
+					f"{target.__name__}: min_level must be an integer of "
+					"at least 1."
+					)
+		return min_level
+
+	@Record
+	def PATH(
+			target,
+			*,
+			path=None,
+			) -> str | type[Tag] | None:
+		if path is None:
+			return None
+		if (
+			isinstance(
+					path,
+					type,
+					)
+			and issubclass(
+					path,
+					Tag,
+					)
+			):
+			return path
+		resolved = str(
+				path
+				).strip()
+		if not resolved:
+			raise ValueError(
+					f"{target.__name__}: path, if set, must be a Tag or "
+					"a non-empty legacy name."
+					)
+		return resolved
+
+	@Record
+	def SOURCE(
+			target,
+			*,
+			source=None,
+			) -> str:
+		if (
+			not isinstance(
+					source,
+					str,
+					)
+			or not source.strip()
+			):
+			raise ValueError(
+					f"{target.__name__}: source must be a non-empty string."
+					)
+		return source
 
 
 def _class_name(
@@ -199,38 +318,15 @@ def Make_Training(
 	but skips the Feature Entry — use when another section owns the prose
 	(Spellcasting → Spells) or a FeatKit grant names the pick
 	(Fighting Style → Archery, …).
+
+	The Tag is built with its behaviour only (gates, Imprint, ``NAME``,
+	``ENTRIES``, ``CHIPS``) and then pinned with ``Declared_Lesson``, whose
+	Records validate ``guild_name``, ``min_level``, ``path`` and ``source``
+	and land them on the Tag as Reports.
 	"""
 	if not name or not name.strip():
 		raise ValueError(
 				"Make_Training: name is required."
-				)
-	if not guild_name or not guild_name.strip():
-		raise ValueError(
-				"Make_Training: guild_name is required."
-				)
-	if min_level < 1:
-		raise ValueError(
-				"Make_Training: min_level must be at least 1."
-				)
-	if (
-		path is not None
-		and not (
-			isinstance(
-					path,
-					type,
-					)
-			and issubclass(
-					path,
-					Tag,
-					)
-			)
-		and not str(
-				path
-				).strip()
-		):
-		raise ValueError(
-				"Make_Training: path, if set, must be a Tag or "
-				"a non-empty legacy name."
 				)
 
 	resolved_path = path
@@ -345,18 +441,6 @@ def Make_Training(
 					resolved_chips,
 					on_sheet,
 					),
-			"GUILD_NAME": Report_Of(
-					guild_name
-					),
-			"MIN_LEVEL": Report_Of(
-					min_level
-					),
-			"PATH": Report_Of(
-					resolved_path
-					),
-			"SOURCE": Report_Of(
-					resolved_source
-					),
 			"Trained_In_Guild": Trained_In_Guild,
 			"Rank_Reached": Rank_Reached,
 			"Path_Matched": Path_Matched,
@@ -374,8 +458,12 @@ def Make_Training(
 			namespace,
 			)
 
-	_TRAINING_DECLARATIONS.append(
-			training_tag
+	Declared_Lesson(
+			training_tag,
+			guild_name=guild_name,
+			min_level=min_level,
+			path=resolved_path,
+			source=resolved_source,
 			)
 	return training_tag
 
@@ -515,10 +603,10 @@ def Training_Chips(
 def trainings_for(
 		guild_name: str,
 		) -> tuple[type[Training], ...]:
-	"""All Training Tags registered for one Guild, by min level."""
+	"""All Training Tags declared for one Guild, by min level."""
 	found = [
 			tag
-			for tag in _TRAINING_DECLARATIONS
+			for tag in Declared_Lesson[:]
 			if tag.GUILD_NAME == guild_name
 			]
 	found.sort(
@@ -710,25 +798,8 @@ def Apply_Guild_Trainings(
 	return applied
 
 
-# Registry alias for Maps / tests
-TRAININGS = {
-		tag.NAME: tag
-		for tag in _TRAINING_DECLARATIONS
-		}
-
-
-def _refresh_training_registry() -> None:
-	TRAININGS.clear()
-	TRAININGS.update(
-			{
-					tag.NAME: tag
-					for tag in _TRAINING_DECLARATIONS
-					}
-			)
-
-
 # ---------------------------------------------------------------------------
-# Catalogue Maps register here
+# Catalogue Maps declare here
 # ---------------------------------------------------------------------------
 
 _TRAINING_MAP_MODULES = (
@@ -756,7 +827,6 @@ def _load_training_maps() -> None:
 		importlib.import_module(
 				f"AtlasLusoris.AtlasOfTraining.{module_name}"
 				)
-	_refresh_training_registry()
 
 
 # ---------------------------------------------------------------------------
@@ -789,15 +859,148 @@ def Built_Chip_Values(
 			}
 
 
+def Lessons_By_Map() -> tuple[type[Training], ...]:
+	"""
+	Every lesson the Maps hold by name.
+
+	The catalogue read the long way round, Map by Map and name by name.
+	The self-test holds the Pin Field against it: the Field holds nothing
+	the Maps do not name, and the Maps name nothing the Field lacks.
+	"""
+	import sys
+
+	found: list[type[Training]] = []
+	for module_name in _TRAINING_MAP_MODULES:
+		module = sys.modules[
+				f"AtlasLusoris.AtlasOfTraining.{module_name}"
+				]
+		for value in vars(
+				module
+				).values():
+			if (
+				isinstance(
+						value,
+						type,
+						)
+				and issubclass(
+						value,
+						Training,
+						)
+				and value is not Training
+				and value not in found
+				):
+				found.append(
+						value
+						)
+	return tuple(
+			found
+			)
+
+
 def _self_test():
+	import gc
+
 	from AtlasLusoris.GuildKit import (
 			Apply_Guild,
 			GUILDS,
 			)
 	from AtlasLusoris.AtlasOfTraining.Map_of_Fighter_Training import (
+			Combat_Superiority,
 			Second_Wind,
 			Weapon_Mastery,
 			)
+
+	gc.collect()
+		#-- The Field holds its Tags weakly.  The Maps hold every lesson by
+		#-- name, so a collection must take nothing from the catalogue.
+	lessons = tuple(
+			Training.__subclasses__()
+			)
+		#-- Every Training ever built, in build order: what the registry
+		#-- list used to hold.  Build order follows the import graph (a Map's
+		#-- own imports can land another Map first), not the Map list.
+	assert lessons
+	assert tuple(
+			Declared_Lesson[:]
+			) == lessons
+		#-- The Field is the old catalogue, in order.
+	assert set(
+			Lessons_By_Map()
+			) == set(
+					lessons
+					)
+		#-- Each lesson is named by its Map; none is built outside one.
+	assert all(
+			tag in Declared_Lesson
+			for tag in lessons
+			)
+	assert Training not in Declared_Lesson
+
+	for guild_name in GUILDS:
+		expected = tuple(
+				sorted(
+						(
+							tag
+							for tag in lessons
+							if tag.GUILD_NAME == guild_name
+							),
+						key=lambda tag: (
+								tag.MIN_LEVEL,
+								tag.NAME,
+								),
+						)
+				)
+		assert trainings_for(
+				guild_name
+				) == expected, guild_name
+		assert has_training_catalogue(
+				guild_name
+				) == bool(
+						expected
+						), guild_name
+		for tag in expected:
+			assert training_covers(
+					guild_name,
+					tag.NAME,
+					), tag.NAME
+	assert trainings_for(
+			"No Such Guild"
+			) == ()
+	assert not has_training_catalogue(
+			"No Such Guild"
+			)
+
+	#-- The Records landed as Reports on each Tag, of the declared kinds.
+	for tag in lessons:
+		assert isinstance(
+				tag.GUILD_NAME,
+				str,
+				) and tag.GUILD_NAME
+		assert isinstance(
+				tag.MIN_LEVEL,
+				int,
+				) and tag.MIN_LEVEL >= 1
+		assert isinstance(
+				tag.SOURCE,
+				str,
+				) and tag.SOURCE
+		assert (
+			tag.PATH is None
+			or isinstance(
+					tag.PATH,
+					str,
+					)
+			or issubclass(
+					tag.PATH,
+					Tag,
+					)
+			)
+	assert Second_Wind.PATH is None
+	assert issubclass(
+			Combat_Superiority.PATH,
+			Tag,
+			)
+		#-- A Tag class held by a Pin Record stays a value on the Tag.
 
 	for guild_name in GUILDS:
 		assert has_training_catalogue(
@@ -818,6 +1021,14 @@ def _self_test():
 	assert Second_Wind in applied
 	assert char in Second_Wind and char in Weapon_Mastery
 	assert char in Training
+	assert not hasattr(
+			char,
+			"PATH",
+			) and not hasattr(
+					char,
+					"GUILD_NAME",
+					)
+		#-- Pin Records are Reports of the Tag, never Actions on the Character.
 	names = Built_Titles(
 			char
 			)
@@ -896,6 +1107,7 @@ def _self_test():
 			barb
 			)
 	assert Rage in barb_applied and Frenzy in barb_applied
+	assert Rage.PATH is None and Frenzy.PATH == "Berserker"
 	rage_chips = Built_Chip_Values(
 			barb,
 			Rage,

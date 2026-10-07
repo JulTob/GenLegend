@@ -1,6 +1,7 @@
 """Shared Species and Creature Type Geometry."""
 
 from TopKit import Action
+from TopKit import Flag
 from TopKit import Pre
 from TopKit import Tag
 from TopKit import Underlay
@@ -113,6 +114,7 @@ class Heritage(Species):
 		return prior(specification)
 
 
+@Flag
 class Creature_Type(Tag):
 	"""Canonical rules classification, independent from Species."""
 
@@ -126,62 +128,77 @@ class Creature_Type(Tag):
 			)
 
 
+@Flag
 class Humanoid(Creature_Type):
 	"""A humanoid creature."""
 
 
+@Flag
 class Fey(Creature_Type):
 	"""A fey creature."""
 
 
+@Flag
 class Elemental(Creature_Type):
 	"""An elemental creature."""
 
 
+@Flag
 class Celestial(Creature_Type):
 	"""A celestial creature."""
 
 
+@Flag
 class Undead(Creature_Type):
 	"""An undead creature."""
 
 
+@Flag
 class Vampire(Undead):
 	"""An Undead creature with vampiric context."""
 
 
+@Flag
 class Beast(Creature_Type):
 	"""A beast."""
 
 
+@Flag
 class Construct(Creature_Type):
 	"""A constructed creature."""
 
 
+@Flag
 class Dragon(Creature_Type):
 	"""A dragon."""
 
 
+@Flag
 class Fiend(Creature_Type):
 	"""A fiend."""
 
 
+@Flag
 class Aberration(Creature_Type):
 	"""An aberration."""
 
 
+@Flag
 class Giant(Creature_Type):
 	"""A giant."""
 
 
+@Flag
 class Monstrosity(Creature_Type):
 	"""A monstrosity."""
 
 
+@Flag
 class Ooze(Creature_Type):
 	"""An ooze."""
 
 
+@Flag
 class Plant(Creature_Type):
 	"""A plant creature."""
 

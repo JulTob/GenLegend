@@ -21,7 +21,7 @@ except ImportError:
 
 """		NPC class    """
 class NPC:
-	def __init__(npc, race = None, archetype = None, lvl=1, seed=random.randint(0, 2**8), light= False):
+	def __init__(npc, race = None, archetype = None, lvl=1, seed=None, light= False):
 		"""
 		INVOCATION OF A NEW Non Player Character.
 
@@ -226,7 +226,7 @@ class NPC:
 		""" Generate a title (a name they are known for) for the NPC. """
 		random.seed(npc.seed)
 		try:
-			from AtlasNomina.Map_of_Titles import Title
+			from AtlasEpica.Map_of_Titles import Title
 			return Title(npc)
 		except Exception:
 			pass
@@ -529,7 +529,7 @@ class NPC:
 	def SetMyStory(npc):
 		random.seed(npc.seed)
 		try:
-			from AtlasActorLudi.Map_of_Stories	import Story
+			from AtlasEpica.Map_of_Stories import Story
 			return Story(npc)
 		except Exception:
 			return ""

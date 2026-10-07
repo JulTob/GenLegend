@@ -58,11 +58,7 @@ class Elven_Lineage(Trait):
 			)
 
 		if selected is None:
-			dice_bag = target.Dice_Bag(
-				"identity.species.Elf.lineage.spellcasting_ability",
-				version="2024",
-				namespace="GenLegendActor",
-				)
+			dice_bag = target.Dice_Bag( "Elven_Lineage.spellcasting_ability" )
 			selected = target.Pick(
 				Elven_Lineage.SPELLCASTING_ABILITIES,
 				dice=dice_bag,
@@ -75,3 +71,83 @@ class Elven_Lineage(Trait):
 				)
 
 		target.species_spellcasting_ability = selected
+
+
+def _test_dice_purpose() -> None:
+	#-- Ruling 8 (QST-0144.6): the lineage ability comes from one Dice Bag
+	#-- opened as "Elven_Lineage.spellcasting_ability" with the default key,
+	#-- from the three abilities the Trait declares.
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.SpeciesKit.Elves import traits
+		#-- The catalog's module: under ``python -m`` this file loads twice,
+		#-- and the Tag the Heritages carry is the catalog's, not the twin's.
+
+	opened = []
+	drawn = []
+	original_dice_bag = Character.Dice_Bag
+	original_pick = Character.Pick
+
+	def recording_dice_bag(
+		char,
+		purpose,
+		**key,
+		):
+		opened.append(
+			(
+				purpose,
+				key,
+				)
+			)
+		return original_dice_bag(
+			char,
+			purpose,
+			**key,
+			)
+
+	def recording_pick(
+		char,
+		ledger,
+		weights=None,
+		**options,
+		):
+		drawn.append(
+			tuple(
+				ledger
+				)
+			)
+		return original_pick(
+			char,
+			ledger,
+			weights,
+			**options,
+			)
+
+	Character.Dice_Bag = recording_dice_bag
+	Character.Pick = recording_pick
+	try:
+		character = Character(
+			seed=7,
+			)
+		traits.Elven_Lineage( character )
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		Character.Pick = original_pick
+
+	assert opened == [
+		(
+			"Elven_Lineage.spellcasting_ability",
+			{},
+			),
+		], opened
+	assert drawn == [
+		traits.Elven_Lineage.SPELLCASTING_ABILITIES,
+		], drawn
+	assert (
+		character.species_spellcasting_ability
+		in traits.Elven_Lineage.SPELLCASTING_ABILITIES
+		)
+
+
+if __name__ == "__main__":
+	_test_dice_purpose()
+	print( "OK: SpeciesKit.Elves.traits self-test" )

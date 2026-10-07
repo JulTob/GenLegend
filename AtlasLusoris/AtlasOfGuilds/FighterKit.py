@@ -14,13 +14,11 @@ exist.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from types import MappingProxyType
 
-from TopKit import Pre, Tag
-
-from AtlasActorLudi.CharactersKit import Report_Of
+from TopKit import Pin, Pre, Record, Tag
 
 from AtlasActorLudi.CharactersKit import Character
+from AtlasActorLudi.CharactersKit import Field_Index
 from AtlasInventarium.ToolsKit import (
 	ARTISAN_TOOLS as _ARTISAN_TOOL_DEFINITIONS,
 	)
@@ -297,9 +295,9 @@ FIGHTER_RESOURCES = (
 			),
 	)
 
-FEATURES = Report_Of(FIGHTER_FEATURES)
-CHOICES = Report_Of(FIGHTER_CHOICES)
-RESOURCES = Report_Of(FIGHTER_RESOURCES)
+FEATURES = FIGHTER_FEATURES
+CHOICES = FIGHTER_CHOICES
+RESOURCES = FIGHTER_RESOURCES
 Fighter.FEATURES = FEATURES
 Fighter.CHOICES = CHOICES
 Fighter.RESOURCES = RESOURCES
@@ -323,7 +321,51 @@ class Maneuver(Tag):
 				)
 
 
-_MANEUVER_TAGS: dict[str, type[Maneuver]] = {}
+@Pin
+class Declared_Maneuver(Tag):
+	"""
+	Classifies the Battle Master maneuvers the Fighter knows.
+
+	A Pin rather than a dict: a maneuver is declared by applying this Tag
+	*to the Maneuver Tag*, and ``Declared_Maneuver[:]`` is then the
+	catalogue, in declaration order.  Its Record lands on the maneuver as a
+	Report, so ``Parry.DESCRIPTION`` reads the text validated here.
+	"""
+
+	@Pre
+	def Maneuver_Tag_Only(
+			target,
+			):
+		return (
+			isinstance(
+				target,
+				type,
+				)
+			and issubclass(
+				target,
+				Maneuver,
+				)
+			and target is not Maneuver
+			)
+
+	@Record
+	def DESCRIPTION(
+			target,
+			*,
+			description=None,
+			) -> str:
+		if (
+			not isinstance(
+				description,
+				str,
+				)
+			or not description.strip()
+			):
+			raise ValueError(
+				"A Maneuver description must be non-empty text."
+				)
+
+		return description
 
 
 def _class_name(
@@ -340,6 +382,7 @@ def _Build_Maneuver(
 		name: str,
 		description: str,
 		) -> type[Maneuver]:
+	"""Build one Maneuver Tag with only its name, then declare it."""
 	tag = type(
 		_class_name(
 			name
@@ -349,13 +392,13 @@ def _Build_Maneuver(
 			),
 		{
 			"NAME": name,
-			"DESCRIPTION": description,
 			"__module__": __name__,
 			},
 		)
-	_MANEUVER_TAGS[
-		name
-		] = tag
+	Declared_Maneuver(
+		tag,
+		description=description,
+		)
 	return tag
 
 
@@ -440,9 +483,19 @@ Trip_Attack = _Build_Maneuver(
 		"Add damage and knock a Large or smaller target Prone on a failed save.",
 		)
 
-MANEUVERS = MappingProxyType(
-	_MANEUVER_TAGS
-	)
+
+def _maneuvers_by_name() -> dict[str, type[Maneuver]]:
+	"""The Maneuver Field, keyed by NAME, in declaration order."""
+	return {
+			tag.NAME: tag
+			for tag in Declared_Maneuver[:]
+			}
+
+
+MANEUVERS = Field_Index(
+		_maneuvers_by_name
+		)
+	#-- The by-name view of ``Declared_Maneuver[:]``.  Its readers keep the name.
 
 FIGHTER_SKILLS = (
 	"Acrobatics",
@@ -487,7 +540,8 @@ BATTLE_MASTER_CHOICES = (
 					(15, 2),
 					),
 			options=tuple(
-					MANEUVERS
+					tag.NAME
+					for tag in Declared_Maneuver[:]
 					),
 			),
 	Choice_Progression(
@@ -530,8 +584,6 @@ def _stable_choices(
 		)
 	dice_bag = character.Dice_Bag(
 		bag_purpose,
-		version="1",
-		namespace="GenLegendFighter",
 		)
 	dice_bag.shuffle(
 		options
@@ -548,35 +600,22 @@ def _stable_choices(
 def Resolve_Battle_Master_Choices(
 		character,
 		) -> tuple[str, ...]:
-	"""Resolve stable maneuver, tool, and skill Records."""
+	"""
+	Resolve the stable Maneuver Records.
+
+	Named by the Specialization that offers the choice, BattleMaster, the
+	name a reader types for it.  The Student of War tool and skill are the
+	lesson's own choice (Map_of_Fighter_Training, drawn against what the
+	Character already holds); the provisional draws that stood here before
+	the skills existed were overwritten by it every time and are gone.
+	"""
 	maneuver_choice = BATTLE_MASTER_CHOICES[0]
 	maneuver_names = _stable_choices(
 		character,
 		maneuver_choice,
-		"fighter.battle_master.maneuvers",
+		"BattleMaster.maneuvers",
 		)
 	character.maneuvers = maneuver_names
-
-	tool = _stable_choices(
-		character,
-		BATTLE_MASTER_CHOICES[1],
-		"fighter.battle_master.student.tool",
-		)
-	skill = _stable_choices(
-		character,
-		BATTLE_MASTER_CHOICES[2],
-		"fighter.battle_master.student.skill",
-		)
-	character.battle_master_tool = (
-		tool[0]
-		if tool
-		else None
-		)
-	character.battle_master_skill = (
-		skill[0]
-		if skill
-		else None
-		)
 	return maneuver_names
 
 
@@ -981,6 +1020,70 @@ def _self_test() -> None:
 	assert len(
 		MANEUVERS
 		) == 20
+	assert tuple(
+		Declared_Maneuver[:]
+		) == (
+		Ambush,
+		Bait_and_Switch,
+		Commanders_Strike,
+		Commanding_Presence,
+		Disarming_Attack,
+		Distracting_Strike,
+		Evasive_Footwork,
+		Feinting_Attack,
+		Goading_Attack,
+		Lunging_Attack,
+		Maneuvering_Attack,
+		Menacing_Attack,
+		Parry,
+		Precision_Attack,
+		Pushing_Attack,
+		Rally,
+		Riposte,
+		Sweeping_Attack,
+		Tactical_Assessment,
+		Trip_Attack,
+		)
+		#-- The Field is the catalogue: the twenty, in declaration order.
+	assert tuple(
+		MANEUVERS
+		) == (
+		"Ambush",
+		"Bait and Switch",
+		"Commander's Strike",
+		"Commanding Presence",
+		"Disarming Attack",
+		"Distracting Strike",
+		"Evasive Footwork",
+		"Feinting Attack",
+		"Goading Attack",
+		"Lunging Attack",
+		"Maneuvering Attack",
+		"Menacing Attack",
+		"Parry",
+		"Precision Attack",
+		"Pushing Attack",
+		"Rally",
+		"Riposte",
+		"Sweeping Attack",
+		"Tactical Assessment",
+		"Trip Attack",
+		)
+	assert all(
+		MANEUVERS[
+			tag.NAME
+			] is tag
+		for tag in Declared_Maneuver[:]
+		)
+	assert "Parry" in MANEUVERS and "Feint" not in MANEUVERS
+	assert Parry in Declared_Maneuver and Maneuver not in Declared_Maneuver
+	assert Parry.NAME == "Parry"
+	assert Parry.DESCRIPTION == (
+		"Use a Reaction to reduce damage from a melee attack."
+		)
+	assert BATTLE_MASTER_CHOICES[0].options == tuple(
+		MANEUVERS
+		)
 	assert BATTLE_MASTER_CHOICES[0].total_at(3) == 3
 	assert BATTLE_MASTER_CHOICES[0].total_at(20) == 9
 	assert BATTLE_MASTER_RESOURCES[0].at(18) == "6d12"
@@ -1019,6 +1122,72 @@ def _self_test() -> None:
 		"Eldritch Knight",
 		"Psi Warrior",
 		}
+	#-- QST-0144.6, ruling 8: the maneuvers come from one bag named by the
+	#-- Specialization that offers them (BattleMaster, the name a reader
+	#-- types for it), opened with the default key, shuffling the whole
+	#-- catalogue and keeping the level's share.  The Student of War tool and
+	#-- skill are the lesson's draw, not this Kit's.
+	from AtlasActorLudi.CharactersKit import Character
+
+	opened = []
+	shuffled = []
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			character,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+			character,
+			purpose,
+			version=version,
+			namespace=namespace,
+			)
+		opened.append(
+			( purpose, version, namespace )
+			)
+		bag_shuffle = bag.shuffle
+
+		def recording_shuffle(
+				population,
+				):
+			shuffled.append(
+				list( population )
+				)
+			return bag_shuffle(
+				population
+				)
+
+		bag.shuffle = recording_shuffle
+		return bag
+
+	recruit = Character(
+		seed=1
+		)
+	recruit.level = 7
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		maneuvers = Resolve_Battle_Master_Choices(
+			recruit
+			)
+	finally:
+		Character.Dice_Bag = original_dice_bag
+	assert opened == [
+		( "BattleMaster.maneuvers", "1", "GenLegend" ),
+		], opened
+	assert shuffled == [
+		list( MANEUVERS ),
+		], shuffled
+	assert len( maneuvers ) == BATTLE_MASTER_CHOICES[0].total_at( 7 ) == 5
+	assert len( set( maneuvers ) ) == 5 and set( maneuvers ) <= set( MANEUVERS )
+	assert recruit.maneuvers == maneuvers
+	assert not hasattr( recruit, "battle_master_tool" )
+	assert not hasattr( recruit, "battle_master_skill" )
+	assert BattleMaster.__name__ == "BattleMaster"
+
 	print(
 		"OK — FighterKit self-test"
 		)

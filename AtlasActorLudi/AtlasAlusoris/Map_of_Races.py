@@ -7,6 +7,7 @@ def Player_Species(character):
 			player,
 			),
 		weights=player.values(),
+			purpose="NonPlayer.Player_Species",
 		)
 	return result
 
@@ -49,6 +50,7 @@ def Race(character):
 			race_weights,
 			),
 		weights=race_weights.values(),
+			purpose="NonPlayer.Race",
 		)
 	return result
 
@@ -77,6 +79,7 @@ def Aberrations(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Aberrations",
 		)
 
 def Avens(character):
@@ -94,6 +97,7 @@ def Avens(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Avens",
 		)
 
 # Canonical Creature Type for each Alusoris Race label.
@@ -179,6 +183,7 @@ def Beasts(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Beasts",
 		)
 
 def Beastfolks(character):
@@ -207,6 +212,7 @@ def Beastfolks(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Beastfolks",
 		)
 
 def Catfolks(character):
@@ -226,6 +232,7 @@ def Catfolks(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Catfolks",
 		)
 
 def Celestials(character):
@@ -270,6 +277,7 @@ def Celestials(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Celestials",
 		)
 
 def Constructs(character):
@@ -306,6 +314,7 @@ def Constructs(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Constructs",
 		)
 
 
@@ -360,12 +369,14 @@ def Dragons(character):
 			DragonTypes,
 			),
 		weights=DragonTypes.values(),
+			purpose="NonPlayer.Dragons",
 		)
 	chosen_color = character.Pick(
 		list(
 			DragonColors,
 			),
 		weights=DragonColors.values(),
+			purpose="NonPlayer.Dragons.2",
 		)
 
 	return f"{chosen_color} {chosen_type}"
@@ -413,6 +424,7 @@ def Elementals(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Elementals",
 		)
 
 def Fiends(character):
@@ -472,6 +484,7 @@ def Fiends(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Fiends",
 		)
 
 def Feys(character):
@@ -511,6 +524,7 @@ def Feys(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Feys",
 		)
 
 def Giants(character):
@@ -537,6 +551,7 @@ def Giants(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Giants",
 		)
 
 def Gnomes(character):
@@ -554,6 +569,7 @@ def Gnomes(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Gnomes",
 		)
 
 def Goblins(character):
@@ -573,9 +589,16 @@ def Goblins(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Goblins",
 		)
 
 def Humans(character, *, dice=None):
+	if dice is None:
+		dice = character.Dice_Bag(
+			"Human.culture",
+			)
+		#-- the one bag of the Human's culture, the same one Map_of_Species
+		#-- opens and passes; a caller that opened none gets it here
 	Types = {
 		"Local":        30,
 		"Foreigner": 	25,
@@ -616,6 +639,7 @@ def Monstrosities(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Monstrosities",
 		)
 	return chosen_type
 
@@ -637,6 +661,7 @@ def Oozes(character):
 			Types,
 			),
 		weights=Types.values(),
+			purpose="NonPlayer.Oozes",
 		)
 	return f"{chosen_type}"
 
@@ -662,6 +687,7 @@ def Orcs(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Orcs",
 		)
 
 def Plants(character):
@@ -689,6 +715,7 @@ def Plants(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Plants",
 		)
 
 def Undeads(character):
@@ -716,6 +743,7 @@ def Undeads(character):
 			Names,
 			),
 		weights=Names.values(),
+			purpose="NonPlayer.Undeads",
 		)
 
 def Elves(character):
@@ -743,6 +771,7 @@ def Elves(character):
 			Types,
 			),
 		weights=Types.values(),
+			purpose="NonPlayer.Elves",
 		)
 	return f"{chosen_type}"
 
@@ -768,6 +797,7 @@ def Halflings(character):
 			Types,
 			),
 		weights=Types.values(),
+			purpose="NonPlayer.Halflings",
 		)
 	return f"{chosen_type}"
 
@@ -791,6 +821,7 @@ def Dwarfs(character):
 			Types,
 			),
 		weights=Types.values(),
+			purpose="NonPlayer.Dwarfs",
 		)
 	return f"{chosen_type}"
 
@@ -816,6 +847,7 @@ def Lizardfolks(character):
 			Types,
 			),
 		weights=Types.values(),
+			purpose="NonPlayer.Lizardfolks",
 		)
 
 	return f"{chosen_type}"
@@ -833,12 +865,14 @@ def Kobolds(character):
 			Kobold,
 			),
 		weights=Kobold.values(),
+			purpose="NonPlayer.Kobolds",
 		)
 	chosen_color = character.Pick(
 		list(
 			DragonColors,
 			),
 		weights=DragonColors.values(),
+			purpose="NonPlayer.Kobolds.2",
 		)
 
 	return f"{chosen_color} {chosen_type}"
@@ -867,6 +901,7 @@ def Snakefolks(character):
 			Types,
 			),
 		weights=Types.values(),
+			purpose="NonPlayer.Snakefolks",
 		)
 
 	return f"{chosen_type}"
@@ -904,6 +939,7 @@ def Vampires(character):
 			Types,
 			),
 		weights=Types.values(),
+			purpose="NonPlayer.Vampires",
 		)
 
 	return f"{chosen_type}"
@@ -1374,7 +1410,7 @@ def AS_racial_modifier(npc):
 
 	if "Construct" in creature_type:
 		CON += Dice(4)
-		npc.subrace = npc.Pick(["Stone Golem", "Iron Golem", "Wooden Puppet", "Clockwork Automaton", "Magical Sentinel", "Homunculus"])
+		npc.subrace = npc.Pick(["Stone Golem", "Iron Golem", "Wooden Puppet", "Clockwork Automaton", "Magical Sentinel", "Homunculus"], purpose="NonPlayer.AS_racial_modifier")
 
 		if npc.subrace == "Animated Armor":
 			STR += Dice(4)

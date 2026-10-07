@@ -679,10 +679,9 @@ class Character(Character_Skeleton):
 		~char
 		# One Bag for the whole array, so the scores a Character rolls no
 		# longer depend on how many other draws happened before this line.
+		# Character identity, not a Tag's choice: the purpose keeps its name.
 		scores_bag = char.Dice_Bag(
 				"identity.scores",
-				version="1",
-				namespace="GenLegendActor",
 				)
 		rolled_stats = [
 			char.roll_stat(
@@ -739,8 +738,16 @@ class Character(Character_Skeleton):
 		~char
 
 		# Step 2: Set default skills based on class
+		#-- The skill proficiencies are the Guild Tag's choice (ruling 8,
+		#-- QST-0144.6): each branch opens one bag named by its Guild Tag's
+		#-- class name and passes it as dice= to activate_proficiencies; the
+		#-- Rogue's Expertise has a bag of its own.  The dice= parameter of the
+		#-- Skills methods lands with the Grimoire_of_Skills port (group 1).
 		if char.character_class:
 			if char.character_class == "Fighter":
+				skills_dice = char.Dice_Bag(
+					"Fighter.skills",
+					)
 				char.skills.activate_proficiencies(2, [
 					"Acrobatics",
 					"Animal Handling",
@@ -751,7 +758,9 @@ class Character(Character_Skeleton):
 					"Perception",
 					"Persuasion",
 					"Survival",
-					])
+					],
+					dice=skills_dice,
+					)
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Martial_Weapons.set_proficiency()
 				char.skills.Light.set_proficiency()
@@ -761,6 +770,9 @@ class Character(Character_Skeleton):
 
 
 			elif char.character_class == "Wizard":
+				skills_dice = char.Dice_Bag(
+					"Wizard.skills",
+					)
 				char.skills.activate_proficiencies(2, [
 					"Arcana",
 					"History",
@@ -768,10 +780,15 @@ class Character(Character_Skeleton):
 					"Investigation",
 					"Medicine",
 					"Religion",
-					])
+					],
+					dice=skills_dice,
+					)
 				char.skills.Simple_Weapons.set_proficiency()
 			elif char.character_class == "Rogue":
 				char.skills.Thieves_Tools.set_proficiency()
+				skills_dice = char.Dice_Bag(
+					"Rogue.skills",
+					)
 				char.skills.activate_proficiencies(4, [
 					"Acrobatics",
 					"Athletics",
@@ -783,33 +800,50 @@ class Character(Character_Skeleton):
 					"Persuasion",
 					"Sleight of Hand",
 					"Stealth",
-					])
+					],
+					dice=skills_dice,
+					)
+				#-- Expertise is the Rogue Guild's choice: one bag for both grants
+				#-- (levels 1 and 6), two draws from it.
+				expertise_dice = char.Dice_Bag(
+					"Rogue.Expertise.choice",
+					)
 				char.skills.activate_expertise(
 					2,
-					char.skills.get_proficient_skills()
+					char.skills.get_proficient_skills(),
+					dice=expertise_dice,
 					)
 				if char.level >= 6:
 					char.skills.activate_expertise(
 						2,
-						char.skills.get_proficient_skills()
+						char.skills.get_proficient_skills(),
+						dice=expertise_dice,
 						)
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Finesse.set_proficiency()
 				char.skills.Light_Weapons.set_proficiency()
 				char.skills.Light.set_proficiency()
 			elif char.character_class == "Cleric":
+				skills_dice = char.Dice_Bag(
+					"Cleric.skills",
+					)
 				char.skills.activate_proficiencies(2, [
 					"History",
 					"Insight",
 					"Medicine",
 					"Persuasion",
 					"Religion",
-					])
+					],
+					dice=skills_dice,
+					)
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Light.set_proficiency()
 				char.skills.Medium.set_proficiency()
 				char.skills.Shields.set_proficiency()
 			elif char.character_class == "Ranger":
+				skills_dice = char.Dice_Bag(
+					"Ranger.skills",
+					)
 				char.skills.activate_proficiencies(3, [
 					"Animal Handling",
 					"Athletics",
@@ -819,13 +853,18 @@ class Character(Character_Skeleton):
 					"Perception",
 					"Stealth",
 					"Survival",
-					])
+					],
+					dice=skills_dice,
+					)
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Martial_Weapons.set_proficiency()
 				char.skills.Light.set_proficiency()
 				char.skills.Medium.set_proficiency()
 				char.skills.Shields.set_proficiency()
 			elif char.character_class == "Paladin":
+				skills_dice = char.Dice_Bag(
+					"Paladin.skills",
+					)
 				char.skills.activate_proficiencies(2, [
 					"Athletics",
 					"Insight",
@@ -833,7 +872,9 @@ class Character(Character_Skeleton):
 					"Medicine",
 					"Persuasion",
 					"Religion",
-					])
+					],
+					dice=skills_dice,
+					)
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Martial_Weapons.set_proficiency()
 				char.skills.Light.set_proficiency()
@@ -845,6 +886,9 @@ class Character(Character_Skeleton):
 				char.skills.Light.set_proficiency()
 
 				char.skills.Musical_Instrument.set_proficiency()
+				skills_dice = char.Dice_Bag(
+					"Bard.skills",
+					)
 				char.skills.activate_proficiencies(3, [
 					"Athletics",
 					'Acrobatics',
@@ -864,7 +908,9 @@ class Character(Character_Skeleton):
 					'Intimidation',
 					'Performance',
 					'Persuasion',
-					])
+					],
+					dice=skills_dice,
+					)
 				if char.level >= 2:
 					# Expertise is granted by its own Training Tag, in
 					# AtlasOfTraining/Map_of_Bard_Training.py, because the
@@ -892,6 +938,9 @@ class Character(Character_Skeleton):
 						)
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Light_Weapons.set_proficiency()
+				skills_dice = char.Dice_Bag(
+					"Monk.skills",
+					)
 				char.skills.activate_proficiencies(2, [
 					"Acrobatics",
 					"Athletics",
@@ -899,7 +948,9 @@ class Character(Character_Skeleton):
 					"Insight",
 					"Religion",
 					"Stealth",
-					])
+					],
+					dice=skills_dice,
+					)
 
 				# One Artisan's Tool or Musical Instrument, planned in the
 				# training ledger (QST-0116): the sheet built a moment ago does
@@ -923,13 +974,14 @@ class Character(Character_Skeleton):
 						):
 					Apply_Training_Record(char)
 				else:
+					#-- Named by the Monk Guild Tag that offers the proficiency.
 					monk_tool = Plan_Feature_Training(
 						char,
 						Monk_Guild,
 						( *ARTISAN_TOOLS, *MUSICAL_INSTRUMENTS ),
 						1,
 						source="Class Proficiency",
-						purpose="guild.Monk.tool",
+						purpose="Monk.tool",
 						grant_id="Guild.Monk.tool",
 						allow_short=True,
 						)
@@ -940,6 +992,9 @@ class Character(Character_Skeleton):
 				char.skills.Shields.set_proficiency()
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Herbalism_Kit.set_proficiency()
+				skills_dice = char.Dice_Bag(
+					"Druid.skills",
+					)
 				char.skills.activate_proficiencies(2, [
 					"Arcana",
 					"Animal Handling",
@@ -949,10 +1004,15 @@ class Character(Character_Skeleton):
 					"Perception",
 					"Religion",
 					"Survival",
-					])
+					],
+					dice=skills_dice,
+					)
 			elif char.character_class == "Warlock":
 				char.skills.Simple_Weapons.set_proficiency()
 				char.skills.Light.set_proficiency()
+				skills_dice = char.Dice_Bag(
+					"Warlock.skills",
+					)
 				char.skills.activate_proficiencies(2, [
 					"Arcana",
 					"Deception",
@@ -961,9 +1021,14 @@ class Character(Character_Skeleton):
 					"Investigation",
 					"Nature",
 					"Religion",
-					])
+					],
+					dice=skills_dice,
+					)
 			elif char.character_class == "Sorcerer":
 				char.skills.Simple_Weapons.set_proficiency()
+				skills_dice = char.Dice_Bag(
+					"Sorcerer.skills",
+					)
 				char.skills.activate_proficiencies(2, [
 					"Arcana",
 					"Deception",
@@ -971,13 +1036,18 @@ class Character(Character_Skeleton):
 					"Intimidation",
 					"Persuasion",
 					"Religion",
-					])
+					],
+					dice=skills_dice,
+					)
 			elif char.character_class == "Barbarian":
 				# Always two.  The third that a level-3 Barbarian gets comes
 				# from Primal Knowledge, which grants it itself so that the
 				# feature entry can name the skill instead of saying "of your
 				# choice" for a choice already made.  See
 				# AtlasLusoris/AtlasOfTraining/Map_of_Barbarian_Training.py.
+				skills_dice = char.Dice_Bag(
+					"Barbarian.skills",
+					)
 				char.skills.activate_proficiencies(2, [
 					"Animal Handling",
 					"Athletics",
@@ -985,7 +1055,9 @@ class Character(Character_Skeleton):
 					"Nature",
 					"Perception",
 					"Survival",
-					])
+					],
+					dice=skills_dice,
+					)
 				if char.level >= 3:
 					from AtlasLusoris.AtlasOfTraining.Map_of_Barbarian_Training import (
 						Grant_Primal_Knowledge_Skill,
@@ -1014,3 +1086,254 @@ class Character(Character_Skeleton):
 	@minion
 	def set(char):
 		~char
+
+
+if __name__ == "__main__":
+	#-- Self-test (QST-0144.6, ruling 8).  The ability scores keep their
+	#-- identity bag with the default key; a Guild's skill proficiencies come
+	#-- from one <Guild>.skills bag; the Rogue's Expertise from one
+	#-- Rogue.Expertise.choice bag, opened once for both grants; the Monk's
+	#-- tool plan names its purpose Monk.tool.  The pools are what they were:
+	#-- 4d6 per score, the Guild's skill list shrinking by the skill drawn,
+	#-- the proficient skills, the tools.
+	import contextlib
+	import io
+	import os
+	import random as stdlib_random
+	import sys
+	from inspect import signature
+	from AtlasActorLudi.CharactersKit import Character as Summoned_Character
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills as Skills_Sheet
+	from AtlasActorLudi.Map_of_Character_Generation import summon_player
+
+	for method in (
+			Skills_Sheet.activate_proficiencies,
+			Skills_Sheet.activate_expertise,
+			):
+		assert "dice" in signature( method ).parameters, (
+				f"Char_Skills.{method.__name__} takes no dice= yet: set_Skills "
+				"passes its bags through that keyword, which lands with the "
+				"Grimoire_of_Skills port of QST-0144.6 (group 1)."
+				)
+
+	FIGHTER_SKILLS = [
+			"Acrobatics",
+			"Animal Handling",
+			"Athletics",
+			"History",
+			"Insight",
+			"Intimidation",
+			"Perception",
+			"Persuasion",
+			"Survival",
+			]
+	ROGUE_SKILLS = [
+			"Acrobatics",
+			"Athletics",
+			"Deception",
+			"Insight",
+			"Intimidation",
+			"Investigation",
+			"Perception",
+			"Persuasion",
+			"Sleight of Hand",
+			"Stealth",
+			]
+	MONK_SKILLS = [
+			"Acrobatics",
+			"Athletics",
+			"History",
+			"Insight",
+			"Religion",
+			"Stealth",
+			]
+
+	THIS_FILE = os.path.realpath(
+			__file__
+			)
+	opened = []
+		#-- (purpose, version, namespace, caller file) of every bag opened
+	drawn = {}
+		#-- purpose -> [(method, pool, result)] of every draw from a recorded bag
+
+	class Probe_Dice(
+			stdlib_random.Random
+			):
+		purpose = "?"
+
+		def choice(
+				dice,
+				population,
+				):
+			result = super().choice(
+					population
+					)
+			drawn.setdefault( dice.purpose, [] ).append(
+					( "choice", list( population ), result )
+					)
+			return result
+
+		def randint(
+				dice,
+				low,
+				high,
+				):
+			result = super().randint(
+					low,
+					high,
+					)
+			drawn.setdefault( dice.purpose, [] ).append(
+					( "randint", [ low, high ], result )
+					)
+			return result
+
+	original_dice_bag = Summoned_Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				char,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		caller = os.path.realpath(
+				sys._getframe( 1 ).f_code.co_filename
+				)
+		opened.append(
+				( purpose, version, namespace, os.path.basename( caller ) )
+				)
+		probe = Probe_Dice()
+		probe.setstate(
+				bag.getstate()
+				)
+		probe.purpose = purpose
+		return probe
+
+	def summon(
+			**request,
+			):
+		opened.clear()
+		drawn.clear()
+		with contextlib.redirect_stdout(
+				io.StringIO()
+				), contextlib.redirect_stderr(
+				io.StringIO()
+				):
+			return summon_player(
+					**request
+					)
+
+	def opened_here(
+			):
+		return [
+				( purpose, version, namespace )
+				for purpose, version, namespace, caller in opened
+				if caller == os.path.basename( THIS_FILE )
+				]
+
+	def scores_are_four_d6_each(
+			):
+		scores = drawn[ "identity.scores" ]
+		assert len( scores ) == 24, len( scores )
+			#-- six scores, 4d6 each
+		assert all(
+				method == "randint" and pool == [ 1, 6 ]
+				for method, pool, _ in scores
+				), scores
+
+	def one_list_one_at_a_time(
+			purpose,
+			first_pool,
+			count,
+			):
+		"""Every draw removes the skill it drew from the list it was given."""
+		draws = drawn[ purpose ]
+		assert len( draws ) == count, ( purpose, draws )
+		expected = list( first_pool )
+		for method, pool, result in draws:
+			assert method == "choice", ( purpose, method )
+			assert pool == expected, ( purpose, pool, expected )
+			expected.remove( result )
+		return [ result for _, _, result in draws ]
+
+	Summoned_Character.Dice_Bag = recording_dice_bag
+	try:
+		summon(
+				species="Human",
+				guild="Fighter",
+				level=1,
+				seed=7,
+				)
+		assert opened_here() == [
+				( "identity.scores", "1", "GenLegend" ),
+				( "Fighter.skills", "1", "GenLegend" ),
+				], opened_here()
+		scores_are_four_d6_each()
+		one_list_one_at_a_time(
+				"Fighter.skills",
+				FIGHTER_SKILLS,
+				2,
+				)
+
+		summon(
+				species="Human",
+				guild="Rogue",
+				level=6,
+				seed=7,
+				)
+		assert opened_here() == [
+				( "identity.scores", "1", "GenLegend" ),
+				( "Rogue.skills", "1", "GenLegend" ),
+				( "Rogue.Expertise.choice", "1", "GenLegend" ),
+				], opened_here()
+		scores_are_four_d6_each()
+		class_skills = one_list_one_at_a_time(
+				"Rogue.skills",
+				ROGUE_SKILLS,
+				4,
+				)
+		expertise = drawn[ "Rogue.Expertise.choice" ]
+		assert [ len( pool ) for _, pool, _ in expertise ] == [ 4, 3, 2, 1 ], expertise
+			#-- two doubled at level 1 among the four class skills, two at level 6
+			#-- among the two still single, all from the one bag
+		doubled_first = [ result for _, _, result in expertise[ :2 ] ]
+		assert set( expertise[ 0 ][ 1 ] ) == set( class_skills ), expertise
+		assert set( expertise[ 2 ][ 1 ] ) == set( class_skills ) - set( doubled_first ), expertise
+
+		summon(
+				species="Human",
+				guild="Monk",
+				level=1,
+				seed=7,
+				)
+		assert opened_here() == [
+				( "identity.scores", "1", "GenLegend" ),
+				( "Monk.skills", "1", "GenLegend" ),
+				], opened_here()
+		scores_are_four_d6_each()
+		one_list_one_at_a_time(
+				"Monk.skills",
+				MONK_SKILLS,
+				2,
+				)
+		monk_tool_bags = [
+				purpose
+				for purpose, _, _, caller in opened
+				if purpose.startswith( "Monk.tool" )
+				]
+		assert monk_tool_bags, opened
+			#-- opened by FeaturesKit from the purpose passed here, "Monk.tool"
+	finally:
+		Summoned_Character.Dice_Bag = original_dice_bag
+
+	print(
+			"OK: identity.scores keeps its name with the default key; a Guild's "
+			"skills come from one <Guild>.skills bag; the Rogue's Expertise from "
+			"one Rogue.Expertise.choice bag; the Monk's tool plan is named Monk.tool."
+			)

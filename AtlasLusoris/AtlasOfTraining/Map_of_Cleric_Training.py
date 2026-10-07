@@ -7,8 +7,6 @@ awaken only for that Domain. ASI / Epic Boon picks stay on legacy Progression.
 
 from __future__ import annotations
 
-import random
-
 from AtlasLusoris.TrainingKit import Make_Training
 from AtlasVenustas import Chip
 
@@ -231,26 +229,6 @@ def _channel_entry(
 		)
 
 
-def _fork_rng(
-		char,
-		salt,
-		):
-	seed = getattr(
-		char,
-		"seed",
-		None,
-		)
-	if seed is None:
-		seed = getattr(
-			char,
-			"name",
-			"",
-			) or 0
-	return random.Random(
-		f"{seed}:{salt}"
-		)
-
-
 def _apply_divine_order(
 		char,
 		):
@@ -263,14 +241,14 @@ def _apply_divine_order(
 			"Protector",
 			"Thaumaturge",
 			):
-		order = _fork_rng(
-			char,
-			"divine_order",
-			).choice(
+		order = char.Pick(
 			(
 				"Protector",
 				"Thaumaturge",
-				)
+				),
+			dice=char.Dice_Bag(
+				"Divine_Order.choice",
+				),
 			)
 		char.divine_order = order
 
@@ -367,14 +345,14 @@ def _apply_blessed_strikes(
 			"Divine Strike",
 			"Potent Spellcasting",
 			):
-		char.blessed_strikes = _fork_rng(
-			char,
-			"blessed_strikes",
-			).choice(
+		char.blessed_strikes = char.Pick(
 			(
 				"Divine Strike",
 				"Potent Spellcasting",
-				)
+				),
+			dice=char.Dice_Bag(
+				"Blessed_Strikes.choice",
+				),
 			)
 
 
@@ -785,3 +763,139 @@ Avatar_of_Battle = _war(
 			"You gain Resistance to Bludgeoning, Piercing, and Slashing damage."
 			),
 		)
+
+
+# ---------------------------------------------------------------------------
+# Self-test
+# ---------------------------------------------------------------------------
+
+
+def _self_test() -> None:
+	"""Divine Order and Blessed Strikes draw from bags named by their lessons (ruling 8)."""
+	from types import SimpleNamespace
+
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Grimoire_of_Skills import Char_Skills
+
+	opened = []
+	original = Character.Dice_Bag
+
+	def Recording_Dice_Bag(
+			char,
+			purpose,
+			**key,
+			):
+		bag = original(
+				char,
+				purpose,
+				**key,
+				)
+		opened.append(
+				(
+					purpose,
+					key,
+					bag,
+					)
+				)
+		return bag
+
+	def Purposes() -> list:
+		"""What was opened, as (purpose, key): a key of {} is the default."""
+		return [
+				(
+					purpose,
+					key,
+					)
+				for purpose, key, _ in opened
+				]
+
+	def Skeleton(
+			seed: int,
+			level: int,
+			):
+		"""A Character with a skill sheet and nothing else."""
+		char = Character(
+				seed=seed,
+				level=level,
+				)
+		char.skills = Char_Skills(
+				char,
+				SimpleNamespace(
+						STR=10,
+						DEX=10,
+						CON=10,
+						INT=10,
+						WIS=10,
+						CHA=10,
+						),
+				2,
+				)
+		return char
+
+	Character.Dice_Bag = Recording_Dice_Bag
+	try:
+		char = Skeleton(
+				seed=7,
+				level=7,
+				)
+
+		_apply_divine_order(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Divine_Order.choice",
+					{},
+					),
+				], opened
+		assert char.divine_order == char.Pick(
+				(
+					"Protector",
+					"Thaumaturge",
+					),
+				dice=original(
+						char,
+						"Divine_Order.choice",
+						),
+				)
+			#-- The pool is the pair, in this order, and the answer is that
+			#-- bag's first draw over it: nothing else draws from this bag.
+		opened.clear()
+		_apply_divine_order(
+				char,
+				)
+		assert opened == [], "a settled Order is not drawn again"
+
+		_apply_blessed_strikes(
+				char,
+				)
+		assert Purposes() == [
+				(
+					"Blessed_Strikes.choice",
+					{},
+					),
+				], opened
+		assert char.blessed_strikes == char.Pick(
+				(
+					"Divine Strike",
+					"Potent Spellcasting",
+					),
+				dice=original(
+						char,
+						"Blessed_Strikes.choice",
+						),
+				)
+		opened.clear()
+		_apply_blessed_strikes(
+				char,
+				)
+		assert opened == [], "settled Blessed Strikes are not drawn again"
+	finally:
+		Character.Dice_Bag = original
+	print(
+			"Map_of_Cleric_Training: self-test OK"
+			)
+
+
+if __name__ == "__main__":
+	_self_test()

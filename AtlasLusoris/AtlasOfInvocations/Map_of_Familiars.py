@@ -164,6 +164,8 @@ def _caster_marks(
 def pick_familiar(
 		char,
 		pool=None,
+		*,
+		dice,
 		) -> Familiar:
 	"""
 	Draw one familiar form, weighted by Familial Preference.
@@ -196,8 +198,10 @@ def pick_familiar(
 		char.Pick(
 			names,
 			weights,
+			dice=dice,
 			)
 		]
+		#-- ``dice`` is the bag the offering Tag opened (Pact_Familiar.familiar)
 
 
 __all__ = (

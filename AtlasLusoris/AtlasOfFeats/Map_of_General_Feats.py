@@ -134,9 +134,7 @@ def _Plan_Skill_Expert(
 				'Skill Expert requires one Skill without proficiency.'
 				)
 	dice = char.Dice_Bag(
-			'feat.Skill_Expert.training',
-			version='2024',
-			namespace='GenLegendTraining',
+			'SkillExpert.choice',
 			)
 	proficiency = char.Pick(
 			untrained,
@@ -243,7 +241,7 @@ Chef = Make_General_Feat(
 	asi=('CON', 'WIS'),
 	training=_Fixed_Training(
 			Cook_Utensils,
-			'feat.Chef.training',
+			'Chef.choice',
 			),
 	training_record='chef',
 	)
@@ -352,7 +350,7 @@ KeenMind = Make_General_Feat(
 					Nature,
 					Religion,
 					),
-			'feat.Keen_Mind.training',
+			'KeenMind.choice',
 			),
 	training_record='keen_mind',
 	describe_training=_Describe_Resolved_Choice,
@@ -413,7 +411,7 @@ Observant = Make_General_Feat(
 					Investigation,
 					Perception,
 					),
-			'feat.Observant.training',
+			'Observant.choice',
 			),
 	training_record='observant',
 	describe_training=_Describe_Resolved_Choice,
@@ -431,7 +429,7 @@ Poisoner = Make_General_Feat(
 	asi=('DEX', 'INT'),
 	training=_Fixed_Training(
 			Poisoners_Kit,
-			'feat.Poisoner.training',
+			'Poisoner.choice',
 			),
 	training_record='poisoner',
 	)

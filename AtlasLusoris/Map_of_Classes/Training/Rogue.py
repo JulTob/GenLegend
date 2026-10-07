@@ -45,10 +45,9 @@ class Rogue(Progression):
 				would activate it.
 				"""
 			))
-			# Thieves’ Cant
-			character.languages.Add({"Thieves' Cant"})
-			character.languages.AddAnyLanguage()
-			character.languages.AddAnyLanguage()
+			#-- Thieves' Cant and its one extra language are granted by the
+			#-- Thieves_Cant lesson (AtlasOfTraining/Map_of_Rogue_Training),
+			#-- from Thieves_Cant.language (QST-0144.10).
 			feats.append(Feature(
 				"Weapon Mastery", 1,
 				"""
@@ -155,7 +154,7 @@ class Rogue(Progression):
 					"""))
 		# === LEVEL 4 ===
 		if level >= 4:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=4)
 		# === LEVEL 5 ===
 		if level >= 5:
 			feats.append(Feature("Cunning Strike", 5,
@@ -203,7 +202,7 @@ if you have the Incapacitated condition.
 				))
 		# === LEVEL 8 ===
 		if level >= 8:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=8)
 		# === LEVEL 9 ===
 		if level >= 9:
 
@@ -236,7 +235,7 @@ You gain the following Cunning Strike option. <br>
 					"""))
 		# === LEVEL 10 ===
 		if level >= 10:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=10)
 		# === LEVEL 11 ===
 		if level >= 11:
 			feats.append(Feature(
@@ -252,7 +251,7 @@ You can use up to two Cunning Strike effects when you deal Sneak Attack damage, 
 			))
 		# === LEVEL 12 ===
 		if level >= 12:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=12)
 		# === LEVEL 13 ===
 		if level >= 13:
 
@@ -312,7 +311,7 @@ Your cunning mind is exceptionally difficult to control. You gain proficiency in
 			))
 		# === LEVEL 16 ===
 		if level >= 16:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=16)
 		# === LEVEL 17 ===
 		if level >= 17:
 			if character.subclass == "Arcane Trickster":
@@ -369,3 +368,33 @@ Once you use this feature, you can't use it again until you finish a Short or Lo
 			if feat.name == "Sneak Attack":
 				feat.description = f"Once per turn, you can deal an extra <b>{self.sneak_attack_dice(level)}</b> damage to one creature you hit with an attack if you have Advantage on the attack roll, or if another enemy of the target is within 5 feet of it."
 		return feats
+
+
+if __name__ == "__main__":
+	#-- Self-test (QST-0144.10).  The legacy block grants no language any
+	#-- more: a level-1 Rogue knows Common, the two creation languages,
+	#-- Thieves' Cant and the one pick of the Thieves_Cant lesson, five in
+	#-- all, and the lesson recorded its pick.
+	import contextlib
+	import io
+	from AtlasActorLudi.Map_of_Character_Generation import summon_player
+
+	with contextlib.redirect_stdout(
+			io.StringIO()
+			), contextlib.redirect_stderr(
+			io.StringIO()
+			):
+		rogue = summon_player(
+				guild="Rogue",
+				level=1,
+				seed=7,
+				)
+	known = rogue.languages.langs
+	assert "Common" in known and "Thieves' Cant" in known, known
+	assert len( known ) == 5, known
+	[ extra ] = rogue.language_feature_grants[ "Thieves' Cant" ]
+	assert extra in known and extra != "Thieves' Cant", extra
+	print(
+			"OK: the legacy Rogue block grants no language; the Thieves_Cant "
+			f"lesson knows Thieves' Cant and {extra}."
+			)

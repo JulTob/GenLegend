@@ -1,5 +1,6 @@
 """The 2024 Wood Elf Heritage Shape."""
 
+from TopKit import Flag
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.bases import Heritage
@@ -11,6 +12,7 @@ from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
 
 
+@Flag( "Wood Elf", "Wood", "Sylvan" )
 class Wood_Elf(
 	Elf,
 	Heritage,

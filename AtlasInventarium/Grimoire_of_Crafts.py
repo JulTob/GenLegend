@@ -13,20 +13,23 @@ Thought pattern (read this before the code)
 	4. Crafts are gated on the HERO — their level, and the Tags they carry.
 	   A Barbarian's fury-craft cannot end up on a Wizard's robe, and a
 	   tier-3 craft cannot end up on a level-2 character.
+	5. A Craft is declared by pinning it. ``Declared_Craft`` validates what
+	   the property grants and where it may land, those answers live on the
+	   Tag as Reports, and its Field, ``Declared_Craft[:]``, is the
+	   catalogue. Nothing keeps a list beside the declarations.
 
 Usage
 	from AtlasInventarium.Grimoire_of_Crafts import forge, crafts_for
 	forge(mail, Of_Defense, hero=char)     # -> "Chain Mail of Defense"
 	crafts_for(char)                        # every affix this Hero qualifies for
+	Declared_Craft[:]                       # every declared affix, in order
 """
 
 from __future__ import annotations
 
 from collections.abc import Callable
 
-from TopKit import Pre, Tag
-
-from AtlasActorLudi.CharactersKit import Report_Of
+from TopKit import Pin, Pre, Record, Tag
 
 from AtlasInventarium.Grimoire_of_Items import (
 		Armour,
@@ -66,7 +69,169 @@ TIERS: dict[int, int] = {
 		4: 17,
 		}
 
-_CRAFT_DECLARATIONS: list[type[Craft]] = []
+
+def _resolve_tier(
+		target,
+		tier,
+		) -> int:
+	"""The tier a declaration asked for, refused when ``TIERS`` has no such row."""
+	if (
+			isinstance(
+					tier,
+					bool,
+					)
+			or tier not in TIERS
+			):
+		raise ValueError(
+				f"Craft {target.NAME!r}: tier must be one of {sorted(TIERS)}, "
+				f"got {tier!r}."
+				)
+	return tier
+
+
+def _tag_tuple(
+		target,
+		tags,
+		role: str,
+		) -> tuple[type[Tag], ...]:
+	"""A tuple of Tag classes, refused when anything else is offered."""
+	resolved = tuple(
+			tags or ()
+			)
+	for tag in resolved:
+		if (
+				not isinstance(
+						tag,
+						type,
+						)
+				or not issubclass(
+						tag,
+						Tag,
+						)
+				):
+			raise ValueError(
+					f"Craft {target.NAME!r}: {role} must hold Tags, got {tag!r}."
+					)
+	return resolved
+
+
+@Pin
+class Declared_Craft(Tag):
+	"""
+	Root Pin for every property the forge knows.
+
+	A Craft is declared by applying this Pin to the Craft Tag. The keyword
+	inputs are validated here and land on the Tag as Reports (``GRANTS``,
+	``TIER``, ``MIN_LEVEL``, ``AFFIX``, ``APPLIES_TO``, ``REQUIRES``,
+	``FORBIDS``), and ``Declared_Craft[:]`` is the catalogue, in declaration
+	order. A declaration this Pin refuses never joins the Field.
+	"""
+
+	@Pre
+	def Craft_Tag_Only(
+			target,
+			):
+		return (
+				isinstance(
+						target,
+						type,
+						)
+				and issubclass(
+						target,
+						Craft,
+						)
+				and target is not Craft
+				)
+
+	@Record
+	def GRANTS(
+			target,
+			*,
+			grants=None,
+			) -> dict[str, int]:
+		if not grants:
+			raise ValueError(
+					f"Craft {target.NAME!r} must grant something."
+					)
+		return dict(
+				grants
+				)
+
+	@Record
+	def TIER(
+			target,
+			*,
+			tier=1,
+			) -> int:
+		return _resolve_tier(
+				target,
+				tier,
+				)
+
+	@Record
+	def MIN_LEVEL(
+			target,
+			*,
+			tier=1,
+			) -> int:
+		return TIERS[
+				_resolve_tier(
+						target,
+						tier,
+						)
+				]
+
+	@Record
+	def AFFIX(
+			target,
+			*,
+			affix="suffix",
+			) -> str:
+		if affix not in (
+				"prefix",
+				"suffix",
+				):
+			raise ValueError(
+					f"Craft {target.NAME!r}: affix must be 'prefix' or 'suffix', "
+					f"got {affix!r}."
+					)
+		return affix
+
+	@Record
+	def APPLIES_TO(
+			target,
+			*,
+			applies_to=(),
+			) -> tuple[type[Tag], ...]:
+		return _tag_tuple(
+				target,
+				applies_to,
+				"applies_to",
+				)
+
+	@Record
+	def REQUIRES(
+			target,
+			*,
+			requires=(),
+			) -> tuple[type[Tag], ...]:
+		return _tag_tuple(
+				target,
+				requires,
+				"requires",
+				)
+
+	@Record
+	def FORBIDS(
+			target,
+			*,
+			forbids=(),
+			) -> tuple[type[Tag], ...]:
+		return _tag_tuple(
+				target,
+				forbids,
+				"forbids",
+				)
 
 
 def _class_name(
@@ -104,58 +269,19 @@ def Make_Craft(
 	                  identity reaches its gear.
 	``forbids``     — Hero Tags that rule it out.
 	``tier``        — 1/2/3/4, resolved against ``TIERS`` for a level gate.
+
+	The Tag is built with only its identity and its prose; everything the
+	forge gates on is handed to ``Declared_Craft``, which validates it and
+	lands it on the Tag as Reports. A declaration the Pin refuses raises here
+	and never joins the catalogue.
 	"""
 	if not name or not name.strip():
 		raise ValueError(
 				"Make_Craft: name is required."
 				)
-	if tier not in TIERS:
-		raise ValueError(
-				f"Make_Craft: tier must be one of {sorted(TIERS)}, got {tier!r}."
-				)
-	if affix not in (
-			"prefix",
-			"suffix",
-			):
-		raise ValueError(
-				"Make_Craft: affix must be 'prefix' or 'suffix'."
-				)
-	if not grants:
-		raise ValueError(
-				f"Make_Craft: {name!r} must grant something."
-				)
 
 	namespace = {
 			"NAME": name,
-			"GRANTS": Report_Of(
-					dict(
-							grants
-							)
-					),
-			"TIER": Report_Of(
-					tier
-					),
-			"MIN_LEVEL": Report_Of(
-					TIERS[tier]
-					),
-			"AFFIX": Report_Of(
-					affix
-					),
-			"APPLIES_TO": Report_Of(
-					tuple(
-							applies_to
-							)
-					),
-			"REQUIRES": Report_Of(
-					tuple(
-							requires
-							)
-					),
-			"FORBIDS": Report_Of(
-					tuple(
-							forbids
-							)
-					),
 			"DESCRIPTION": description,
 			"__module__": __name__,
 			}
@@ -169,8 +295,14 @@ def Make_Craft(
 					),
 			namespace,
 			)
-	_CRAFT_DECLARATIONS.append(
-			craft
+	Declared_Craft(
+			craft,
+			grants=grants,
+			tier=tier,
+			affix=affix,
+			applies_to=applies_to,
+			requires=requires,
+			forbids=forbids,
 			)
 	return craft
 
@@ -229,7 +361,7 @@ def crafts_for(
 	"""Every property this Hero qualifies for, optionally for one Item."""
 	return tuple(
 			craft
-			for craft in _CRAFT_DECLARATIONS
+			for craft in Declared_Craft[:]
 			if suits_hero(
 					hero,
 					craft,
@@ -325,7 +457,7 @@ def crafts_on(
 	"""Which properties this Item carries."""
 	return tuple(
 			craft
-			for craft in _CRAFT_DECLARATIONS
+			for craft in Declared_Craft[:]
 			if item in craft
 			)
 
@@ -457,8 +589,10 @@ Of_the_Paragon = Make_Craft(
 		)
 
 
+#-- A snapshot of the Field, read once at import. Read ``Declared_Craft[:]``
+#-- for a live view after later declarations.
 CRAFTS: tuple[type[Craft], ...] = tuple(
-		_CRAFT_DECLARATIONS
+		Declared_Craft[:]
 		)
 
 CRAFTS_BY_NAME: dict[str, type[Craft]] = {
@@ -472,6 +606,7 @@ __all__ = (
 		"CRAFTS_BY_NAME",
 		"Make_Craft",
 		"Craft",
+		"Declared_Craft",
 		"TIERS",
 		"craft_name",
 		"crafts_for",
@@ -498,6 +633,7 @@ def _self_test():
 			instantiate,
 			unequip,
 			)
+	from TopKit import TagCompositionError
 
 	class Scores:
 		DEX = 14
@@ -510,6 +646,96 @@ def _self_test():
 			self.AS = Scores()
 			self.purse = 1000
 			self.level = level
+
+	# --- the catalogue is the Pin's Field, in declaration order ----------
+	catalogue = (
+			Of_Defense,
+			Of_Warding,
+			Of_Precision,
+			Of_Wounding,
+			Of_the_Bear,
+			Of_Swiftness,
+			Of_Vigilance,
+			Of_the_Aegis,
+			Of_Ruin,
+			Of_the_Paragon,
+			)
+	assert tuple(
+			Declared_Craft[:]
+			) == catalogue, "the Field must hold every declared Craft, in order"
+	assert all(
+			craft in Declared_Craft
+			for craft in catalogue
+			)
+	assert CRAFTS == catalogue
+	assert CRAFTS_BY_NAME == {
+			craft.NAME: craft
+			for craft in catalogue
+			}
+
+	# --- what a declaration asked for lands on the Tag as Reports --------
+	assert Of_Defense.GRANTS == {
+			"AC": 1,
+			}
+	assert Of_Defense.TIER == 1
+	assert Of_Defense.MIN_LEVEL == 1
+	assert Of_Defense.AFFIX == "suffix"
+	assert Of_Defense.APPLIES_TO == _ARMOUR_LIKE
+	assert Of_Defense.REQUIRES == ()
+	assert Of_Defense.FORBIDS == ()
+	assert Of_Ruin.GRANTS == {
+			"attack": 2,
+			"damage": 2,
+			}
+	assert Of_Ruin.APPLIES_TO == (
+			Weapon,
+			)
+	assert Of_the_Paragon.TIER == 4
+	assert Of_the_Paragon.MIN_LEVEL == TIERS[4] == 17
+	assert Of_Defense.DESCRIPTION, "the prose stays on the Tag itself"
+
+	# --- a refused declaration never joins the Field ---------------------
+	for refused in (
+			dict(
+					name="of Nothing",
+					grants={},
+					),
+			dict(
+					name="of the Fifth Tier",
+					grants={
+							"AC": 1,
+							},
+					tier=5,
+					),
+			dict(
+					name="of Sideways",
+					grants={
+							"AC": 1,
+							},
+					affix="infix",
+					),
+			dict(
+					name="of Boots",
+					grants={
+							"AC": 1,
+							},
+					applies_to=(
+							"Boots",
+							),
+					),
+			):
+		try:
+			Make_Craft(
+					**refused
+					)
+			raise AssertionError(
+					f"the Pin must refuse {refused['name']!r}"
+					)
+		except TagCompositionError:
+			pass
+	assert tuple(
+			Declared_Craft[:]
+			) == catalogue, "a refused Craft must not join the Field"
 
 	# --- a craft is a property, summed live ------------------------------
 	novice = Hero(
@@ -675,8 +901,40 @@ def _self_test():
 				craft,
 				)
 
+	# --- the accessors read the Field and answer as the list did ---------
+	assert crafts_for(
+			novice
+			) == (
+			Of_Defense,
+			Of_Warding,
+			Of_Precision,
+			Of_Wounding,
+			)
+	assert crafts_for(
+			veteran
+			) == catalogue
+	assert crafts_for(
+			veteran,
+			blade,
+			) == (
+			Of_Precision,
+			Of_Wounding,
+			Of_Ruin,
+			)
+	assert crafts_on(
+			mail
+			) == (
+			Of_Defense,
+			Of_Warding,
+			)
+	assert crafts_on(
+			blade
+			) == (
+			Of_Ruin,
+			)
+
 	print(
-			f"OK — Grimoire_of_Crafts self-test ({len(CRAFTS)} crafts; "
+			f"OK — Grimoire_of_Crafts self-test ({len(Declared_Craft[:])} crafts; "
 			"properties stamped as Tags, granted live, gated by level and hero)"
 			)
 

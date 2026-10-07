@@ -1,11 +1,13 @@
-# Python 3.10+ (3.14 in production). Web app: Shiny only. `make setup` installs into .venv.
+# Python 3.12+ (3.14 in production; TopKit 0.2.0a4 needs 3.12). Web app: Shiny only. `make setup` installs into .venv.
 shiny==1.6.3
 
 # Tag-Oriented Programming: TopKit (formerly TagKit), the reference implementation,
-# pinned to its first PyPI release, 0.2.0a3 (2026-09-21). The distribution is
-# `topkit` and the module is `TopKit`. Moved from the TagKit 0.2.0a1 git pin by
-# QST-0093.5; the upstream issues found on the way are QST-0093.10.
-topkit==0.2.0a3
+# pinned to its PyPI release 0.2.0a4 (2026-10-02). The distribution is `topkit`
+# and the module is `TopKit`. 0.2.0a4 brings a Flag's words (`@Flag( "Martial
+# Arts" )`), the Field algebra, conditions read by name, and the late-Flag fix of
+# QST-0093.10 §1; it requires Python 3.12 or later. Moved from 0.2.0a3 by
+# QST-0144.1 (Dialog 0027); the earlier move from TagKit 0.2.0a1 was QST-0093.5.
+topkit==0.2.0a4
 
 # The Markdown renderer behind AtlasVenustas.Charts_of_Printing. Shiny already
 # installs it, but the sheet depends on it directly, so it is pinned directly

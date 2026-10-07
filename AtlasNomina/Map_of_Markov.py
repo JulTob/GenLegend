@@ -1,17 +1,28 @@
 # Markov baseline – Nothing fancy, just works
-import random
 from collections import defaultdict, Counter
 
 class MarkovNameGenerator:
 	"""
 	Minimal tri-gram (order-3) Markov name generator.
 	Usage:
-		gen  = MarkovNameGenerator(training_names)
+		gen  = MarkovNameGenerator(training_names, dice=char.Dice_Bag("identity.name"))
 		name = gen.generate_name()
+
+	``dice`` is the Dice Bag every step of the walk draws from: the start
+	state, each next character and the fallback training name (ruling 8,
+	QST-0144.6). The name hands down its one bag; nothing here reaches the
+	shared generator.
 	"""
 
-	def __init__(self, names, order: int = 4):
+	def __init__(
+			self,
+			names,
+			order: int = 4,
+			*,
+			dice,
+			):
 		self.order = order
+		self.dice = dice
 		self.model = defaultdict(Counter)   # state -> {next_char: count}
 		self.starts = []                    # states seen at word-start
 		self._train([n.lower() for n in names if isinstance(n, str)])
@@ -30,7 +41,7 @@ class MarkovNameGenerator:
 	# ── helpers ────────────────────────────────────────────────
 	def _weighted_pick(self, counter: Counter) -> str:
 		chars, weights = zip(*counter.items())
-		return random.choices(chars, weights=weights, k=1)[0]
+		return self.dice.choices(chars, weights=weights, k=1)[0]
 
 	# ── public API ─────────────────────────────────────────────
 	def generate_name(self, min_len=4, max_len=10, attempts=10) -> str:
@@ -39,7 +50,7 @@ class MarkovNameGenerator:
 		<attempts> failed tries (too short / too long).
 		"""
 		for _ in range(attempts):
-			state = random.choice(self.starts)
+			state = self.dice.choice(self.starts)
 			out   = ""
 			while True:
 				nxt = self._weighted_pick(self.model[state])
@@ -52,7 +63,7 @@ class MarkovNameGenerator:
 				if len(out) >= max_len:           # hard cap (safety)
 					break
 		# fallback
-		return random.choice(self.starts).replace("^", "").capitalize()
+		return self.dice.choice(self.starts).replace("^", "").capitalize()
 
 
 def save_markov_as_py(gen: MarkovNameGenerator,
@@ -158,3 +169,119 @@ class MarkovNameGenerator:
 		fallback = random.choice(self.names).capitalize()
 		return fallback
 """
+
+
+# ---------------------------------------------------------------------------
+# Self-test: the walk draws from the Dice Bag it is handed (QST-0144.6)
+# ---------------------------------------------------------------------------
+
+
+class _Recording_Dice:
+	"""A Dice Bag that remembers every pool it was asked to draw from."""
+
+	def __init__(
+			self,
+			bag,
+			):
+		self.bag = bag
+		self.calls = []
+
+	def choice(
+			self,
+			pool,
+			):
+		self.calls.append(
+			(
+				"choice",
+				list(pool),
+				),
+			)
+		return self.bag.choice(
+			pool,
+			)
+
+	def choices(
+			self,
+			pool,
+			weights=None,
+			k=1,
+			):
+		self.calls.append(
+			(
+				"choices",
+				list(pool),
+				k,
+				),
+			)
+		return self.bag.choices(
+			pool,
+			weights=weights,
+			k=k,
+			)
+
+
+_PROBE_NAMES = (
+	"Caderan", "Zurvan", "Artemisia", "Celestia", "Elyria",
+	"Serafina", "Taran", "Vanora", "Kaelan", "Rianon",
+	)
+
+
+def _test_markov_draws_from_the_given_dice():
+	"""Every draw of the walk comes from the dice; the pools are the model's own; the shared stream never moves."""
+	import random
+	from AtlasActorLudi.CharactersKit import Character
+
+	stdlib_state = random.getstate()
+	dice = _Recording_Dice(
+		Character(
+			seed=3,
+			).Dice_Bag(
+				"identity.name",
+				),
+		)
+	generator = MarkovNameGenerator(
+		_PROBE_NAMES,
+		dice=dice,
+		)
+	name = generator.generate_name()
+
+	assert random.getstate() == stdlib_state, "the stdlib stream moved"
+	assert name and name == name.capitalize(), name
+	assert dice.calls, "the walk drew nothing"
+	next_characters = set("abcdefghijklmnopqrstuvwxyz$")
+	for call in dice.calls:
+		if call[0] == "choice":
+			assert call[1] == generator.starts, call
+		else:
+			kind, pool, k = call
+			assert k == 1, call
+			assert set(pool) <= next_characters, call
+
+
+def _test_markov_is_keyed_by_the_bag():
+	"""Same seed, same walk: the bag decides, not the process."""
+	from AtlasActorLudi.CharactersKit import Character
+
+	def walk(
+			seed,
+			):
+		return MarkovNameGenerator(
+			_PROBE_NAMES,
+			dice=Character(
+				seed=seed,
+				).Dice_Bag(
+					"identity.name",
+					),
+			).generate_name()
+
+	assert walk(3) == walk(3)
+	assert any(
+		walk(seed) != walk(3)
+		for seed in range(4, 12)
+		)
+
+
+if __name__ == "__main__":
+	_test_markov_draws_from_the_given_dice()
+	_test_markov_is_keyed_by_the_bag()
+	print("Map_of_Markov: self-test passed")

@@ -2,24 +2,56 @@ from ..Grimoire_of_Health  import roll_health, HIT_DIE_TABLE
 from ..Codex_of_Progression import Progression
 
 from AtlasLusoris.Grimoire_of_Features import *
-from random import choice, sample
-import random
 from typing import List
-from AtlasLusoris.Map_of_Classes.Scroll_of_Constants import SUBCLASSES
 from AtlasActorLudi.Grimoire_of_Skills import Skill
+
+
+PRIMAL_ORDERS = (
+		"Magician",
+		"Warden",
+		)
+
+
+def _settled_primal_order(
+		character,
+		) -> str:
+	"""
+	The Primal Order the Primal_Order lesson settled for this Druid.
+
+	The lesson (Map_of_Druid_Training) draws it once from the Character's
+	Dice Bag and records it on ``character.primal_order``.  This builder only
+	reads it: it used to draw the same choice again from the shared random
+	stream, so a Druid could carry two different Orders (QST-0144.6).
+	"""
+	primal_order = getattr(
+			character,
+			"primal_order",
+			None,
+			)
+	if primal_order not in PRIMAL_ORDERS:
+		raise ValueError(
+				f"Druid.features: character.primal_order is {primal_order!r}; "
+				f"expected one of {PRIMAL_ORDERS}, settled by the Primal_Order "
+				"lesson (Apply_Guild_Trainings) before the legacy Druid "
+				"features are built."
+				)
+	return primal_order
+
+
 class Druid(Progression):
 	HIT_DIE = 8
 
 	def features(self, character):
 		feats: List[Feature] = []
 		level = character.Level
-		subclass = character.Subclass or choice(SUBCLASSES["Druid"])
+		subclass = character.Subclass
 		if level >= 2:
 			roll_health(character)
 
 		if level >= 1:
-
-			if random.choice([True,False]):
+			#-- The Order was settled by the Primal_Order lesson: read it, never draw it twice.
+			primal_order = _settled_primal_order( character )
+			if primal_order == "Magician":
 				feats.append(Feature("Primal Order: Magician",
 					"""You learnt one extra cantrip.
 					Your Wisdom modifier (min +1) is added to Arcana or Nature checks.""",
@@ -160,7 +192,10 @@ class Druid(Progression):
 					powers of the cosmos.
 					""",
 					"Class: Druid"))
-				MapForm = random.choice([
+				star_map_dice = character.Dice_Bag(
+						"Stars.star_map_form",
+						)
+				MapForm = star_map_dice.choice([
 					"A scroll bearing depictions of constellations.",
 					"A stone tablet with fine holes drilled through it.",
 					"An owlbear hide tooled with stellar symbols.",
@@ -244,7 +279,10 @@ class Druid(Progression):
 						You can use this Reaction a number of times equal to your Wisdom modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.
 						""",
 						"Class: Druid"))
-					if random.choice([True, False]):
+					cosmic_omen_dice = character.Dice_Bag(
+							"Stars.cosmic_omen",
+							)
+					if cosmic_omen_dice.choice([True, False]):
 						feats.append(Feature(f"Cosmic Omen: Weal (even).",
 							f"""
 							Whenever a creature you can see within 30 feet of you is about to make a D20 Test, you can take a Reaction to roll 1d6 and add the number rolled to the total.
@@ -268,7 +306,7 @@ class Druid(Progression):
 					f"You gain the subclass features of the Circle of the {subclass}.",
 					"Class: Druid"))
 		if level >= 4:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=4)
 		if level >= 5:
 			feats.append(Feature(f"Wild Resurgence",
 				f"""
@@ -282,7 +320,10 @@ class Druid(Progression):
 				""",
 				"Class: Druid"))
 		if level >= 7:
-			if random.choice([True, False]):
+			elemental_fury_dice = character.Dice_Bag(
+					"Elemental_Fury.choice",
+					)
+			if elemental_fury_dice.choice([True, False]):
 				feats.append(Feature(f"Elemental Fury: Potent Spellcasting.",
 				f"""
 				The might of the elements flows through you.
@@ -306,11 +347,11 @@ class Druid(Progression):
 					"Class: Druid"))
 
 		if level >= 8:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=8)
 		if level >= 12:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=12)
 		if level >= 16:
-			feats += ApplyRandomFeats(character, n=1)
+			feats += ApplyRandomFeats(character, n=1, level=16)
 		if level >= 19:
 			feats += ApplyEpicBoon(character)
 		if level >= 20:
@@ -339,3 +380,225 @@ class Druid(Progression):
 				""",
 				"Class: Druid"))
 		return feats
+
+
+if __name__ == "__main__":
+	#-- Self-test (QST-0144.6, ruling 8).  Every choice this builder makes is
+	#-- drawn from the Character's Dice Bag, opened with the purpose of the Tag
+	#-- that offers it, from the pool the builder had before the port; the
+	#-- shared random stream is never reached from this file; and the Primal
+	#-- Order is the one the lesson settled, never a second draw.
+	import contextlib
+	import io
+	import os
+	import random as stdlib_random
+	import sys
+	from AtlasActorLudi.CharactersKit import Character
+	from AtlasActorLudi.Map_of_Character_Generation import summon_player
+
+	THIS_FILE = os.path.realpath(
+			__file__
+			)
+	opened = []
+		#-- (purpose, version, namespace) of every bag opened from this file
+	drawn = {}
+		#-- purpose -> [(pool, result)] of every draw from those bags
+	shared = []
+		#-- (function, line) of every shared-stream call made from this file
+
+	def from_this_file(
+			frame,
+			) -> bool:
+		return os.path.realpath(
+				frame.f_code.co_filename
+				) == THIS_FILE
+
+	class Probe_Dice(
+			stdlib_random.Random
+			):
+		"""A Dice Bag that remembers every pool it was asked to draw from."""
+
+		purpose = "?"
+
+		def choice(
+				dice,
+				population,
+				):
+			result = super().choice(
+					population
+					)
+			drawn.setdefault(
+					dice.purpose,
+					[],
+					).append(
+					(
+							list(
+									population
+									),
+							result,
+							)
+					)
+			return result
+
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			char,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				char,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		if not from_this_file(
+				sys._getframe(
+						1
+						)
+				):
+			return bag
+		opened.append(
+				(
+						purpose,
+						version,
+						namespace,
+						)
+				)
+		probe = Probe_Dice()
+		probe.setstate(
+				bag.getstate()
+				)
+		probe.purpose = purpose
+		return probe
+
+	def counting(
+			name,
+			):
+		original_function = getattr(
+				stdlib_random,
+				name,
+				)
+
+		def counted(
+				*arguments,
+				**keywords,
+				):
+			caller = sys._getframe(
+					1
+					)
+			if from_this_file(
+					caller
+					):
+				shared.append(
+						(
+								name,
+								caller.f_lineno,
+								)
+						)
+			return original_function(
+					*arguments,
+					**keywords,
+					)
+
+		return counted
+
+	WATCHED = (
+			"choice",
+			"sample",
+			"shuffle",
+			"random",
+			"randint",
+			"seed",
+			)
+	saved = {
+			name: getattr(
+					stdlib_random,
+					name,
+					)
+			for name in WATCHED
+			}
+
+	def summon(
+			**request,
+			):
+		with contextlib.redirect_stdout(
+				io.StringIO()
+				), contextlib.redirect_stderr(
+				io.StringIO()
+				):
+			return summon_player(
+					**request
+					)
+
+	STAR_MAP_FORMS = [
+			"A scroll bearing depictions of constellations.",
+			"A stone tablet with fine holes drilled through it.",
+			"An owlbear hide tooled with stellar symbols.",
+			"A collection of maps bound in an ebony cover.",
+			"A crystal engraved with starry patterns.",
+			"A glass disk etched with constellations.",
+			]
+	EXPECTED_PURPOSES = [
+			"Elemental_Fury.choice",
+			"Stars.cosmic_omen",
+			"Stars.star_map_form",
+			]
+
+	Character.Dice_Bag = recording_dice_bag
+	for name in WATCHED:
+		setattr(
+				stdlib_random,
+				name,
+				counting(
+						name
+						),
+				)
+	try:
+		for seed in (1, 2, 3, 4, 5, 6):
+			opened.clear()
+			drawn.clear()
+			druid = summon(
+					guild="Druid",
+					specialization="Stars",
+					level=7,
+					seed=seed,
+					)
+			assert sorted(
+					purpose
+					for purpose, _, _ in opened
+					) == EXPECTED_PURPOSES, opened
+			assert all(
+					(version, namespace) == ("1", "GenLegend")
+					for _, version, namespace in opened
+					), opened
+			assert all(
+					len( draws ) == 1
+					for draws in drawn.values()
+					), drawn
+			assert drawn[ "Stars.star_map_form" ][ 0 ][ 0 ] == STAR_MAP_FORMS, drawn
+			assert drawn[ "Stars.cosmic_omen" ][ 0 ][ 0 ] == [ True, False ], drawn
+			assert drawn[ "Elemental_Fury.choice" ][ 0 ][ 0 ] == [ True, False ], drawn
+			assert druid.primal_order in PRIMAL_ORDERS, druid.primal_order
+			assert druid.Primal_Order == druid.primal_order, (
+					druid.Primal_Order,
+					druid.primal_order,
+					)
+		assert shared == [], shared
+	finally:
+		Character.Dice_Bag = original_dice_bag
+		for name, function in saved.items():
+			setattr(
+					stdlib_random,
+					name,
+					function,
+					)
+
+	print(
+			"OK: the Druid's Star Map, Cosmic Omen and Elemental Fury come from "
+			"the Character's Dice Bag under their Tags' names, with their old "
+			"pools; the Primal Order is the lesson's, drawn once."
+			)

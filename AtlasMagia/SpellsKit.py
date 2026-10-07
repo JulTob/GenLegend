@@ -197,16 +197,25 @@ class School(Spell_Tag):
 	NAME = "School"
 	DESCRIPTION = "One of the eight schools of magic. A spell bears exactly one."
 	ABSTRACT = True
+		#-- Organisation only: no spell is tagged "School"; it is tagged
+		#-- Evocation, which also puts it on this shelf. So the gate "one
+		#-- school per spell" is asked by each School below, where the
+		#-- tagging happens (TopKit 0.2 runs a gate only for the Tags the
+		#-- call applies; QST-0093.11 ruling 1, QST-0144.1).
 
-	@Pre
-	def Single_School(agent):
-		#-- runs with the candidate school already active, so a second
-		#-- school counts 2 and the application rolls back
-		count = sum(1 for school in SCHOOLS.values() if agent in school)
-		return count <= 1
+
+def No_School_Yet(
+		agent,
+		) -> bool:
+	"""The gate every School declares: a spell has one school."""
+	return agent not in School
 
 
 class Abjuration(School):
+	@Pre
+	def Only_One_School(agent):
+		return No_School_Yet(agent)
+
 	NAME = "Abjuration"
 	DESCRIPTION = "Wards and protection: shields, banishments, dispels."
 
@@ -215,6 +224,10 @@ class Abjuration(School):
 		return "Abjuration"
 
 class Conjuration(School):
+	@Pre
+	def Only_One_School(agent):
+		return No_School_Yet(agent)
+
 	NAME = "Conjuration"
 	DESCRIPTION = "Summoning and transportation: creatures, objects, teleports."
 
@@ -223,6 +236,10 @@ class Conjuration(School):
 		return "Conjuration"
 
 class Divination(School):
+	@Pre
+	def Only_One_School(agent):
+		return No_School_Yet(agent)
+
 	NAME = "Divination"
 	DESCRIPTION = "Revelation: scrying, foresight, detection."
 
@@ -231,6 +248,10 @@ class Divination(School):
 		return "Divination"
 
 class Enchantment(School):
+	@Pre
+	def Only_One_School(agent):
+		return No_School_Yet(agent)
+
 	NAME = "Enchantment"
 	DESCRIPTION = "Minds bent: charms, compulsions, sleep."
 
@@ -239,6 +260,10 @@ class Enchantment(School):
 		return "Enchantment"
 
 class Evocation(School):
+	@Pre
+	def Only_One_School(agent):
+		return No_School_Yet(agent)
+
 	NAME = "Evocation"
 	DESCRIPTION = "Raw energy shaped: fire, lightning, radiant bolts."
 
@@ -247,6 +272,10 @@ class Evocation(School):
 		return "Evocation"
 
 class Illusion(School):
+	@Pre
+	def Only_One_School(agent):
+		return No_School_Yet(agent)
+
 	NAME = "Illusion"
 	DESCRIPTION = "Deceived senses: images, sounds, phantasms."
 
@@ -255,6 +284,10 @@ class Illusion(School):
 		return "Illusion"
 
 class Necromancy(School):
+	@Pre
+	def Only_One_School(agent):
+		return No_School_Yet(agent)
+
 	NAME = "Necromancy"
 	DESCRIPTION = "Life and death bartered: drains, undeath, false life."
 
@@ -263,6 +296,10 @@ class Necromancy(School):
 		return "Necromancy"
 
 class Transmutation(School):
+	@Pre
+	def Only_One_School(agent):
+		return No_School_Yet(agent)
+
 	NAME = "Transmutation"
 	DESCRIPTION = "Matter reshaped: polymorphs, hastes, stone to mud."
 
@@ -291,16 +328,21 @@ class Spell_Level(Spell_Tag):
 	NAME = "Spell Level"
 	DESCRIPTION = "The spell's level. A spell bears exactly one."
 	ABSTRACT = True
+		#-- Organisation only, as School: each level below asks the gate.
 
-	@Pre
-	def Single_Level(agent):
-		#-- same contract shape as Single_School: the candidate level is
-		#-- already active when this runs, so a second level counts 2
-		count = sum(1 for lvl in SPELL_LEVELS.values() if agent in lvl)
-		return count <= 1
+
+def No_Level_Yet(
+		agent,
+		) -> bool:
+	"""The gate every Spell_Level declares: a spell has one level."""
+	return agent not in Spell_Level
 
 
 class Cantrip(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Cantrip"
 	DESCRIPTION = "Level 0 — at-will magic, no slot spent."
 
@@ -309,6 +351,10 @@ class Cantrip(Spell_Level):
 		return 0
 
 class Spell_Level_1(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Level 1"
 
 	@Record
@@ -316,6 +362,10 @@ class Spell_Level_1(Spell_Level):
 		return 1
 
 class Spell_Level_2(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Level 2"
 
 	@Record
@@ -323,6 +373,10 @@ class Spell_Level_2(Spell_Level):
 		return 2
 
 class Spell_Level_3(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Level 3"
 
 	@Record
@@ -330,6 +384,10 @@ class Spell_Level_3(Spell_Level):
 		return 3
 
 class Spell_Level_4(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Level 4"
 
 	@Record
@@ -337,6 +395,10 @@ class Spell_Level_4(Spell_Level):
 		return 4
 
 class Spell_Level_5(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Level 5"
 
 	@Record
@@ -344,6 +406,10 @@ class Spell_Level_5(Spell_Level):
 		return 5
 
 class Spell_Level_6(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Level 6"
 
 	@Record
@@ -351,6 +417,10 @@ class Spell_Level_6(Spell_Level):
 		return 6
 
 class Spell_Level_7(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Level 7"
 
 	@Record
@@ -358,6 +428,10 @@ class Spell_Level_7(Spell_Level):
 		return 7
 
 class Spell_Level_8(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Level 8"
 
 	@Record
@@ -365,6 +439,10 @@ class Spell_Level_8(Spell_Level):
 		return 8
 
 class Spell_Level_9(Spell_Level):
+	@Pre
+	def Only_One_Level(agent):
+		return No_Level_Yet(agent)
+
 	NAME = "Level 9"
 
 	@Record
@@ -618,8 +696,10 @@ if __name__ == "__main__":
 	assert any(s is bolt for s in Evocation), "Field iteration finds the spell"
 	assert any(s is bolt for s in Spell_List), "…on every family it bears"
 
-	# 4) String probe (Tagged mixin)
-	assert "evocation" in bolt and "wizard" in bolt
+	# 4) Only a Flag answers to a word, exactly (TopKit 0.2, STEP-SPEC-7).
+	#    The 0.1 probe `"evocation" in bolt` matched every Tag's name, case
+	#    folded; it was retired with the pin to 0.2.0a4 (QST-0144.1). The
+	#    spell's words come with the Magic station (QST-0142, station 9).
 
 	# 5) Contract: only Spell targets
 	class NotASpell:
@@ -641,8 +721,8 @@ if __name__ == "__main__":
 		raise AssertionError("a second school must be rejected")
 	assert bolt in Evocation and bolt not in Necromancy, "rollback must hold"
 
-	# 7) Labels speak D&D, not Python
-	assert Wizard_List.Label() == "Wizard"
+	# 7) Names speak D&D, not Python (TopKit 0.2 has no Label; NAME is ours)
+	assert Wizard_List.NAME == "Wizard"
 
 	# 8) Records materialize as DATA on the instance, not methods:
 	#    the @Record builder runs once at tagging; its return value is

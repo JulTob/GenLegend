@@ -7,12 +7,9 @@ trained, not a blank "choose 2" rule dump.
 
 from __future__ import annotations
 
-import random
 from typing import Any
 
-from TopKit import Pre, Tag
-
-from AtlasActorLudi.CharactersKit import Report_Of
+from TopKit import Pin, Pre, Record, Tag
 
 
 class Weapon_Mastery(Tag):
@@ -36,37 +33,6 @@ class Weapon_Mastery(Tag):
 				target,
 				Character,
 				)
-
-
-_MASTERY_TAGS: dict[str, type[Weapon_Mastery]] = {}
-
-from TopKit import Pre, Tag
-
-
-class Weapon_Mastery(Tag):
-	"""
-	Root of "this hero has drilled with a Longsword".
-
-	A mastery is a Tag on the CHARACTER, minted per weapon
-	(``Mastery_Of_Longsword``). Being a Tag rather than a list entry means
-	the rest of the system can simply ask — and, in particular, the loadout
-	can go and buy the weapons the hero trained on.
-	"""
-
-	NAME = "Weapon Mastery"
-
-	@Pre
-	def Character_Only(
-			target,
-			):
-		from AtlasActorLudi.CharactersKit import Character
-		return isinstance(
-				target,
-				Character,
-				)
-
-
-_MASTERY_TAGS: dict[str, type[Weapon_Mastery]] = {}
 
 
 # PHB 2024 Simple + Martial weapons with their mastery property.
@@ -224,32 +190,19 @@ def mastery_blurb(
 
 
 def _mastery_stream(
-		char: Any,
-		):
-	"""Use one Character Dice Bag so a seed repeats the same drills."""
-	if hasattr(
 		char,
-		"Dice_Bag",
 		):
-		return char.Dice_Bag(
-			"fighter.weapon_masteries",
-			version="2024",
-			namespace="GenLegendFighter",
-			)
-	seed = getattr(
-			char,
-			"seed",
-			None,
-			)
-	if seed is None:
-		seed = getattr(
-				char,
-				"name",
-				"",
-				) or 0
-	return random.Random(
-			f"{seed}:weapon_masteries"
-			)
+	"""
+	The one Dice Bag a Character drills its masteries from.
+
+	Named by the Weapon_Mastery lesson that offers the drills (the name a
+	reader types for it, the same lesson in every martial Guild), so a seed
+	repeats the same order whether the planner is reached from
+	Outfit_Player or from the lesson's apply.
+	"""
+	return char.Dice_Bag(
+		"Weapon_Mastery.choice",
+		)
 
 
 # 2024 PHB: Barbarian and Paladin train Weapon Mastery on Melee weapons only.
@@ -268,120 +221,6 @@ def _melee_only(
 			"char_class",
 			None,
 			) in _MELEE_ONLY_GUILDS
-
-
-# How many weapons each Guild drills, by level (index 0 unused).
-_PROGRESSION: dict[str, tuple[int, ...]] = {
-		"Barbarian": (
-				0,
-				2, 2, 2, 3, 3, 3, 3, 3, 3, 4,
-				4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-				),
-		}
-_FLAT_PROGRESSION = {
-		"Paladin": 2,
-		"Ranger": 2,
-		"Rogue": 2,
-		}
-
-
-def mastery_count(
-		char: Any,
-		) -> int:
-	"""How many weapons this Character drills, from their Guild and level."""
-	guild = getattr(
-			char,
-			"char_class",
-			None,
-			)
-	level = max(
-			1,
-			min(
-					20,
-					int(
-							getattr(
-									char,
-									"level",
-									1,
-									) or 1
-							),
-					),
-			)
-
-	table = _PROGRESSION.get(
-			guild
-			)
-	if table is not None:
-		return table[level]
-	if guild == "Fighter":
-		from AtlasLusoris.AtlasOfGuilds.FighterKit import Fighter
-
-		choice = next(
-			choice
-			for choice in Fighter.CHOICES
-			if choice.name == "Weapon Mastery"
-			)
-		return choice.total_at(
-			level
-			)
-	return _FLAT_PROGRESSION.get(
-			guild,
-			0,
-			)
-
-
-def _mastery_tag(
-		weapon: str,
-	):
-	"""Get or mint the Tag that says "this hero has mastered a Longsword"."""
-	from TopKit import Tag
-
-	class_name = "Mastery_Of_" + "".join(
-			part.capitalize()
-			for part in weapon.replace(
-					"-",
-					" ",
-					).replace(
-					"'",
-					"",
-					).split()
-			)
-
-	existing = _MASTERY_TAGS.get(
-			class_name
-			)
-	if existing is not None:
-		return existing
-
-	tag = type(
-			class_name,
-			(
-					Weapon_Mastery,
-					),
-			{
-					"NAME": f"{weapon} Mastery",
-					"WEAPON": Report_Of(
-							weapon
-							),
-					"MASTERY": Report_Of(
-							WEAPON_MASTERIES[weapon]
-							),
-					"__module__": __name__,
-					},
-			)
-	_MASTERY_TAGS[class_name] = tag
-	return tag
-
-
-def mastered_tags(
-		char: Any,
-		) -> tuple:
-	"""Every weapon-mastery Tag this Character carries."""
-	return tuple(
-			tag
-			for tag in _MASTERY_TAGS.values()
-			if char in tag
-			)
 
 
 # How many weapons each Guild drills, by level (index 0 unused).
@@ -438,12 +277,85 @@ def mastery_count(
 			)
 
 
+@Pin
+class Declared_Mastery(Tag):
+	"""
+	Classifies the ``Mastery_Of_…`` Tags the catalogue has minted.
+
+	This is a Pin rather than a dictionary: a minted Tag is declared by
+	applying this Tag *to the Tag*, and ``Declared_Mastery[:]`` is then the
+	catalogue, in minting order.  WEAPON and MASTERY land on the minted Tag
+	as Reports, checked here against the PHB tables above, so the loadout
+	can read ``tag.WEAPON`` and the sheet ``tag.MASTERY`` without keeping a
+	register of which weapons happen to have been drilled.
+	"""
+
+	@Pre
+	def Mastery_Tag_Only(
+			target,
+			):
+		return (
+			isinstance(
+					target,
+					type,
+					)
+			and issubclass(
+					target,
+					Weapon_Mastery,
+					)
+			and target is not Weapon_Mastery
+			)
+
+	@Record
+	def WEAPON(
+			target,
+			*,
+			weapon=None,
+			) -> str:
+		if (
+			not isinstance(
+					weapon,
+					str,
+					)
+			or weapon not in WEAPON_MASTERIES
+			):
+			raise ValueError(
+					f"{weapon!r} is not a weapon of the Weapon Mastery table; "
+					f"Declared_Mastery rejected it for {target.__name__}."
+					)
+		return weapon
+
+	@Record
+	def MASTERY(
+			target,
+			*,
+			mastery=None,
+			) -> str:
+		if (
+			not isinstance(
+					mastery,
+					str,
+					)
+			or mastery not in MASTERY_TEXT
+			):
+			raise ValueError(
+					f"{mastery!r} is not a mastery property with rules text; "
+					f"Declared_Mastery rejected it for {target.__name__}."
+					)
+		return mastery
+
+
 def _mastery_tag(
 		weapon: str,
-	):
+		):
 	"""Get or mint the Tag that says "this hero has mastered a Longsword"."""
-	from TopKit import Tag
+	for tag in Declared_Mastery[:]:
+		if tag.WEAPON == weapon:
+			return tag
 
+	#-- The Field holds a minted Tag only while a Character carries it; a
+	#-- weapon nobody has drilled since is minted afresh, with the same name
+	#-- and Reports, so no reader can tell the two apart.
 	class_name = "Mastery_Of_" + "".join(
 			part.capitalize()
 			for part in weapon.replace(
@@ -455,12 +367,6 @@ def _mastery_tag(
 					).split()
 			)
 
-	existing = _MASTERY_TAGS.get(
-			class_name
-			)
-	if existing is not None:
-		return existing
-
 	tag = type(
 			class_name,
 			(
@@ -468,26 +374,24 @@ def _mastery_tag(
 					),
 			{
 					"NAME": f"{weapon} Mastery",
-					"WEAPON": Report_Of(
-							weapon
-							),
-					"MASTERY": Report_Of(
-							WEAPON_MASTERIES[weapon]
-							),
 					"__module__": __name__,
 					},
 			)
-	_MASTERY_TAGS[class_name] = tag
+	Declared_Mastery(
+			tag,
+			weapon=weapon,
+			mastery=WEAPON_MASTERIES[weapon],
+			)
 	return tag
 
 
 def mastered_tags(
 		char: Any,
 		) -> tuple:
-	"""Every weapon-mastery Tag this Character carries."""
+	"""Every weapon-mastery Tag this Character carries, in minting order."""
 	return tuple(
 			tag
-			for tag in _MASTERY_TAGS.values()
+			for tag in Declared_Mastery[:]
 			if char in tag
 			)
 
@@ -867,3 +771,253 @@ def weapon_mastery_entry(
 	return "".join(
 			parts
 			)
+
+
+def _self_test():
+	from TopKit import (
+			TagCompositionError,
+			TagPreconditionError,
+			)
+
+	#-- The catalogue is the Pin's Field: mint the whole PHB table in its
+	#-- own order and the Field reads back the same Tags in the same order.
+	minted = tuple(
+			_mastery_tag(
+					weapon
+					)
+			for weapon in WEAPON_MASTERIES
+			)
+	assert tuple(
+			Declared_Mastery[:]
+			) == minted, "the Field is the catalogue, in minting order"
+	assert len(
+			set(
+					minted
+					)
+			) == len(
+			WEAPON_MASTERIES
+			)
+
+	for weapon, tag in zip(
+			WEAPON_MASTERIES,
+			minted,
+			):
+		assert issubclass(
+				tag,
+				Weapon_Mastery,
+				)
+		assert tag in Declared_Mastery
+		assert tag.__name__.startswith(
+				"Mastery_Of_"
+				), tag
+		assert tag.NAME == f"{weapon} Mastery", tag
+		assert tag.WEAPON == weapon, tag
+		assert tag.MASTERY == WEAPON_MASTERIES[weapon], tag
+		assert tag.MASTERY == mastery_for(
+				weapon
+				)
+		assert tag.MASTERY in MASTERY_TEXT, tag
+		#-- Get, not mint: a second request answers the same Tag.
+		assert _mastery_tag(
+				weapon
+				) is tag
+	assert tuple(
+			Declared_Mastery[:]
+			) == minted, "a second request mints nothing"
+
+	#-- The Pin validates its inputs and keeps a rejected Tag out of the
+	#-- Field: the root is not a mastery, and a mastery names a weapon of
+	#-- the table and a property with rules text.
+	assert Weapon_Mastery not in Declared_Mastery
+	try:
+		Declared_Mastery(
+				Weapon_Mastery,
+				weapon="Club",
+				mastery="Slow",
+				)
+	except TagPreconditionError:
+		pass
+	else:
+		raise AssertionError(
+				"Declared_Mastery accepted the root Tag"
+				)
+	stray = type(
+			"Mastery_Of_Nothing",
+			(
+					Weapon_Mastery,
+					),
+			{
+					"NAME": "Nothing Mastery",
+					"__module__": __name__,
+					},
+			)
+	for inputs in (
+			{ "weapon": "Spoon", "mastery": "Slow" },
+			{ "weapon": "Club", "mastery": "Tickle" },
+			{},
+			):
+		try:
+			Declared_Mastery(
+					stray,
+					**inputs,
+					)
+		except TagCompositionError:
+			pass
+		else:
+			raise AssertionError(
+					f"Declared_Mastery accepted {inputs!r}"
+					)
+	assert stray not in Declared_Mastery
+	assert tuple(
+			Declared_Mastery[:]
+			) == minted
+
+	#-- The accessors answer as they did when a dictionary was the register.
+	assert mastery_for(
+			"Longsword"
+			) == "Sap"
+	assert mastery_blurb(
+			"Graze"
+			) == MASTERY_TEXT["Graze"]
+	assert "{dc}" in mastery_blurb(
+			"Topple"
+			)
+	assert mastery_blurb(
+			"Unknown"
+			) == ""
+
+	class Drilled:
+		"""A stand-in with a Guild and a level, for the count tables."""
+
+		def __init__(
+				self,
+				char_class,
+				level,
+				):
+			self.char_class = char_class
+			self.level = level
+
+	assert mastery_count( Drilled( "Fighter", 1 ) ) == 3
+	assert mastery_count( Drilled( "Fighter", 20 ) ) == 6
+	assert mastery_count( Drilled( "Barbarian", 4 ) ) == 3
+	assert mastery_count( Drilled( "Paladin", 7 ) ) == 2
+	assert mastery_count( Drilled( "Ranger", 1 ) ) == 2
+	assert mastery_count( Drilled( "Rogue", 1 ) ) == 2
+	assert mastery_count( Drilled( "Wizard", 20 ) ) == 0
+	assert _melee_only( Drilled( "Barbarian", 1 ) )
+	assert not _melee_only( Drilled( "Fighter", 1 ) )
+	assert planned_masteries( Drilled( "Fighter", 1 ), 3 ) == []
+	assert weapon_mastery_chip( Drilled( "Fighter", 1 ) ) == "3"
+	assert weapon_mastery_entry( Drilled( "Fighter", 1 ) ).startswith(
+			"*You feel comfortable with the weapons you trained with.*"
+			)
+
+	#-- A Character's drills stamp Tags the Field already knows, and the
+	#-- readers read them back without deciding anything again.
+	from AtlasActorLudi.CharactersKit import Character
+
+	char = Character(
+			seed=1
+			)
+	char.level = 1
+	char.char_class = "Fighter"
+	assert mastered_tags( char ) == ()
+	assert char not in Weapon_Mastery
+
+	picks = plan_masteries( char )
+	assert len( picks ) == 3, picks
+	for weapon, mastery in picks:
+		assert mastery == WEAPON_MASTERIES[weapon], picks
+	assert planned_masteries( char, 3 ) == picks
+	assert planned_masteries( char, 2 ) == picks[:2]
+	assert char in Weapon_Mastery
+
+	carried = mastered_tags( char )
+	assert set( carried ) == {
+			_mastery_tag(
+					weapon
+					)
+			for weapon, _mastery in picks
+			}, carried
+	assert carried == tuple(
+			tag
+			for tag in minted
+			if tag in carried
+			), "mastered_tags reads the Field in minting order"
+	assert weapon_mastery_chip( char ) == ", ".join(
+			weapon
+			for weapon, _mastery in picks
+			)
+	entry = weapon_mastery_entry( char )
+	for weapon, mastery in picks:
+		assert f"**{weapon} Mastery: {mastery}**" in entry, entry
+	assert "{dc}" not in entry
+
+	assert plan_masteries( char ) == picks
+	assert mastered_tags( char ) == carried
+	assert tuple(
+			Declared_Mastery[:]
+			) == minted, "a Character's drills mint nothing new"
+
+	#-- QST-0144.6, ruling 8: the drills are shuffled by one bag named by the
+	#-- Weapon_Mastery lesson (the name a reader types for it), opened with
+	#-- the default key, over the allowed weapons the Character neither
+	#-- wields nor carries, in name order before the shuffle.
+	opened = []
+	shuffled = []
+	original_dice_bag = Character.Dice_Bag
+
+	def recording_dice_bag(
+			character,
+			purpose,
+			*,
+			version="1",
+			namespace="GenLegend",
+			):
+		bag = original_dice_bag(
+				character,
+				purpose,
+				version=version,
+				namespace=namespace,
+				)
+		opened.append(
+				( purpose, version, namespace )
+				)
+		bag_shuffle = bag.shuffle
+
+		def recording_shuffle(
+				population,
+				):
+			shuffled.append(
+					list( population )
+					)
+			return bag_shuffle(
+					population
+					)
+
+		bag.shuffle = recording_shuffle
+		return bag
+
+	Character.Dice_Bag = recording_dice_bag
+	try:
+		candidates = mastery_candidates( char )
+	finally:
+		Character.Dice_Bag = original_dice_bag
+	assert opened == [
+			( "Weapon_Mastery.choice", "1", "GenLegend" ),
+			], opened
+	[ rest ] = shuffled
+	assert rest == sorted( rest ) and len( set( rest ) ) == len( rest ), rest
+	assert set( rest ) <= set( WEAPON_MASTERIES ), rest
+	assert sorted( candidates ) == rest, ( candidates, rest )
+		#-- no gear: every candidate is a drill, in the bag's order
+
+	print(
+			f"Map_of_Weapon_Masteries: {len( minted )} masteries declared, "
+			"self-test OK"
+			)
+
+
+if __name__ == "__main__":
+	from AtlasLusoris.Map_of_Weapon_Masteries import _self_test as _package_self_test
+	_package_self_test()
