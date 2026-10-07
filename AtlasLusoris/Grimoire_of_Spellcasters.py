@@ -835,7 +835,6 @@ def _expanded_spell_table(
 	return answer
 
 
-
 class Spellcaster:
 	def __init__(caster, character, known=None):
 		if known is None:      known = []
@@ -2321,50 +2320,6 @@ class Warlock(Spellcaster):
 			if caster.level >= 7: caster.spells_known += [Confusion,    SummonAberration]
 			if caster.level >= 10: caster.spells_known += [Hex]
 			if caster.level >= 9: caster.spells_known += [ModifyMemory,    Telekinesis]
-		if caster.character.subclass == "Genie":
-			if caster.level >= 1: caster.spells_known += [DetectEvilandGood]
-			if caster.level >= 3: caster.spells_known += [PhantasmalForce]
-			if caster.level >= 5: caster.spells_known += [CreateFoodWater]
-			if caster.level >= 7: caster.spells_known += [PhantasmalKiller]
-			if caster.level >= 9: caster.spells_known += [Creation]
-			if caster.level >= 17: caster.spells_known += [Wish]
-			dice_bag = caster.character.Dice_Bag(
-				"Warlock.Genie.Patron",
-				version="1",
-				)
-			patron = caster.character.Pick(
-				[
-					"Dao",
-					"Djinni",
-					"Efreeti",
-					"Marid",
-					],
-				dice=dice_bag,
-				)
-			if patron == "Dao":
-				if caster.level >= 1: caster.spells_known += [sanctuary]
-				if caster.level >= 3: caster.spells_known += [SpikeGrowth]
-				if caster.level >= 5: caster.spells_known += [MeldIntoStone]
-				if caster.level >= 7: caster.spells_known += [StoneShape]
-				if caster.level >= 9: caster.spells_known += [WallStone]
-			if patron == "Djinni":
-				if caster.level >= 1: caster.spells_known += [Thunderwave]
-				if caster.level >= 3: caster.spells_known += [GustOfWind]
-				if caster.level >= 5: caster.spells_known += [WindWall]
-				if caster.level >= 7: caster.spells_known += [GreaterInvisibility]
-				if caster.level >= 9: caster.spells_known += [Seeming]
-			if patron == "Efreeti":
-				if caster.level >= 1: caster.spells_known += [BurningHands]
-				if caster.level >= 3: caster.spells_known += [ScorchingRay]
-				if caster.level >= 5: caster.spells_known += [Fireball]
-				if caster.level >= 7: caster.spells_known += [FireShield]
-				if caster.level >= 9: caster.spells_known += [FlameStrike]
-			if patron == "Marid":
-				if caster.level >= 1: caster.spells_known += [FogCloud]
-				if caster.level >= 3: caster.spells_known += [Blur]
-				if caster.level >= 5: caster.spells_known += [SleetStorm]
-				if caster.level >= 7: caster.spells_known += [ControlWater]
-				if caster.level >= 9: caster.spells_known += [ConeofCold]
 		if caster.character.subclass == "Archfey":
 			if caster.level >= 3: caster.spells_known += [CalmEmotions, FaerieFire, MistyStep, PhantasmalForce, Sleep]
 			if caster.level >= 5: caster.spells_known += [Blink, PlantGrowth]

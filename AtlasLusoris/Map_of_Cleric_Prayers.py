@@ -371,8 +371,6 @@ CULTURE_DOMAIN_PRAYERS = {
 	}
 
 
-
-
 # ---------------------------------------------------------------------------
 # Resolution
 # ---------------------------------------------------------------------------
@@ -618,31 +616,6 @@ def pick_prayer(
 		)
 
 
-def domain_wisdom(
-		character,
-		domain: str | None = None,
-		) -> str:
-	"""
-	A compact closer, if a caller wants the old one-line form.
-
-	Domain voice on the sheet uses ``voice_of_domain`` instead.
-	"""
-	resolved = _domain_of(
-		character,
-		domain,
-		) or "Cleric"
-
-	prayer = pick_prayer(
-		character,
-		domain=resolved,
-		)
-
-	return (
-		f"{prayer}, "
-		f"that's the wisdom of the {resolved} Domain."
-		)
-
-
 # ---------------------------------------------------------------------------
 # Guild and Domain voice
 # ---------------------------------------------------------------------------
@@ -803,7 +776,6 @@ __all__ = (
 	"prayer_ledger",
 	"prayer_purpose",
 	"pick_prayer",
-	"domain_wisdom",
 	"voice_of_domain",
 	"bind_cleric_voice",
 	)

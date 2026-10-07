@@ -34,7 +34,7 @@ def subclasses():
 	'Druid': [
 		"Moon", "Land", "Sea",	"Stars", ],
 	'Warlock': [
-		"Great Old One", "Fiend", "Archfey", "Celestial", "Genie" ],
+		"Great Old One", "Fiend", "Archfey", "Celestial", ],
 	'Sorcerer': [
 		"Draconic",	"Wild Magic", "Divine Soul", "Shadow Magic", ],
 	'Barbarian': [

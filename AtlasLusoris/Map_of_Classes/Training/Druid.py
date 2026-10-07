@@ -2,9 +2,7 @@ from ..Grimoire_of_Health  import roll_health, HIT_DIE_TABLE
 from ..Codex_of_Progression import Progression
 
 from AtlasLusoris.Grimoire_of_Features import *
-from random import choice
 from typing import List
-from AtlasLusoris.Map_of_Classes.Scroll_of_Constants import SUBCLASSES
 from AtlasActorLudi.Grimoire_of_Skills import Skill
 
 
@@ -46,7 +44,7 @@ class Druid(Progression):
 	def features(self, character):
 		feats: List[Feature] = []
 		level = character.Level
-		subclass = character.Subclass or choice(SUBCLASSES["Druid"])
+		subclass = character.Subclass
 		if level >= 2:
 			roll_health(character)
 

@@ -389,7 +389,6 @@ def BoonEnergyResistance(char):
 		raise_stat(c, key, 1, cap=30)
 
 
-
 		# store them so the damage-handling layer can look them up
 
 	dmg1, dmg2 = Damages(char.Dice_Bag( "Boon_of_Energy_Resistance.damage_types" ))
@@ -835,39 +834,6 @@ def Weapon_Masteries():
 			against that creature before the end of your next turn.""",
 	}
 
-def character_weapon_masteries(char):
-	"""Return the set of Weapon-Mastery names the character already has."""
-	owned = set()
-	for feat in getattr(char, "features", []):
-		if feat.name in Weapon_Masteries():
-			owned.add(feat.name)
-	return owned
-
-def add_new_weapon_mastery(char):
-	"""
-	Give the character ONE random Weapon-Mastery property they don’t yet own.
-	Returns the `Feat` object, or `None` if no masteries remain.
-	"""
-	owned     = character_weapon_masteries(char)
-	available = [name for name in Weapon_Masteries() if name not in owned]
-	if not available:
-		print("No new weapon masteries to grant!")
-		return None
-
-	#-- dormant: nothing calls this legacy twin of Map_of_Weapon_Masteries
-	#-- (Weapon_Mastery.choice); it is outside QST-0144.6's live sites and
-	#-- keeps the shared stream until it is deleted or ported
-	import app.random as random
-	name = random.choice(available)
-	feat = Feat(
-		name=name,
-		apply=lambda c: None,                          # pure feature, no mutation
-		description=Weapon_Masteries()[name],
-		source="Weapon Mastery",
-	)
-	char.features.append(feat)
-	print(f"Gained Weapon Mastery: {name}")
-	return feat
 
 def _raise_stat(char, key: str, amount: int = 4):
 	"""Increase char.abilities.KEY by <amount>, capping at 25."""
@@ -953,7 +919,6 @@ def LightBearer():
 			) ,
 		source="Species Feature"
 	)
-
 
 
 @dataclass
@@ -1124,26 +1089,6 @@ def BuildAvailableInvocations(char):
 	for inv in invocations:
 		if inv.is_valid_for(char):
 			yield inv
-
-
-
-
-
-
-# Blueprints
-# ---- General Pattern for Features/Boons ----
-def generic_stat_boost_boon(name, desc, boon):
-	"""A +1 boon; ``boon`` is the Boon Tag's class name, whose ``.ability`` bag the raise draws from."""
-	def _apply(char):
-		key = _ability_to_increase(char, dice=char.Dice_Bag( f"{boon}.ability" ))
-		raise_stat(char, key, 1, cap=30)
-	return Feat(
-		name=name,
-		apply=_apply,
-		description=desc,
-		source="Epic Boon",
-		level=19,
-	)
 
 
 def Lucky():
@@ -1389,8 +1334,6 @@ def HealerFeat():
 	)
 
 
-
-
 def TavernBrawler():
 	"""
 	Origin feat: Tavern Brawler:contentReference[oaicite:30]{index=30}.  Enhances unarmed strikes, grants improvised weapon proficiency, rerolls 1s on damage, and lets you push on a hit:contentReference[oaicite:31]{index=31}.
@@ -1446,76 +1389,4 @@ def Resourceful():
 		source="Species Feature",
 		)
 
-def MagicInitiate(class_name: str):
-	"""
-	Build a Magic-Initiate feat for Cleric / Druid / Wizard.
-	"""
 
-	from AtlasLusoris.Grimoire_of_Spellcasters import spellcaster, SPELL_LISTS
-	import html   # std-lib; we’ll use html.escape for safety
-	import random
-
-	# ---------- skeleton feat (description will be patched later) ----------
-	feat = Feat(
-		name = f"Magic Initiate ({class_name})",
-		apply = None,   # we overwrite below
-		description = (
-			f"You learn two cantrips and one 1st-level spell from the "
-			f"{class_name} list (shown once you take the feat). "
-			"You can cast the 1st-level spell once without a spell slot "
-			"and regain that use after a Long Rest."
-		),
-		source = "Feat",
-		level  = 1,
-	)
-
-	# ---------- real apply()  ---------------------------------------------
-	def apply(char, _feat = feat):
-		# Ensure the character has a Spellcaster object
-		if not getattr(char, "spellcaster", None):
-			char.spellcaster = spellcaster(char)
-
-		sc  = char.spellcaster
-		if char.spellcaster is None:
-			return
-		lst = SPELL_LISTS.get(class_name, {})
-
-		cantrips_pool = lst.get(0, [])
-		first_pool    = lst.get(1, [])
-
-		chosen_cantrips = random.sample(cantrips_pool, min(2, len(cantrips_pool)))
-		chosen_first    = random.choice(first_pool) if first_pool else None
-
-		# Record on the spell-list
-		sc.spells_known.extend(chosen_cantrips)
-		if chosen_first:
-			sc.spells_known.append(chosen_first)
-
-		# Update feat text so it prints the actual spells
-		bullets  = "".join(f"<div class='spell'>{s}</div>" for s in chosen_cantrips)
-		mod = "Wisdom"
-		if class_name == "Wizard": mod = "Intelligence"
-		if chosen_first:
-			bullets += f"<div class='spell'>{chosen_first}</div>"
-		_feat.description = (
-			f"You learn two cantrips and one 1st-level spell from the "
-			f"{class_name} list (shown once you take the feat). "
-			"You can cast the 1st-level spell once without a spell slot "
-			"and regain that use after a Long Rest. <br> "
-			f"""<b>Gained Spells:</b>
-			{bullets}"""
-			"You can cast the 1st-level spell in this list once per Long Rest.<br> "
-			f"<b>{mod}</b> is your spellcasting ability for these spells."
-		)
-
-		# Track limited use so your casting logic can check it
-		char.magic_initiate_uses = { "spell": chosen_first, "remaining": 1 }
-
-	# plug the real apply function into the feat object
-	feat.apply = apply
-	return feat
-
-
-MagicInitiateCleric = lambda: MagicInitiate("Cleric")
-MagicInitiateDruid  = lambda: MagicInitiate("Druid")
-MagicInitiateWizard = lambda: MagicInitiate("Wizard")

@@ -2941,44 +2941,6 @@ def ability_weights(
 	return weights
 
 
-def pick_ability(
-		char,
-		pool,
-		amount: int = 1,
-		):
-	"""Draw one ability from ``pool``, weighted by what the Character wants."""
-	keys = list(
-		pool
-		)
-
-	if not keys:
-		return None
-
-	weights = ability_weights(
-		char,
-		pool=keys,
-		amount=amount,
-		)
-	wanted = [
-		key
-		for key in keys
-		if weights[key] > 0
-		]
-
-	if wanted:
-		return char.Pick(
-			wanted,
-			[
-				weights[key]
-				for key in wanted
-				],
-			)
-
-	return char.Pick(
-		keys
-		)
-
-
 def ability_preference(
 		char,
 		) -> tuple[str, ...]:

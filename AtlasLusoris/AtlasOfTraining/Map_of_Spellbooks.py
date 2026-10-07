@@ -266,40 +266,6 @@ def Character_Tools(
 		)
 
 
-def _a_language(
-		char,
-		) -> str:
-	"""
-	One language this Character actually knows, for a form that names one.
-
-	Common is skipped when there is anything else, because a book written in
-	the language everybody reads is not saying much about its writer.
-	"""
-	try:
-		known = [
-			name
-			for name in char.languages.names()
-			if name
-			]
-	except Exception:
-		return "Common"
-	choices = [
-		name
-		for name in known
-		if name != "Common"
-		] or known or [
-		"Common",
-		]
-	return char.Pick(
-			choices,
-			dice=char.Dice_Bag(
-				"wizard.spellbook.hand",
-				version="1",
-				namespace="GenLegendLusoris",
-				),
-			)
-
-
 def Draw_Spellbook(
 		char,
 		) -> str:

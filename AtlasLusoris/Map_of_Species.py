@@ -75,15 +75,6 @@ species = dict(
 #	"Plasmoid":        	10,
 #	"Thri Kreen":    	10,
 #	"Leonin":        	10,
-def random_species(
-		character,
-		):
-	return character.Pick(
-		list(
-			species
-			),
-		weights=species.values(),
-		)
 
 @guardian
 def species_to_race_and_subrace(
