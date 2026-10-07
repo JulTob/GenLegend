@@ -694,11 +694,17 @@ def Settle_Invocations(
 					)
 			)
 	granted = []
+	dice = char.Dice_Bag(
+			"Lessons_of_the_First_Ones.feat"
+			)
+		#-- the invocation that owes the feat names the bag it is drawn
+		#-- from; one bag, however many feats are owed (QST-0144.6)
 	while owed > 0:
 		granted.append(
 				Grant_Origin_Feat(
 						char,
 						source="Invocation — Lessons of the First Ones",
+						dice=dice,
 						)
 				)
 		owed -= 1

@@ -1768,8 +1768,8 @@ def Grant_Origin_Feat(
 	Apply an Origin feat Tag (default: Pick from ORIGIN_FEATS).
 
 	``dice`` is the opened Dice Bag the default draw comes from, named by the
-	Tag that owes the feat (QST-0144.6, ruling 8); without it the draw is a
-	bare Accept, kept only until that caller names its bag.
+	Tag that owes the feat (QST-0144.6, ruling 8); a default draw without it
+	is refused by Pick, so every caller that leaves ``feat`` unset names its bag.
 	"""
 	if feat is None:
 		def imprint(
@@ -1891,7 +1891,16 @@ def Grant_Versatile(
 		char,
 		feat,
 		source="Species Feature — Versatile",
+		dice=(
+			char.Dice_Bag(
+				"Versatile.choice",
+				)
+			if feat is None
+			else None
+			),
 		)
+		#-- a caller that chose nothing gets the Trait's own bag, the same
+		#-- one Humans.py draws from before it hands the feat in (QST-0144.6)
 	char._versatile_origin_feat = granted
 
 	return granted
