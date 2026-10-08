@@ -108,3 +108,8 @@ $S/
 # Documenta/Sources holds reference material consulted by hand (books, transcripts).
 # It is not repository content (Julio, 2026-09-06, QST-0087).
 Documenta/Sources/
+
+# --- Vercel local state (QST-0143) ---
+# .vercel/ holds the project link created by `vercel login`/`vercel link`.
+# It is per-machine and per-account; the project id belongs in no commit.
+.vercel/
