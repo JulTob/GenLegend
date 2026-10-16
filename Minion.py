@@ -11,7 +11,10 @@ _START_FILES = frozenset({"main.py"})
 
 # Log system: when set, decorators append plain-text records here.
 # ``MINION_LOG=minion_app.log python3 ...`` enables it for a whole run.
-_log_path = os.environ.get("MINION_LOG") or None
+# By default, Minion logging is DISABLED in production to avoid noise.
+# Set MINION_ENABLED=1 to enable console output, or MINION_LOG=file.log for file output.
+_log_path = os.environ.get("MINION_LOG")
+_minion_enabled = os.environ.get("MINION_ENABLED", "").lower() in ("1", "true", "yes")
 
 # Minion emoji for code
 
@@ -49,6 +52,15 @@ def get_log_file():
 	"""Current log file path, or None."""
 	return _log_path
 
+def set_minion_enabled(enabled: bool) -> None:
+	"""Enable or disable Minion logging globally. Pass False to silence all Minion output."""
+	global _minion_enabled
+	_minion_enabled = enabled
+
+def get_minion_enabled() -> bool:
+	"""Check if Minion logging is currently enabled."""
+	return _minion_enabled
+
 def set_start_files(files):
 	"""Set custom start files for get_call_tree."""
 	global _START_FILES
@@ -60,15 +72,20 @@ def get_start_files():
 
 def _emit(plain_text, color=None):
 	"""Low-level sink: file when _log_path is set (plain text), else console (optionally colored)."""
-	if _log_path is None:
-		print(Color(plain_text, color) if color else plain_text)
+	# If Minion logging is disabled globally, do nothing
+	if not _minion_enabled:
 		return
-	try:
-		with open(_log_path, "a", encoding="utf-8") as f:
-			f.write(plain_text + "\n")
-	except OSError:
-		print(Color(f"{ALERT_MINION} Error writing to log file: {_log_path}", ALERT_COLOR))
-		print(Color(plain_text, ALERT_COLOR))
+	
+	if _log_path is not None:
+		try:
+			with open(_log_path, "a", encoding="utf-8") as f:
+				f.write(plain_text + "\n")
+			return
+		except OSError:
+			print(Color(f"{ALERT_MINION} Error writing to log file: {_log_path}", ALERT_COLOR))
+	
+	# Fall back to console output
+	print(Color(plain_text, color) if color else plain_text)
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  The Chronicler — gathers one job's records into a single, tidy account
