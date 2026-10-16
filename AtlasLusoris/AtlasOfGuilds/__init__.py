@@ -28,6 +28,27 @@ def Load_Guild_Libraries(
 			)
 
 
+def Validate_Guild_Specializations(
+		) -> None:
+	"""
+	Validate that all Guilds have at least one Specialization.
+	
+	This should be called after Load_Guild_Libraries() to ensure all
+	Specializations are registered before validation.
+	
+	Raises AssertionError if any Guild is missing Specializations.
+	"""
+	from AtlasLusoris.AtlasOfGuilds.validation import assert_guild_specializations_valid
+	from AtlasLusoris.Grimoire_of_Guilds import SPECIALIZATIONS_BY_GUILD
+	from AtlasLusoris.GuildKit import GUILDS
+	
+	assert_guild_specializations_valid(
+		dict(GUILDS),
+		dict(SPECIALIZATIONS_BY_GUILD),
+		)
+
+
 __all__ = (
 	"Load_Guild_Libraries",
+	"Validate_Guild_Specializations",
 	)
