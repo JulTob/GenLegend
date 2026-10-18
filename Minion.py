@@ -1,4 +1,4 @@
-# Minion.py â fail-system decorators: @minion, @warden, @watcher, @spy, @guardian, @changeling
+# Minion.py — fail-system decorators: @minion, @warden, @watcher, @spy, @guardian, @changeling
 # None of them change the function's return value. They only inform the log system.
 import functools
 import inspect
@@ -22,18 +22,18 @@ _minion_enabled = (
 
 # Minion emoji for code
 
-MINION = "ð§"
-FAIL_MINION = "ð§"
-WARDEN_MINION = "ð§"
-WATCHER_MINION = "ð¦"
-SPY_MINION = "ð·ï¸"
-LOG_MINION = "ð"
-ALERT_MINION = "ð§ð½ââï¸"
-MESSAGE_MINION = "ðï¸"
-RECALL_MINION = "ð¦âð¥"
-END_MINION = "ð¦"
-GUARDIAN_MINION = "ðº"
-CHANGELING_MINION = "ð§"
+MINION = "🧞"
+FAIL_MINION = "🧟"
+WARDEN_MINION = "🧌"
+WATCHER_MINION = "🦉"
+SPY_MINION = "🕷️"
+LOG_MINION = "🐉"
+ALERT_MINION = "🧜🏽‍♀️"
+MESSAGE_MINION = "🕊️"
+RECALL_MINION = "🐦‍🔥"
+END_MINION = "🦉"
+GUARDIAN_MINION = "🐺"
+CHANGELING_MINION = "🧚"
 
 # Per-minion colors (for console output). Names: black, red, green, yellow, blue, magenta, cyan, white, dim, bold
 MINION_COLOR = "cyan"
@@ -94,63 +94,63 @@ def _emit(plain_text, color=None):
 	# Fall back to console output
 	print(Color(plain_text, color) if color else plain_text)
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-#  The Chronicler â gathers one job's records into a single, tidy account
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ─────────────────────────────────────────────────────────────────────────────
+#  The Chronicler — gathers one job's records into a single, tidy account
+# ─────────────────────────────────────────────────────────────────────────────
 # Normally each Minion reports the instant something happens. But summoning a
 # character calls the same helpers hundreds of times, and the repeats drown the
 # signal. Put @chronicler on the top-level job. While it runs, the little Minions
 # report *into the Chronicler's account* instead of straight to the screen; when
 # the job ends, the Chronicler reads the account aloud:
-#     â¢ each distinct line once, live, as it first happens;
-#     â¢ repeats collapsed into a quiet "  ÃN" at the end;
-#     â¢ any errors gathered into a closing section, each under a separator.
+#     • each distinct line once, live, as it first happens;
+#     • repeats collapsed into a quiet "  ×N" at the end;
+#     • any errors gathered into a closing section, each under a separator.
 # A nested @chronicler simply joins the outermost account (only it opens/closes).
 
-SEPARATOR = "â" * 40
+SEPARATOR = "─" * 40
 _TIMESTAMP = re.compile(r"\d{4}-\d\d-\d\d \d\d:\d\d:\d\d")
 
 class _Account:
 	"""What the Chronicler collects while it is open."""
 	def __init__(self):
-		self.seen = {}     # identity -> [text, times_seen, color]   (for the ÃN summary)
+		self.seen = {}     # identity -> [text, times_seen, color]   (for the ×N summary)
 		self.errors = []   # error texts, gathered to show together at the very end
 
 # The account currently open, or None when no Chronicler is running.
 _account = None
 
 def _identity(text):
-	"""A record's identity, ignoring its clock time â so two identical events match."""
-	return _TIMESTAMP.sub("â±", text)
+	"""A record's identity, ignoring its clock time — so two identical events match."""
+	return _TIMESTAMP.sub("⏱", text)
 
 def print_record(text, color=None):
 	"""
 	Report one line to the log.
-	  	â¢ No Chronicler open  â print it now (unchanged behaviour).
-	  	â¢ Chronicler open     â first sighting prints live; repeats are only tallied;
+	  	• No Chronicler open  → print it now (unchanged behaviour).
+	  	• Chronicler open     → first sighting prints live; repeats are only tallied;
 	                          	errors are held back for the closing section.
 	"""
 	if _account is None:
 		_emit(text, color)
 		return
 
-	if color == FAIL_COLOR:              # an error (bug tree / locator) â save it for the end
+	if color == FAIL_COLOR:              # an error (bug tree / locator) — save it for the end
 		_account.errors.append(text)
 		return
 
 	identity = _identity(text)
 	if identity in _account.seen:
-		_account.seen[identity][1] += 1  # seen before in this account â just add to the tally
+		_account.seen[identity][1] += 1  # seen before in this account — just add to the tally
 	else:
 		_account.seen[identity] = [text, 1, color]
-		_emit(text, color)               # first time â show it live
+		_emit(text, color)               # first time — show it live
 
 def _read_account_aloud(account):
-	"""Print the closing summary: each repeated line as "ÃN", then the errors."""
+	"""Print the closing summary: each repeated line as "×N", then the errors."""
 	for text, times_seen, color in account.seen.values():
 		if times_seen > 1:
 			_emit(SEPARATOR)
-			_emit(f"{_identity(text)}  Ã{times_seen}", color)
+			_emit(f"{_identity(text)}  ×{times_seen}", color)
 	for error_text in account.errors:
 		_emit(SEPARATOR)
 		_emit(error_text, FAIL_COLOR)
@@ -163,7 +163,7 @@ def chronicler(job):
 	"""
 	def wrapped(*args, **kwargs):
 		global _account
-		if _account is not None:             # already inside an account â just run
+		if _account is not None:             # already inside an account — just run
 			return job(*args, **kwargs)
 
 		_account = _Account()                # open a fresh account
@@ -204,7 +204,7 @@ def get_call_tree(start_files=None, stop_files=None):
 	if not isinstance(stop, set):
 		stop = frozenset(stop)
 	stack = inspect.stack()
-	out = ["\nâð® Call Stack:"]
+	out = ["\n╞🔮 Call Stack:"]
 	level = 0
 	prev_file = None
 	active = False
@@ -220,23 +220,23 @@ def get_call_tree(start_files=None, stop_files=None):
 		if fname != prev_file:
 			cur = level
 			level += 1
-			ind = "â  " * cur
-			out.append(f"â  {ind}â­ð ã{fname}ã")
+			ind = "│  " * cur
+			out.append(f"│  {ind}╭📜 「{fname}」")
 		else:
 			cur = level - 1
-			ind = "â  " * cur
+			ind = "│  " * cur
 		if "module" not in fn:
-			out.append(f"â  {ind}â­ðª({ln}) â¨{fn}â©")
+			out.append(f"│  {ind}╭🪄({ln}) ⟨{fn}⟩")
 		else:
-			out.append(f"â  {ind}â­ðª¶({ln})")
+			out.append(f"│  {ind}╭🪶({ln})")
 		prev_file = fname
-	out.append("â" + "âââ¯" * level)
+	out.append("├" + "──╯" * level)
 	return "\n".join(out)
 
 def bugged_tree(exc):
 	"""Exception traceback as a short tree."""
 	tb = exc.__traceback__
-	out = ["\nâð Bugs:"]
+	out = ["\n╞🐛 Bugs:"]
 	level = 0
 	cur = 0
 	prev_file = None
@@ -247,23 +247,23 @@ def bugged_tree(exc):
 		if fname != prev_file:
 			cur = level
 			level += 1
-			out.append(f"â·  {'â·  ' * cur}ð ã{fname}ã")
+			out.append(f"╷  {'╷  ' * cur}🐝 「{fname}」")
 		else:
 			cur = level - 1
-		out.append(f"â·  {'â·  ' * cur}ð ({ln}): â¨{fn}â©")
+		out.append(f"╷  {'╷  ' * cur}🐞 ({ln}): ⟨{fn}⟩")
 		prev_file = fname
 		tb = tb.tb_next
-	out.append("â" + "â¶â¶â¯" * level)
-	out.append(f"âð¦ Bug: {type(exc).__name__} - {exc}")
+	out.append("├" + "╶╶╯" * level)
+	out.append(f"┝🦋 Bug: {type(exc).__name__} - {exc}")
 	return "\n".join(out)
 
 def _bug_report(exc):
 	ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 	header = Color(f"{FAIL_MINION} Minion bug report", "magenta")
-	time_line = Color(f"â³ {ts}", "dim")
+	time_line = Color(f"⏳ {ts}", "dim")
 	stack = Color(get_call_tree(), "cyan")
 	bugs = Color(bugged_tree(exc), "green")
-	return "\n".join([header, time_line, stack, bugs, "â·"])
+	return "\n".join([header, time_line, stack, bugs, "┷"])
 
 def report_bug(exc):
 	"""Send one exception's bug tree to the log without re-raising."""
@@ -460,7 +460,7 @@ def _enriched_error(exc):
 	tb = exc.__traceback__
 	if not tb:
 		return f"{type(exc).__name__}: {exc}"
-	while tb.tb_next:  # walk to the innermost frame â the real culprit, not the Minion wrapper
+	while tb.tb_next:  # walk to the innermost frame — the real culprit, not the Minion wrapper
 		tb = tb.tb_next
 	filename = tb.tb_frame.f_code.co_filename
 	file_display = os.path.basename(filename)
@@ -495,7 +495,7 @@ def spy(f):
 		try:
 			ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 			tree = get_call_tree()
-			print_record(f"{SPY_MINION} [spy] {f.__name__} ({args}, {kwargs}) called at {ts}\n{tree}\nâ·", SPY_COLOR)
+			print_record(f"{SPY_MINION} [spy] {f.__name__} ({args}, {kwargs}) called at {ts}\n{tree}\n┷", SPY_COLOR)
 			return f(*args, **kwargs)
 		except Exception as exc:
 			report_bug(exc)
@@ -521,25 +521,25 @@ if __name__ == "__main__":
 		return 1 / 0
 
 	# 1) Plain use (no Chronicler): every call reports immediately.
-	print("â plain, no Chronicler â")
+	print("— plain, no Chronicler —")
 	name_step()
 	roll_step()
 
-	# 2) Under a Chronicler: repeats collapse to ÃN, errors gather at the end.
+	# 2) Under a Chronicler: repeats collapse to ×N, errors gather at the end.
 	@chronicler
 	def summon_demo():
-		name_step()            # first time â live
+		name_step()            # first time → live
 		for _ in range(6):
-			name_step()        # repeats â counted, not reprinted
-		roll_step()            # a different line â live
+			name_step()        # repeats → counted, not reprinted
+		roll_step()            # a different line → live
 		try:
-			breaks()           # error â held for the closing section
+			breaks()           # error → held for the closing section
 		except ZeroDivisionError:
 			pass
 
-	print("\nâ under a Chronicler â")
+	print("\n— under a Chronicler —")
 	summon_demo()
 
-	# Expected: name_step + roll_step live, then a separator with "name_step â¦ Ã7",
+	# Expected: name_step + roll_step live, then a separator with "name_step … ×7",
 	# then a separator and the bug tree for breaks().
 
