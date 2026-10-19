@@ -44,7 +44,7 @@ replay-player: setup
 	$(VENV_PYTHON) scripts/verify_player_replay.py
 
 # Verify Tool Proficiencies Wiki is consistent with code
-verify-tool-wiki:
+verify-tool-wiki: setup
 	$(VENV_PYTHON) scripts/verify_tool_wiki_consistency.py
 
 # The Aasimar page is locked and owns its code.  This proves the code still
