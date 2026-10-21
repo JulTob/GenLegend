@@ -74,11 +74,10 @@ Artisan's Tools represent **crafting and trade proficiencies**. They are typical
 
 #### Artisan's Tools Mechanical Benefits
 
-All Artisan's Tools share a common structure with **three guidance sections**:
+All Artisan's Tools share a common structure with **two guidance sections**:
 
-1. **Core Competency**: What the character can *do* with the tool (identify, create, modify, repair, etc.)
-2. **Expertise**: What the character can *recognize* or *determine* (materials, workmanship, purpose, alterations, etc.)
-3. **Works of Wonder**: Extraordinary creations possible with suitable tools, time, and materials (DM's discretion)
+1. **Core Competency**: What the character can *do* with the tool (identify, create, modify, repair, etc.) — titled per craft in the code (e.g., "Principles of Transformation" for Alchemist's Supplies, "The Dose Makes the Poison" for Poisoner's Kit)
+2. **Works of Wonder**: Extraordinary creations possible with suitable tools, time, and materials (DM's discretion)
 
 **Example: Alchemist's Supplies**
 - **Flavour**: "Matter can change. Poison can become medicine, stone can flow, and fire can be tamed. By the law of equivalence, every transformation demands something in return. You have learned how to invite the change without becoming the price."
