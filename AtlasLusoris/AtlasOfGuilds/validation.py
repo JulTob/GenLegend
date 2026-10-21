@@ -1,10 +1,10 @@
-"""
-Validation utilities for Guild Specializations.
+"""Validation utilities for Guild Specializations.
 
 This module provides runtime validation that ensures:
 1. Every Guild has at least one Specialization
-2. No Guild offers duplicate or invalid Specializations
-3. The UI picker never offers a Guild without specializations
+2. Specializations are registered under known Guilds
+3. No two Guilds share a Specialization name, so the UI picker
+   never offers an ambiguous or incomplete Guild
 
 Run standalone: python -m AtlasLusoris.AtlasOfGuilds.validation
 """
@@ -36,7 +36,34 @@ def validate_all_guilds_have_specializations(
 			errors.append(
 				f"Guild '{guild_name}' has NO specializations. "
 				f"The UI picker must not offer this Guild until it has at least one."
-			)
+				)
+
+	return (len(errors) == 0, errors)
+
+
+def validate_specializations_belong_to_guilds(
+		guilds: dict[str, type],
+		specializations_by_guild: dict[str, tuple[str, ...]],
+		) -> tuple[bool, list[str]]:
+	"""
+	Verify that every registered Specialization belongs to a known Guild.
+
+	Args:
+	guilds: Mapping of guild names to guild classes
+	specializations_by_guild: Mapping of guild names to their specializations
+
+	Returns:
+	(success, errors) tuple where success is True if every registered
+	Specialization sits under a known Guild, and errors lists any
+	Specializations registered under unknown Guilds.
+	"""
+	errors = []
+	for guild_name in sorted(specializations_by_guild.keys()):
+		if guild_name not in guilds:
+			errors.append(
+				f"Specializations registered under unknown Guild '{guild_name}': "
+				f"{specializations_by_guild[guild_name]}"
+				)
 
 	return (len(errors) == 0, errors)
 
@@ -64,7 +91,7 @@ def validate_no_duplicate_specialization_names(
 					f"Duplicate Specialization name '{spec_name}' "
 					f"(first in Guild '{first_seen[spec_name]}', now in '{guild_name}'). "
 					f"Each Specialization name must be unique across all Guilds."
-				)
+					)
 			else:
 				first_seen[spec_name] = guild_name
 
@@ -95,7 +122,14 @@ def validate_specialization_registration(
 	if not success:
 		all_errors.extend(errors)
 
-	# Check 2: No duplicate Specialization names
+	# Check 2: Specializations belong to known Guilds
+	success, errors = validate_specializations_belong_to_guilds(
+		guilds, specializations_by_guild
+	)
+	if not success:
+		all_errors.extend(errors)
+
+	# Check 3: No duplicate Specialization names
 	success, errors = validate_no_duplicate_specialization_names(
 		specializations_by_guild
 	)
@@ -143,10 +177,10 @@ if __name__ == "__main__":
 	)
 
 	if success:
-		print("✅ All Guild Specialization validations PASSED.")
+		print("OK — all Guild Specialization validations PASSED.")
 		sys.exit(0)
 	else:
-		print("❌ Guild Specialization validation FAILED:")
+		print("Guild Specialization validation FAILED:")
 		for error in errors:
 			print(f"  - {error}")
 		sys.exit(1)
