@@ -1,7 +1,7 @@
 # Tool Proficiencies
 
 *Last updated: 2026-10-16*
-*Status: **In-House Development** (GenLegend custom implementation on top of D&D 5e rules)
+*Status: **In-House Development** (GenLegend custom implementation on top of D&D 5e rules)*
 *Related Questa: QST-0116, QST-0116.1, QST-0116.2, QST-0116.3
 
 ---
