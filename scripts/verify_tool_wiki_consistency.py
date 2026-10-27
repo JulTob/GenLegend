@@ -71,8 +71,7 @@ def extract_tools_from_wiki(wiki_path: Path) -> dict[str, dict[str, str]]:
     current_category = None
     in_table = False
 
-    for line in content.split("
-"):
+    for line in content.split("\n"):
         # Detect category headers (### Artisan's Tools (16)).
         # The lazy match plus the "($" or "(" anchor keeps prose headings
         # like "### What is a Tool Proficiency?" out of the categories.
