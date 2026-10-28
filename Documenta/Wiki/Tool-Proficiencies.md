@@ -270,9 +270,9 @@ TOOLS_BY_KEY.update({
 ```
 
 This means:
-- "Carpenter's Tools" → resolves to **Woodworker's Tools**
-- "Woodcarver's Tools" → resolves to **Woodworker's Tools**
-- "Navigator's Tools" → resolves to **Cartographer's Tools**
+- `Carpenter_Tools` → resolves to **Woodworker's Tools**
+- `Woodcarver_Tools` → resolves to **Woodworker's Tools**
+- `Navigator_Tools` → resolves to **Cartographer's Tools**
 
 ---
 
@@ -283,13 +283,11 @@ This means:
 ```python
 @dataclass(frozen=True, slots=True)
 class Tool_Definition(Capability_Definition):
-    key: str              # Unique identifier (e.g., "Alchemist_Supplies")
-    name: str            # Display name (e.g., "Alchemist's Supplies")
-    legacy_attribute: str # For backward compatibility (e.g., "Alchemist_Supplies")
-    ability: str         # Governing ability (STR, DEX, INT, WIS, CHA, ANY)
-    category: str        # Artisan, Kit, Gaming Set, Musical Instrument
-    variant: str         # Optional variant identifier
-    practice: Practice_Definition | None  # The proficiency rules
+    # key, name, and legacy_attribute are inherited from Capability_Definition
+    ability: str          # Governing ability (STR, DEX, INT, WIS, CHA, ANY)
+    category: str         # Artisan, Kit, Gaming Set, Musical Instrument
+    variant: str = ""     # Optional variant identifier
+    practice: Practice_Definition | None = field(default=None, compare=False, hash=False, repr=False)
 ```
 
 ### Practice Definition Structure
@@ -425,7 +423,7 @@ To maintain **backward compatibility** with existing character sheets and save f
 
 - **`legacy_attribute`**: A standardized attribute name for each tool category
 - **`Sheet_Tool_Attributes()`**: Generates the list of tool attributes for the sheet
-- **`Sheet_Tool_Aliases()`**: Maps old/alternate names to current tools
+- **`Sheet_Tool_Aliases()`**: Maps old/alternate keys to the sheet attribute they print, as `(alias, attribute)` pairs
 
 This ensures that:
 - Old character sheets can be loaded without breaking
@@ -457,27 +455,20 @@ All identified issues have been **resolved**, but the system continues to evolve
 
 ### Self-Test
 
-The `ToolsKit.py` module includes a self-test that verifies:
+The `ToolsKit.py` module includes a self-test (run `python3 -m AtlasInventarium.ToolsKit`) that verifies, among other checks:
 
 ```python
 def _self_test():
-    # Every tool has a unique name
-    assert len(names) == len(set(names)), "duplicate tool names in the ledger"
-    
-    # Every ToolsKit tool has a corresponding kit
-    assert set(_KITS) == {tool.key for tool in DEFINITIONS}, (
-        "every ToolsKit tool needs one kit, and no kit may outlive its tool"
-    )
-    
-    # Artisan tools count
+    # Every tool key is unique
+    assert len({tool.key for tool in TOOLS}) == len(TOOLS)
+
+    # Artisan tool count
     assert len(ARTISAN_TOOLS) == 16
-    
-    # Aliases work correctly
-    assert TOOLS_BY_NAME["Carpenter's Tools"] is TOOLS_BY_NAME["Woodworker's Tools"]
-    
-    # Every tool has a governing ability
-    for tool in TOOLS:
-        assert tool.ability, f"{tool.name} has no governing ability"
+
+    # Aliases resolve to the canonical Tool
+    assert Carpenter_Tools is Woodworker_Tools
+    assert Woodcarver_Tools is Woodworker_Tools
+    assert Navigator_Tools is Cartographer_Tools
 ```
 
 Run with:
