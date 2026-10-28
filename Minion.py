@@ -507,6 +507,9 @@ def spy(f):
 
 if __name__ == "__main__":
 	# Self-test / usage demo. Run:  python Minion.py
+	# The demo exists to show Minion records, so switch them on explicitly;
+	# library defaults keep console logging off (see MINION_ENABLED).
+	set_minion_enabled(True)
 
 	@watcher
 	def name_step():
