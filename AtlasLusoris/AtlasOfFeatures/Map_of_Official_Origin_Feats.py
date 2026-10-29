@@ -236,6 +236,43 @@ def _grant_language(
 			)
 
 
+def _tongues_not_yet_known(
+		char,
+		) -> list[str]:
+	"""
+	The standard languages this Character does not speak yet, in a stable order.
+
+	A gift that teaches a tongue should teach a new one (PR #107 review).
+	``char.languages`` is a ``Linguistics`` once the Character has been
+	awakened, a plain list before, or nothing at all; this asks each shape
+	for its names without reaching past it. If every standard tongue is
+	already known, the whole set is offered, so the draw never comes up
+	empty.
+	"""
+	from AtlasLudus.Map_of_Languages import standard_languages
+
+	languages = getattr(
+		char,
+		"languages",
+		None,
+		)
+	known = set(
+		getattr(
+			languages,
+			"langs",
+			languages or (),
+			)
+		)
+	unknown = sorted(
+		standard_languages - known
+		)
+	if unknown:
+		return unknown
+	return sorted(
+		standard_languages
+		)
+
+
 # ---------------------------------------------------------------------------
 # RECOVERY NOTE 2026-08-30 -- there must be exactly ONE _grant_training here.
 #
@@ -1607,8 +1644,6 @@ class Echoing_Soul(Dark_Gift):
 			background_tag,
 			):
 		bonus = _proficiency_bonus(char)
-		from AtlasLudus.Map_of_Languages import standard_languages
-
 		untrained = tuple(
 			skill
 			for skill in SKILLS
@@ -1702,14 +1737,11 @@ class Echoing_Soul(Dark_Gift):
 			for skill in selected
 			)
 		tongue = char.Pick(
-			sorted(
-				standard_languages
+			_tongues_not_yet_known(
+				char
 				),
 			purpose="Echoing_Soul.language",
 			)
-			#-- standard_languages is a set; sorted, the pool has a stable
-			#-- order and the bag a stable answer (Code-Style: never let
-			#-- unordered iteration choose a result).
 		_grant_language(char, tongue)
 		grant(
 			char,
@@ -2008,8 +2040,6 @@ class Symbiotic_Being(Dark_Gift):
 			char,
 			background_tag,
 			):
-		from AtlasLudus.Map_of_Languages import standard_languages
-
 		bonus = _proficiency_bonus(char)
 		gain = _grant_training(
 			char,
@@ -2020,14 +2050,11 @@ class Symbiotic_Being(Dark_Gift):
 			)
 		trained = gain.grants[ 0 ].capability.name
 		tongue = char.Pick(
-			sorted(
-				standard_languages
+			_tongues_not_yet_known(
+				char
 				),
 			purpose="Symbiotic_Being.language",
 			)
-			#-- standard_languages is a set; sorted, the pool has a stable
-			#-- order and the bag a stable answer (Code-Style: never let
-			#-- unordered iteration choose a result).
 		_grant_language(char, tongue)
 		grant(
 			char,
