@@ -2,8 +2,8 @@
 
 - **Type:** bug
 - **Priority:** 🔴 urgent *(a shipped draw aborts generation)*
-- **Status:** Open
-- **Owner:** unclaimed
+- **Status:** Working — fix proposed as a pull request (2026-10-29); Julio decides
+- **Owner:** Claude (session 2026-10-29)
 - **Route to:** Technical Team · Methods (Wizard)
 - **Related:** QST-0078 (silent fallback) · `AtlasLusoris/AtlasOfFeatures/Map_of_Official_Origin_Feats.py`
 
@@ -41,3 +41,17 @@ ordinary generation request.
    `TagImprintError`.
 3. Consider whether a failing Origin feat should abort a Character at all, or
    whether the draw should be guarded the way `NewName` is.
+
+## 🛠️ Proposed fix (2026-10-29)
+
+Both awakens now import `standard_languages`, the name the module defines, and
+draw the tongue from the sorted set through a bag named after the gift
+(`Echoing_Soul.language`, `Symbiotic_Being.language`), the same shape PR #102
+uses on its branch. Sorting matters: the pool is a Python set, and Code-Style
+forbids letting unordered iteration choose a replayable result.
+
+Measured before and after, 200 seeded level-1 Humans: 7 failed before (6 on
+Symbiotic Being, 1 on Echoing Soul), 0 after. Fingerprint 273/273 and the
+sheet snapshot identical (no grid Character ever drew either gift, since any
+that did would have crashed). Question 3 (should a failing Origin feat abort a
+Character at all) is left for Julio; the fix does not touch it.

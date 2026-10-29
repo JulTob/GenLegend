@@ -1607,7 +1607,7 @@ class Echoing_Soul(Dark_Gift):
 			background_tag,
 			):
 		bonus = _proficiency_bonus(char)
-		from AtlasLudus.Map_of_Languages import STANDARD_LANGUAGES
+		from AtlasLudus.Map_of_Languages import standard_languages
 
 		untrained = tuple(
 			skill
@@ -1701,7 +1701,15 @@ class Echoing_Soul(Dark_Gift):
 			skill.name
 			for skill in selected
 			)
-		tongue = char.Pick(list(STANDARD_LANGUAGES))
+		tongue = char.Pick(
+			sorted(
+				standard_languages
+				),
+			purpose="Echoing_Soul.language",
+			)
+			#-- standard_languages is a set; sorted, the pool has a stable
+			#-- order and the bag a stable answer (Code-Style: never let
+			#-- unordered iteration choose a result).
 		_grant_language(char, tongue)
 		grant(
 			char,
@@ -2000,7 +2008,7 @@ class Symbiotic_Being(Dark_Gift):
 			char,
 			background_tag,
 			):
-		from AtlasLudus.Map_of_Languages import STANDARD_LANGUAGES
+		from AtlasLudus.Map_of_Languages import standard_languages
 
 		bonus = _proficiency_bonus(char)
 		gain = _grant_training(
@@ -2011,7 +2019,15 @@ class Symbiotic_Being(Dark_Gift):
 			background_tag=background_tag,
 			)
 		trained = gain.grants[ 0 ].capability.name
-		tongue = char.Pick(list(STANDARD_LANGUAGES))
+		tongue = char.Pick(
+			sorted(
+				standard_languages
+				),
+			purpose="Symbiotic_Being.language",
+			)
+			#-- standard_languages is a set; sorted, the pool has a stable
+			#-- order and the bag a stable answer (Code-Style: never let
+			#-- unordered iteration choose a result).
 		_grant_language(char, tongue)
 		grant(
 			char,
