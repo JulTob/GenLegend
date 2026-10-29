@@ -26,6 +26,16 @@ from AtlasInventarium.ToolsKit import (
 	)
 from AtlasLusoris.GuildKit import Make_Specialization, Fighter
 
+if __name__ == "__main__":
+	# Avoid dual-declaration when this file runs as a script (python -m ...):
+	# importing GuildKit above already loaded the package module through
+	# Load_Guild_Libraries, so every Shape below is already declared. Run the
+	# package's self-test instead of declaring them a second time (the same
+	# pattern as TrainingKit's __main__).
+	from AtlasLusoris.AtlasOfGuilds.FighterKit import _self_test as _package_self_test
+	_package_self_test()
+	raise SystemExit(0)
+
 
 # ---------------------------------------------------------------------------
 # Declaration types
@@ -1024,5 +1034,3 @@ def _self_test() -> None:
 		)
 
 
-if __name__ == "__main__":
-	_self_test()
