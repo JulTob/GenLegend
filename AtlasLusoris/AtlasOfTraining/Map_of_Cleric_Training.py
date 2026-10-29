@@ -7,7 +7,6 @@ awaken only for that Domain. ASI / Epic Boon picks stay on legacy Progression.
 
 from __future__ import annotations
 
-import random
 
 from AtlasLusoris.TrainingKit import Make_Training
 from AtlasVenustas import Chip
@@ -231,26 +230,6 @@ def _channel_entry(
 		)
 
 
-def _fork_rng(
-		char,
-		salt,
-		):
-	seed = getattr(
-		char,
-		"seed",
-		None,
-		)
-	if seed is None:
-		seed = getattr(
-			char,
-			"name",
-			"",
-			) or 0
-	return random.Random(
-		f"{seed}:{salt}"
-		)
-
-
 def _apply_divine_order(
 		char,
 		):
@@ -263,14 +242,16 @@ def _apply_divine_order(
 			"Protector",
 			"Thaumaturge",
 			):
-		order = _fork_rng(
-			char,
-			"divine_order",
-			).choice(
+		order = char.Pick(
 			(
 				"Protector",
 				"Thaumaturge",
-				)
+				),
+			dice=char.Dice_Bag(
+				"training.Cleric.divine_order",
+					version="2024",
+					namespace="GenLegendClass",
+					),
 			)
 		char.divine_order = order
 
@@ -367,14 +348,16 @@ def _apply_blessed_strikes(
 			"Divine Strike",
 			"Potent Spellcasting",
 			):
-		char.blessed_strikes = _fork_rng(
-			char,
-			"blessed_strikes",
-			).choice(
+		char.blessed_strikes = char.Pick(
 			(
 				"Divine Strike",
 				"Potent Spellcasting",
-				)
+				),
+			dice=char.Dice_Bag(
+				"training.Cleric.blessed_strikes",
+					version="2024",
+					namespace="GenLegendClass",
+					),
 			)
 
 
