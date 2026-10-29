@@ -1,3 +1,7 @@
+# NOTE: this Entry never reaches a sheet.  Training_Entries silences
+# "Additional Fighting Style" through TrainingKit.OFF_SHEET_TRAININGS,
+# because the chosen style prints as its own feature. The Tag still
+# awakens, so the second style is granted.
 """
 Fighter Training Tags — 2024 PHB core + all Fighter Specializations.
 
@@ -613,60 +617,6 @@ def _combat_superiority_update(
 	"""
 	Build the entry for one of the two Superiority upgrades.
 
-	These are not features in their own right. They are an actualization of
-	Combat Superiority: the same pool, larger. So each one says what it changed
-	and stops, and the live count stays in the single entry that owns it.
-
-	Both other ways of writing it are worse. Spelled out as a total, it goes
-	stale: "a total of 5" is still printed on an 18th-level sheet holding six.
-	Resolved live, it contradicts itself, because "became d10s" and "you have
-	6d12" are both true and read as an error side by side.
-	"""
-	def entry(
-			char,
-			) -> str:
-		return (
-			f"Your Superiority Dice became **d{die}s**, and you gained "
-			"one more."
-			)
-	return entry
-
-
-def _combat_superiority_update(
-		die: int,
-		) -> object:
-	"""
-	Build the entry for one of the two Superiority upgrades.
-
-	These are not features in their own right, they are an actualization of
-	Combat Superiority: the same pool, larger. So they say what changed and
-	nothing else, and the live count stays in the one entry that owns it.
-	Written out longhand they went stale, because "a total of 5" is still
-	printed on an 18th-level sheet that is holding six.
-	"""
-	def entry(
-			char,
-			) -> str:
-		count, current = _dice_pool(
-			_superiority_dice(
-				char
-				)
-			)
-		return (
-			f"Your Superiority Dice became **d{die}s**, and you gained "
-			"one more. "
-			f"You have **{count}d{current}** now, and a maneuver save is "
-			f"**DC {_maneuver_save_dc( char )}**."
-			)
-	return entry
-
-
-def _combat_superiority_update(
-		die: int,
-		) -> object:
-	"""
-	Build the entry for one of the two Superiority upgrades.
-
 	These are not features in their own right, they are an actualization of
 	Combat Superiority: the same pool, larger. So they say what changed and
 	nothing else, and the live count stays in the one entry that owns it.
@@ -1032,70 +982,6 @@ def _psionic_save_dc(
 	return 8 + proficiency + intelligence
 
 
-def _psionic_save_dc(
-		char,
-		) -> int:
-	"""
-	A Psi Warrior's Telekinetic Thrust save DC, resolved.
-
-	Every other DC on the sheet is a number, and this one was a formula: the
-	reader was being asked to add up their own proficiency and Intelligence
-	while the sheet already knew both.
-	"""
-	scores = getattr(
-			char,
-			"AS",
-			None,
-			)
-	intelligence = int(
-			getattr(
-					scores,
-					"int_mod",
-					0,
-					) or 0
-			)
-	proficiency = int(
-			getattr(
-				char,
-				"proficiency_bonus",
-				2,
-				) or 2
-			)
-	return 8 + proficiency + intelligence
-
-
-def _psionic_save_dc(
-		char,
-		) -> int:
-	"""
-	A Psi Warrior's Telekinetic Thrust save DC, resolved.
-
-	Every other DC on the sheet is a number, and this one was a formula: the
-	reader was being asked to add up their own proficiency and Intelligence
-	while the sheet already knew both.
-	"""
-	scores = getattr(
-			char,
-			"AS",
-			None,
-			)
-	intelligence = int(
-			getattr(
-					scores,
-					"int_mod",
-					0,
-					) or 0
-			)
-	proficiency = int(
-			getattr(
-				char,
-				"proficiency_bonus",
-				2,
-				) or 2
-			)
-	return 8 + proficiency + intelligence
-
-
 def _constitution_modifier(
 		char,
 		) -> int:
@@ -1371,8 +1257,6 @@ War_Bond = _eldritch_knight(
 		min_level=3,
 		description=(
 			"*A wizard needs a pen. You need something mightier.*\n\n"
-			"*A wizard needs a pen. You need something mightier.*\n\n"
-			"*A wizard needs a pen. You need something mightier.*\n\n"
 			"You learn a ritual that creates a magical bond between "
 			"yourself and one weapon. You perform the ritual over 1 hour "
 			"(possible during a Short Rest). The bond fails if another "
@@ -1404,8 +1288,6 @@ Eldritch_Strike = _eldritch_knight(
 		min_level=10,
 		description=(
 			"*You know how to find a magical weak spot. That's your best trick.*\n\n"
-			"*You know how to find a weak spot.*\n\n"
-			"*You know how to find a weak spot.*\n\n"
 			"When you hit a creature with an attack using a weapon, that "
 			"creature has **Disadvantage on the next saving throw** it "
 			"makes against a spell you cast before the end of your "
@@ -1417,8 +1299,6 @@ Arcane_Charge = _eldritch_knight(
 		name="Arcane Charge",
 		min_level=15,
 		description=(
-			"*You are not sure how it works, but it works like a charm.*\n\n"
-			"*You are not sure how it works, but it works like a charm.*\n\n"
 			"*You are not sure how it works, but it works like a charm.*\n\n"
 			"When you use your Action Surge, you can **teleport up to "
 			"30 feet** to an unoccupied space you can see. You can "
