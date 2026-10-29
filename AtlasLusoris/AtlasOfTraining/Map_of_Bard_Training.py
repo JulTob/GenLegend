@@ -11,6 +11,12 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.BardKit import (
+		Dance,
+		Glamour,
+		Lore,
+		Valor,
+		)
 from AtlasVenustas import Chip
 from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 		Unarmored_Armour_Class,
@@ -19,10 +25,6 @@ from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 
 GUILD = "Bard"
 CORE_SOURCE = "Training: Bard"
-DANCE = "Dance"
-GLAMOUR = "Glamour"
-LORE = "Lore"
-VALOR = "Valor"
 
 def _rank(
 		char,
@@ -89,7 +91,7 @@ def _core(
 			)
 
 def _path(
-		path_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -104,8 +106,8 @@ def _path(
 			description=description,
 			chips=chips,
 			apply=apply,
-			path=path_name,
-			source=f"Training: College of {path_name}",
+			path=path_shape,
+			source=f"Training: College of {path_shape.NAME}",
 			)
 
 def _dance(
@@ -117,7 +119,7 @@ def _dance(
 		apply=None,
 		):
 	return _path(
-			DANCE,
+			Dance,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -134,7 +136,7 @@ def _glamour(
 		apply=None,
 		):
 	return _path(
-			GLAMOUR,
+			Glamour,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -151,7 +153,7 @@ def _lore(
 		apply=None,
 		):
 	return _path(
-			LORE,
+			Lore,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -168,7 +170,7 @@ def _valor(
 		apply=None,
 		):
 	return _path(
-			VALOR,
+			Valor,
 			name=name,
 			min_level=min_level,
 			description=description,

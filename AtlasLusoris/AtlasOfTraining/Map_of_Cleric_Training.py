@@ -10,15 +10,17 @@ from __future__ import annotations
 import random
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.ClericKit import (
+		Life,
+		Light,
+		Trickery,
+		War,
+		)
 from AtlasVenustas import Chip
 
 
 GUILD = "Cleric"
 CORE_SOURCE = "Training: Cleric"
-LIFE = "Life"
-LIGHT = "Light"
-TRICKERY = "Trickery"
-WAR = "War"
 
 
 def _rank(
@@ -99,7 +101,7 @@ def _core(
 
 
 def _path(
-		path_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -112,8 +114,8 @@ def _path(
 			min_level=min_level,
 			description=description,
 			chips=chips,
-			path=path_name,
-			source=f"Training: {path_name} Domain",
+			path=path_shape,
+			source=f"Training: {path_shape.NAME} Domain",
 			)
 
 
@@ -125,7 +127,7 @@ def _life(
 		chips=(),
 		):
 	return _path(
-			LIFE,
+			Life,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -141,7 +143,7 @@ def _light(
 		chips=(),
 		):
 	return _path(
-			LIGHT,
+			Light,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -157,7 +159,7 @@ def _trickery(
 		chips=(),
 		):
 	return _path(
-			TRICKERY,
+			Trickery,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -173,7 +175,7 @@ def _war(
 		chips=(),
 		):
 	return _path(
-			WAR,
+			War,
 			name=name,
 			min_level=min_level,
 			description=description,

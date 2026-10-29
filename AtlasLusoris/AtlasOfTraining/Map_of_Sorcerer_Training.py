@@ -11,6 +11,12 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.SorcererKit import (
+		AberrantSorcery,
+		ClockworkSorcery,
+		DraconicSorcery,
+		WildMagicSorcery,
+		)
 from AtlasLusoris.AtlasOfFeatures.Draconic_Resilience import (
 		Draconic_Armour_Class,
 		Draconic_Resilience,
@@ -20,10 +26,6 @@ from AtlasVenustas import Chip
 
 GUILD = "Sorcerer"
 CORE_SOURCE = "Training: Sorcerer"
-ABERRANT = "Aberrant Sorcery"
-CLOCKWORK = "Clockwork Sorcery"
-DRACONIC = "Draconic Sorcery"
-WILD_MAGIC = "Wild Magic Sorcery"
 
 
 def _rank(
@@ -78,7 +80,7 @@ def _core(
 
 
 def _origin(
-		origin_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -93,8 +95,8 @@ def _origin(
 			description=description,
 			chips=chips,
 			apply=apply,
-			path=origin_name,
-			source=f"Training: {origin_name}",
+			path=path_shape,
+			source=f"Training: {path_shape.NAME}",
 			)
 
 
@@ -230,7 +232,7 @@ def _aberrant(
 		chips=(),
 		):
 	return _origin(
-			ABERRANT,
+			AberrantSorcery,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -326,7 +328,7 @@ def _clockwork(
 		chips=(),
 		):
 	return _origin(
-			CLOCKWORK,
+			ClockworkSorcery,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -413,7 +415,7 @@ def _draconic(
 		apply=None,
 		):
 	return _origin(
-			DRACONIC,
+			DraconicSorcery,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -529,7 +531,7 @@ def _wild_magic(
 		chips=(),
 		):
 	return _origin(
-			WILD_MAGIC,
+			WildMagicSorcery,
 			name=name,
 			min_level=min_level,
 			description=description,

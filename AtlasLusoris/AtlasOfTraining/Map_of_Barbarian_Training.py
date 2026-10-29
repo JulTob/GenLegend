@@ -12,6 +12,12 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.BarbarianKit import (
+		Berserker,
+		WildHeart,
+		WorldTree,
+		Zealot,
+		)
 from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 		Unarmored_Armour_Class,
 		)
@@ -21,10 +27,6 @@ from AtlasLusoris.Map_of_Weapon_Masteries import Plan_Masteries_On_Awaken
 
 GUILD = "Barbarian"
 CORE_SOURCE = "Training: Barbarian"
-BERSERKER = "Berserker"
-WILD_HEART = "Wild Heart"
-WORLD_TREE = "World Tree"
-ZEALOT = "Zealot"
 
 # Barbarian Features table (2024) — Rages / Rage Damage / Weapon Mastery
 _RAGE_USES = (
@@ -161,7 +163,7 @@ def _core(
 
 
 def _path(
-		path_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -174,8 +176,8 @@ def _path(
 			min_level=min_level,
 			description=description,
 			chips=chips,
-			path=path_name,
-			source=f"Training: Path of the {path_name}",
+			path=path_shape,
+			source=f"Training: Path of the {path_shape.NAME}",
 			)
 
 
@@ -187,7 +189,7 @@ def _berserker(
 		chips=(),
 		):
 	return _path(
-			BERSERKER,
+			Berserker,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -736,7 +738,7 @@ Intimidating_Presence = _berserker(
 
 
 Animal_Speaker = _path(
-		WILD_HEART,
+		WildHeart,
 		name="Animal Speaker",
 		min_level=3,
 		description=(
@@ -748,7 +750,7 @@ Animal_Speaker = _path(
 		)
 
 Rage_of_the_Wilds = _path(
-		WILD_HEART,
+		WildHeart,
 		name="Rage of the Wilds",
 		min_level=3,
 		description=(
@@ -767,7 +769,7 @@ Rage_of_the_Wilds = _path(
 		)
 
 Aspect_of_the_Wilds = _path(
-		WILD_HEART,
+		WildHeart,
 		name="Aspect of the Wilds",
 		min_level=6,
 		description=(
@@ -782,7 +784,7 @@ Aspect_of_the_Wilds = _path(
 		)
 
 Nature_Speaker = _path(
-		WILD_HEART,
+		WildHeart,
 		name="Nature Speaker",
 		min_level=10,
 		description=(
@@ -793,7 +795,7 @@ Nature_Speaker = _path(
 		)
 
 Power_of_the_Wilds = _path(
-		WILD_HEART,
+		WildHeart,
 		name="Power of the Wilds",
 		min_level=14,
 		description=(
@@ -839,7 +841,7 @@ def _vitality_entry(
 
 
 Vitality_of_the_Tree = _path(
-		WORLD_TREE,
+		WorldTree,
 		name="Vitality of the Tree",
 		min_level=3,
 		description=_vitality_entry,
@@ -853,7 +855,7 @@ Vitality_of_the_Tree = _path(
 		)
 
 Branches_of_the_Tree = _path(
-		WORLD_TREE,
+		WorldTree,
 		name="Branches of the Tree",
 		min_level=6,
 		description=lambda char: (
@@ -871,7 +873,7 @@ Branches_of_the_Tree = _path(
 		)
 
 Battering_Roots = _path(
-		WORLD_TREE,
+		WorldTree,
 		name="Battering Roots",
 		min_level=10,
 		description=lambda char: (
@@ -894,7 +896,7 @@ Battering_Roots = _path(
 		)
 
 Travel_along_the_Tree = _path(
-		WORLD_TREE,
+		WorldTree,
 		name="Travel along the Tree",
 		min_level=14,
 		description=(
@@ -951,7 +953,7 @@ def _divine_fury_entry(
 
 
 Divine_Fury = _path(
-		ZEALOT,
+		Zealot,
 		name="Divine Fury",
 		min_level=3,
 		description=_divine_fury_entry,
@@ -965,7 +967,7 @@ Divine_Fury = _path(
 		)
 
 Warrior_of_the_Gods = _path(
-		ZEALOT,
+		Zealot,
 		name="Warrior of the Gods",
 		min_level=3,
 		description=lambda char: (
@@ -986,7 +988,7 @@ Warrior_of_the_Gods = _path(
 		)
 
 Fanatical_Focus = _path(
-		ZEALOT,
+		Zealot,
 		name="Fanatical Focus",
 		min_level=6,
 		description=lambda char: (
@@ -999,7 +1001,7 @@ Fanatical_Focus = _path(
 		)
 
 Zealous_Presence = _path(
-		ZEALOT,
+		Zealot,
 		name="Zealous Presence",
 		min_level=10,
 		description=(
@@ -1016,7 +1018,7 @@ Zealous_Presence = _path(
 		)
 
 Rage_of_the_Gods = _path(
-		ZEALOT,
+		Zealot,
 		name="Rage of the Gods",
 		min_level=14,
 		description=lambda char: (

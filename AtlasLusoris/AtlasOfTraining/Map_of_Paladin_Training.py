@@ -12,16 +12,18 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.PaladinKit import (
+		Ancients,
+		Devotion,
+		Glory,
+		Vengeance,
+		)
 from AtlasVenustas import Chip
 from AtlasLusoris.Map_of_Weapon_Masteries import Plan_Masteries_On_Awaken
 
 
 GUILD = "Paladin"
 CORE_SOURCE = "Training: Paladin"
-ANCIENTS = "Ancients"
-DEVOTION = "Devotion"
-GLORY = "Glory"
-VENGEANCE = "Vengeance"
 
 
 def _rank(
@@ -77,7 +79,7 @@ def _core(
 
 
 def _path(
-		path_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -90,8 +92,8 @@ def _path(
 			min_level=min_level,
 			description=description,
 			chips=chips,
-			path=path_name,
-			source=f"Training: Oath of {path_name}",
+			path=path_shape,
+			source=f"Training: Oath of {path_shape.NAME}",
 			)
 
 
@@ -103,7 +105,7 @@ def _ancients(
 		chips=(),
 		):
 	return _path(
-			ANCIENTS,
+			Ancients,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -119,7 +121,7 @@ def _devotion(
 		chips=(),
 		):
 	return _path(
-			DEVOTION,
+			Devotion,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -135,7 +137,7 @@ def _glory(
 		chips=(),
 		):
 	return _path(
-			GLORY,
+			Glory,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -151,7 +153,7 @@ def _vengeance(
 		chips=(),
 		):
 	return _path(
-			VENGEANCE,
+			Vengeance,
 			name=name,
 			min_level=min_level,
 			description=description,

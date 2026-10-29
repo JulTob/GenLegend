@@ -12,14 +12,16 @@ from __future__ import annotations
 
 from AtlasLusoris.FeaturesKit import Grant_Resistance
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.DruidKit import (
+		Land,
+		Moon,
+		Sea,
+		Stars,
+		)
 
 
 GUILD = "Druid"
 CORE_SOURCE = "Training: Druid"
-LAND = "Land"
-MOON = "Moon"
-SEA = "Sea"
-STARS = "Stars"
 
 
 def _rank(
@@ -52,7 +54,7 @@ def _core(
 
 
 def _circle(
-		circle_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -67,8 +69,8 @@ def _circle(
 			description=description,
 			chips=chips,
 			apply=apply,
-			path=circle_name,
-			source=f"Training: Circle of the {circle_name}",
+			path=path_shape,
+			source=f"Training: Circle of the {path_shape.NAME}",
 			)
 
 
@@ -320,7 +322,7 @@ def _land(
 		chips=(),
 		):
 	return _circle(
-			LAND,
+			Land,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -400,7 +402,7 @@ def _moon(
 		chips=(),
 		):
 	return _circle(
-			MOON,
+			Moon,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -477,7 +479,7 @@ def _sea(
 		apply=None,
 		):
 	return _circle(
-			SEA,
+			Sea,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -569,7 +571,7 @@ def _stars(
 		chips=(),
 		):
 	return _circle(
-			STARS,
+			Stars,
 			name=name,
 			min_level=min_level,
 			description=description,

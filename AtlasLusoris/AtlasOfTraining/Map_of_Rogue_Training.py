@@ -12,16 +12,18 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.RogueKit import (
+		ArcaneTrickster,
+		Assassin,
+		Soulknife,
+		Thief,
+		)
 from AtlasVenustas import Chip
 from AtlasLusoris.Map_of_Weapon_Masteries import Plan_Masteries_On_Awaken
 
 
 GUILD = "Rogue"
 CORE_SOURCE = "Training: Rogue"
-ARCANE_TRICKSTER = "Arcane Trickster"
-ASSASSIN = "Assassin"
-SOULKNIFE = "Soulknife"
-THIEF = "Thief"
 
 
 def _rank(
@@ -62,7 +64,7 @@ def _core(
 
 
 def _path(
-		path_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -77,8 +79,8 @@ def _path(
 			description=description,
 			chips=chips,
 			apply=apply,
-			path=path_name,
-			source=f"Training: Rogue ({path_name})",
+			path=path_shape,
+			source=f"Training: Rogue ({path_shape.NAME})",
 			)
 
 
@@ -90,7 +92,7 @@ def _arcane_trickster(
 		chips=(),
 		):
 	return _path(
-			ARCANE_TRICKSTER,
+			ArcaneTrickster,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -107,7 +109,7 @@ def _assassin(
 		apply=None,
 		):
 	return _path(
-			ASSASSIN,
+			Assassin,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -124,7 +126,7 @@ def _soulknife(
 		chips=(),
 		):
 	return _path(
-			SOULKNIFE,
+			Soulknife,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -140,7 +142,7 @@ def _thief(
 		chips=(),
 		):
 	return _path(
-			THIEF,
+			Thief,
 			name=name,
 			min_level=min_level,
 			description=description,

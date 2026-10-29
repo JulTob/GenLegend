@@ -15,16 +15,18 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.RangerKit import (
+		BeastMaster,
+		FeyWanderer,
+		GloomStalker,
+		Hunter,
+		)
 from AtlasVenustas import Chip
 from AtlasLusoris.Map_of_Weapon_Masteries import Plan_Masteries_On_Awaken
 
 
 GUILD = "Ranger"
 CORE_SOURCE = "Training: Ranger"
-BEAST_MASTER = "Beast Master"
-FEY_WANDERER = "Fey Wanderer"
-GLOOM_STALKER = "Gloom Stalker"
-HUNTER = "Hunter"
 
 _HUNTERS_PREY = {
 		"Colossus Slayer": (
@@ -257,7 +259,7 @@ def _core(
 
 
 def _path(
-		path_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -272,8 +274,8 @@ def _path(
 			description=description,
 			chips=chips,
 			apply=apply,
-			path=path_name,
-			source=f"Training: {path_name} Order",
+			path=path_shape,
+			source=f"Training: {path_shape.NAME} Order",
 			)
 
 
@@ -285,7 +287,7 @@ def _beast_master(
 		chips=(),
 		):
 	return _path(
-			BEAST_MASTER,
+			BeastMaster,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -301,7 +303,7 @@ def _fey_wanderer(
 		chips=(),
 		):
 	return _path(
-			FEY_WANDERER,
+			FeyWanderer,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -317,7 +319,7 @@ def _gloom_stalker(
 		chips=(),
 		):
 	return _path(
-			GLOOM_STALKER,
+			GloomStalker,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -334,7 +336,7 @@ def _hunter(
 		apply=None,
 		):
 	return _path(
-			HUNTER,
+			Hunter,
 			name=name,
 			min_level=min_level,
 			description=description,
