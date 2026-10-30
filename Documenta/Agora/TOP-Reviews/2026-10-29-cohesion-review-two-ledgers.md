@@ -99,6 +99,14 @@ Next small steps, in order of value over risk, each one PR when Julio says go:
     hand-kept registries, one registry per PR (re-landing #102's station 4
     in steps).
 
+One rule rides along with every step above that retires a mirror reader:
+**the self-tests are part of the two-ledger seam.** Several of the red gates
+in #116 assert against a mirror attribute or a string value rather than
+membership. When a PR retires a mirror reader, it flips the matching self-test
+assertion to the Tag query (`assert char in Berserker`, not
+`assert char.subclass == "Berserker"`) in the same PR; otherwise the gates
+keep guarding the ledger being deleted. (Raised in review of #120.)
+
 ## 5. Questions for Julio
 
 1. The mirrors: may each later PR delete a mirror attribute once its last
