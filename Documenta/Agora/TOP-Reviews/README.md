@@ -27,4 +27,4 @@ Julio's permissions (2026-09-24):
 
 | Date | Report | Quest |
 |---|---|---|
-| — | *(the first review lands here)* | — |
+| 2026-10-29 | [Cohesion review: one Character, two identity ledgers](2026-10-29-cohesion-review-two-ledgers.md) | #114 #115 #116 #117 #118 #119 |
