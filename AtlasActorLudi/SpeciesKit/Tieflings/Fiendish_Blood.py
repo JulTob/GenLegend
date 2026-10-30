@@ -20,8 +20,9 @@ as plain class data on its Tag (``ORIGIN``, ``HORNS``, ``EYES``, ``FUR``,
 A mixed blood also mixes the **legacy spells** (QST-0152, a house rule).  The
 three spells arrive at levels 1, 3 and 5 as before, and each of the three
 places is lent by one of the two legacies, by one of the patterns in
-``SPELL_WEAVES``.  Every pattern there uses both legacies, so a mixed blood
-always casts from both hells.  A pure blood keeps its legacy's three spells.
+``SPELL_WEAVES``.  Every pattern there uses both legacies, so by level 5 a
+mixed blood casts from both hells; before that it may not yet, because the
+spells arrive by level.  A pure blood keeps its legacy's three spells.
 The Resistance stays the Heritage's.
 
 The draw happens once, in the Heritage's Imprint, from one named Dice Bag that
@@ -58,8 +59,8 @@ SINGLE_FUR_WEAVES = (
 # Which legacy lends each of the three spells, by place: the level 1 cantrip,
 # the level 3 spell, the level 5 spell.  0 is the Heritage and 1 the second
 # legacy.  These are the six patterns that use both; the two that use only
-# one legacy are left out on purpose, so a mixed blood always shows in its
-# magic.
+# one legacy are left out on purpose, so by level 5 a mixed blood always
+# shows in its magic.
 SPELL_WEAVES = (
 	( 0, 0, 1 ),
 	( 0, 1, 0 ),

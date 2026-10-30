@@ -23,8 +23,11 @@ costs rules compatibility: a 📒 once ratified.
   recharge or spellcasting ability changes.
 - **Each of the three places is lent by one legacy of the blood.** A pure blood
   keeps its legacy's three spells, exactly as today. A mixed blood draws one of
-  the six patterns in which **both** legacies lend at least one place, so a
-  mixed Tiefling always casts from both hells. Example: Chthonic and Infernal,
+  the six patterns in which **both** legacies lend at least one place, so by
+  character level 5 a mixed Tiefling casts from both hells. Before level 5 it
+  may show only one, because the spells still arrive by level: at level 1 there
+  is only the cantrip, and patterns such as (0, 0, 1) add the second legacy's
+  spell only at level 5. Example: Chthonic and Infernal,
   pattern (Infernal, Chthonic, Infernal): *Fire Bolt*, *False Life*, *Darkness*.
 - **The Resistance stays the Heritage's** (the first legacy). Julio's list was
   horns, colours, eyes and spells; Resistance was not on it.
