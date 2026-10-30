@@ -13,6 +13,12 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.MonkKit import (
+		Elements,
+		Mercy,
+		OpenHand,
+		Shadow,
+		)
 from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 		Unarmored_Armour_Class,
 		)
@@ -21,10 +27,6 @@ from AtlasVenustas import Chip
 
 GUILD = "Monk"
 CORE_SOURCE = "Training: Monk"
-MERCY = "Mercy"
-OPEN_HAND = "Open Hand"
-SHADOW = "Shadow"
-ELEMENTS = "Elements"
 
 
 _MARTIAL_ARTS_DIE = (
@@ -105,7 +107,7 @@ def _core(
 
 
 def _path(
-		path_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -118,8 +120,8 @@ def _path(
 			min_level=min_level,
 			description=description,
 			chips=chips,
-			path=path_name,
-			source=f"Training: Monk ({path_name})",
+			path=path_shape,
+			source=f"Training: Monk ({path_shape.NAME})",
 			)
 
 
@@ -131,7 +133,7 @@ def _mercy(
 		chips=(),
 		):
 	return _path(
-			MERCY,
+			Mercy,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -147,7 +149,7 @@ def _open_hand(
 		chips=(),
 		):
 	return _path(
-			OPEN_HAND,
+			OpenHand,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -163,7 +165,7 @@ def _shadow(
 		chips=(),
 		):
 	return _path(
-			SHADOW,
+			Shadow,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -179,7 +181,7 @@ def _elements(
 		chips=(),
 		):
 	return _path(
-			ELEMENTS,
+			Elements,
 			name=name,
 			min_level=min_level,
 			description=description,

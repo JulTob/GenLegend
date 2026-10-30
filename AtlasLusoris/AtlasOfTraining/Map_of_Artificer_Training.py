@@ -11,15 +11,17 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.ArtificerKit import (
+		Alchemist,
+		Armorer,
+		Artillerist,
+		BattleSmith,
+		)
 from AtlasVenustas import Chip
 
 
 GUILD = "Artificer"
 CORE_SOURCE = "Training: Artificer"
-ALCHEMIST = "Alchemist"
-ARMORER = "Armorer"
-ARTILLERIST = "Artillerist"
-BATTLE_SMITH = "Battle Smith"
 
 
 def _rank(
@@ -77,7 +79,7 @@ def _core(
 
 
 def _specialty(
-		specialty_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -90,8 +92,8 @@ def _specialty(
 			min_level=min_level,
 			description=description,
 			chips=chips,
-			path=specialty_name,
-			source=f"Training: {specialty_name} Specialty",
+			path=path_shape,
+			source=f"Training: {path_shape.NAME} Specialty",
 			)
 
 
@@ -235,7 +237,7 @@ def _alchemist(
 		chips=(),
 		):
 	return _specialty(
-			ALCHEMIST,
+			Alchemist,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -329,7 +331,7 @@ def _armorer(
 		chips=(),
 		):
 	return _specialty(
-			ARMORER,
+			Armorer,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -437,7 +439,7 @@ def _artillerist(
 		chips=(),
 		):
 	return _specialty(
-			ARTILLERIST,
+			Artillerist,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -529,7 +531,7 @@ def _battle_smith(
 		chips=(),
 		):
 	return _specialty(
-			BATTLE_SMITH,
+			BattleSmith,
 			name=name,
 			min_level=min_level,
 			description=description,

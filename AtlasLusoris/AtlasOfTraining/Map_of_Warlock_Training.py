@@ -12,15 +12,17 @@ from __future__ import annotations
 
 from AtlasLusoris.FeaturesKit import Grant_Resistance
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.WarlockKit import (
+		Archfey,
+		Celestial,
+		Fiend,
+		GreatOldOne,
+		)
 from AtlasVenustas import Chip
 
 
 GUILD = "Warlock"
 CORE_SOURCE = "Training: Warlock"
-ARCHFEY = "Archfey"
-CELESTIAL = "Celestial"
-FIEND = "Fiend"
-GREAT_OLD_ONE = "Great Old One"
 
 
 def _rank(
@@ -182,7 +184,7 @@ def _core(
 
 
 def _patron(
-		patron_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -197,8 +199,8 @@ def _patron(
 			description=description,
 			chips=chips,
 			apply=apply,
-			path=patron_name,
-			source=f"Training: The {patron_name} Patron",
+			path=path_shape,
+			source=f"Training: The {path_shape.NAME} Patron",
 			)
 
 
@@ -294,7 +296,7 @@ def _archfey(
 		apply=None,
 		):
 	return _patron(
-			ARCHFEY,
+			Archfey,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -393,7 +395,7 @@ def _celestial(
 		apply=None,
 		):
 	return _patron(
-			CELESTIAL,
+			Celestial,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -545,7 +547,7 @@ def _fiend(
 		apply=None,
 		):
 	return _patron(
-			FIEND,
+			Fiend,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -658,7 +660,7 @@ def _goo(
 		apply=None,
 		):
 	return _patron(
-			GREAT_OLD_ONE,
+			GreatOldOne,
 			name=name,
 			min_level=min_level,
 			description=description,

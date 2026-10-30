@@ -11,17 +11,18 @@ Thought pattern
 from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
+from AtlasLusoris.AtlasOfGuilds.WizardKit import (
+		Abjurer,
+		Diviner,
+		Evoker,
+		Illusionist,
+		Bladesinger,
+		)
 from AtlasVenustas import Chip
 
 
 GUILD = "Wizard"
 CORE_SOURCE = "Training: Wizard"
-ABJURER = "Abjurer"
-DIVINER = "Diviner"
-EVOKER = "Evoker"
-ILLUSIONIST = "Illusionist"
-
-BLADESINGER = "Bladesinger"
 
 
 def _rank(
@@ -104,7 +105,7 @@ def _core(
 
 
 def _tradition(
-		tradition_name: str,
+		path_shape,
 		*,
 		name: str,
 		min_level: int,
@@ -117,8 +118,8 @@ def _tradition(
 			min_level=min_level,
 			description=description,
 			chips=chips,
-			path=tradition_name,
-			source=f"Training: {tradition_name} Tradition",
+			path=path_shape,
+			source=f"Training: {path_shape.NAME} Tradition",
 			)
 
 
@@ -335,7 +336,7 @@ def _abjurer(
 		chips=(),
 		):
 	return _tradition(
-			ABJURER,
+			Abjurer,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -412,7 +413,7 @@ def _diviner(
 		chips=(),
 		):
 	return _tradition(
-			DIVINER,
+			Diviner,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -505,7 +506,7 @@ def _evoker(
 		chips=(),
 		):
 	return _tradition(
-			EVOKER,
+			Evoker,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -582,7 +583,7 @@ def _illusionist(
 		chips=(),
 		):
 	return _tradition(
-			ILLUSIONIST,
+			Illusionist,
 			name=name,
 			min_level=min_level,
 			description=description,
@@ -666,7 +667,7 @@ def _bladesinger(
 		chips=(),
 		):
 	return _tradition(
-			BLADESINGER,
+			Bladesinger,
 			name=name,
 			min_level=min_level,
 			description=description,

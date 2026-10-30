@@ -27,7 +27,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from typing import Any
 
-from TopKit import Imprint, Pre, Tag
+from TopKit import Form, Imprint, Pre, Tag
 
 from AtlasActorLudi.CharactersKit import Report_Of
 
@@ -174,6 +174,31 @@ def level_in_guild(
 	return 0
 
 
+def _is_specialization_of(
+		value,
+		guild_name: str,
+		) -> bool:
+	"""
+	True for a Specialization Shape of the Guild named ``guild_name``.
+
+	A Specialization is a Tag whose Form (its Bases, first to last) holds
+	the Guild itself, and which is not that Guild.  A core Tag, another
+	Guild's Shape, or a name passes nothing: a gate on any of those would
+	ask a membership no Character of this Guild will ever have.
+	"""
+	if not isinstance( value, type ):
+		return False
+	if not issubclass( value, Tag ):
+		return False
+	bases = Form( value )[:-1]
+		#-- Form ends with the Tag itself; only its Bases can be the Guild.
+	base_names = [
+			getattr( base, "NAME", None )
+			for base in bases
+			]
+	return guild_name in base_names
+
+
 def Make_Training(
 		*,
 		name: str,
@@ -183,7 +208,7 @@ def Make_Training(
 		chips: Iterable[Chip] = (),
 		source: str | None = None,
 		apply: Callable[[Any], None] | None = None,
-		path: str | type[Tag] | None = None,
+		path: type[Tag] | None = None,
 		on_sheet: bool = True,
 		) -> type[Training]:
 	"""
@@ -192,8 +217,16 @@ def Make_Training(
 	``description`` and chip values may be callables resolved at awaken
 	time so numbers (uses, masteries) stay on the Character, not the Tag.
 
-	``path`` gates subclass lessons (e.g. Barbarian Path ``"Berserker"``).
-	Core Guild lessons leave ``path`` unset.
+	``path`` gates a Specialization's lessons: it is the Specialization
+	Shape itself (``path=Berserker``), and the gate is membership,
+	``target in Berserker``. Core Guild lessons leave ``path`` unset.
+	The Shape must be one of this Guild's own; anything else is refused.
+
+	Imports run one way: each ``Map_of_*_Training`` imports its Guild
+	kit's Shapes, and no Guild kit ever imports a training map.  Keep it
+	so, or the two will import each other in a loop.
+	A name is never accepted here: a lesson that matched a string could
+	be fooled by a mirror attribute, and TOP asks the Tag.
 
 	``on_sheet=False`` still awakens the Tag (for identity / Pre gates)
 	but skips the Feature Entry — use when another section owns the prose
@@ -212,65 +245,18 @@ def Make_Training(
 		raise ValueError(
 				"Make_Training: min_level must be at least 1."
 				)
-	if (
-		path is not None
-		and not (
-			isinstance(
-					path,
-					type,
-					)
-			and issubclass(
-					path,
-					Tag,
-					)
-			)
-		and not str(
-				path
-				).strip()
-		):
+	if path is not None and not _is_specialization_of( path, guild_name ):
 		raise ValueError(
-				"Make_Training: path, if set, must be a Tag or "
-				"a non-empty legacy name."
+				f"Make_Training: path must be a Specialization Shape "
+				f"of {guild_name}, not {path!r}."
 				)
 
 	resolved_path = path
-	if (
-		resolved_path is not None
-		and not (
-			isinstance(
-					resolved_path,
-					type,
-					)
-			and issubclass(
-					resolved_path,
-					Tag,
-					)
-			)
-		):
-		resolved_path = str(
-			resolved_path
-			).strip()
-	path_name = (
-		resolved_path.NAME
-		if (
-			isinstance(
-					resolved_path,
-					type,
-					)
-			and issubclass(
-					resolved_path,
-					Tag,
-					)
-			)
-		else resolved_path
-		)
-	has_path = (
-			resolved_path is not None
-			and resolved_path != ""
-			)
-		#-- Never `if resolved_path:`.  A path may be a Tag, and TopKit's
+	has_path = resolved_path is not None
+		#-- Never `if resolved_path:`.  A path is a Tag, and TopKit's
 		#-- ``bool( Tag )`` asks whether the Tag has members yet, which at
 		#-- import time is always no.
+	path_name = resolved_path.NAME if has_path else None
 	if has_path and source is None:
 		resolved_source = f"Training: {guild_name} ({path_name})"
 	else:
@@ -306,22 +292,7 @@ def Make_Training(
 			):
 		if resolved_path is None:
 			return True
-		if (
-			isinstance(
-					resolved_path,
-					type,
-					)
-			and issubclass(
-					resolved_path,
-					Tag,
-					)
-			):
-			return target in resolved_path
-		return getattr(
-				target,
-				"subclass",
-				None,
-				) == resolved_path
+		return target in resolved_path
 
 	@Imprint
 	def Awaken(
@@ -382,28 +353,16 @@ def Make_Training(
 
 def training_path(
 		training: type[Training],
-		) -> str | type[Tag] | None:
+		) -> type[Tag] | None:
+	"""The Specialization Shape a lesson is gated on, or None for a core lesson."""
 	path = getattr(
 			training,
 			"PATH",
 			None,
 			)
-	if path is None or path == "":
+	if path is None:
 		return None
-	if (
-		isinstance(
-				path,
-				type,
-				)
-		and issubclass(
-				path,
-				Tag,
-				)
-		):
-		return path
-	return str(
-		path
-		)
+	return path
 
 
 def training_eligible(
@@ -421,22 +380,7 @@ def training_eligible(
 			)
 	if path is None:
 		return True
-	if (
-		isinstance(
-				path,
-				type,
-				)
-		and issubclass(
-				path,
-				Tag,
-				)
-		):
-		return char in path
-	return getattr(
-		char,
-		"subclass",
-			None,
-			) == path
+	return char in path
 
 
 def _resolve(
@@ -882,16 +826,23 @@ def _self_test():
 			Frenzy,
 			Rage,
 			)
+	from AtlasLusoris.AtlasOfGuilds.BarbarianKit import (
+			Berserker,
+			WildHeart,
+			)
 
 	barb = Character(
 			seed=2
 			)
 	barb.level = 6
 	barb.char_class = "Barbarian"
-	barb.subclass = "Berserker"
 	Apply_Guild(
 			barb
 			)
+	Berserker(
+			barb
+			)
+		#-- The Path lessons gate on membership in the Shape, not on a name.
 	barb_applied = Apply_Guild_Trainings(
 			barb
 			)
@@ -908,8 +859,10 @@ def _self_test():
 			)
 	other.level = 6
 	other.char_class = "Barbarian"
-	other.subclass = "Wild Heart"
 	Apply_Guild(
+			other
+			)
+	WildHeart(
 			other
 			)
 	other_names = [
