@@ -77,13 +77,6 @@ class Fiendish_Blood:
 				for legacy in self.legacies
 				)
 
-	@property
-	def title(
-			self,
-			) -> str:
-		"""The sheet's heading: ``Abyssal``, or ``Abyssal and Infernal``."""
-		return " and ".join( self.names )
-
 	def opening(
 			self,
 			) -> str:
