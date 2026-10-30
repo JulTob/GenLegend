@@ -34,18 +34,22 @@ that allows only one. The new part is the **blood**, which is the face:
    colour from each and weaves them by one of six patterns (*fox red, striped
    with onyx black*). A pure blood wears one colour, in one of three patterns.
 3. **A tail** shows when either legacy carries one (today only Infernal does).
-4. **The paragraph** heads the Tiefling's own entries, titled with the hells
-   it names (*Abyssal*, or *Chthonic and Infernal*), in the place where the
-   Heritage paragraph printed until now.
+4. **The paragraph** heads the Tiefling's own entries, in the place and under
+   the title (the Heritage's name) where the Heritage paragraph printed until
+   now. The web sheet files that Entry as the Heritage description by its
+   name, so the title stays the Heritage's even for a mixed blood; the
+   paragraph's first sentence names both hells.
 
 ## 🏗️ How it is built (and why)
 
 - **Each legacy carries its own face as plain class data** on its Tag:
   `ORIGIN`, `HORNS`, `EYES`, `FUR`, `TAIL`. This follows Decree 0009 (a Tag
   declares its own data) and the TOP Guide (no side table of Tags kept outside
-  TOP). It replaces `HERITAGE_DESCRIPTION` on the three Tiefling legacies; the
-  old sentences survive as the first option in each list wherever they could
-  be split into parts.
+  TOP). It replaces `HERITAGE_DESCRIPTION` on the three Tiefling legacies; every
+  option is built from the old sentences and adds no trait they did not have.
+  In particular the Infernal horns keep colour only: the canon gives them no
+  shape or position (Tiefling.md §0 leaves open whether only Chthonic horns
+  are crowns).
 - **`Tieflings/Fiendish_Blood.py`** draws and composes, and reads nothing but
   the legacy Tags. The second legacy is drawn from `Tiefling.HERITAGES`, the
   Species' own declared list, so a fourth legacy would join the draw by being
@@ -65,8 +69,8 @@ that allows only one. The new part is the **blood**, which is the face:
   (`_test_tiefling_blood_mixes_two_legacies`, 60 seeds: the first legacy is the
   Heritage, every part comes from a legacy of the blood, the Entry prints the
   paragraph) and the level-stability test extended to the face.
-- Fingerprint and sheet snapshot: only Tiefling sheets move, and only in their
-  Heritage paragraph and its title. Numbers in the PR body.
+- Fingerprint identical to main (every Entry keeps its title). Sheet
+  snapshot: only Tiefling sheets move, and only in their Heritage paragraph.
 
 ## ❓ Open, for Julio
 

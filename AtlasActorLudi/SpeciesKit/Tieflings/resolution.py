@@ -13,8 +13,15 @@ from AtlasVenustas import Chip
 
 def _project_fiendish_blood(
 	target,
+	heritage,
 	) -> None:
-	"""The face the blood lends, heading the Tiefling's own entries."""
+	"""
+	The face the blood lends, heading the Tiefling's own entries.
+
+	The Entry keeps the Heritage's name, the title its paragraph always had:
+	the sheet files it as the Heritage description by that name.  A mixed
+	blood names its second hell in the paragraph's first sentence instead.
+	"""
 	blood = getattr(
 		target,
 		"fiendish_blood",
@@ -26,7 +33,10 @@ def _project_fiendish_blood(
 
 	Project_Species_Feature(
 		target,
-		blood.title,
+		heritage.__name__.replace(
+			"_",
+			" ",
+			),
 		blood.paragraph(),
 		level=0,
 		narrative=True,
@@ -199,7 +209,10 @@ def Resolve_Tiefling_Features(
 		ability,
 		)
 
-	_project_fiendish_blood( target )
+	_project_fiendish_blood(
+		target,
+		heritage,
+		)
 	_project_darkvision( target )
 	_project_otherworldly_presence(
 		target,

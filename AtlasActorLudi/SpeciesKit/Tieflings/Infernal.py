@@ -29,9 +29,10 @@ class Infernal(
 	# The face this legacy lends a Tiefling, as plain class data.  A second
 	# legacy may lend some of it too: see ``Fiendish_Blood``.
 	ORIGIN = "the Nine Hells, all fire and brimstone"
+	# Colour only: the canon gives the Infernal horn no shape or position.
 	HORNS = (
-		"Your horns are black like onyx, and sit close to your head like a crown.",
-		"Your horns are black like onyx, polished, and close to your head like a crown.",
+		"Your horns are black like onyx.",
+		"Your horns are black like onyx, and polished to a shine.",
 		)
 	EYES = (
 		"Your eyes are black, all but a golden iris that burns like a coal.",

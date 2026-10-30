@@ -117,7 +117,7 @@ class Fiendish_Blood:
 	def title(
 			self,
 			) -> str:
-		"""The sheet's heading: ``Abyssal``, or ``Abyssal and Infernal``."""
+		"""The Fiendish Legacy entry's name: ``Abyssal``, or ``Abyssal and Infernal``."""
 		return " and ".join( self.names )
 
 	def opening(

@@ -1156,7 +1156,7 @@ def _test_tiefling_rule_projection() -> None:
 				# The Species pair heads the list; the Legacy Entry closes
 				# it, after the traits every Tiefling shares.
 				"Tiefling",
-				character.fiendish_blood.title,
+				heritage.__name__,
 				"Darkvision",
 				"Otherworldly Presence",
 				f"Fiendish Legacy: {blood.title}",
@@ -1326,10 +1326,12 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 
 		_completed_ledger(character)
 		Resolve_Species_Features(character)
+		# The sheet files the face as the Heritage description by its name,
+		# so the Entry keeps the Heritage's name even when the blood is mixed.
 		entry = next(
 			feature
 			for feature in character.features
-			if feature.name == blood.title
+			if feature.name == f"{character:Heritage}"
 			)
 		assert entry.description == blood.paragraph()
 
