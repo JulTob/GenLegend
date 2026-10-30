@@ -26,9 +26,27 @@ class Chthonic(
 		return No_Heritage_Yet( target )
 
 	DAMAGE_RESISTANCE = "Necrotic"
-	HERITAGE_DESCRIPTION = (
-		"Yours is the aspect of Hades, the most neutral of hells. No fire, no pain, only darkness. Your eyes are black except in the iris, which may be a vibrant color. Your fur takes sometimes the colors of animals like foxes, wolves and bulls, and sometimes the tones of a corpse. Either way you look uncanny to the eyes, but it's relatively easy to pass as human. Your horns look like ivory, bone, or metal, and stay close to your head, like a crown or a tiara."
+	# The face this legacy lends a Tiefling, as plain class data.  A second
+	# legacy may lend some of it too: see ``Fiendish_Blood``.
+	ORIGIN = "Hades, where there is no fire and no pain, only darkness"
+	HORNS = (
+		"Your horns look like ivory, and stay close to your head like a crown.",
+		"Your horns look like bone, and stay close to your head like a tiara.",
+		"Your horns look like dark metal, and stay close to your head like a crown.",
 		)
+	EYES = (
+		"Your eyes are black, all but the iris, which is a vivid violet.",
+		"Your eyes are black, all but the iris, which is a vivid green.",
+		"Your eyes are black, all but the iris, which is a vivid blue.",
+		)
+	# The colours of foxes, wolves and bulls, or the tones of a corpse.
+	FUR = (
+		"fox red",
+		"wolf grey",
+		"bull brown",
+		"corpse grey",
+		)
+	TAIL = ""
 	SPELLS = (
 		(
 			1,

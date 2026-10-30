@@ -11,6 +11,28 @@ from AtlasActorLudi.SpeciesKit.traits import Darkvision_Rules
 from AtlasVenustas import Chip
 
 
+def _project_fiendish_blood(
+	target,
+	) -> None:
+	"""The face the blood lends, heading the Tiefling's own entries."""
+	blood = getattr(
+		target,
+		"fiendish_blood",
+		None,
+		)
+
+	if blood is None:
+		return
+
+	Project_Species_Feature(
+		target,
+		blood.title,
+		blood.paragraph(),
+		level=0,
+		narrative=True,
+		)
+
+
 def _project_darkvision(
 	target,
 	) -> None:
@@ -173,6 +195,7 @@ def Resolve_Tiefling_Features(
 		ability,
 		)
 
+	_project_fiendish_blood( target )
 	_project_darkvision( target )
 	_project_otherworldly_presence(
 		target,
