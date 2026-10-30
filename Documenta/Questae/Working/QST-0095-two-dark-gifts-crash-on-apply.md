@@ -55,3 +55,15 @@ Symbiotic Being, 1 on Echoing Soul), 0 after. Fingerprint 273/273 and the
 sheet snapshot identical (no grid Character ever drew either gift, since any
 that did would have crashed). Question 3 (should a failing Origin feat abort a
 Character at all) is left for Julio; the fix does not touch it.
+
+## 🔖 Note for the bag-naming work (2026-10-30)
+
+The two purposes this fix names, `Echoing_Soul.language` and
+`Symbiotic_Being.language`, follow main's `purpose=` convention. When
+QST-0144's station 5 (one stable string per purpose, no version or namespace)
+lands again in small steps, these two sites are on its rename list. Renaming a
+purpose moves the draw, so that PR must name them among its declared movers.
+
+The empty-pool fallback (every standard tongue already known, so the whole
+standard set is offered again) stays as written: the game data has no list of
+rare tongues to fall back on yet. It is unreachable on the current player grid.
