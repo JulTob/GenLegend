@@ -111,9 +111,13 @@ summary and not a cross-reference.*
 > lower is dispelled).
 > > 📘 _The fire was always there. What it is for was never decided by them._ (authored, not wired)
 
-No rule of the Tiefling has been changed, so this page carries no 📒. All three
-traits and all three legacies match the published rules in name, number, level,
-Resistance, spell and recharge.
+No rule of the Tiefling has been ratified as changed, so this page carries no 📒
+yet. All three traits and all three legacies match the published rules in name,
+number, level, Resistance, spell and recharge. One change is proposed and built,
+awaiting a ruling: **a mixed blood lends its legacy spells from both legacies**
+(QST-0152, Working). Each of the three places (levels 1, 3 and 5) comes from one
+of the two legacies, and both always lend at least one; the Resistance stays the
+Heritage's. A pure blood keeps its legacy's three spells.
 
 **The Creature Type, held.** A Tiefling carries a Fiend *kinship* Tag
 (`AtlasActorLudi/SpeciesKit/kinship.py`). It is classification for names, titles,

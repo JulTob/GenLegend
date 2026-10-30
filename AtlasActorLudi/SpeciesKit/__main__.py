@@ -1070,7 +1070,7 @@ def _test_tiefling_rule_projection() -> None:
 		5: 3,
 		}
 
-	for heritage, progression in expected_spells.items():
+	for heritage in expected_spells:
 		for level, unlocked_count in unlock_counts.items():
 			character = Character(
 				seed=433,
@@ -1080,6 +1080,18 @@ def _test_tiefling_rule_projection() -> None:
 				character,
 				Tiefling,
 				heritage=heritage,
+				)
+			blood = character.fiendish_blood
+			# Each place is lent by one legacy of the blood (QST-0152).
+			progression = tuple(
+				expected_spells[
+					lender
+					][
+					place
+					]
+				for place, lender in enumerate(
+					blood.spell_lenders,
+					)
 				)
 			_completed_ledger(character)
 			Resolve_Species_Features(character)
@@ -1101,7 +1113,7 @@ def _test_tiefling_rule_projection() -> None:
 				feature
 				for feature in character.features
 				if feature.name
-				== f"Fiendish Legacy: {heritage.__name__}"
+				== f"Fiendish Legacy: {blood.title}"
 				)
 
 			species_features = tuple(
@@ -1147,7 +1159,7 @@ def _test_tiefling_rule_projection() -> None:
 				character.fiendish_blood.title,
 				"Darkvision",
 				"Otherworldly Presence",
-				f"Fiendish Legacy: {heritage.__name__}",
+				f"Fiendish Legacy: {blood.title}",
 				)
 			_assert_already_gained_vocabulary(
 				species_features,
@@ -1234,7 +1246,7 @@ def _test_tiefling_identity_is_level_stable() -> None:
 
 
 def _test_tiefling_blood_mixes_two_legacies() -> None:
-	"""The face comes from the Heritage and one more drawn legacy (QST-0151)."""
+	"""The face and the spells come from the Heritage and one more legacy."""
 	seen_mixed = False
 	seen_pure = False
 
@@ -1283,6 +1295,26 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 				)
 			for legacy in legacies
 			)
+		if blood.mixed:
+			assert set(
+				blood.spell_lenders,
+				) == set(
+					legacies,
+					)
+		else:
+			assert blood.spell_lenders == (
+				legacies[
+					0
+					],
+				) * 3
+		assert tuple(
+			level
+			for level, _ in blood.spells
+			) == (
+				1,
+				3,
+				5,
+				)
 		assert blood.tail == next(
 			(
 				legacy.TAIL
