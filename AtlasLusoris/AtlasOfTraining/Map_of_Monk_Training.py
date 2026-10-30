@@ -14,10 +14,10 @@ from __future__ import annotations
 
 from AtlasLusoris.TrainingKit import Make_Training
 from AtlasLusoris.AtlasOfGuilds.MonkKit import (
+		Elements,
 		Mercy,
 		OpenHand,
 		Shadow,
-		Elements,
 		)
 from AtlasLusoris.AtlasOfFeatures.Unarmored_Defense import (
 		Unarmored_Armour_Class,

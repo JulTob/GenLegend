@@ -27,7 +27,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from typing import Any
 
-from TopKit import Imprint, Pre, Tag
+from TopKit import Form, Imprint, Pre, Tag
 
 from AtlasActorLudi.CharactersKit import Report_Of
 
@@ -174,17 +174,29 @@ def level_in_guild(
 	return 0
 
 
-def _is_tag(
+def _is_specialization_of(
 		value,
+		guild_name: str,
 		) -> bool:
-	"""True for a TopKit Tag class (a Specialization Shape here)."""
-	return isinstance(
-			value,
-			type,
-			) and issubclass(
-			value,
-			Tag,
-			)
+	"""
+	True for a Specialization Shape of the Guild named ``guild_name``.
+
+	A Specialization is a Tag whose Form (its Bases, first to last) holds
+	the Guild itself, and which is not that Guild.  A core Tag, another
+	Guild's Shape, or a name passes nothing: a gate on any of those would
+	ask a membership no Character of this Guild will ever have.
+	"""
+	if not isinstance( value, type ):
+		return False
+	if not issubclass( value, Tag ):
+		return False
+	bases = Form( value )[:-1]
+		#-- Form ends with the Tag itself; only its Bases can be the Guild.
+	base_names = [
+			getattr( base, "NAME", None )
+			for base in bases
+			]
+	return guild_name in base_names
 
 
 def Make_Training(
@@ -208,6 +220,11 @@ def Make_Training(
 	``path`` gates a Specialization's lessons: it is the Specialization
 	Shape itself (``path=Berserker``), and the gate is membership,
 	``target in Berserker``. Core Guild lessons leave ``path`` unset.
+	The Shape must be one of this Guild's own; anything else is refused.
+
+	Imports run one way: each ``Map_of_*_Training`` imports its Guild
+	kit's Shapes, and no Guild kit ever imports a training map.  Keep it
+	so, or the two will import each other in a loop.
 	A name is never accepted here: a lesson that matched a string could
 	be fooled by a mirror attribute, and TOP asks the Tag.
 
@@ -228,10 +245,10 @@ def Make_Training(
 		raise ValueError(
 				"Make_Training: min_level must be at least 1."
 				)
-	if path is not None and not _is_tag( path ):
+	if path is not None and not _is_specialization_of( path, guild_name ):
 		raise ValueError(
-				f"Make_Training: path must be a Specialization Tag, "
-				f"not {path!r}."
+				f"Make_Training: path must be a Specialization Shape "
+				f"of {guild_name}, not {path!r}."
 				)
 
 	resolved_path = path
