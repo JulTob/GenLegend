@@ -21,16 +21,12 @@ def _project_fiendish_blood(
 	The Entry keeps the Heritage's name, the title its paragraph always had:
 	the sheet files it as the Heritage description by that name.  A mixed
 	blood names its second hell in the paragraph's first sentence instead.
+
+	Read directly, never guarded: the Heritage's Imprint draws the blood
+	whenever it sets a Heritage, so a Tiefling with a Heritage and no blood
+	is a bug, and it fails here loudly.
 	"""
-	blood = getattr(
-		target,
-		"fiendish_blood",
-		None,
-		)
-
-	if blood is None:
-		return
-
+	blood = target.fiendish_blood
 	Project_Species_Feature(
 		target,
 		heritage.__name__.replace(
