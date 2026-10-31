@@ -26,9 +26,26 @@ class Infernal(
 		return No_Heritage_Yet( target )
 
 	DAMAGE_RESISTANCE = "Fire"
-	HERITAGE_DESCRIPTION = (
-		"Yours is the aspect of the Nine Hells: fire and brimstone. Your horns are black like onyx, your eyes are black except for a golden fiery iris, and your fur is either black or a bright color that resembles a flame, in both cases with a metallic, almost golden, shine to it. You also have a tail with an arrow shape at the end."
+	# The face this legacy lends a Tiefling, as plain class data.  A second
+	# legacy may lend some of it too: see ``Fiendish_Blood``.
+	ORIGIN = "the Nine Hells, all fire and brimstone"
+	# Colour only: the canon gives the Infernal horn no shape or position.
+	HORNS = (
+		"Your horns are black like onyx.",
+		"Your horns are black like onyx, and polished to a shine.",
 		)
+	EYES = (
+		"Your eyes are black, all but a golden iris that burns like a coal.",
+		"Your eyes are black, but the iris is gold and seems to flicker like fire.",
+		)
+	# Black, or a bright colour that resembles a flame.
+	FUR = (
+		"onyx black",
+		"flame red",
+		"flame orange",
+		"ember gold",
+		)
+	TAIL = "You also have a tail, ending in an arrow-shaped tip."
 	SPELLS = (
 		(
 			1,

@@ -351,12 +351,15 @@ drawn from Intelligence, Wisdom and Charisma and then overridden by the class's
 own casting ability wherever that is one of the three, the draw standing as the
 fallback for a non-caster; and the name, from the Fiend corpus.
 
-**The body is not drawn.** Each legacy carries one fixed `HERITAGE_DESCRIPTION`
-paragraph, printed verbatim, so the fur, the horns and the eyes are the same
-sentences on every Abyssal sheet ever generated. This is the sharpest difference
-between this species and the Aasimar, whose talaria metal, aureola stone and
-placement are three separate draws. Whether the Tiefling should gain the same
-apparatus is a real design question and nobody has asked it yet.
+**The body is drawn from two legacies** (QST-0151, Working). Julio asked for
+the Aasimar's apparatus on 2026-10-30. The Heritage stays the one legacy that
+carries the rules; a second legacy is drawn from the whole list and may repeat
+it, which makes a pure blood. The horns come from one of the two, the eyes from
+one of the two, and the fur weaves a colour from each; a tail shows when either
+legacy has one. Each legacy keeps its face on its own Tag (`ORIGIN`, `HORNS`,
+`EYES`, `FUR`, `TAIL`), and `Tieflings/Fiendish_Blood.py` draws once, in the
+Heritage's Imprint, from a level-free Dice Bag. The fixed `HERITAGE_DESCRIPTION`
+paragraphs are gone from the three legacies.
 
 None of what *is* drawn was filled in at random. The size pair and the ability are
 published *player* choices, and a generated sheet never prints a choice it has

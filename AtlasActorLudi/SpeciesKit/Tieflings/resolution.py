@@ -11,6 +11,34 @@ from AtlasActorLudi.SpeciesKit.traits import Darkvision_Rules
 from AtlasVenustas import Chip
 
 
+def _project_fiendish_blood(
+	target,
+	heritage,
+	) -> None:
+	"""
+	The face the blood lends, heading the Tiefling's own entries.
+
+	The Entry keeps the Heritage's name, the title its paragraph always had:
+	the sheet files it as the Heritage description by that name.  A mixed
+	blood names its second hell in the paragraph's first sentence instead.
+
+	Read directly, never guarded: the Heritage's Imprint draws the blood
+	whenever it sets a Heritage, so a Tiefling with a Heritage and no blood
+	is a bug, and it fails here loudly.
+	"""
+	blood = target.fiendish_blood
+	Project_Species_Feature(
+		target,
+		heritage.__name__.replace(
+			"_",
+			" ",
+			),
+		blood.paragraph(),
+		level=0,
+		narrative=True,
+		)
+
+
 def _project_darkvision(
 	target,
 	) -> None:
@@ -173,6 +201,10 @@ def Resolve_Tiefling_Features(
 		ability,
 		)
 
+	_project_fiendish_blood(
+		target,
+		heritage,
+		)
 	_project_darkvision( target )
 	_project_otherworldly_presence(
 		target,

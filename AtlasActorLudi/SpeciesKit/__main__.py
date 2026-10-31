@@ -1167,6 +1167,7 @@ def _test_tiefling_identity_is_level_stable() -> None:
 	sizes = []
 	abilities = []
 	spell_sets = []
+	faces = []
 
 	for level in levels:
 		character = Character(
@@ -1195,10 +1196,21 @@ def _test_tiefling_identity_is_level_stable() -> None:
 				character.species_spells,
 				),
 			)
+		faces.append(
+			character.fiendish_blood,
+			)
 
 	assert len(
 		set(
 			heritages,
+			)
+		) == 1
+	# A blood is a frozen record holding the legacy Tags themselves, so this
+	# compares every part of the face, legacies included.  Keep the Tags there:
+	# names in their place would still hash, and would compare less.
+	assert len(
+		set(
+			faces,
 			)
 		) == 1
 	assert len(
@@ -1222,6 +1234,83 @@ def _test_tiefling_identity_is_level_stable() -> None:
 				],
 			)
 		)
+
+
+def _test_tiefling_blood_mixes_two_legacies() -> None:
+	"""The face comes from the Heritage and one more drawn legacy (QST-0151)."""
+	seen_mixed = False
+	seen_pure = False
+
+	for seed in range(
+		1,
+		61,
+		):
+		character = Character(
+			seed=seed,
+			)
+		Apply_Species(
+			character,
+			Tiefling,
+			)
+		blood = character.fiendish_blood
+		legacies = blood.legacies
+
+		assert legacies[
+			0
+			] is Current_Heritage(
+				character,
+				)
+		assert len(
+			set(
+				legacies,
+				)
+			) == len(
+				legacies,
+				)
+		assert all(
+			legacy in TIEFLING_HERITAGES
+			for legacy in legacies
+			)
+		assert any(
+			blood.horns in legacy.HORNS
+			for legacy in legacies
+			)
+		assert any(
+			blood.eyes in legacy.EYES
+			for legacy in legacies
+			)
+		assert all(
+			any(
+				colour in blood.fur
+				for colour in legacy.FUR
+				)
+			for legacy in legacies
+			)
+		assert blood.tail == next(
+			(
+				legacy.TAIL
+				for legacy in legacies
+				if legacy.TAIL
+				),
+			"",
+			)
+
+		_completed_ledger(character)
+		Resolve_Species_Features(character)
+		# The sheet files the face as the Heritage description by its name,
+		# so the Entry keeps the Heritage's name even when the blood is mixed.
+		entry = next(
+			feature
+			for feature in character.features
+			if feature.name == f"{character:Heritage}"
+			)
+		assert entry.description == blood.paragraph()
+
+		seen_mixed = seen_mixed or blood.mixed
+		seen_pure = seen_pure or not blood.mixed
+
+	assert seen_mixed
+	assert seen_pure
 
 
 def _test_tiefling_heritage_conflict_is_atomic() -> None:
@@ -1859,6 +1948,7 @@ def _self_test() -> None:
 	_test_tiefling_heritage_geometry()
 	_test_tiefling_rule_projection()
 	_test_tiefling_identity_is_level_stable()
+	_test_tiefling_blood_mixes_two_legacies()
 	_test_tiefling_heritage_conflict_is_atomic()
 	_test_elf_heritage_geometry()
 	_test_elf_rule_projection()
