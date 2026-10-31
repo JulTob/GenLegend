@@ -351,15 +351,19 @@ drawn from Intelligence, Wisdom and Charisma and then overridden by the class's
 own casting ability wherever that is one of the three, the draw standing as the
 fallback for a non-caster; and the name, from the Fiend corpus.
 
-**The body is drawn from two legacies** (QST-0151, Working). Julio asked for
-the Aasimar's apparatus on 2026-10-30. The Heritage stays the one legacy that
-carries the rules; a second legacy is drawn from the whole list and may repeat
-it, which makes a pure blood. The horns come from one of the two, the eyes from
-one of the two, and the fur weaves a colour from each; a tail shows when either
-legacy has one. Each legacy keeps its face on its own Tag (`ORIGIN`, `HORNS`,
-`EYES`, `FUR`, `TAIL`), and `Tieflings/Fiendish_Blood.py` draws once, in the
-Heritage's Imprint, from a level-free Dice Bag. The fixed `HERITAGE_DESCRIPTION`
-paragraphs are gone from the three legacies.
+**The aspect is drawn from two legacies** (QST-0151, Working; Julio's rulings
+of 2026-10-30 and 2026-10-31). The Heritage stays the one legacy that carries
+the rules; a second legacy is drawn from the whole list and may repeat it,
+which makes a pure blood. That the blood is two legacies is structure, hidden
+like the Aasimar's two Ideals: the page never describes a hell, and only
+suggests where the bloodline starts, by name. The aspect is collapsed from
+small Tags (marks) that each legacy lends through a Pin: horn shapes of its
+own (crowns are Chthonic's, the least demonised), materials by name (ivory,
+jet, agate), black eyes with one colour or eyes that will not keep one, the
+coats and markings, a metallic sheen named by its metal, a faint scent
+(incense, sulfur, brine), and the Nine Hells' tail. The fixed
+`HERITAGE_DESCRIPTION` paragraphs are gone from the three legacies, reworked
+into those marks.
 
 None of what *is* drawn was filled in at random. The size pair and the ability are
 published *player* choices, and a generated sheet never prints a choice it has

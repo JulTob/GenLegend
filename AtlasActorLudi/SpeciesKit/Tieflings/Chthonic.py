@@ -10,6 +10,7 @@ from AtlasActorLudi.SpeciesKit.Tieflings.traits import (
 	)
 from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
+from AtlasActorLudi.SpeciesKit.Tieflings.pins import Chthonic_Marks
 
 
 class Chthonic(
@@ -26,27 +27,10 @@ class Chthonic(
 		return No_Heritage_Yet( target )
 
 	DAMAGE_RESISTANCE = "Necrotic"
-	# The face this legacy lends a Tiefling, as plain class data.  A second
-	# legacy may lend some of it too: see ``Fiendish_Blood``.
-	ORIGIN = "Hades, where there is no fire and no pain, only darkness"
-	HORNS = (
-		"Your horns look like ivory, and stay close to your head like a crown.",
-		"Your horns look like bone, and stay close to your head like a tiara.",
-		"Your horns look like dark metal, and stay close to your head like a crown.",
-		)
-	EYES = (
-		"Your eyes are black, all but the iris, which is a vivid violet.",
-		"Your eyes are black, all but the iris, which is a vivid green.",
-		"Your eyes are black, all but the iris, which is a vivid blue.",
-		)
-	# The colours of foxes, wolves and bulls, or the tones of a corpse.
-	FUR = (
-		"fox red",
-		"wolf grey",
-		"bull brown",
-		"corpse grey",
-		)
-	TAIL = ""
+	# Where the looks may suggest the bloodline starts: a name, never described.
+	PLACE = "Hades"
+	# The marks this legacy lends to a Tiefling's aspect (``Map_of_Marks``).
+	MARKS = Chthonic_Marks
 	SPELLS = (
 		(
 			1,

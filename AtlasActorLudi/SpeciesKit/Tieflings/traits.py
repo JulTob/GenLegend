@@ -83,7 +83,7 @@ def Imprint_Fiendish_Heritage(
 	target.fiendish_legacy_damage_resistance = (
 		heritage.DAMAGE_RESISTANCE
 		)
-	# The face is a choice made once, so it is drawn here and only read later.
+	# The blood and its aspect are a choice made once: drawn here, only read later.
 	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Blood import (
 		Draw_Fiendish_Blood,
 		)

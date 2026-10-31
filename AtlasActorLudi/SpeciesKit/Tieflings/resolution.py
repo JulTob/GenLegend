@@ -16,11 +16,11 @@ def _project_fiendish_blood(
 	heritage,
 	) -> None:
 	"""
-	The face the blood lends, heading the Tiefling's own entries.
+	The aspect the blood lends, heading the Tiefling's own entries.
 
 	The Entry keeps the Heritage's name, the title its paragraph always had:
-	the sheet files it as the Heritage description by that name.  A mixed
-	blood names its second hell in the paragraph's first sentence instead.
+	the sheet files it as the Heritage description by that name.  The blood's
+	legacies stay hidden: the paragraph only suggests where it starts.
 
 	Read directly, never guarded: the Heritage's Imprint draws the blood
 	whenever it sets a Heritage, so a Tiefling with a Heritage and no blood
@@ -33,7 +33,7 @@ def _project_fiendish_blood(
 			"_",
 			" ",
 			),
-		blood.paragraph(),
+		blood.aspect.paragraph(),
 		level=0,
 		narrative=True,
 		)
