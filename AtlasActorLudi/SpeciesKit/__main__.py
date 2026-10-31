@@ -1031,12 +1031,13 @@ def _test_tiefling_heritage_geometry() -> None:
 		assert character in Humanoid
 		assert character not in Fiend
 		assert Current_Heritage(character) is heritage
+		# One Resistance, lent by a legacy of the blood (QST-0152).
 		assert character.damage_resistances == (
-			heritage.DAMAGE_RESISTANCE,
+			character.fiendish_blood.resistance,
 			)
 		assert character.fiendish_legacy == heritage.__name__
 		assert character.fiendish_legacy_damage_resistance == (
-			heritage.DAMAGE_RESISTANCE
+			character.fiendish_blood.resistance
 			)
 		assert character.otherworldly_presence_spell == "Thaumaturgy"
 		assert character.darkvision == 60
@@ -1113,7 +1114,7 @@ def _test_tiefling_rule_projection() -> None:
 				feature
 				for feature in character.features
 				if feature.name
-				== f"Fiendish Legacy: {blood.title}"
+				== f"Fiendish Legacy: {heritage.__name__}"
 				)
 
 			species_features = tuple(
@@ -1137,7 +1138,7 @@ def _test_tiefling_rule_projection() -> None:
 				)
 			assert character.species_spell_save_dc >= 10
 			assert character.damage_resistances == (
-				heritage.DAMAGE_RESISTANCE,
+				blood.resistance,
 				)
 			assert all(
 				spell_name in legacy_feature.description
@@ -1159,7 +1160,7 @@ def _test_tiefling_rule_projection() -> None:
 				heritage.__name__,
 				"Darkvision",
 				"Otherworldly Presence",
-				f"Fiendish Legacy: {blood.title}",
+				f"Fiendish Legacy: {heritage.__name__}",
 				)
 			_assert_already_gained_vocabulary(
 				species_features,
@@ -1179,7 +1180,7 @@ def _test_tiefling_identity_is_level_stable() -> None:
 	sizes = []
 	abilities = []
 	spell_sets = []
-	faces = []
+	aspects = []
 
 	for level in levels:
 		character = Character(
@@ -1208,7 +1209,7 @@ def _test_tiefling_identity_is_level_stable() -> None:
 				character.species_spells,
 				),
 			)
-		faces.append(
+		aspects.append(
 			character.fiendish_blood,
 			)
 
@@ -1217,12 +1218,13 @@ def _test_tiefling_identity_is_level_stable() -> None:
 			heritages,
 			)
 		) == 1
-	# A blood is a frozen record holding the legacy Tags themselves, so this
-	# compares every part of the face, legacies included.  Keep the Tags there:
-	# names in their place would still hash, and would compare less.
+	# A blood is a frozen record holding the legacy Tags and the aspect's mark
+	# Tags themselves, so this compares every part of the aspect, legacies
+	# included.  Keep the Tags there: names in their place would still hash,
+	# and would compare less.
 	assert len(
 		set(
-			faces,
+			aspects,
 			)
 		) == 1
 	assert len(
@@ -1248,8 +1250,174 @@ def _test_tiefling_identity_is_level_stable() -> None:
 		)
 
 
+def _test_tiefling_marks_are_a_vocabulary() -> None:
+	"""Every mark fills one part; every legacy has horn shapes of its own."""
+	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Aspect_Part
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Horn_Shape
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Structure
+
+	parts = (
+		Structure,
+		*(
+			part
+			for _name, part in _aspect_slots()
+			),
+		)
+	names = [
+		mark.__name__
+		for mark in ROSTER
+		]
+	assert len(
+		set(
+			names,
+			)
+		) == len(
+			names,
+			)
+	for mark in ROSTER:
+		assert mark in Aspect_Part
+		homes = {
+			part
+			for part in parts
+			if mark in part
+			}
+		assert len(
+			homes,
+			) == 1, mark
+
+	for legacy in TIEFLING_HERITAGES:
+		own_shapes = [
+			shape
+			for shape in Marks_Of(
+				Horn_Shape,
+				)
+			if shape in legacy.MARKS
+			]
+		assert len(
+			own_shapes,
+			) >= 2, legacy
+		for shape in own_shapes:
+			lenders = [
+				other
+				for other in TIEFLING_HERITAGES
+				if shape in other.MARKS
+				]
+			assert lenders == [
+				legacy,
+				], shape
+
+
+def _aspect_slots():
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import LOOK_SLOTS
+
+	return LOOK_SLOTS
+
+
+def _assert_aspect_obeys_its_rules(
+	aspect,
+	legacies,
+	) -> None:
+	from AtlasActorLudi.SpeciesKit.collapse import ABSENT
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import _shows
+
+	marks = [
+		getattr(
+			aspect,
+			name,
+			)
+		for name, _part in _aspect_slots()
+		]
+	present = [
+		mark
+		for mark in marks
+		if mark is not ABSENT
+		]
+	for mark in present:
+		assert any(
+			mark in legacy.MARKS
+			for legacy in legacies
+			), mark
+	keys = [
+		key
+		for mark in present
+		for key in mark.KEYS
+		]
+	assert len(
+		keys,
+		) == len(
+			set(
+				keys,
+				)
+			), keys
+	two_colours = "{b}" in aspect.pattern.TEXT
+	assert two_colours == (
+		aspect.accent is not ABSENT
+		)
+	if len(
+		legacies,
+		) > 1:
+		shown = {
+			_shows(
+				mark,
+				legacies,
+				)
+			for mark in present
+			}
+		assert set(
+			legacies,
+			) <= shown, legacies
+	assert aspect.suggested in legacies
+	paragraph = aspect.paragraph()
+	assert "{" not in paragraph
+	assert aspect.suggested.PLACE in paragraph
+	for legacy in TIEFLING_HERITAGES:
+		if legacy is not aspect.suggested:
+			assert legacy.PLACE not in paragraph, paragraph
+
+
+def _test_tiefling_aspect_collapses_for_every_blood() -> None:
+	"""Every pair of legacies collapses, on every seed, and obeys its rules."""
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import (
+		Collapse_Aspect,
+		)
+
+	for first in TIEFLING_HERITAGES:
+		for second in TIEFLING_HERITAGES:
+			legacies = (
+				first,
+				)
+			if second is not first:
+				legacies = (
+					first,
+					second,
+					)
+			for seed in range(
+				1,
+				41,
+				):
+				aspect = Collapse_Aspect(
+					Character(
+						seed=seed,
+						),
+					legacies,
+					)
+				_assert_aspect_obeys_its_rules(
+					aspect,
+					legacies,
+					)
+				again = Collapse_Aspect(
+					Character(
+						seed=seed,
+						),
+					legacies,
+					)
+				assert again == aspect
+
+
 def _test_tiefling_blood_mixes_two_legacies() -> None:
-	"""The face and the spells come from the Heritage and one more legacy."""
+	"""The aspect and the rules come from the Heritage and one more legacy."""
 	seen_mixed = False
 	seen_pure = False
 
@@ -1283,33 +1451,20 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 			legacy in TIEFLING_HERITAGES
 			for legacy in legacies
 			)
-		assert any(
-			blood.horns in legacy.HORNS
-			for legacy in legacies
+		_assert_aspect_obeys_its_rules(
+			blood.aspect,
+			legacies,
 			)
-		assert any(
-			blood.eyes in legacy.EYES
-			for legacy in legacies
-			)
+		# QST-0152: each spell place and the Resistance are lent by a legacy
+		# of the blood, as the dice fall; a pure blood lends all of them.
 		assert all(
-			any(
-				colour in blood.fur
-				for colour in legacy.FUR
-				)
-			for legacy in legacies
+			lender in legacies
+			for lender in blood.spell_lenders
 			)
-		if blood.mixed:
-			assert set(
-				blood.spell_lenders,
-				) == set(
-					legacies,
-					)
-		else:
-			assert blood.spell_lenders == (
-				legacies[
-					0
-					],
-				) * 3
+		assert len(
+			blood.spell_lenders,
+			) == 3
+		assert blood.resistance_lender in legacies
 		assert tuple(
 			level
 			for level, _ in blood.spells
@@ -1318,25 +1473,17 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 				3,
 				5,
 				)
-		assert blood.tail == next(
-			(
-				legacy.TAIL
-				for legacy in legacies
-				if legacy.TAIL
-				),
-			"",
-			)
 
 		_completed_ledger(character)
 		Resolve_Species_Features(character)
-		# The sheet files the face as the Heritage description by its name,
+		# The sheet files the aspect as the Heritage description by its name,
 		# so the Entry keeps the Heritage's name even when the blood is mixed.
 		entry = next(
 			feature
 			for feature in character.features
 			if feature.name == f"{character:Heritage}"
 			)
-		assert entry.description == blood.paragraph()
+		assert entry.description == blood.aspect.paragraph()
 
 		seen_mixed = seen_mixed or blood.mixed
 		seen_pure = seen_pure or not blood.mixed
@@ -1367,8 +1514,9 @@ def _test_tiefling_heritage_conflict_is_atomic() -> None:
 	assert character in Abyssal
 	assert character not in Infernal
 	assert Current_Heritage(character) is Abyssal
+	# The refused second Heritage added nothing: still one Resistance.
 	assert character.damage_resistances == (
-		"Poison",
+		character.fiendish_blood.resistance,
 		)
 
 
@@ -1980,6 +2128,8 @@ def _self_test() -> None:
 	_test_tiefling_heritage_geometry()
 	_test_tiefling_rule_projection()
 	_test_tiefling_identity_is_level_stable()
+	_test_tiefling_marks_are_a_vocabulary()
+	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()
 	_test_tiefling_heritage_conflict_is_atomic()
 	_test_elf_heritage_geometry()

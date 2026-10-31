@@ -1,67 +1,77 @@
-# QST-0152 — A mixed Tiefling casts from both legacies
+# QST-0152 — A mixed Tiefling's rules come from both legacies
 
 - **Type:** rule change (📒, proposed) · generator
-- **Priority:** 🟡 medium *(Julio, 2026-10-30: "... combining horns, colors, eyes, and in this case spells from both legacies")*
-- **Status:** Working — waiting for Julio's ruling on the open questions
+- **Priority:** 🟡 medium *(Julio, 2026-10-30: "... combining horns, colors, eyes, and in this case spells from both legacies"; 2026-10-31: "Do not force that each legacy gives one spell. Let the dice choose." and "Resistances should be included on the generator. Only one must be chosen.")*
+- **Status:** Working — built as Julio ruled; awaiting ratification as a 📒
 - **Owner:** unclaimed
 - **Route to:** Rules (Paladin) · Simplicity (Monk)
-- **Parent:** QST-0151 (the blood and its face) · **Related:** `Documenta/Canon/Mythos/Tiefling.md` §0
+- **Parent:** QST-0151 (the blood and its aspect) · **Related:** `Documenta/Canon/Mythos/Tiefling.md` §0
 
 ---
 
 ## 🔍 Diagnosis
 
-QST-0151 gives every Tiefling a blood of one or two legacies, but only the face
-reads it. Julio asked for the spells to mix too. The published rule (2024
-Fiendish Legacy) gives one legacy's three spells, so this is a house rule and
-costs rules compatibility: a 📒 once ratified.
+QST-0151 gives every Tiefling a blood of one or two legacies, but only the
+aspect reads it. Julio asked for the rules to mix too. The published rule
+(2024 Fiendish Legacy) gives one legacy's Resistance and three spells, so this
+is a house rule and costs rules compatibility: a 📒 once ratified.
 
 ## 🧭 The rule, as built
 
-- The three legacy spells still arrive at character levels 1, 3 and 5: a
-  cantrip, a level 1 spell, a level 2 spell. Nothing about levels, free casts,
-  recharge or spellcasting ability changes.
-- **Each of the three places is lent by one legacy of the blood.** A pure blood
-  keeps its legacy's three spells, exactly as today. A mixed blood draws one of
-  the six patterns in which **both** legacies lend at least one place, so by
-  character level 5 a mixed Tiefling casts from both hells. Before level 5 it
-  may show only one, because the spells still arrive by level: at level 1 there
-  is only the cantrip, and patterns such as (0, 0, 1) add the second legacy's
-  spell only at level 5. Example: Chthonic and Infernal,
-  pattern (Infernal, Chthonic, Infernal): *Fire Bolt*, *False Life*, *Darkness*.
-- **The Resistance stays the Heritage's** (the first legacy). Julio's list was
-  horns, colours, eyes and spells; Resistance was not on it.
-- The entry is titled with the blood: *Fiendish Legacy: Chthonic and Infernal*.
+- **The spells.** The three legacy spells still arrive at character levels 1,
+  3 and 5: a cantrip, a level 1 spell, a level 2 spell. Each place is lent by
+  a legacy of the blood, one draw per place, as the dice fall. Nothing forces
+  a mixed blood to cast from both (Julio, 2026-10-31): a mixed blood lends all
+  three from one legacy one time in four. A pure blood keeps its legacy's own
+  three spells, exactly as the published rule.
+- **The Resistance.** One damage Resistance, never two, lent by one legacy of
+  the blood, drawn. A pure blood keeps its legacy's own.
+- Nothing else changes: free casts (one per levelled spell per Long Rest),
+  casting with slots, the spellcasting ability and its alignment with the
+  Guild, and Thaumaturgy.
+- **The blood stays hidden** (QST-0151, ruling 2). The entry keeps its
+  published title, *Fiendish Legacy: Chthonic*, after the Heritage; it never
+  names the second legacy. What it lists is simply what this Tiefling has.
+
+Example, level 5, a Chthonic Tiefling whose blood is Chthonic and Infernal:
+*Fire Bolt*, *False Life*, *Darkness*, and Resistance to Fire, all under
+*Fiendish Legacy: Chthonic*.
 
 ## 🏗️ How it is built
 
-- `SPELL_WEAVES` in `Tieflings/Fiendish_Blood.py`: the six patterns, written
-  out one per line, so a reader sees every possible outcome without running
-  anything.
-- The pattern is drawn in the same Imprint as the face, from **its own** Dice
-  Bag (`identity.species.Tiefling.fiendish_blood.spells`), so the face and the
-  spells can each change without moving the other (Decree 0002).
-- `Fiendish_Blood.spells` gives `(level, spell key)` rows in the same shape as
-  a legacy's `SPELLS`, so `Resolve_Tiefling_Features` reads the blood instead
-  of the Heritage and nothing else in it changes.
+- `Tieflings/Fiendish_Blood.py`: the blood gains `spell_lenders` (one legacy
+  per place) and `resistance_lender`. `spells` returns `(level, spell key)`
+  rows in the same shape as a legacy's own `SPELLS`, finding each row by its
+  level, never by its position (`_spell_at_level` fails loudly on a legacy
+  missing a level). `resistance` is the lender's `DAMAGE_RESISTANCE`.
+- The places and the Resistance draw from **their own** Dice Bag,
+  `identity.species.Tiefling.fiendish_blood.rules`, apart from the legacies'
+  and the aspect's, so the rules and the look can each change without moving
+  the other (Decree 0002). Places first, then the Resistance.
+- `Imprint_Fiendish_Heritage` draws the blood first, then grants the Resistance
+  it lends. `Resolve_Tiefling_Features` reads `blood.spells` and
+  `blood.resistance`; nothing reads a Heritage's own `SPELLS` or
+  `DAMAGE_RESISTANCE` directly any more.
 
 ## ⚖️ Evaluation (Decree 0007)
 
-- **Against the rules:** balance is unchanged in count and level (one cantrip,
-  one level 1, one level 2, each free once per Long Rest). The power of the
-  individual spells differs between legacies, but every combination is made of
-  spells some published Tiefling already gets at that level. The cost is
+- **Against the rules:** balance is unchanged in count and level (one
+  Resistance, one cantrip, one level 1, one level 2, each levelled spell free
+  once per Long Rest). Every combination is made of a Resistance and spells
+  some published Tiefling already gets at that level. The cost is
   compatibility: a mixed Tiefling cannot be rebuilt from the 2024 book alone.
-- **Against the canon:** the page says "the legacy is power, not impairment";
-  a blood of two hells widening what a Tiefling can do keeps to it.
-- **Against TOP:** the Heritage Tag stays the single source of the rules it
-  owns (Resistance, the one-Heritage gate); the blood is a drawn choice made
-  once in an Imprint and only read afterwards.
+- **Against the canon:** "the legacy is power, not impairment"; a blood of two
+  hells widening what a Tiefling may be keeps to it. The blood stays hidden on
+  the page.
+- **Against TOP:** the Heritage Tag stays identity and the one-Heritage gate;
+  each legacy's rules stay plain class data on its own Tag; the blood is a
+  choice made once in an Imprint and only read afterwards.
 
 ## ❓ Open, for Julio
 
-1. Ratify the rule (then the canon page gains its first 📒), or keep it as a
-   generator option.
-2. Should the Resistance mix as well (one of the two, drawn)? Today it does not.
-3. Should the six patterns be weighted toward the Heritage (say, the Heritage
-   always lends the cantrip)? Today they are uniform.
+1. Ratify the rule as a 📒, or keep it as a generator option.
+2. Uniform draws mean a mixed blood's Heritage lends the cantrip only half the
+   time, the most visible place the rule departs from the book. Lean toward
+   the Heritage?
+3. "You know the spells of your legacy" stays as written: the legacy is the
+   blood. Reword?

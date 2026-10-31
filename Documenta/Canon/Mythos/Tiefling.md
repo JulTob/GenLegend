@@ -114,10 +114,12 @@ summary and not a cross-reference.*
 No rule of the Tiefling has been ratified as changed, so this page carries no 📒
 yet. All three traits and all three legacies match the published rules in name,
 number, level, Resistance, spell and recharge. One change is proposed and built,
-awaiting a ruling: **a mixed blood lends its legacy spells from both legacies**
-(QST-0152, Working). Each of the three places (levels 1, 3 and 5) comes from one
-of the two legacies, and both always lend at least one; the Resistance stays the
-Heritage's. A pure blood keeps its legacy's three spells.
+awaiting ratification: **a mixed blood lends its rules from both legacies**
+(QST-0152, Working; Julio, 2026-10-31). Each of the three spell places (levels
+1, 3 and 5) is lent by one of the two legacies as the dice fall, with nothing
+forcing both to appear, and the one damage Resistance is lent the same way. A
+pure blood keeps its legacy's own Resistance and three spells. The entry keeps
+its published title after the Heritage and never names the second legacy.
 
 **The Creature Type, held.** A Tiefling carries a Fiend *kinship* Tag
 (`AtlasActorLudi/SpeciesKit/kinship.py`). It is classification for names, titles,
@@ -355,15 +357,19 @@ drawn from Intelligence, Wisdom and Charisma and then overridden by the class's
 own casting ability wherever that is one of the three, the draw standing as the
 fallback for a non-caster; and the name, from the Fiend corpus.
 
-**The body is drawn from two legacies** (QST-0151, Working). Julio asked for
-the Aasimar's apparatus on 2026-10-30. The Heritage stays the one legacy that
-carries the rules; a second legacy is drawn from the whole list and may repeat
-it, which makes a pure blood. The horns come from one of the two, the eyes from
-one of the two, and the fur weaves a colour from each; a tail shows when either
-legacy has one. Each legacy keeps its face on its own Tag (`ORIGIN`, `HORNS`,
-`EYES`, `FUR`, `TAIL`), and `Tieflings/Fiendish_Blood.py` draws once, in the
-Heritage's Imprint, from a level-free Dice Bag. The fixed `HERITAGE_DESCRIPTION`
-paragraphs are gone from the three legacies.
+**The aspect is drawn from two legacies** (QST-0151, Working; Julio's rulings
+of 2026-10-30 and 2026-10-31). The Heritage stays the one legacy that carries
+the rules; a second legacy is drawn from the whole list and may repeat it,
+which makes a pure blood. That the blood is two legacies is structure, hidden
+like the Aasimar's two Ideals: the page never describes a hell, and only
+suggests where the bloodline starts, by name. The aspect is collapsed from
+small Tags (marks) that each legacy lends through a Pin: horn shapes of its
+own (crowns are Chthonic's, the least demonised), materials by name (ivory,
+jet, agate), black eyes with one colour or eyes that will not keep one, the
+coats and markings, a metallic sheen named by its metal, a faint scent
+(incense, sulfur, brine), and the Nine Hells' tail. The fixed
+`HERITAGE_DESCRIPTION` paragraphs are gone from the three legacies, reworked
+into those marks.
 
 None of what *is* drawn was filled in at random. The size pair and the ability are
 published *player* choices, and a generated sheet never prints a choice it has

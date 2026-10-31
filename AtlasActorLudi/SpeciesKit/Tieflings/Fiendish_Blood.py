@@ -1,111 +1,48 @@
 """
-Fiendish Blood — which hells a Tiefling carries, and how they show.
+Fiendish Blood — which legacies a Tiefling carries.
 
 Every Tiefling has one Heritage Tag (Abyssal, Chthonic or Infernal), and that
-Tag keeps every rule it carries today.  The blood is the face: a second legacy
-is drawn from the whole list at uniform random, and the same legacy may come up
-twice.  That is a pure blood, neither rarer nor commoner than any particular
-pair, which is the Aasimar's rule for its two Ideals (``Map_of_Ideals``).
+Tag keeps every rule it carries today.  The blood adds a second legacy, drawn
+from the whole list at uniform random; the same legacy may come up twice,
+which makes a pure blood, neither rarer nor commoner than any particular pair.
+That is the Aasimar's rule for its two Ideals (``Map_of_Ideals``).
 
-A mixed blood splits across three parts, drawn apart:
+The blood is structure, and it stays hidden: the page never says a Tiefling
+carries two hells.  What shows is the **aspect** (``Fiendish_Aspect``), the
+look both legacies lend, collapsed once from their marks.
 
-- the **horns** come from one of the two legacies,
-- the **eyes** come from one of the two, drawn on their own,
-- the **fur** takes a colour from each, woven by one of the patterns below.
+The blood also lends the **rules** (QST-0152, a house rule).  Each of the
+three legacy spells (levels 1, 3 and 5) is lent by a legacy of the blood as
+the dice fall: nothing forces a mixed blood to cast from both.  The one damage
+Resistance is lent the same way.  A pure blood lends its legacy's own three
+spells and Resistance, exactly as the published rule.
 
-A tail shows when either legacy carries one.  Each legacy keeps its own face
-as plain class data on its Tag (``ORIGIN``, ``HORNS``, ``EYES``, ``FUR``,
-``TAIL``); this module only draws and composes, and it reads nothing else.
-
-A mixed blood also mixes the **legacy spells** (QST-0152, a house rule).  The
-three spells arrive at levels 1, 3 and 5 as before, and each of the three
-places is lent by one of the two legacies, by one of the patterns in
-``SPELL_WEAVES``.  Every pattern there uses both legacies, so by level 5 a
-mixed blood casts from both hells; before that it may not yet, because the
-spells arrive by level.  A pure blood keeps its legacy's three spells.
-The Resistance stays the Heritage's.
-
-The draw happens once, in the Heritage's Imprint, from one named Dice Bag that
-does not depend on the level, so a level-up never hands anybody a different
-face.  Reading the blood afterwards never rolls.
-
-The face is drawn from one Dice Bag and the spells from another, so either can
-change without moving the other.
+The draw happens once, in the Heritage's Imprint, from named Dice Bags that do
+not depend on the level, so a level-up never hands anybody a different aspect
+or different spells.  Reading the blood afterwards never rolls.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-
-# How two colours share one coat.  {a} is the first legacy's colour, {b} the
-# second's; the draw picks the arrangement.
-FUR_WEAVES = (
-	"{a}, spotted with {b}",
-	"{a}, striped with {b}",
-	"{a}, fading to {b} at the ends",
-	"{a} along your back, and {b} beneath",
-	"{a}, with a mask of {b} around your eyes",
-	"{a}, with a line of {b} down your spine",
-	)
-
-# And how one colour wears the coat alone.
-SINGLE_FUR_WEAVES = (
-	"{a}",
-	"{a}, darker along your back",
-	"{a}, paler beneath",
-	)
-
-# Which legacy lends each of the three spells, by place: the level 1 cantrip,
-# the level 3 spell, the level 5 spell.  0 is the Heritage and 1 the second
-# legacy.  These are the six patterns that use both; the two that use only
-# one legacy are left out on purpose, so by level 5 a mixed blood always
-# shows both hells in its magic.
-SPELL_WEAVES = (
-	( 0, 0, 1 ),
-	( 0, 1, 0 ),
-	( 0, 1, 1 ),
-	( 1, 0, 0 ),
-	( 1, 0, 1 ),
-	( 1, 1, 0 ),
-	)
-
-# A pure blood: all three places from its one legacy.
-SINGLE_SPELL_WEAVE = ( 0, 0, 0 )
-
-# The character level each place arrives at, in place order.
-SPELL_LEVELS = ( 1, 3, 5 )
+from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import Collapse_Aspect
+from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import Fiendish_Aspect
 
 
 @dataclass(
 		frozen=True,
 		)
 class Fiendish_Blood:
-	"""One Tiefling's visible descent, drawn once and kept."""
+	"""One Tiefling's legacies and the aspect they lend, drawn once and kept."""
 
 	# One legacy for a pure blood, two for a mixed one; the Heritage first.
 	legacies: tuple[type, ...]
-	horns: str
-	eyes: str
-	fur: str
-	tail: str
+	aspect: Fiendish_Aspect
 	# The legacy that lends each spell place, in level order (1, 3, 5).
 	spell_lenders: tuple[type, ...]
-
-	@property
-	def mixed(
-			self,
-			) -> bool:
-		return len( self.legacies ) > 1
-
-	@property
-	def names(
-			self,
-			) -> tuple[str, ...]:
-		return tuple(
-				legacy.__name__
-				for legacy in self.legacies
-				)
+	# The legacy that lends the one damage Resistance.
+	resistance_lender: type
 
 	@property
 	def spells(
@@ -124,43 +61,60 @@ class Fiendish_Blood:
 				)
 
 	@property
-	def title(
+	def resistance(
 			self,
 			) -> str:
-		"""The Fiendish Legacy entry's name: ``Abyssal``, or ``Abyssal and Infernal``."""
-		return " and ".join( self.names )
+		"""The one damage type this Tiefling resists."""
+		return self.resistance_lender.DAMAGE_RESISTANCE
 
-	def opening(
+	@property
+	def mixed(
 			self,
-			) -> str:
-		"""The line that names the hells, before the body is described."""
-		if self.mixed:
-			first = self.legacies[0].ORIGIN
-			second = self.legacies[1].ORIGIN
-			return f"Two hells meet in your blood: {first}, and {second}."
-		origin = self.legacies[0].ORIGIN
-		return f"Yours is the aspect of {origin}."
+			) -> bool:
+		return len( self.legacies ) > 1
 
-	def paragraph(
+	@property
+	def names(
 			self,
-			) -> str:
-		"""The whole face, in one fixed order: hells, horns, eyes, fur, tail."""
-		sentences = [
-				self.opening(),
-				self.horns,
-				self.eyes,
-				f"Your fur shines like metal: {self.fur}.",
-				]
-		if self.tail:
-			sentences.append( self.tail )
-		return " ".join( sentences )
+			) -> tuple[str, ...]:
+		return tuple(
+				legacy.__name__
+				for legacy in self.legacies
+				)
+
+
+# The character level each spell place arrives at, in place order.
+SPELL_LEVELS = ( 1, 3, 5 )
+
+
+def _spell_at_level(
+		legacy,
+		level: int,
+		) -> tuple[int, str]:
+	"""
+	The one row of a legacy's ``SPELLS`` that arrives at ``level``.
+
+	Looked up by level, never by position, so a legacy that lists its spells
+	in another order still lends the right one; a legacy missing the level,
+	or carrying it twice, fails loudly.
+	"""
+	rows = [
+			row
+			for row in legacy.SPELLS
+			if row[0] == level
+			]
+	if len( rows ) != 1:
+		raise ValueError(
+				f"{legacy.__name__} must declare exactly one spell "
+				f"at level {level}, not {len( rows )}."
+				)
+	return rows[0]
 
 
 def _open_blood_dice(
 		target,
 		):
-	"""The Dice Bag the face of the blood is drawn from; the spells
-draw from their own, apart from this one (``_open_spell_dice``)."""
+	"""The Dice Bag the second legacy is drawn from."""
 	return target.Dice_Bag(
 			"identity.species.Tiefling.fiendish_blood",
 			version="1",
@@ -193,88 +147,12 @@ def _draw_legacies(
 			)
 
 
-def _draw_part(
-		target,
-		legacies,
-		part: str,
-		dice,
-		) -> str:
-	"""One part of the face: which legacy lends it, then which of its lines."""
-	lender = target.Pick(
-			list( legacies ),
-			dice=dice,
-			)
-	options = getattr( lender, part )
-	if not options:
-		raise ValueError(
-				f"{lender.__name__} declares no {part}."
-				)
-	return target.Pick(
-			list( options ),
-			dice=dice,
-			)
-
-
-def _draw_fur(
-		target,
-		legacies,
-		dice,
-		) -> str:
-	"""A colour from each legacy, woven together; one colour for a pure blood."""
-	first_colour = target.Pick(
-			list( legacies[0].FUR ),
-			dice=dice,
-			)
-	if len( legacies ) == 1:
-		weave = target.Pick(
-				list( SINGLE_FUR_WEAVES ),
-				dice=dice,
-				)
-		return weave.format( a=first_colour )
-	second_colour = target.Pick(
-			list( legacies[1].FUR ),
-			dice=dice,
-			)
-	weave = target.Pick(
-			list( FUR_WEAVES ),
-			dice=dice,
-			)
-	return weave.format(
-			a=first_colour,
-			b=second_colour,
-			)
-
-
-def _spell_at_level(
-		legacy,
-		level: int,
-		) -> tuple[int, str]:
-	"""
-	The one row of a legacy's ``SPELLS`` that arrives at ``level``.
-
-	Looked up by level, never by position, so a legacy that lists its spells
-	in another order still lends the right one; a legacy missing the level,
-	or carrying it twice, fails loudly.
-	"""
-	rows = [
-			row
-			for row in legacy.SPELLS
-			if row[0] == level
-			]
-	if len( rows ) != 1:
-		raise ValueError(
-				f"{legacy.__name__} must declare exactly one spell "
-				f"at level {level}, not {len( rows )}."
-				)
-	return rows[0]
-
-
-def _open_spell_dice(
+def _open_rule_dice(
 		target,
 		):
-	"""The Dice Bag the spell pattern is drawn from, apart from the face's."""
+	"""The Dice Bag the spell places and the Resistance are drawn from."""
 	return target.Dice_Bag(
-			"identity.species.Tiefling.fiendish_blood.spells",
+			"identity.species.Tiefling.fiendish_blood.rules",
 			version="1",
 			namespace="GenLegendActor",
 			)
@@ -283,29 +161,28 @@ def _open_spell_dice(
 def _draw_spell_lenders(
 		target,
 		legacies,
+		dice,
 		) -> tuple[type, ...]:
-	"""Which legacy lends each spell place; both appear when the blood is mixed."""
-	if len( legacies ) == 1:
-		weave = SINGLE_SPELL_WEAVE
-	else:
-		weave = target.Pick(
-				list( SPELL_WEAVES ),
-				dice=_open_spell_dice( target ),
-				)
+	"""Which legacy lends each spell place: one draw per place, nothing forced."""
 	return tuple(
-			legacies[index]
-			for index in weave
+			target.Pick(
+					list( legacies ),
+					dice=dice,
+					)
+			for _level in SPELL_LEVELS
 			)
 
 
-def _find_tail(
+def _draw_resistance_lender(
+		target,
 		legacies,
-		) -> str:
-	"""The first tail any legacy of the blood carries, or none."""
-	for legacy in legacies:
-		if legacy.TAIL:
-			return legacy.TAIL
-	return ""
+		dice,
+		) -> type:
+	"""Which legacy lends the one damage Resistance."""
+	return target.Pick(
+			list( legacies ),
+			dice=dice,
+			)
 
 
 def Draw_Fiendish_Blood(
@@ -315,40 +192,33 @@ def Draw_Fiendish_Blood(
 	"""
 	Draw this Tiefling's blood, once and for life.
 
-	Called from the Heritage's Imprint.  The order of the draws below is part
-	of the replay contract: reordering them hands every Tiefling a new face.
+	Called from the Heritage's Imprint.  The legacies, the aspect and the
+	rules draw from three Dice Bags of their own, so changing one never moves
+	the others.  The spell places are drawn before the Resistance; that order
+	is part of the replay contract.
 	"""
-	dice = _open_blood_dice( target )
 	legacies = _draw_legacies(
 			target,
 			heritage,
-			dice,
+			_open_blood_dice( target ),
 			)
-	horns = _draw_part(
+	rule_dice = _open_rule_dice( target )
+	spell_lenders = _draw_spell_lenders(
 			target,
 			legacies,
-			"HORNS",
-			dice,
+			rule_dice,
 			)
-	eyes = _draw_part(
+	resistance_lender = _draw_resistance_lender(
 			target,
 			legacies,
-			"EYES",
-			dice,
-			)
-	fur = _draw_fur(
-			target,
-			legacies,
-			dice,
+			rule_dice,
 			)
 	return Fiendish_Blood(
 			legacies=legacies,
-			horns=horns,
-			eyes=eyes,
-			fur=fur,
-			tail=_find_tail( legacies ),
-			spell_lenders=_draw_spell_lenders(
+			aspect=Collapse_Aspect(
 					target,
 					legacies,
 					),
+			spell_lenders=spell_lenders,
+			resistance_lender=resistance_lender,
 			)

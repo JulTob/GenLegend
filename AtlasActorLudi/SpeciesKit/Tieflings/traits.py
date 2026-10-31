@@ -67,28 +67,33 @@ def Imprint_Fiendish_Heritage(
 	target,
 	heritage,
 	) -> None:
-	"""Imprint one Tiefling Heritage and its resistance atomically."""
+	"""
+	Imprint one Tiefling Heritage, its blood, and the Resistance it lends.
+
+	The blood is a choice made once: drawn here, only read later.  Its
+	Resistance is one of its legacies' (QST-0152), so it is granted after the
+	blood is drawn, not from the Heritage alone.
+	"""
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Blood import (
+		Draw_Fiendish_Blood,
+		)
+
 	Imprint_Heritage(
 		target,
 		heritage,
-		)
-	Grant_Resistance(
-		target,
-		heritage.DAMAGE_RESISTANCE,
 		)
 	target.fiendish_legacy = heritage.__name__.replace(
 		"_",
 		" ",
 		)
-	target.fiendish_legacy_damage_resistance = (
-		heritage.DAMAGE_RESISTANCE
-		)
-	# The face is a choice made once, so it is drawn here and only read later.
-	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Blood import (
-		Draw_Fiendish_Blood,
-		)
-
 	target.fiendish_blood = Draw_Fiendish_Blood(
 		target,
 		heritage,
+		)
+	Grant_Resistance(
+		target,
+		target.fiendish_blood.resistance,
+		)
+	target.fiendish_legacy_damage_resistance = (
+		target.fiendish_blood.resistance
 		)

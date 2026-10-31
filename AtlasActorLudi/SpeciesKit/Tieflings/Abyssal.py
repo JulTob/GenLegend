@@ -10,6 +10,7 @@ from AtlasActorLudi.SpeciesKit.Tieflings.traits import (
 	)
 from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
+from AtlasActorLudi.SpeciesKit.Tieflings.pins import Abyssal_Marks
 
 
 class Abyssal(
@@ -26,27 +27,10 @@ class Abyssal(
 		return No_Heritage_Yet( target )
 
 	DAMAGE_RESISTANCE = "Poison"
-	# The face this legacy lends a Tiefling, as plain class data.  A second
-	# legacy may lend some of it too: see ``Fiendish_Blood``.
-	ORIGIN = "the Abyss, where demons have no shape of their own"
-	HORNS = (
-		"Your horns are twisted and spiky, and no two of their points match.",
-		"Your horns grow twisted and uneven, one always a little longer than the other.",
-		"Your horns are a crooked tangle of spikes, never growing the same way twice.",
-		)
-	EYES = (
-		"Your eyes could pass for ordinary, if they did not change colour with your feelings.",
-		"Your eyes look ordinary until something moves you, and then their colour moves with it.",
-		)
-	# Colours only, so two legacies can share one coat.  The Abyss gives the
-	# brightest of them, and the hardest to hide.
-	FUR = (
-		"electric blue",
-		"acid green",
-		"bright violet",
-		"vivid magenta",
-		)
-	TAIL = ""
+	# Where the looks may suggest the bloodline starts: a name, never described.
+	PLACE = "the Abyss"
+	# The marks this legacy lends to a Tiefling's aspect (``Map_of_Marks``).
+	MARKS = Abyssal_Marks
 	SPELLS = (
 		(
 			1,
