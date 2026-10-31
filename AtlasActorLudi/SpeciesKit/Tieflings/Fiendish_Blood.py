@@ -73,6 +73,9 @@ SPELL_WEAVES = (
 # A pure blood: all three places from its one legacy.
 SINGLE_SPELL_WEAVE = ( 0, 0, 0 )
 
+# The character level each place arrives at, in place order.
+SPELL_LEVELS = ( 1, 3, 5 )
+
 
 @dataclass(
 		frozen=True,
@@ -110,8 +113,14 @@ class Fiendish_Blood:
 			) -> tuple[tuple[int, str], ...]:
 		"""The legacy spells as ``(level, spell key)`` rows, like ``SPELLS``."""
 		return tuple(
-				lender.SPELLS[place]
-				for place, lender in enumerate( self.spell_lenders )
+				_spell_at_level(
+						lender,
+						level,
+						)
+				for level, lender in zip(
+						SPELL_LEVELS,
+						self.spell_lenders,
+						)
 				)
 
 	@property
@@ -234,6 +243,30 @@ def _draw_fur(
 			a=first_colour,
 			b=second_colour,
 			)
+
+
+def _spell_at_level(
+		legacy,
+		level: int,
+		) -> tuple[int, str]:
+	"""
+	The one row of a legacy's ``SPELLS`` that arrives at ``level``.
+
+	Looked up by level, never by position, so a legacy that lists its spells
+	in another order still lends the right one; a legacy missing the level,
+	or carrying it twice, fails loudly.
+	"""
+	rows = [
+			row
+			for row in legacy.SPELLS
+			if row[0] == level
+			]
+	if len( rows ) != 1:
+		raise ValueError(
+				f"{legacy.__name__} must declare exactly one spell "
+				f"at level {level}, not {len( rows )}."
+				)
+	return rows[0]
 
 
 def _open_spell_dice(
