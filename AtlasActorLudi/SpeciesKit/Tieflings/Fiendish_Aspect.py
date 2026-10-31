@@ -19,6 +19,11 @@ the bloodline starts, naming the legacy that lent the most of the look (the
 Heritage, on a tie).  That the blood is two legacies is structure, like the
 Aasimar's two Ideals, and never said.
 
+How it is *said* is a second draw: each sentence of the chosen structure is a
+symbol of a generative grammar (``Grammar_of_Aspect``, on
+``SpeciesKit.grammar``), rewritten once with the Character's dice, the marks
+slotted in as its lexicon.  The sentences are kept, so reading never rolls.
+
 Nothing here is mechanical.  Fiendish Legacy carries the rules; this carries
 the aspect.
 """
@@ -30,6 +35,8 @@ from dataclasses import dataclass
 from AtlasActorLudi.SpeciesKit.collapse import ABSENT
 from AtlasActorLudi.SpeciesKit.collapse import Collapse
 from AtlasActorLudi.SpeciesKit.collapse import Slot
+from AtlasActorLudi.SpeciesKit.grammar import Derive
+from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
 from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
 	#-- Importing the map is what fills the Pins below with marks.
 from AtlasActorLudi.SpeciesKit.Tieflings.pins import Coat
@@ -69,7 +76,7 @@ LOOK_SLOTS = (
 		frozen=True,
 		)
 class Fiendish_Aspect:
-	"""One Tiefling's look, collapsed once and kept."""
+	"""One Tiefling's look, collapsed once and kept, with the words it is said in."""
 
 	structure: type
 	horn_shape: type
@@ -85,57 +92,13 @@ class Fiendish_Aspect:
 		#-- A tail mark, or ABSENT.
 	# The legacy the looks suggest, named and never described.
 	suggested: type
-
-	@property
-	def fur(
-			self,
-			) -> str:
-		"""The coat, the pattern and the accent, as one phrase."""
-		accent = ""
-		if self.accent is not ABSENT:
-			accent = self.accent.TEXT
-		return self.pattern.TEXT.format(
-				a=self.coat.TEXT,
-				b=accent,
-				)
-
-	@property
-	def tail_text(
-			self,
-			) -> str:
-		if self.tail is ABSENT:
-			return ""
-		return self.tail.TEXT
-
-	def fields(
-			self,
-			) -> dict[str, str]:
-		"""What each template field reads, for this aspect."""
-		return {
-				"horn_shape": self.horn_shape.TEXT,
-				"horn_material": self.horn_material.TEXT,
-				"eyes": self.eyes.TEXT,
-				"fur": self.fur,
-				"sheen": self.sheen.TEXT,
-				"scent": self.scent.TEXT,
-				"tail": self.tail_text,
-				"place": self.suggested.PLACE,
-				}
+	# The structure's sentences, derived once by the grammar.
+	sentences: tuple[str, ...]
 
 	def paragraph(
 			self,
 			) -> str:
-		"""The structure's sentences, filled; an empty sentence is dropped."""
-		fields = self.fields()
-		sentences = [
-				template.format( **fields )
-				for template in self.structure.SENTENCES
-				]
-		return " ".join(
-				sentence
-				for sentence in sentences
-				if sentence.strip()
-				)
+		return " ".join( self.sentences )
 
 
 # ---------------------------------------------------------------------------
@@ -421,6 +384,79 @@ def _most_shown(
 		#-- Legacies are in blood order, Heritage first, so it wins ties.
 
 
+def _fur(
+		drawn,
+		) -> str:
+	"""The coat, the pattern and the accent, as one phrase."""
+	accent = ""
+	if drawn["accent"] is not ABSENT:
+		accent = drawn["accent"].TEXT
+	return drawn["pattern"].TEXT.format(
+			a=drawn["coat"].TEXT,
+			b=accent,
+			)
+
+
+def _text_or_nothing(
+		mark,
+		) -> str:
+	if mark is ABSENT:
+		return ""
+	return mark.TEXT
+
+
+def _lexicon(
+		drawn,
+		suggested,
+		) -> dict[str, str]:
+	"""The words the grammar slots in, from the marks the collapse chose."""
+	return {
+			"horn_shape": drawn["horn_shape"].TEXT,
+			"horn_material": drawn["horn_material"].TEXT,
+			"eyes": drawn["eyes"].TEXT,
+			"fur": _fur( drawn ),
+			"sheen": drawn["sheen"].TEXT,
+			"scent": drawn["scent"].TEXT,
+			"tail": _text_or_nothing( drawn["tail"] ),
+			"place": suggested.PLACE,
+			}
+
+
+def _open_voice_dice(
+		target,
+		):
+	"""The Dice Bag the grammar derives the sentences with."""
+	return target.Dice_Bag(
+			"identity.species.Tiefling.fiendish_blood.voice",
+			version="1",
+			namespace="GenLegendActor",
+			)
+
+
+def _derive_sentences(
+		target,
+		structure,
+		lexicon,
+		) -> tuple[str, ...]:
+	"""Each of the structure's sentences, derived; empty ones dropped."""
+	dice = _open_voice_dice( target )
+	sentences = [
+			Derive(
+					target,
+					GRAMMAR,
+					sentence,
+					lexicon,
+					dice,
+					)
+			for sentence in structure.SENTENCES
+			]
+	return tuple(
+			sentence
+			for sentence in sentences
+			if sentence.strip()
+			)
+
+
 def _open_aspect_dice(
 		target,
 		):
@@ -447,6 +483,18 @@ def Collapse_Aspect(
 					),
 			_open_aspect_dice( target ),
 			)
+	suggested = _most_shown(
+			drawn,
+			legacies,
+			)
+	sentences = _derive_sentences(
+			target,
+			drawn["structure"],
+			_lexicon(
+					drawn,
+					suggested,
+					),
+			)
 	return Fiendish_Aspect(
 			structure=drawn["structure"],
 			horn_shape=drawn["horn_shape"],
@@ -458,8 +506,6 @@ def Collapse_Aspect(
 			sheen=drawn["sheen"],
 			scent=drawn["scent"],
 			tail=drawn["tail"],
-			suggested=_most_shown(
-					drawn,
-					legacies,
-					),
+			suggested=suggested,
+			sentences=sentences,
 			)

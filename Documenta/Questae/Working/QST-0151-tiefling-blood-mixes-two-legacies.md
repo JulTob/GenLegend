@@ -37,6 +37,10 @@ has asked it yet."* Julio has now asked it.
 8. **The old paragraphs are reworked into the new parts, not kept.** We move
    on.
 9. (Rules, in QST-0152.) One Resistance, drawn; spells lent as the dice fall.
+10. **More than one way to say each thing, chosen at random**, after
+    Chomsky's generative principles: "they have the look of" is lame; "they
+    resemble the finest" is one of several. Little variations accumulate into
+    a new text.
 
 ## 🧭 What this questa does
 
@@ -65,7 +69,14 @@ Tag keeps every rule it carries. The new part is the **blood**:
    names the place of the legacy that lent the most of the look (the
    Heritage, on a tie): *the Abyss*, *Hades*, *the Nine Hells*. That the blood
    is two legacies is never said.
-4. **The paragraph** prints where the Heritage paragraph printed until now,
+4. **The words are derived by a generative grammar.** Each sentence of the
+   chosen structure is a symbol (`{HORNS}`, `{SCENT}`), rewritten by rules
+   with several productions each, some nesting further symbols
+   (`{LIKENESS}` → "they resemble the finest {horn_material}" | "they might
+   have been carved from {horn_material}" | ...). The marks are the lexicon.
+   The derivation is drawn once, with the Character's dice, and the sentences
+   are kept.
+5. **The paragraph** prints where the Heritage paragraph printed until now,
    under the Heritage's name (the web sheet files the Heritage description by
    that name).
 
@@ -84,13 +95,20 @@ Tag keeps every rule it carries. The new part is the **blood**:
   rules as plain functions `rule( drawn, domains ) -> domains`, lowest entropy
   first, `ABSENT` for a slot that stays empty. It knows nothing about Tieflings,
   so the Aasimar can use it later.
+- **The grammar is generic too** (`SpeciesKit/grammar.py`): rewrite rules,
+  upper-case symbols rewritten leftmost first, lower-case lexical items
+  slotted from outside, each choice on the Character's dice. The Tiefling
+  rules live in `Tieflings/Grammar_of_Aspect.py`; the grammar of every slot's
+  words (what a horn shape must be to fit every production) is written on its
+  part in `pins.py`.
 - **The Tiefling layer** (`Tieflings/Fiendish_Aspect.py`) builds the slots
   from the blood's legacies, states the three rules, and composes the
   paragraph. Each legacy Tag carries only `PLACE` (a name) and `MARKS` (its
   Pin), beside its rules.
 - **Drawn once, in the Heritage's Imprint** (`Imprint_Fiendish_Heritage`),
-  from two named, level-free Dice Bags: `identity.species.Tiefling.fiendish_blood`
-  (the second legacy) and `…fiendish_blood.aspect` (the collapse). Decree 0002
+  from three named, level-free Dice Bags: `identity.species.Tiefling.fiendish_blood`
+  (the second legacy), `…fiendish_blood.aspect` (the collapse) and
+  `…fiendish_blood.voice` (the grammar). Decree 0002
   and 0009: every roll on the Character's own Dice, a choice made once in an
   Imprint, reading pure. A level-up never changes the aspect. Both bags are new
   and independent, so no other draw moves. Every candidate list is sorted by
@@ -102,7 +120,9 @@ Tag keeps every rule it carries. The new part is the **blood**:
 
 ## 📏 Measured
 
-- SpeciesKit self-test green, with three tests for this questa: the marks are
+- SpeciesKit self-test green, with four tests for this questa: the grammar is
+  complete (every symbol has a rule, every rule is used, every lexical item is
+  one the aspect fills); the marks are
   a vocabulary (each mark fills exactly one part; each legacy has at least two
   horn shapes, lent by it alone); the aspect collapses for every pair of
   legacies on 40 seeds each, deterministically, obeying all three rules and
@@ -112,7 +132,8 @@ Tag keeps every rule it carries. The new part is the **blood**:
 
 ## ❓ Open, for Julio
 
-1. **Voices.** Four structures today. More are one row each in the map.
+1. **Voices.** Four structures and fifteen rewrite rules today; a new turn of
+   phrase is one more production.
 2. **Passing.** The canon says Chthonic passes as human most easily and
    Abyssal is hardest to hide. A structure could say so for the suggested
    legacy; not done yet.

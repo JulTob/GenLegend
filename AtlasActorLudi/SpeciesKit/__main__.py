@@ -1296,6 +1296,57 @@ def _test_tiefling_marks_are_a_vocabulary() -> None:
 				], shape
 
 
+def _test_tiefling_grammar_is_complete() -> None:
+	"""Every symbol has a rule, every rule is used, every item is in the lexicon."""
+	import re
+
+	from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
+	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import STRUCTURES
+
+	lexicon = {
+		"horn_shape",
+		"horn_material",
+		"eyes",
+		"fur",
+		"sheen",
+		"scent",
+		"tail",
+		"place",
+		}
+	slot = re.compile(
+		r"\{([A-Za-z_]+)\}",
+		)
+	texts = [
+		*(
+			sentence
+			for structure in STRUCTURES
+			for sentence in structure.SENTENCES
+			),
+		*(
+			production
+			for productions in GRAMMAR.values()
+			for production in productions
+			),
+		]
+	used = set()
+	for text in texts:
+		for name in slot.findall(
+			text,
+			):
+			if name.isupper():
+				assert name in GRAMMAR, name
+				used.add(
+					name,
+					)
+			else:
+				assert name in lexicon, name
+	assert used == set(
+		GRAMMAR,
+		), set(
+			GRAMMAR,
+			) - used
+
+
 def _aspect_slots():
 	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import LOOK_SLOTS
 
@@ -2097,6 +2148,7 @@ def _self_test() -> None:
 	_test_tiefling_rule_projection()
 	_test_tiefling_identity_is_level_stable()
 	_test_tiefling_marks_are_a_vocabulary()
+	_test_tiefling_grammar_is_complete()
 	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()
 	_test_tiefling_heritage_conflict_is_atomic()
