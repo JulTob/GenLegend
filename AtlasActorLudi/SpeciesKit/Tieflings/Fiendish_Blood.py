@@ -17,12 +17,20 @@ A tail shows when either legacy carries one.  Each legacy keeps its own face
 as plain class data on its Tag (``ORIGIN``, ``HORNS``, ``EYES``, ``FUR``,
 ``TAIL``); this module only draws and composes, and it reads nothing else.
 
+A mixed blood also mixes the **legacy spells** (QST-0152, a house rule).  The
+three spells arrive at levels 1, 3 and 5 as before, and each of the three
+places is lent by one of the two legacies, by one of the patterns in
+``SPELL_WEAVES``.  Every pattern there uses both legacies, so by level 5 a
+mixed blood casts from both hells; before that it may not yet, because the
+spells arrive by level.  A pure blood keeps its legacy's three spells.
+The Resistance stays the Heritage's.
+
 The draw happens once, in the Heritage's Imprint, from one named Dice Bag that
 does not depend on the level, so a level-up never hands anybody a different
 face.  Reading the blood afterwards never rolls.
 
-Nothing here is mechanical.  Fiendish Legacy carries the rules; this carries
-the face.
+The face is drawn from one Dice Bag and the spells from another, so either can
+change without moving the other.
 """
 
 from __future__ import annotations
@@ -48,6 +56,26 @@ SINGLE_FUR_WEAVES = (
 	"{a}, paler beneath",
 	)
 
+# Which legacy lends each of the three spells, by place: the level 1 cantrip,
+# the level 3 spell, the level 5 spell.  0 is the Heritage and 1 the second
+# legacy.  These are the six patterns that use both; the two that use only
+# one legacy are left out on purpose, so by level 5 a mixed blood always
+# shows both hells in its magic.
+SPELL_WEAVES = (
+	( 0, 0, 1 ),
+	( 0, 1, 0 ),
+	( 0, 1, 1 ),
+	( 1, 0, 0 ),
+	( 1, 0, 1 ),
+	( 1, 1, 0 ),
+	)
+
+# A pure blood: all three places from its one legacy.
+SINGLE_SPELL_WEAVE = ( 0, 0, 0 )
+
+# The character level each place arrives at, in place order.
+SPELL_LEVELS = ( 1, 3, 5 )
+
 
 @dataclass(
 		frozen=True,
@@ -61,6 +89,8 @@ class Fiendish_Blood:
 	eyes: str
 	fur: str
 	tail: str
+	# The legacy that lends each spell place, in level order (1, 3, 5).
+	spell_lenders: tuple[type, ...]
 
 	@property
 	def mixed(
@@ -76,6 +106,29 @@ class Fiendish_Blood:
 				legacy.__name__
 				for legacy in self.legacies
 				)
+
+	@property
+	def spells(
+			self,
+			) -> tuple[tuple[int, str], ...]:
+		"""The legacy spells as ``(level, spell key)`` rows, like ``SPELLS``."""
+		return tuple(
+				_spell_at_level(
+						lender,
+						level,
+						)
+				for level, lender in zip(
+						SPELL_LEVELS,
+						self.spell_lenders,
+						)
+				)
+
+	@property
+	def title(
+			self,
+			) -> str:
+		"""The Fiendish Legacy entry's name: ``Abyssal``, or ``Abyssal and Infernal``."""
+		return " and ".join( self.names )
 
 	def opening(
 			self,
@@ -106,7 +159,8 @@ class Fiendish_Blood:
 def _open_blood_dice(
 		target,
 		):
-	"""The one Dice Bag every part of the blood is drawn from."""
+	"""The Dice Bag the face of the blood is drawn from; the spells
+draw from their own, apart from this one (``_open_spell_dice``)."""
 	return target.Dice_Bag(
 			"identity.species.Tiefling.fiendish_blood",
 			version="1",
@@ -191,6 +245,59 @@ def _draw_fur(
 			)
 
 
+def _spell_at_level(
+		legacy,
+		level: int,
+		) -> tuple[int, str]:
+	"""
+	The one row of a legacy's ``SPELLS`` that arrives at ``level``.
+
+	Looked up by level, never by position, so a legacy that lists its spells
+	in another order still lends the right one; a legacy missing the level,
+	or carrying it twice, fails loudly.
+	"""
+	rows = [
+			row
+			for row in legacy.SPELLS
+			if row[0] == level
+			]
+	if len( rows ) != 1:
+		raise ValueError(
+				f"{legacy.__name__} must declare exactly one spell "
+				f"at level {level}, not {len( rows )}."
+				)
+	return rows[0]
+
+
+def _open_spell_dice(
+		target,
+		):
+	"""The Dice Bag the spell pattern is drawn from, apart from the face's."""
+	return target.Dice_Bag(
+			"identity.species.Tiefling.fiendish_blood.spells",
+			version="1",
+			namespace="GenLegendActor",
+			)
+
+
+def _draw_spell_lenders(
+		target,
+		legacies,
+		) -> tuple[type, ...]:
+	"""Which legacy lends each spell place; both appear when the blood is mixed."""
+	if len( legacies ) == 1:
+		weave = SINGLE_SPELL_WEAVE
+	else:
+		weave = target.Pick(
+				list( SPELL_WEAVES ),
+				dice=_open_spell_dice( target ),
+				)
+	return tuple(
+			legacies[index]
+			for index in weave
+			)
+
+
 def _find_tail(
 		legacies,
 		) -> str:
@@ -240,4 +347,8 @@ def Draw_Fiendish_Blood(
 			eyes=eyes,
 			fur=fur,
 			tail=_find_tail( legacies ),
+			spell_lenders=_draw_spell_lenders(
+					target,
+					legacies,
+					),
 			)
