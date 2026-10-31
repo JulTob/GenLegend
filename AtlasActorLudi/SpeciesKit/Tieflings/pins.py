@@ -40,9 +40,8 @@ class Aspect_Mark(Tag):
 class Structure_Mark(Aspect_Mark):
 	"""One way of ordering the aspect's sentences."""
 
-	# The sentence templates, in order.  Fields: {horn_shape} {horn_material}
-	# {eyes} {fur} {sheen} {scent} {tail} {place}.  A sentence whose only field
-	# is empty is dropped.
+	# The sentences, in order, each written as symbols of the aspect's grammar
+	# (``Grammar_of_Aspect``).  A sentence that derives to nothing is dropped.
 	SENTENCES: tuple[str, ...] = ()
 
 
@@ -86,11 +85,14 @@ class Structure(Aspect_Part):
 
 
 class Horn_Shape(Aspect_Part):
-	"""Completes "Your horns ___": a verb phrase, plural, present tense."""
+	"""
+	Completes "Your horns ___": a verb phrase, plural, present tense, with no
+	comma and no "and" of its own (the grammar adds clauses after it).
+	"""
 
 
 class Horn_Material(Aspect_Part):
-	"""What the horns look made of: a noun phrase ("old ivory")."""
+	"""What the horns look made of: a bare noun phrase, no article ("old ivory")."""
 
 
 class Eyes(Aspect_Part):

@@ -56,46 +56,47 @@ EVERY_LEGACY = (
 
 
 # ---------------------------------------------------------------------------
-# Structures: the order the sentences come in.  Fields are filled by the
-# collapse; {place} is where the looks suggest the bloodline starts.
+# Structures: the order the sentences come in.  Each sentence is a symbol of
+# the aspect's grammar (``Grammar_of_Aspect``), rewritten when the aspect is
+# drawn; FUR and SHEEN always travel together, since the sheen says "it".
 # ---------------------------------------------------------------------------
 
 STRUCTURES = (
 		Make_Structure(
 				"Horns_First",
-				"Your horns {horn_shape}, and they have the look of {horn_material}.",
-				"Your eyes {eyes}.",
-				"Your fur is {fur}. Where the light catches it, it shows a sheen of {sheen}.",
-				"{tail}",
-				"Whoever stands close enough catches a faint trace of {scent} about you.",
-				"Your looks suggest your bloodline starts in {place}.",
+				"{HORNS}",
+				"{EYES}",
+				"{FUR} {SHEEN}",
+				"{TAIL}",
+				"{SCENT}",
+				"{PLACE}",
 				),
 		Make_Structure(
 				"Scent_First",
-				"People notice it before they notice the horns: a faint trace of {scent} that follows you from room to room.",
-				"Your horns, like {horn_material}, {horn_shape}.",
-				"Your eyes {eyes}.",
-				"Your fur is {fur}, and in lamplight it has a sheen of {sheen}.",
-				"{tail}",
-				"Anyone who knows the old signs would say your blood runs down to {place}.",
+				"{SCENT_OPENING}",
+				"{HORNS}",
+				"{EYES}",
+				"{FUR} {SHEEN}",
+				"{TAIL}",
+				"{PLACE}",
 				),
 		Make_Structure(
 				"Place_First",
-				"Your looks suggest your bloodline starts in {place}, though nobody can say how far back.",
-				"Your fur is {fur}. It shows a sheen of {sheen} when you move.",
-				"Your horns {horn_shape}; they look like {horn_material}.",
-				"Your eyes {eyes}.",
-				"{tail}",
-				"And there is always a trace of {scent} about you, faint enough to doubt.",
+				"{PLACE_OPENING}",
+				"{FUR} {SHEEN}",
+				"{HORNS}",
+				"{EYES}",
+				"{TAIL}",
+				"{SCENT}",
 				),
 		Make_Structure(
 				"Eyes_First",
-				"Your eyes {eyes}.",
-				"Your horns look like {horn_material} and {horn_shape}.",
-				"Your fur is {fur}. Where the light catches it, it shows a sheen of {sheen}.",
-				"{tail}",
-				"You carry a faint smell of {scent}, though nobody can say where it comes from.",
-				"Those who read such signs would say your line begins in {place}.",
+				"{EYES}",
+				"{HORNS}",
+				"{FUR} {SHEEN}",
+				"{TAIL}",
+				"{SCENT}",
+				"{PLACE}",
 				),
 		)
 
@@ -108,21 +109,21 @@ HORN_SHAPES = (
 		Make_Mark( "Horns_Crown", part=Horn_Shape, lent_by=HADES, keys=( "crown", ),
 				text="sit close to your head like a crown" ),
 		Make_Mark( "Horns_Tiara", part=Horn_Shape, lent_by=HADES, keys=( "tiara", ),
-				text="lie low along your temples, like a tiara" ),
+				text="lie low along your temples like a tiara" ),
 		Make_Mark( "Horns_Diadem", part=Horn_Shape, lent_by=HADES, keys=( "diadem", ),
-				text="ring your brow in short, even points, like a diadem" ),
+				text="ring your brow in short points like a diadem" ),
 		Make_Mark( "Horns_Ram", part=Horn_Shape, lent_by=HELLS, keys=( "ram", ),
 				text="curl back over your ears like a ram's" ),
 		Make_Mark( "Horns_Swept", part=Horn_Shape, lent_by=HELLS, keys=( "swept", ),
-				text="sweep back from your brow, smooth and perfectly matched" ),
+				text="sweep back from your brow in a perfectly matched pair" ),
 		Make_Mark( "Horns_Spires", part=Horn_Shape, lent_by=HELLS, keys=( "spire", ),
-				text="rise from your brow in two straight, ridged spires" ),
+				text="rise from your brow like two ridged spires" ),
 		Make_Mark( "Horns_Twisted", part=Horn_Shape, lent_by=ABYSS, keys=( "twisted", ),
-				text="grow twisted and spiky, and no two of their points match" ),
+				text="grow in twisted spikes that never match" ),
 		Make_Mark( "Horns_Barbed", part=Horn_Shape, lent_by=ABYSS, keys=( "barb", ),
-				text="branch into small barbs, one side always longer than the other" ),
+				text="branch into barbs that never grow alike on both sides" ),
 		Make_Mark( "Horns_Spiral", part=Horn_Shape, lent_by=ABYSS, keys=( "spiral", ),
-				text="spiral in opposite directions, as if each grew without asking the other" ),
+				text="spiral in opposite directions as if neither asked the other" ),
 		)
 
 HORN_MATERIALS = (
@@ -131,7 +132,7 @@ HORN_MATERIALS = (
 		Make_Mark( "Horn_Bone", part=Horn_Material, lent_by=HADES, keys=( "bone", ),
 				text="sun-bleached bone" ),
 		Make_Mark( "Horn_Antler", part=Horn_Material, lent_by=HADES, keys=( "antler", ),
-				text="antler worn smooth" ),
+				text="antler" ),
 		Make_Mark( "Horn_Jet", part=Horn_Material, lent_by=HELLS, keys=( "jet", ),
 				text="polished jet" ),
 		Make_Mark( "Horn_Onyx", part=Horn_Material, lent_by=HELLS, keys=( "onyx", ),
@@ -143,7 +144,7 @@ HORN_MATERIALS = (
 		Make_Mark( "Horn_Nacre", part=Horn_Material, lent_by=ABYSS, keys=( "pearl", ),
 				text="mother-of-pearl" ),
 		Make_Mark( "Horn_Beetle", part=Horn_Material, lent_by=ABYSS, keys=( "beetle", ),
-				text="a beetle's shell" ),
+				text="beetle shell" ),
 		)
 
 
