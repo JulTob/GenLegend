@@ -1,4 +1,4 @@
-"""
+successfully downloaded text file (SHA: 529e66707f75f8c1b18dbb3215ec44e1fc432a96)"""
 Fiendish Blood — which hells a Tiefling carries, and how they show.
 
 Every Tiefling has one Heritage Tag (Abyssal, Chthonic or Infernal), and that
@@ -60,7 +60,7 @@ SINGLE_FUR_WEAVES = (
 # the level 3 spell, the level 5 spell.  0 is the Heritage and 1 the second
 # legacy.  These are the six patterns that use both; the two that use only
 # one legacy are left out on purpose, so by level 5 a mixed blood always
-# shows in its magic.
+# shows both hells in its magic.
 SPELL_WEAVES = (
 	( 0, 0, 1 ),
 	( 0, 1, 0 ),
@@ -150,7 +150,8 @@ class Fiendish_Blood:
 def _open_blood_dice(
 		target,
 		):
-	"""The one Dice Bag every part of the blood is drawn from."""
+	"""The Dice Bag the face of the blood is drawn from; the spells
+draw from their own, apart from this one (``_open_spell_dice``)."""
 	return target.Dice_Bag(
 			"identity.species.Tiefling.fiendish_blood",
 			version="1",
