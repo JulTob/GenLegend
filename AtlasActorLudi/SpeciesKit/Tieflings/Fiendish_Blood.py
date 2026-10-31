@@ -1,4 +1,4 @@
-successfully downloaded text file (SHA: 529e66707f75f8c1b18dbb3215ec44e1fc432a96)"""
+"""
 Fiendish Blood — which hells a Tiefling carries, and how they show.
 
 Every Tiefling has one Heritage Tag (Abyssal, Chthonic or Infernal), and that
