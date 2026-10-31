@@ -62,6 +62,11 @@ that allows only one. The new part is the **blood**, which is the face:
   changes the face. The bag is new and independent, so no other draw moves.
 - **Reading never rolls.** `Resolve_Tiefling_Features` prints
   `target.fiendish_blood`, and nothing else.
+- **One policy for a missing blood: fail loudly.** Every reader takes
+  `target.fiendish_blood` directly, with no guard. The Heritage's Imprint
+  draws the blood whenever it sets a Heritage, so a Tiefling with a Heritage
+  and no blood can only come from a bug, and an `AttributeError` names it
+  (review of #122).
 
 ## 📏 Measured
 
@@ -83,3 +88,8 @@ that allows only one. The new part is the **blood**, which is the face:
 3. **Passing.** The canon says Chthonic is the easiest to pass as human and
    Abyssal the hardest to hide. The face does not say so yet; a mixed blood
    would need a rule for which one wins.
+4. **Tails.** Only Infernal declares a `TAIL`, and the blood takes the first
+   tail its legacies carry, Heritage first. If a second legacy ever gains a
+   tail, a mixed blood of the two will always quote the Heritage's line rather
+   than draw between them. Decide then whether tails should be drawn like
+   horns and eyes.

@@ -1217,6 +1217,9 @@ def _test_tiefling_identity_is_level_stable() -> None:
 			heritages,
 			)
 		) == 1
+	# A blood is a frozen record holding the legacy Tags themselves, so this
+	# compares every part of the face, legacies included.  Keep the Tags there:
+	# names in their place would still hash, and would compare less.
 	assert len(
 		set(
 			faces,
