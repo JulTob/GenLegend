@@ -93,7 +93,7 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 	"SCENT": (
 		"{scent}.{SCENT_AFTER}",
 		"{scent}.{SCENT_AFTER}",
-		"{SAY_SCENT} you smell like {omen}, of {scent_phrase}.{SCENT_AFTER}",
+		"{SAY_SCENT} you smell of {scent_phrase}, like {omen}.{SCENT_AFTER}",
 		"You smell of {scent_phrase}, and {PEOPLE_LOWER} call it the smell of {omen}.",
 		"{SAY_SCENT} you smell like {omen}.",
 		),
