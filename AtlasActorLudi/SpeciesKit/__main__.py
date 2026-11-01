@@ -1498,6 +1498,8 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 	"""The aspect and the rules come from the Heritage and one more legacy."""
 	seen_mixed = False
 	seen_pure = False
+	seen_spell_from_second = False
+	seen_resistance_from_second = False
 
 	for seed in range(
 		1,
@@ -1563,11 +1565,38 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 			)
 		assert entry.description == blood.aspect.paragraph()
 
+		if not blood.mixed:
+			# A pure blood is the published rule, exactly.
+			heritage = legacies[
+				0
+				]
+			assert blood.spells == tuple(
+				sorted(
+					heritage.SPELLS,
+					),
+				)
+			assert blood.resistance == heritage.DAMAGE_RESISTANCE
+		else:
+			second = legacies[
+				1
+				]
+			seen_spell_from_second = (
+				seen_spell_from_second
+				or second in blood.spell_lenders
+				)
+			seen_resistance_from_second = (
+				seen_resistance_from_second
+				or blood.resistance_lender is second
+				)
+
 		seen_mixed = seen_mixed or blood.mixed
 		seen_pure = seen_pure or not blood.mixed
 
 	assert seen_mixed
 	assert seen_pure
+	# The house rule is not only allowed but happens (QST-0152).
+	assert seen_spell_from_second
+	assert seen_resistance_from_second
 
 
 def _test_tiefling_heritage_conflict_is_atomic() -> None:
