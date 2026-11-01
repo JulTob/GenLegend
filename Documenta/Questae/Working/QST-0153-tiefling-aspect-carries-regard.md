@@ -89,6 +89,17 @@ Over 300 Tieflings: 881 distinct sentences. By marker phrases, about a
 quarter of paragraphs read purely sad, an eighth each purely punk, tender or
 plain, and the rest mix registers.
 
+**Fourth pass (same day).** Julio: every option at least three choices,
+every choice point at least three alternatives; and the place line may reach
+"all the way back to the times before the Fall" (an `EPIC_EVENT`: the Fall,
+the Machinean Division, the Sundering, the Long Night, the Silence of the
+Bells, the First Betrayal, the Drowning of the Moon, the Shattered Choir;
+never explained). Every grammar rule now has at least three distinct
+productions, every mark that brings sentences, noun phrases or omens brings
+at least three, and every legacy lends at least three marks to every part;
+the self-test enforces all three. Over 500 Tieflings: 500 distinct
+paragraphs and 1,388 distinct sentences.
+
 ## ❓ For Julio
 
 1. Is this the voice?
