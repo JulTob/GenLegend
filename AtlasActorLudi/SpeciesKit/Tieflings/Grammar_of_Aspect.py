@@ -41,13 +41,13 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		),
 
 	# The fur and its sheen are one image.  {fur} may carry commas of its own
-	# ("wolf grey, striped with onyx black"), so it never sits between two
-	# more commas: it ends a clause.
+	# ("wolf grey, striped with onyx black"), so the sheen comes first and
+	# every sentence ends on {fur}.
 	"FUR": (
-		"Your fur is {fur}, and where the light catches it, it gleams like {sheen}.",
-		"Your coat is {fur}, and it holds a sheen of {sheen}, the way old coins do.",
-		"Your fur takes the light like {sheen}, and its colour is {fur}.",
+		"Lamplight finds {sheen} in your fur, which is {fur}.",
 		"A glint of {sheen} runs through your fur, which is {fur}.",
+		"Your fur carries a sheen of {sheen}: {fur}.",
+		"When you turn, a sheen of {sheen} moves through your coat of {fur}.",
 		),
 
 	"TAIL": (
@@ -61,22 +61,21 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 	"PLACE": (
 		"Your looks suggest your {LINE} {BEGINS} {place}.",
 		"{WHO} would say your {LINE} {BEGINS} {place}.",
-		"{WHO} would trace your {LINE} back to {place}.",
+		"{WHO} would trace your {LINE} to {place}.",
 		),
 
-	# No "back" at the end: BEGINS may already have said "back to".
 	"PLACE_OPENING": (
 		"Your looks suggest your {LINE} {BEGINS} {place}, though nobody can say how many generations ago.",
-		"{WHO} would trace your {LINE} back to {place}, though not how far.",
+		"{WHO} would trace your {LINE} to {place}, though not how far.",
 		),
 
 	# --- Phrases ---------------------------------------------------------
 
 	"WHO": (
-		"Anyone who knows the old signs",
+		"Anyone who knows the signs",
 		"Those who read such things",
 		"A scholar of such matters",
-		"The old stories",
+		"The stories",
 		),
 
 	"LINE": (
@@ -85,10 +84,12 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		"blood",
 		),
 
+	# No "back" and no "old" anywhere in the grammar's own words: the marks
+	# use both ("curl back", "along your back", "old ivory").
 	"BEGINS": (
 		"starts in",
 		"begins in",
-		"runs back to",
-		"goes back to",
+		"rises from",
+		"was first kindled in",
 		),
 	}

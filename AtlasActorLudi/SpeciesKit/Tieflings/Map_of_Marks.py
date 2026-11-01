@@ -13,7 +13,7 @@ What each legacy lends, in short (QST-0151, Julio's rulings of 2026-10-31):
   colour; the coats of foxes, wolves and bulls, or the grey of a corpse;
   silver, pewter, iron; incense, myrrh, rain and turned earth.
 - **Infernal**: horns that curl like a ram's or sweep back perfectly matched;
-  jet, onyx, black iron; black eyes with a gold or ember iris; black or a
+  jet, onyx, blued iron; black eyes with a gold or ember iris; black or a
   flame's colours; gold, brass, copper; sulfur, a doused campfire, the forge;
   the arrow-tipped tail.
 - **Abyssal**: horns that twist, branch and spiral and never match; agate,
@@ -176,8 +176,8 @@ HORN_MATERIALS = (
 				text="polished jet" ),
 		Make_Mark( "Horn_Onyx", part=Horn_Material, lent_by=HELLS, keys=( "onyx", ),
 				text="onyx" ),
-		Make_Mark( "Horn_Black_Iron", part=Horn_Material, lent_by=HELLS, keys=( "iron", ),
-				text="black iron" ),
+		Make_Mark( "Horn_Blued_Iron", part=Horn_Material, lent_by=HELLS, keys=( "iron", ),
+				text="blued iron" ),
 		Make_Mark( "Horn_Agate", part=Horn_Material, lent_by=ABYSS, keys=( "agate", ),
 				text="banded agate" ),
 		Make_Mark( "Horn_Nacre", part=Horn_Material, lent_by=ABYSS, keys=( "pearl", ),
@@ -192,32 +192,32 @@ HORN_MATERIALS = (
 # ---------------------------------------------------------------------------
 
 EYES = (
-		Make_Mark( "Eyes_Violet_Iris", part=Eyes, lent_by=HADES, keys=( "violet", "vivid", "grave" ),
+		Make_Mark( "Eyes_Violet_Iris", part=Eyes, lent_by=HADES, keys=( "violet", "vivid", "grave", "black" ),
 				text=(
 						"Your eyes are black, each holding a single violet iris, like a flower left on a grave.",
 						"At the bottom of your black eyes lies a vivid violet, like a flower in a well.",
 						) ),
-		Make_Mark( "Eyes_Green_Iris", part=Eyes, lent_by=HADES, keys=( "green", "moss" ),
+		Make_Mark( "Eyes_Green_Iris", part=Eyes, lent_by=HADES, keys=( "green", "moss", "black" ),
 				text=(
-						"Your eyes are black, and their irises are the green of moss on old stone.",
+						"Your eyes are black, and their irises are the green of moss on a tombstone.",
 						"In the black of your eyes sits a green iris, bright as new moss.",
 						) ),
-		Make_Mark( "Eyes_Ice_Iris", part=Eyes, lent_by=HADES, keys=( "ice", "well" ),
+		Make_Mark( "Eyes_Ice_Iris", part=Eyes, lent_by=HADES, keys=( "ice", "well", "black" ),
 				text=(
 						"Your eyes are black as a well at night, with irises of pale ice.",
 						"Irises pale as ice float in eyes as black as a well.",
 						) ),
-		Make_Mark( "Eyes_Coal_Iris", part=Eyes, lent_by=HELLS, keys=( "gold", "coal" ),
+		Make_Mark( "Eyes_Coal_Iris", part=Eyes, lent_by=HELLS, keys=( "gold", "coal", "black" ),
 				text=(
 						"Your eyes are black, and in each burns a golden iris, like a coal that will not go out.",
 						"A coal of gold burns in the black of each of your eyes.",
 						) ),
-		Make_Mark( "Eyes_Ember_Iris", part=Eyes, lent_by=HELLS, keys=( "red", "ember" ),
+		Make_Mark( "Eyes_Ember_Iris", part=Eyes, lent_by=HELLS, keys=( "red", "ember", "black" ),
 				text=(
 						"Embers sit where your irises should be, red in the black of your eyes.",
 						"Your irises glow the red of embers in a grate, set in eyes of perfect black.",
 						) ),
-		Make_Mark( "Eyes_Candle_Iris", part=Eyes, lent_by=HELLS, keys=( "gold", "candle", "flame" ),
+		Make_Mark( "Eyes_Candle_Iris", part=Eyes, lent_by=HELLS, keys=( "gold", "candle", "flame", "black" ),
 				text=(
 						"In the black of your eyes, the gold of each iris flickers like a candle flame.",
 						"Your eyes are black, and the gold in them flickers like candlelight in a draught.",
@@ -260,8 +260,8 @@ COATS = (
 				text="wolf grey" ),
 		Make_Mark( "Coat_Bull_Brown", part=Coat, lent_by=HADES, keys=( "brown", "bull" ),
 				text="bull brown" ),
-		Make_Mark( "Coat_Corpse_Grey", part=Coat, lent_by=HADES, keys=( "grey", "corpse" ),
-				text="the grey-white of a corpse" ),
+		Make_Mark( "Coat_Corpse_White", part=Coat, lent_by=HADES, keys=( "white", "corpse" ),
+				text="corpse-white" ),
 		Make_Mark( "Coat_Onyx_Black", part=Coat, lent_by=HELLS, keys=( "black", "onyx" ),
 				text="onyx black" ),
 		Make_Mark( "Coat_Flame_Red", part=Coat, lent_by=HELLS, keys=( "red", "flame" ),
@@ -345,7 +345,7 @@ SCENTS = (
 						) ),
 		Make_Mark( "Scent_Myrrh", part=Scent, lent_by=HADES, keys=( "myrrh", ),
 				text=(
-						"Myrrh clings to you, sweet and old, like the inside of a reliquary.",
+						"Myrrh clings to you, sweet and ancient, like the inside of a reliquary.",
 						"There is myrrh in your hair, though you have never bought any.",
 						) ),
 		Make_Mark( "Scent_Rain", part=Scent, lent_by=HADES, keys=( "rain", ),
@@ -406,12 +406,12 @@ SCENTS = (
 # ---------------------------------------------------------------------------
 
 TAILS = (
-		Make_Mark( "Tail_Arrow", part=Tail, lent_by=HELLS, keys=( "arrow", ),
+		Make_Mark( "Tail_Arrow", part=Tail, lent_by=HELLS, keys=( "arrow", "tips" ),
 				text=(
-						"A long tail follows you, ending in an arrow-shaped tip.",
+						"A long tail sways behind you, ending in an arrow-shaped tip.",
 						"Behind you, a long tail ends in a tip shaped like an arrowhead.",
 						) ),
-		Make_Mark( "Tail_Lash", part=Tail, lent_by=HELLS, keys=( "arrow", "barb" ),
+		Make_Mark( "Tail_Lash", part=Tail, lent_by=HELLS, keys=( "arrow", "barb", "tips" ),
 				text=(
 						"A thin tail lashes behind you when you are angry, its tip barbed like an arrow.",
 						) ),
