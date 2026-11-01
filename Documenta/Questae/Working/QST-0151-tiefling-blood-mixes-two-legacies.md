@@ -57,6 +57,14 @@ has asked it yet."* Julio has now asked it.
 14. **The Abyssal eyes say what happens**: "Your eyes look an ordinary brown,
     until you stare too long at someone and they take on that person's
     colour."
+15. **Two hells, and only two; everything falls between them at random**
+    (2026-11-01). The look, the rules and the rumoured origin are each drawn
+    within the blood's two legacies, for variety and consistency at once. "It
+    is ok to have a character whispered to come from Hades itself mixed with
+    demonic aspects. Most people wouldn't even touch a description of a demon,
+    fearing to summon it. It's all rumours and heresy, and that chaos is part
+    of the charm." So the Heritage on the sheet may lend little or nothing that
+    shows: that is intended.
 
 ## 🧭 What this questa does
 
@@ -87,10 +95,11 @@ Tag keeps every rule it carries. The new part is the **blood**:
      show it.
    A slot left empty is a contradiction, and the wave starts again from the
    same dice stream (deterministic).
-3. **The origin is suggested, never described.** The last (or first) line
-   names the place of the legacy that lent the most of the look (the
-   Heritage, on a tie): *the Abyss*, *Hades*, *the Nine Hells*. That the blood
-   is two legacies is never said.
+3. **The origin is a rumour, never described.** The last (or first) line
+   names one of the blood's two legacies, drawn on its own dice, whatever
+   the look says: *the Abyss*, *Hades*, *the Nine Hells* ("Some whisper that
+   your blood comes from Hades itself"). That the blood is two legacies is
+   never said.
 4. **The words are derived by a generative grammar.** Each sentence of the
    chosen structure is a symbol (`{HORNS}`, `{FUR}`, `{PLACE}`), rewritten by
    rules with several productions each, some nesting further symbols. The
@@ -159,7 +168,7 @@ Tag keeps every rule it carries. The new part is the **blood**:
    every mark said on its own; a new turn of phrase is one more production or
    one more sentence on a mark.
 2. **Passing.** The canon says Chthonic passes as human most easily and
-   Abyssal is hardest to hide. A structure could say so for the suggested
+   Abyssal is hardest to hide. A structure could say so for the rumoured
    legacy; not done yet.
 3. **Tails.** Only the Nine Hells lend one. A blood with another legacy may
    have none (half the time, by the dice). Should Abyssal lend a tail of its
