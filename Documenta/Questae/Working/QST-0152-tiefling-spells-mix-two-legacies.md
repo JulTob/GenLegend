@@ -70,8 +70,10 @@ Example, level 5, a Chthonic Tiefling whose blood is Chthonic and Infernal:
 ## ❓ Open, for Julio
 
 1. Ratify the rule as a 📒, or keep it as a generator option.
-2. Uniform draws mean a mixed blood's Heritage lends the cantrip only half the
-   time, the most visible place the rule departs from the book. Lean toward
-   the Heritage?
+2. ~~Should the Heritage always lend something?~~ **Ruled (Julio,
+   2026-11-01): no.** A blood is two hells and only two; the Resistance, the
+   spells, the look and the rumoured origin all fall at random between them,
+   so a Chthonic on the sheet may resist Fire and cast Fire Bolt. "That chaos
+   is part of the charm."
 3. "You know the spells of your legacy" stays as written: the legacy is the
    blood. Reword?
