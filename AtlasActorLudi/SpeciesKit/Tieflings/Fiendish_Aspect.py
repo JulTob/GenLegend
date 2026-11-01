@@ -93,6 +93,7 @@ SLOTS_SAID_BY = {
 		"TAIL": ( "tail", ),
 		"SCENT": ( "scent", ),
 		"BEARING": ( "bearing", ),
+		"CLOSE": (),
 		"PLACE": (),
 		"PLACE_OPENING": (),
 		}

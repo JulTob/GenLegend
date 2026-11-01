@@ -1,32 +1,39 @@
 """
 Grammar of Aspect — the rewrite rules a Tiefling's aspect is written with.
 
-An Aasimar's talaria and halo are emotional anchors: they make the reader
-feel something.  A Tiefling's anchor is how the world takes them.  Nobody
-describes a Tiefling neutrally: every word said about them rings of insult or
-fear, and what they feel back is frustration, fear and anger, and the
-constant arithmetic of passing or hiding.  So this grammar does not only say
-what a Tiefling looks like; it says what the looks *mean* to the people
-looking (QST-0153, an experiment on Julio's idea of 2026-11-01).
+The register is **punk** (Julio, 2026-11-01): strangely beautiful, born this
+way, a rough past and, mysteriously, a road still open.  The world's regard is
+a seasoning, never the meal: one or two touches in a paragraph (a scar, a
+stare outlasted, a hood thrown away) change the whole vibe; a paragraph made
+only of them is merely sad.
 
-The collapse (``Fiendish_Aspect``) chooses what is said; this grammar chooses
-how.  Sentences are built the generative way, with a start that several
-endings can finish: "Strangers see the horns first, and you a long time
-after:" + any horn phrase.  The marks are the lexicon:
+So variety comes from structure inside structure, not from more lines:
 
-- ``{horns}`` / ``{eyes}`` / ``{scent}`` / ``{tail}`` / ``{bearing}``: a mark's
-  own sentences
-- ``{horn_phrase}`` / ``{eyes_phrase}`` / ``{scent_phrase}``: the same marks as
-  noun phrases, to finish someone else's sentence
-- ``{omen}``: what people say a scent means ("a funeral")
-- ``{horn_material}``, ``{fur}``, ``{sheen}``, ``{place}``: as before
-- ``{full_name}``: kept as it is and filled when the sheet is printed, since
-  the name is settled after the Species (``{full_name}`` rather than
-  ``{name}`` until #124: a name may start with a title)
+- a **sentence** is a core clause, and sometimes an **afterthought**, a short
+  sentence of its own: "{horns}.{HORN_AFTER}", where most afterthoughts are
+  empty and a few carry the attitude (" You have never once filed them
+  down.").  An afterthought never joins the clause with a comma, so it can
+  never pile onto a clause that already has one;
+- a feature may instead be opened by a **frame** and finished by the mark as
+  a noun phrase: "You were born with them: ram's horns of polished jet,
+  curling back over your ears.";
+- a **closing** line is a past half and a future half, drawn apart:
+  "{PAST}, {FUTURE}." (four times four lines from eight).
 
-Every production must read as English for every item its slots can hold, and
-none breaks the flow with a semicolon.  Words a production adds are not
-keyed, so a production should not reuse a word a mark may bring.
+A production listed more than once is weighted on purpose: an empty coda is
+listed several times so the attitude stays rare.  The marks are the lexicon
+(each mark sentence is a clause, with no full stop of its own):
+
+- ``{horns}`` / ``{eyes}`` / ``{scent}`` / ``{tail}`` / ``{bearing}``: a
+  mark's own clauses
+- ``{horn_phrase}`` / ``{eyes_phrase}`` / ``{scent_phrase}``: the marks as
+  noun phrases; ``{omen}``: what people say a scent means
+- ``{horn_material}``, ``{fur}``, ``{sheen}``, ``{place}``
+- ``{full_name}``: kept, and filled when the sheet is printed (#124)
+
+Every production must read as English for every item its slots can hold;
+no semicolons.  Words a production adds are not keyed, so a production
+should not reuse a word a mark may bring.
 """
 
 from __future__ import annotations
@@ -36,81 +43,148 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 
 	# --- Sentences -------------------------------------------------------
 
-	# A lead is listed twice beside a mark's own sentence on purpose: two in
-	# three times, the look is said through how someone else meets it.
 	"HORNS": (
-		"{horns}",
-		"{HORNS_LEAD}: {horn_phrase}.",
-		"{HORNS_LEAD}: {horn_phrase}.",
+		"{horns}.{HORN_AFTER}",
+		"{horns}.{HORN_AFTER}",
+		"{horns}.{HORN_AFTER}",
+		"{HORN_FRAME}: {horn_phrase}.",
 		),
 
 	"EYES": (
-		"{eyes}",
-		"{EYES_LEAD}: {eyes_phrase}.",
-		"{EYES_LEAD}: {eyes_phrase}.",
+		"{eyes}.{EYE_AFTER}",
+		"{eyes}.{EYE_AFTER}",
+		"{eyes}.{EYE_AFTER}",
+		"{EYE_FRAME}: {eyes_phrase}.",
 		),
 
-	# {fur} may carry commas of its own, so every sentence ends on it.
+	# {fur} may carry commas of its own, so the body ends on it, and any
+	# afterthought is a sentence of its own.
 	"FUR": (
-		"Your fur carries {SCARS}, and no cloak quite covers it: {fur}.",
-		"{FUR_LEAD}, a glint of {sheen} gives you away in your fur, which is {fur}.",
+		"{FUR_BODY}{FUR_AFTER}",
+		),
+
+	"FUR_BODY": (
 		"Lamplight finds {sheen} in your fur, which is {fur}.",
-		"Your fur carries {SCARS}, and its colour is {fur}.",
+		"A glint of {sheen} runs through your fur, which is {fur}.",
+		"Your fur carries a sheen of {sheen}: {fur}.",
+		"When you turn, a sheen of {sheen} moves through your coat of {fur}.",
+		),
+
+	"FUR_AFTER": (
+		"",
+		"",
+		"",
+		"",
+		" An old scar runs through it, and you never bothered to hide it.",
+		" You keep it short, wild, and entirely your own.",
+		" Here and there it grows back paler, over scars you no longer explain.",
 		),
 
 	"SCENT": (
-		"{scent}",
-		"{SAY_SCENT} you smell like {omen}, of {scent_phrase}.",
-		"{SAY_SCENT} you smell like {omen}.",
+		"{scent}.{SCENT_AFTER}",
+		"{scent}.{SCENT_AFTER}",
+		"{SAY_SCENT} you smell like {omen}, of {scent_phrase}.{SCENT_AFTER}",
 		),
 
 	"TAIL": (
-		"{tail}",
+		"{tail}.",
 		),
 
 	"BEARING": (
-		"{bearing}",
+		"{bearing}.",
+		),
+
+	"CLOSE": (
+		"{PAST}, {FUTURE}.",
 		),
 
 	"PLACE": (
+		"Your looks suggest your {LINE} {BEGINS} {place}.",
 		"{WHO} would say your {LINE} {BEGINS} {place}.",
+		"{WHO} would trace your {LINE} to {place}.",
+		"Some whisper that your {LINE} comes straight from {place}.",
 		"{HOSTILE} say your {LINE} {BEGINS} {place}, as if that settled anything.",
-		"{HOSTILE} say your {LINE} {BEGINS} {place}, and they say it loudly.",
-		"Some whisper that your {LINE} comes from {place} itself.",
 		),
 
-	# --- Leads: how the world meets the look -----------------------------
-
-	"HORNS_LEAD": (
-		"{full_name}'s face is of great beauty, but most people only notice the horns",
-		"Strangers see the horns first, and you a long time after",
-		"Children point at the horns before their parents pull them away",
-		"No hat has ever sat right on you, and no innkeeper has ever missed why",
+	"PLACE_OPENING": (
+		"Your looks suggest your {LINE} {BEGINS} {place}, though nobody can say how many generations ago.",
+		"{WHO} would trace your {LINE} to {place}, though not how far.",
+		"Some whisper that your {LINE} comes straight from {place}, and nobody asks twice.",
 		),
 
-	"EYES_LEAD": (
+	# --- Afterthoughts: the attitude, rarely ------------------------------
+
+	"HORN_AFTER": (
+		"",
+		"",
+		"",
+		"",
+		" You have never once filed them down.",
+		" One was chipped in an old fight, and it is no less beautiful for it.",
+		" Strangers stare until they forget to be afraid.",
+		" You wear them like a crown you chose.",
+		" Children point, and these days you point back.",
+		),
+
+	"EYE_AFTER": (
+		"",
+		"",
+		"",
+		"",
+		" You have stopped looking away first.",
+		" People call them unsettling, right up until they call them beautiful.",
+		" They have seen worse than whoever is staring back.",
+		" Someone once told you they were beautiful, and you still remember who.",
+		),
+
+	"SCENT_AFTER": (
+		"",
+		"",
+		"",
+		" You have made your peace with it.",
+		" Some find it unsettling, and a few find it irresistible.",
+		" You wear it like a perfume you chose.",
+		" Nobody has ever washed it off you, and you stopped letting them try.",
+		),
+
+	# No afterthought for the tail: its own sentences already carry how it is
+	# kept (wound under a coat, or lashing in the open).
+
+	# --- Frames: a feature opened by how it is met -----------------------
+
+	"HORN_FRAME": (
+		"You were born with them",
+		"Nobody forgets your horns",
+		"Strangers see the horns first, and you a little after",
+		"{full_name}'s face is strangely beautiful, but most people remember the horns",
+		),
+
+	"EYE_FRAME": (
+		"People remember your eyes long after your name",
 		"Few people hold your gaze for long",
-		"Innkeepers look anywhere but at your eyes",
-		"Priests make a quiet sign when they meet your eyes",
-		"Mothers tell their children not to look at your eyes",
-		),
-
-	"FUR_LEAD": (
-		"However you dress",
-		"Under any hood",
-		"In any crowd",
-		),
-
-	"SCARS": (
-		"old scars, the kind a crowd leaves",
-		"a scar for every town that wanted you gone",
-		"the marks of more than one thrown stone",
+		"Your eyes are the strangest thing about you, and the loveliest",
 		),
 
 	"SAY_SCENT": (
 		"People say",
 		"Behind your back, they say",
 		"You have been told, more than once, that",
+		),
+
+	# --- The closing: a rough past, and the road still open --------------
+
+	"PAST": (
+		"Your past is rough at the edges",
+		"You have been run out of more towns than you can name",
+		"You were born this way",
+		"You have walked a hard road to get here",
+		),
+
+	"FUTURE": (
+		"but the road ahead is wide open",
+		"and still you walk as if the world owes you a song",
+		"but you have decided the best part has not happened yet",
+		"and you have decided that is the interesting part",
 		),
 
 	# --- The place: named, never described --------------------------------
@@ -124,7 +198,6 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 	"HOSTILE": (
 		"Those who spit at your feet",
 		"The priests who turned you away",
-		"The ones who throw stones",
 		),
 
 	"LINE": (
