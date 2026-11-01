@@ -4,7 +4,7 @@ Grammar — a small generative grammar, in the manner of Chomsky's rewrite rules
 A **grammar** is a set of rewrite rules.  Each rule names a **symbol** and the
 **productions** it may be rewritten as:
 
-	LIKENESS -> "they have the look of {horn_material}"
+	LIKENESS -> "they hold the deep lustre of {horn_material}"
 	          | "they resemble the finest {horn_material}"
 	          | "they might have been carved from {horn_material}"
 

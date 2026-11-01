@@ -16,8 +16,12 @@ lexicon, slotted in by name:
 - ``{tail}``        a whole sentence, or nothing
 - ``{place}``       where the bloodline is suggested to start ("Hades")
 
-Every production must read as English for every item its slots can hold;
-the self-test derives each one against the whole lexicon.
+Every production must read as English for every item its slots can hold.
+The self-test checks that the grammar is closed (every symbol has a rule,
+every rule is used, every lexical item is one the aspect fills); whether
+each derivation reads well is checked by reading them (QST-0151 review).
+Words a production adds are not keyed, so a production should not reuse a
+word a mark may bring ("short", "back", "close").
 """
 
 from __future__ import annotations
@@ -34,25 +38,28 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		"Your horns {SEEM_MADE} {horn_material} and {horn_shape}.",
 		),
 
+	# Every framing must fit every eye mark, including the ones that change.
 	"EYES": (
 		"Your eyes {eyes}.",
 		"As for your eyes, they {eyes}.",
-		"Look closer, and your eyes {eyes}.",
-		"Whoever meets your gaze finds that your eyes {eyes}.",
+		"Then there are your eyes: they {eyes}.",
+		"Anyone who knows you can tell you that your eyes {eyes}.",
 		),
 
+	# Every production makes the fur or the coat its subject, so the "it" of
+	# SHEEN that follows always has one.
 	"FUR": (
 		"Your fur is {fur}.",
-		"You are furred in {fur}.",
+		"Fine fur covers you: {fur}.",
 		"Your coat is {fur}.",
-		"A short, fine coat covers you: {fur}.",
+		"A sleek coat covers you: {fur}.",
 		),
 
 	# Always follows FUR: "it" is the coat.
 	"SHEEN": (
 		"Where the light catches it, it shows a sheen of {sheen}.",
 		"In lamplight it takes on a sheen of {sheen}.",
-		"When you move, it shows a faint sheen of {sheen}.",
+		"When you move, it shows a subtle sheen of {sheen}.",
 		"It holds a sheen of {sheen}, the way old coins do.",
 		),
 
@@ -78,15 +85,16 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		"{WHO} would say your {LINE} {BEGINS} {place}.",
 		),
 
+	# No "back" at the end: BEGINS may already have said "back to".
 	"PLACE_OPENING": (
-		"Your looks suggest your {LINE} {BEGINS} {place}, though nobody can say how far back.",
-		"{WHO} would say your {LINE} {BEGINS} {place}, many generations back.",
+		"Your looks suggest your {LINE} {BEGINS} {place}, though nobody can say how many generations ago.",
+		"{WHO} would say your {LINE} {BEGINS} {place}, long ago.",
 		),
 
 	# --- Phrases ---------------------------------------------------------
 
 	"LIKENESS": (
-		"they have the look of {horn_material}",
+		"they hold the deep lustre of {horn_material}",
 		"they resemble the finest {horn_material}",
 		"they might have been carved from {horn_material}",
 		"they gleam like {horn_material}",

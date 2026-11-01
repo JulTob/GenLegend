@@ -238,10 +238,11 @@ documents and on this page's own decisions log, which are not the Questa / Agora
 - **The body is furred and crowned, not red-skinned** (§3). A divergence from the
   published art direction, and the most deletable thing on this page. It needs
   recording where a later pass cannot quietly undo it. It also needs narrowing or
-  widening first: of the three shipped paragraphs only the Chthonic one puts the
-  horns close to the head like a crown or a tiara. The Abyssal's are twisted,
-  spiky and uneven, and the Infernal's are onyx with no position given. The
-  metallic sheen is genuinely all three.
+  widening first. Julio settled the shape on 2026-10-31 (QST-0151): every
+  legacy has horn shapes of its own, and the crown is Chthonic's, the least
+  demonised. The Abyssal's twist, branch and spiral and never match; the
+  Infernal's curl like a ram's, sweep back as a matched pair, or rise as ridged
+  spires. The metallic sheen is genuinely all three, named by its metal.
 - **The heritage ledger** (§3): which hell, which body, which Resistance, which
   spells, per legacy. The three names and the fact of a Resistance are ratified;
   the four columns are not. A sibling of QST-0057, so the lists are verified as
@@ -319,10 +320,10 @@ game fails to find what the town is certain about, and the engine is the one
 thing in the setting that never gets the reading wrong. Horns close to the head
 make the single sentence of history the species entry is allowed physically
 possible; a crown is what a horn like that looks like, and also what somebody
-wants it to be, so the claim stays an observation and never becomes proof. Today
-only the Chthonic paragraph carries that shape, which is either the point (the
-crown survives in one hell and not the others) or an unfinished pass across the
-other two, and §3 has to say which. The three bodies then do work across the
+wants it to be, so the claim stays an observation and never becomes proof. Only
+the Chthonic horns carry that shape, and Julio ruled that this is the point
+(2026-10-31, QST-0151): the crown survives in one hell, the least demonised,
+and not in the others. The three bodies then do work across the
 three legacies: Chthonic passes for human most easily and Abyssal is the hardest
 to hide, which turns "some of us can pass under a hood, and the ones who cannot
 are never left alone" into a difference rather than a mood, and a Resistance
@@ -381,7 +382,8 @@ palettes. It carries no book because no Questa says so.
 | What | Where | State |
 |---|---|---|
 | Species entry | `AtlasActorLudi/SpeciesKit/Tieflings/__init__.py` | Shipping. Second person only; no "we" by design. |
-| Heritages | `Tieflings/Abyssal.py`, `Chthonic.py`, `Infernal.py` | Each carries a `HERITAGE_DESCRIPTION` paragraph (the body) and a spell list. |
+| Heritages | `Tieflings/Abyssal.py`, `Chthonic.py`, `Infernal.py` | Each carries its rules (`DAMAGE_RESISTANCE`, `SPELLS`), a `PLACE` the aspect may name, and `MARKS`, the Pin of the marks it lends to the aspect (QST-0151). |
+| The aspect | `Tieflings/Map_of_Marks.py`, `Grammar_of_Aspect.py`, `Fiendish_Aspect.py`, `pins.py` | The marks each legacy lends, the grammar it is said in, and the collapse that draws it once per Tiefling (QST-0151). |
 | Traits and rules | `Tieflings/traits.py`, `resolution.py` | Rulebook voice (QST-0094). No inspiration lines on Darkvision, Otherworldly Presence or Fiendish Legacy. |
 | Names | `AtlasNomina/Races/Fiend.py` | Demonology names, and a second pool of *virtue names* (Glory, Honor, Purity, Flame, Sinner). |
 | Culture | legend `grimdark` only; no society key | Shared with the Warlock and the Fiend patron. |
@@ -427,7 +429,8 @@ from every other people. "The midwife went quiet, and that was how it began."
 Some families hide the child; some report a stillbirth and mean it as mercy.
 
 **Fur, horns, eyes, tail.** In this setting the Tiefling is furred, with a
-metallic sheen, and the horns sit close to the head like a crown or a tiara.
+metallic sheen, and every legacy wears horns of its own; the crown and the tiara
+are Chthonic's (QST-0151).
 This is a distinctive design and should be protected as such: not a human with
 horns, and not the published red skin.
 
