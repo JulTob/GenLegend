@@ -11,18 +11,23 @@ What each legacy lends, in short (QST-0151, Julio's rulings of 2026-10-31):
 - **Chthonic**: horns worn close like a crown, a tiara, a diadem (the least
   demonised of the three); pale, quiet materials; black eyes with one vivid
   colour; the coats of foxes, wolves and bulls, or the grey of a corpse;
-  silver, pewter, iron; incense, myrrh, earth and stone.
+  silver, pewter, iron; incense, myrrh, rain and turned earth.
 - **Infernal**: horns that curl like a ram's or sweep back perfectly matched;
   jet, onyx, black iron; black eyes with a gold or ember iris; black or a
-  flame's colours; gold, brass, copper; sulfur, a campfire just put out; the
-  arrow-tipped tail.
+  flame's colours; gold, brass, copper; sulfur, a doused campfire, the forge;
+  the arrow-tipped tail.
 - **Abyssal**: horns that twist, branch and spiral and never match; agate,
-  nacre, a beetle's shell; eyes that will not keep one colour; the brightest
-  coats, and markings that drift; bismuth, verdigris, electrum; storms, brine
-  and things gone too sweet.
+  nacre, beetle shell; eyes that will not keep one colour; the brightest
+  coats, and markings that drift; bismuth, verdigris, electrum; wine just
+  opened (the demons' smell), storms, brine and things gone too sweet.
 
 The hells themselves are never described here or anywhere on the page: the
 aspect only suggests where a bloodline starts (``Fiendish_Aspect``).
+
+The marks that are said on their own (a horn shape, the eyes, a scent, a tail)
+bring their own sentences, several each, and the grammar draws one: a word
+with its own frames.  The aspect is a presentation, not an inventory: each
+structure says only a few of these things, and says them well.
 
 The old fixed paragraphs (one per legacy, before QST-0151) were the source of
 these rows; they are reworked into parts, not kept.
@@ -56,45 +61,51 @@ EVERY_LEGACY = (
 
 
 # ---------------------------------------------------------------------------
-# Structures: the order the sentences come in.  Each sentence is a symbol of
-# the aspect's grammar (``Grammar_of_Aspect``), rewritten when the aspect is
-# drawn; FUR and SHEEN always travel together, since the sheen says "it".
+# Structures: presentations.  Each says only a few things, in its own order;
+# every sentence is a symbol of the aspect's grammar (``Grammar_of_Aspect``).
+# A part a structure does not say stays empty (``Fiendish_Aspect``).
 # ---------------------------------------------------------------------------
 
 STRUCTURES = (
 		Make_Structure(
-				"Horns_First",
+				"Scent_Led",
+				"{SCENT}",
 				"{HORNS}",
 				"{EYES}",
-				"{FUR} {SHEEN}",
+				"{PLACE}",
+				),
+		Make_Structure(
+				"Horns_Led",
+				"{HORNS}",
+				"{FUR}",
 				"{TAIL}",
+				"{PLACE}",
+				),
+		Make_Structure(
+				"Gaze_Led",
+				"{EYES}",
+				"{HORNS}",
 				"{SCENT}",
 				"{PLACE}",
 				),
 		Make_Structure(
-				"Scent_First",
-				"{SCENT_OPENING}",
-				"{HORNS}",
-				"{EYES}",
-				"{FUR} {SHEEN}",
-				"{TAIL}",
-				"{PLACE}",
-				),
-		Make_Structure(
-				"Place_First",
+				"Place_Led",
 				"{PLACE_OPENING}",
-				"{FUR} {SHEEN}",
-				"{HORNS}",
+				"{FUR}",
 				"{EYES}",
-				"{TAIL}",
-				"{SCENT}",
 				),
 		Make_Structure(
-				"Eyes_First",
-				"{EYES}",
-				"{HORNS}",
-				"{FUR} {SHEEN}",
+				"Coat_Led",
+				"{FUR}",
 				"{TAIL}",
+				"{SCENT}",
+				"{PLACE}",
+				),
+		Make_Structure(
+				"Portrait",
+				"{HORNS}",
+				"{EYES}",
+				"{FUR}",
 				"{SCENT}",
 				"{PLACE}",
 				),
@@ -102,28 +113,56 @@ STRUCTURES = (
 
 
 # ---------------------------------------------------------------------------
-# Horns: every legacy has its own shapes and its own materials.
+# Horns: every legacy has its own shapes and its own materials.  A shape
+# brings its sentences, with the material set inside them.
 # ---------------------------------------------------------------------------
 
 HORN_SHAPES = (
-		Make_Mark( "Horns_Crown", part=Horn_Shape, lent_by=HADES, keys=( "crown", ),
-				text="sit close to your head like a crown" ),
+		Make_Mark( "Horns_Crown", part=Horn_Shape, lent_by=HADES, keys=( "crown", "close" ),
+				text=(
+						"A crown of {horn_material} rises from your brow, so close to your head that strangers take it for one.",
+						"Your horns sit close to your head like a crown of {horn_material}.",
+						) ),
 		Make_Mark( "Horns_Tiara", part=Horn_Shape, lent_by=HADES, keys=( "tiara", ),
-				text="lie low along your temples like a tiara" ),
+				text=(
+						"Low horns of {horn_material} follow your temples like a tiara someone forgot to take off.",
+						"Your horns lie low along your temples, a tiara of {horn_material}.",
+						) ),
 		Make_Mark( "Horns_Diadem", part=Horn_Shape, lent_by=HADES, keys=( "diadem", ),
-				text="ring your brow in short points like a diadem" ),
-		Make_Mark( "Horns_Ram", part=Horn_Shape, lent_by=HELLS, keys=( "ram", ),
-				text="curl back over your ears like a ram's" ),
-		Make_Mark( "Horns_Swept", part=Horn_Shape, lent_by=HELLS, keys=( "swept", ),
-				text="sweep back from your brow in a perfectly matched pair" ),
+				text=(
+						"Short points of {horn_material} ring your brow like a diadem.",
+						"A diadem of {horn_material} rings your brow, too even to be an accident.",
+						) ),
+		Make_Mark( "Horns_Ram", part=Horn_Shape, lent_by=HELLS, keys=( "ram", "back" ),
+				text=(
+						"Ram's horns of {horn_material} curl back over your ears.",
+						"Your horns curl back over your ears like a ram's, {horn_material} catching the light.",
+						) ),
+		Make_Mark( "Horns_Swept", part=Horn_Shape, lent_by=HELLS, keys=( "swept", "back" ),
+				text=(
+						"Two horns of {horn_material} sweep back from your brow, matched to the last curve.",
+						"Your horns sweep back from your brow in a perfect pair, smooth as {horn_material}.",
+						) ),
 		Make_Mark( "Horns_Spires", part=Horn_Shape, lent_by=HELLS, keys=( "spire", ),
-				text="rise from your brow like two ridged spires" ),
+				text=(
+						"Two ridged spires of {horn_material} rise from your brow.",
+						"Your horns rise straight from your brow, ridged spires of {horn_material}.",
+						) ),
 		Make_Mark( "Horns_Twisted", part=Horn_Shape, lent_by=ABYSS, keys=( "twisted", ),
-				text="grow in twisted spikes that never match" ),
+				text=(
+						"Twisted spikes of {horn_material} break from your brow, no two alike.",
+						"Your horns grow in twisted spikes of {horn_material}, and no two of them agree.",
+						) ),
 		Make_Mark( "Horns_Barbed", part=Horn_Shape, lent_by=ABYSS, keys=( "barb", ),
-				text="branch into barbs that never grow alike on both sides" ),
+				text=(
+						"Barbed horns of {horn_material} branch from your head, never the same on both sides.",
+						"Your horns branch into barbs of {horn_material}, each side going its own way.",
+						) ),
 		Make_Mark( "Horns_Spiral", part=Horn_Shape, lent_by=ABYSS, keys=( "spiral", ),
-				text="spiral in opposite directions as if neither asked the other" ),
+				text=(
+						"Your horns of {horn_material} spiral in opposite directions, as if neither asked the other.",
+						"Two spirals of {horn_material} turn from your brow, each the wrong way round.",
+						) ),
 		)
 
 HORN_MATERIALS = (
@@ -132,7 +171,7 @@ HORN_MATERIALS = (
 		Make_Mark( "Horn_Bone", part=Horn_Material, lent_by=HADES, keys=( "bone", ),
 				text="sun-bleached bone" ),
 		Make_Mark( "Horn_Antler", part=Horn_Material, lent_by=HADES, keys=( "antler", ),
-				text="antler" ),
+				text="pale antler" ),
 		Make_Mark( "Horn_Jet", part=Horn_Material, lent_by=HELLS, keys=( "jet", ),
 				text="polished jet" ),
 		Make_Mark( "Horn_Onyx", part=Horn_Material, lent_by=HELLS, keys=( "onyx", ),
@@ -149,34 +188,61 @@ HORN_MATERIALS = (
 
 
 # ---------------------------------------------------------------------------
-# Eyes.
+# Eyes: each mark brings its own sentences.
 # ---------------------------------------------------------------------------
 
 EYES = (
-		Make_Mark( "Eyes_Violet_Iris", part=Eyes, lent_by=HADES, keys=( "violet", ),
-				text="are black, all but a vivid violet iris" ),
-		Make_Mark( "Eyes_Green_Iris", part=Eyes, lent_by=HADES, keys=( "green", ),
-				text="are black, all but a vivid green iris" ),
-		Make_Mark( "Eyes_Ice_Iris", part=Eyes, lent_by=HADES, keys=( "ice", ),
-				text="are black as a well, with irises of pale ice" ),
+		Make_Mark( "Eyes_Violet_Iris", part=Eyes, lent_by=HADES, keys=( "violet", "vivid", "grave" ),
+				text=(
+						"Your eyes are black, each holding a single violet iris, like a flower left on a grave.",
+						"At the bottom of your black eyes lies a vivid violet, like a flower in a well.",
+						) ),
+		Make_Mark( "Eyes_Green_Iris", part=Eyes, lent_by=HADES, keys=( "green", "moss" ),
+				text=(
+						"Your eyes are black, and their irises are the green of moss on old stone.",
+						"In the black of your eyes sits a green iris, bright as new moss.",
+						) ),
+		Make_Mark( "Eyes_Ice_Iris", part=Eyes, lent_by=HADES, keys=( "ice", "well" ),
+				text=(
+						"Your eyes are black as a well at night, with irises of pale ice.",
+						"Irises pale as ice float in eyes as black as a well.",
+						) ),
 		Make_Mark( "Eyes_Coal_Iris", part=Eyes, lent_by=HELLS, keys=( "gold", "coal" ),
-				text="are black, all but a golden iris that burns like a coal" ),
+				text=(
+						"Your eyes are black, and in each burns a golden iris, like a coal that will not go out.",
+						"A coal of gold burns in the black of each of your eyes.",
+						) ),
 		Make_Mark( "Eyes_Ember_Iris", part=Eyes, lent_by=HELLS, keys=( "red", "ember" ),
-				text="are black, with irises the red of embers in a grate" ),
-		Make_Mark( "Eyes_Candle_Iris", part=Eyes, lent_by=HELLS, keys=( "gold", "candle" ),
-				text="are black, and the gold of each iris flickers like a candle flame" ),
-		Make_Mark( "Eyes_Moved", part=Eyes, lent_by=ABYSS, keys=( "mood", ),
-				text="look ordinary until something moves you, and then their colour moves with it" ),
-		Make_Mark( "Eyes_Mornings", part=Eyes, lent_by=ABYSS, keys=( "morning", ),
-				text="are never the same colour two mornings running" ),
-		Make_Mark( "Eyes_Blush", part=Eyes, lent_by=ABYSS, keys=( "mood", ),
-				text="change colour with your mood, quick as a blush" ),
+				text=(
+						"Embers sit where your irises should be, red in the black of your eyes.",
+						"Your irises glow the red of embers in a grate, set in eyes of perfect black.",
+						) ),
+		Make_Mark( "Eyes_Candle_Iris", part=Eyes, lent_by=HELLS, keys=( "gold", "candle", "flame" ),
+				text=(
+						"In the black of your eyes, the gold of each iris flickers like a candle flame.",
+						"Your eyes are black, and the gold in them flickers like candlelight in a draught.",
+						) ),
+		Make_Mark( "Eyes_Borrowed", part=Eyes, lent_by=ABYSS, keys=( "brown", "stare" ),
+				text=(
+						"Your eyes look an ordinary brown, until you stare too long at someone and they take on that person's colour.",
+						"Your eyes are a plain brown, until you hold someone's gaze too long and they borrow its colour.",
+						) ),
+		Make_Mark( "Eyes_Mornings", part=Eyes, lent_by=ABYSS, keys=( "morning", "mirror" ),
+				text=(
+						"No mirror has ever seen your eyes the same colour twice.",
+						"Your eyes wake each morning in a colour of their own choosing.",
+						) ),
+		Make_Mark( "Eyes_Moods", part=Eyes, lent_by=ABYSS, keys=( "mood", ),
+				text=(
+						"Your eyes change colour before your face can, and give away every mood you would rather hide.",
+						"Every mood you have shows first in your eyes, which shift colour to match it.",
+						) ),
 		)
 
 
 # ---------------------------------------------------------------------------
 # Fur: a coat colour, a pattern, and sometimes a second colour (the accent,
-# drawn from the same coats).
+# drawn from the same coats).  The grammar says them with the sheen.
 # ---------------------------------------------------------------------------
 
 COATS = (
@@ -186,7 +252,7 @@ COATS = (
 				text="acid green" ),
 		Make_Mark( "Coat_Bright_Violet", part=Coat, lent_by=ABYSS, keys=( "violet", ),
 				text="bright violet" ),
-		Make_Mark( "Coat_Vivid_Magenta", part=Coat, lent_by=ABYSS, keys=( "magenta", ),
+		Make_Mark( "Coat_Vivid_Magenta", part=Coat, lent_by=ABYSS, keys=( "magenta", "vivid" ),
 				text="vivid magenta" ),
 		Make_Mark( "Coat_Fox_Red", part=Coat, lent_by=HADES, keys=( "red", "fox" ),
 				text="fox red" ),
@@ -214,8 +280,8 @@ COAT_PATTERNS = (
 				text="{a}, darker along your back" ),
 		Make_Mark( "Pattern_Paler_Beneath", part=Coat_Pattern, lent_by=EVERY_LEGACY, keys=( "beneath", ),
 				text="{a}, paler beneath" ),
-		Make_Mark( "Pattern_Hound_Short", part=Coat_Pattern, lent_by=HADES, keys=( "hound", ),
-				text="{a}, short and close like a hound's" ),
+		Make_Mark( "Pattern_Hound_Sleek", part=Coat_Pattern, lent_by=HADES, keys=( "hound", "close" ),
+				text="{a}, sleek and close like a hound's" ),
 		Make_Mark( "Pattern_Charred_Tips", part=Coat_Pattern, lent_by=HELLS, keys=( "tips", ),
 				text="{a}, darkening at the tips like charred wood" ),
 		# Two colours.
@@ -250,7 +316,7 @@ SHEENS = (
 		Make_Mark( "Sheen_Pewter", part=Sheen, lent_by=HADES, keys=( "pewter", ),
 				text="pewter" ),
 		Make_Mark( "Sheen_Iron", part=Sheen, lent_by=HADES, keys=( "iron", ),
-				text="cold iron" ),
+				text="iron" ),
 		Make_Mark( "Sheen_Gold", part=Sheen, lent_by=HELLS, keys=( "gold", ),
 				text="gold" ),
 		Make_Mark( "Sheen_Brass", part=Sheen, lent_by=HELLS, keys=( "brass", ),
@@ -267,47 +333,88 @@ SHEENS = (
 
 
 # ---------------------------------------------------------------------------
-# Scents: faint, and never explained.
+# Scents: each mark brings its own sentences.  Subtle, and never explained.
+# Wine is the demons' smell, so the Abyss lends it.
 # ---------------------------------------------------------------------------
 
 SCENTS = (
-		Make_Mark( "Scent_Incense", part=Scent, lent_by=HADES, keys=( "incense", ),
-				text="incense" ),
+		Make_Mark( "Scent_Incense", part=Scent, lent_by=HADES, keys=( "incense", "temple" ),
+				text=(
+						"A breath of incense follows you, as if you had just left a temple nobody remembers.",
+						"You smell faintly of incense, the kind burned for the dead.",
+						) ),
 		Make_Mark( "Scent_Myrrh", part=Scent, lent_by=HADES, keys=( "myrrh", ),
-				text="myrrh" ),
-		Make_Mark( "Scent_Stone_After_Rain", part=Scent, lent_by=HADES, keys=( "stone", "rain" ),
-				text="cold stone after rain" ),
-		Make_Mark( "Scent_Turned_Earth", part=Scent, lent_by=HADES, keys=( "earth", ),
-				text="freshly turned earth" ),
-		Make_Mark( "Scent_Sulfur", part=Scent, lent_by=HELLS, keys=( "sulfur", ),
-				text="sulfur" ),
-		Make_Mark( "Scent_Campfire", part=Scent, lent_by=HELLS, keys=( "campfire", ),
-				text="a doused campfire" ),
-		Make_Mark( "Scent_Hot_Iron", part=Scent, lent_by=HELLS, keys=( "iron", ),
-				text="hot iron" ),
-		Make_Mark( "Scent_Snuffed_Candle", part=Scent, lent_by=HELLS, keys=( "candle", ),
-				text="a snuffed candle" ),
-		Make_Mark( "Scent_Storm", part=Scent, lent_by=ABYSS, keys=( "storm", ),
-				text="the air before a storm" ),
-		Make_Mark( "Scent_Brine", part=Scent, lent_by=ABYSS, keys=( "brine", ),
-				text="brine" ),
-		Make_Mark( "Scent_Old_Flowers", part=Scent, lent_by=ABYSS, keys=( "flowers", ),
-				text="flowers left too long in the vase" ),
-		Make_Mark( "Scent_Spilled_Wine", part=Scent, lent_by=ABYSS, keys=( "wine", ),
-				text="spilled wine" ),
+				text=(
+						"Myrrh clings to you, sweet and old, like the inside of a reliquary.",
+						"There is myrrh in your hair, though you have never bought any.",
+						) ),
+		Make_Mark( "Scent_Rain", part=Scent, lent_by=HADES, keys=( "rain", ),
+				text=(
+						"The smell of rain lingers in you, like a persistent memory.",
+						"You smell of rain on stone, even under a cloudless sky.",
+						) ),
+		Make_Mark( "Scent_Turned_Earth", part=Scent, lent_by=HADES, keys=( "earth", "grave" ),
+				text=(
+						"You smell of freshly turned earth, the way a garden does, or a grave.",
+						"Wherever you sleep, the room smells of turned earth by morning.",
+						) ),
+		Make_Mark( "Scent_Sulfur", part=Scent, lent_by=HELLS, keys=( "sulfur", "match" ),
+				text=(
+						"A trace of sulfur follows you, like a struck match that never quite goes out.",
+						"Every room you enter smells, briefly, of sulfur.",
+						) ),
+		Make_Mark( "Scent_Campfire", part=Scent, lent_by=HELLS, keys=( "campfire", "smoke" ),
+				text=(
+						"You smell like a campfire just put out, warm and a little dangerous.",
+						"Smoke from a fire long since doused still clings to you.",
+						) ),
+		Make_Mark( "Scent_Forge", part=Scent, lent_by=HELLS, keys=( "iron", "forge" ),
+				text=(
+						"You carry the smell of hot iron, like a forge at the end of the day.",
+						"Close to you, the air smells of iron fresh from the forge.",
+						) ),
+		Make_Mark( "Scent_Snuffed_Candle", part=Scent, lent_by=HELLS, keys=( "candle", "smoke" ),
+				text=(
+						"You smell of a snuffed candle, that thin smoke that means someone has just left.",
+						) ),
+		Make_Mark( "Scent_Wine", part=Scent, lent_by=ABYSS, keys=( "wine", ),
+				text=(
+						"You smell of freshly opened wine, even in clean, fine clothes.",
+						"A scent of wine just uncorked follows you, rich and a little too sweet.",
+						) ),
+		Make_Mark( "Scent_Storm", part=Scent, lent_by=ABYSS, keys=( "storm", "lightning" ),
+				text=(
+						"The air around you smells the way it does before a storm.",
+						"You smell of the air before lightning, sharp and restless.",
+						) ),
+		Make_Mark( "Scent_Brine", part=Scent, lent_by=ABYSS, keys=( "brine", "sea" ),
+				text=(
+						"You smell of brine, as if you had just walked out of the sea.",
+						"Salt and brine cling to you, however far you are from any coast.",
+						) ),
+		Make_Mark( "Scent_Overripe", part=Scent, lent_by=ABYSS, keys=( "sweet", "fruit" ),
+				text=(
+						"A sweetness of overripe fruit hangs about you, pleasant for a moment too long.",
+						"You smell of flowers left too long in the vase, sweet on the edge of turning.",
+						) ),
 		)
 
 
 # ---------------------------------------------------------------------------
-# Tails: only the Nine Hells lend one.  A blood with another legacy in it may
-# also have none (``Fiendish_Aspect``).
+# Tails: only the Nine Hells lend one.  A structure that says the tail is
+# never drawn for a blood that has none (``Fiendish_Aspect``).
 # ---------------------------------------------------------------------------
 
 TAILS = (
 		Make_Mark( "Tail_Arrow", part=Tail, lent_by=HELLS, keys=( "arrow", ),
-				text="You also have a long tail that ends in an arrow-shaped tip." ),
-		Make_Mark( "Tail_Barb", part=Tail, lent_by=HELLS, keys=( "arrow", "barb" ),
-				text="A thin tail follows you, ending in a barb like an arrowhead." ),
+				text=(
+						"A long tail follows you, ending in an arrow-shaped tip.",
+						"Behind you, a long tail ends in a tip shaped like an arrowhead.",
+						) ),
+		Make_Mark( "Tail_Lash", part=Tail, lent_by=HELLS, keys=( "arrow", "barb" ),
+				text=(
+						"A thin tail lashes behind you when you are angry, its tip barbed like an arrow.",
+						) ),
 		)
 
 

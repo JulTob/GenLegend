@@ -1314,10 +1314,11 @@ def _test_tiefling_grammar_is_complete() -> None:
 	import re
 
 	from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
+	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
 	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import STRUCTURES
 
 	lexicon = {
-		"horn_shape",
+		"horns",
 		"horn_material",
 		"eyes",
 		"fur",
@@ -1339,6 +1340,15 @@ def _test_tiefling_grammar_is_complete() -> None:
 			production
 			for productions in GRAMMAR.values()
 			for production in productions
+			),
+		*(
+			sentence
+			for mark in ROSTER
+			if isinstance(
+				mark.TEXT,
+				tuple,
+				)
+			for sentence in mark.TEXT
 			),
 		]
 	used = set()
@@ -1371,19 +1381,34 @@ def _assert_aspect_obeys_its_rules(
 	legacies,
 	) -> None:
 	from AtlasActorLudi.SpeciesKit.collapse import ABSENT
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import (
+		EMPTY_WHEN_SAID,
+		)
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import Slots_Said
 	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import _shows
 
-	marks = [
+	said = Slots_Said(
+		aspect.structure,
+		)
+	for name, _part in _aspect_slots():
+		value = getattr(
+			aspect,
+			name,
+			)
+		if name not in said:
+			assert value is ABSENT, name
+		elif name not in EMPTY_WHEN_SAID:
+			assert value is not ABSENT, name
+	present = [
 		getattr(
 			aspect,
 			name,
 			)
 		for name, _part in _aspect_slots()
-		]
-	present = [
-		mark
-		for mark in marks
-		if mark is not ABSENT
+		if getattr(
+			aspect,
+			name,
+			) is not ABSENT
 		]
 	for mark in present:
 		assert any(
@@ -1402,10 +1427,11 @@ def _assert_aspect_obeys_its_rules(
 				keys,
 				)
 			), keys
-	two_colours = "{b}" in aspect.pattern.TEXT
-	assert two_colours == (
-		aspect.accent is not ABSENT
-		)
+	if aspect.pattern is not ABSENT:
+		two_colours = "{b}" in aspect.pattern.TEXT
+		assert two_colours == (
+			aspect.accent is not ABSENT
+			)
 	if len(
 		legacies,
 		) > 1:
@@ -1422,6 +1448,7 @@ def _assert_aspect_obeys_its_rules(
 	assert aspect.suggested in legacies
 	paragraph = aspect.paragraph()
 	assert "{" not in paragraph
+	assert ";" not in paragraph
 	assert aspect.suggested.PLACE in paragraph
 	for legacy in TIEFLING_HERITAGES:
 		if legacy is not aspect.suggested:
