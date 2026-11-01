@@ -98,7 +98,7 @@ Tag keeps every rule it carries. The new part is the **blood**:
 3. **The origin is a rumour, never described.** The last (or first) line
    names one of the blood's two legacies, drawn on its own dice, whatever
    the look says: *the Abyss*, *Hades*, *the Nine Hells* ("Some whisper that
-   your blood comes from Hades itself"). That the blood is two legacies is
+   your blood comes straight from Hades"). That the blood is two legacies is
    never said.
 4. **The words are derived by a generative grammar.** Each sentence of the
    chosen structure is a symbol (`{HORNS}`, `{FUR}`, `{PLACE}`), rewritten by
