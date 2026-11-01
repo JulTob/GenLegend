@@ -62,13 +62,13 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		"Your looks suggest your {LINE} {BEGINS} {place}.",
 		"{WHO} would say your {LINE} {BEGINS} {place}.",
 		"{WHO} would trace your {LINE} to {place}.",
-		"Some whisper that your {LINE} comes from {place} itself.",
+		"Some whisper that your {LINE} comes straight from {place}.",
 		),
 
 	"PLACE_OPENING": (
 		"Your looks suggest your {LINE} {BEGINS} {place}, though nobody can say how many generations ago.",
 		"{WHO} would trace your {LINE} to {place}, though not how far.",
-		"Some whisper that your {LINE} comes from {place} itself, and nobody asks twice.",
+		"Some whisper that your {LINE} comes straight from {place}, and nobody asks twice.",
 		),
 
 	# --- Phrases ---------------------------------------------------------
