@@ -76,6 +76,7 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		"{WHO} would say your {LINE} {BEGINS} {place}.",
 		"{HOSTILE} say your {LINE} {BEGINS} {place}, as if that settled anything.",
 		"{HOSTILE} say your {LINE} {BEGINS} {place}, and they say it loudly.",
+		"Some whisper that your {LINE} comes from {place} itself.",
 		),
 
 	# --- Leads: how the world meets the look -----------------------------

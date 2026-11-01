@@ -21,10 +21,11 @@ rules narrow the rest as it goes:
 4. **A mixed blood shows both legacies,** in what is said.  When only one slot
    could still show the legacy nothing has shown yet, that slot must show it.
 
-The hells stay hidden.  The page never describes one; it only suggests where
-the bloodline starts, naming the legacy that lent the most of what is said
-(the Heritage, on a tie).  That the blood is two legacies is structure, like
-the Aasimar's two Ideals, and never said.
+The hells stay hidden.  The page never describes one; it only repeats a
+rumour of where the bloodline starts, naming one of the blood's two legacies,
+drawn, whatever the look says (Julio, 2026-11-01: "It's all rumours and
+heresy, and that chaos is part of the charm").  That the blood is two
+legacies is structure, like the Aasimar's two Ideals, and never said.
 
 How it is *said* is a second draw: each sentence of the structure is a symbol
 of a generative grammar (``Grammar_of_Aspect``, on ``SpeciesKit.grammar``),
@@ -122,7 +123,7 @@ class Fiendish_Aspect:
 	scent: object
 	tail: object
 	bearing: object
-	# The legacy the looks suggest, named and never described.
+	# The legacy the rumour names: one of the blood's two, never described.
 	suggested: type
 	# The structure's sentences, derived once by the grammar.
 	sentences: tuple[str, ...]
@@ -439,32 +440,28 @@ def _both_legacies_show(
 
 
 # ---------------------------------------------------------------------------
-# The suggested origin, the words, and the collapse itself.
+# The rumoured origin, the words, and the collapse itself.
 # ---------------------------------------------------------------------------
 
-def _most_shown(
-		drawn,
+def _draw_rumour(
+		target,
 		legacies,
 		):
-	"""The legacy that lent the most of what is said; the Heritage on a tie."""
-	counts = {
-			legacy: 0
-			for legacy in legacies
-			}
-	for mark in drawn.values():
-		legacy = _shows(
-				mark,
-				legacies,
-				)
-		if legacy is not None:
-			counts[legacy] += 1
-	best = max( counts.values() )
-	return next(
-			legacy
-			for legacy in legacies
-			if counts[legacy] == best
+	"""
+	Which of the blood's legacies the rumours name, drawn on its own dice.
+
+	Not the one that shows most: a Tiefling who looks demonic may still be
+	whispered to come from Hades itself.  Within the blood's two hells,
+	anything goes.
+	"""
+	return target.Pick(
+			list( legacies ),
+			dice=target.Dice_Bag(
+					"identity.species.Tiefling.fiendish_blood.rumour",
+					version="1",
+					namespace="GenLegendActor",
+					),
 			)
-		#-- Legacies are in blood order, Heritage first, so it wins ties.
 
 
 def _text_or_nothing(
@@ -591,8 +588,8 @@ def Collapse_Aspect(
 					),
 			_open_aspect_dice( target ),
 			)
-	suggested = _most_shown(
-			drawn,
+	suggested = _draw_rumour(
+			target,
 			legacies,
 			)
 	sentences = _derive_sentences(
