@@ -92,3 +92,6 @@ def Imprint_Fiendish_Heritage(
 		target,
 		heritage,
 		)
+	# Drawn once; it may say {name}, filled when the Species entry is printed
+	# (the name is settled after the Species).
+	target.heritage_description = target.fiendish_blood.aspect.paragraph()

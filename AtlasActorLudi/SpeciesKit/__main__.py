@@ -79,6 +79,7 @@ from AtlasActorLudi.SpeciesKit.Tieflings import Otherworldly_Presence
 from AtlasActorLudi.SpeciesKit.traits import Darkvision as Common_Darkvision
 from AtlasActorLudi.SpeciesKit.traits import Darkvision_Rules
 from AtlasLusoris.FeaturesKit import Feature
+from AtlasLusoris.FeaturesKit import Name_Slots
 from AtlasLusoris.FeaturesKit import ORIGIN_FEATS
 from AtlasLusoris.FeaturesKit import Resourceful
 from AtlasLusoris.FeaturesKit import Skillful
@@ -1306,13 +1307,20 @@ def _test_tiefling_grammar_is_complete() -> None:
 
 	lexicon = {
 		"horns",
+		"horn_phrase",
 		"horn_material",
 		"eyes",
+		"eyes_phrase",
 		"fur",
 		"sheen",
 		"scent",
+		"scent_phrase",
+		"omen",
 		"tail",
+		"bearing",
 		"place",
+		"name",
+		"full_name",
 		}
 	slot = re.compile(
 		r"\{([A-Za-z_]+)\}",
@@ -1434,9 +1442,22 @@ def _assert_aspect_obeys_its_rules(
 			) <= shown, legacies
 	assert aspect.suggested in legacies
 	paragraph = aspect.paragraph()
-	assert "{" not in paragraph
+	# The name is the one slot left for the naming pass to fill.
+	assert "{" not in paragraph.replace(
+		"{name}",
+		"",
+		).replace(
+		"{full_name}",
+		"",
+		)
 	assert ";" not in paragraph
-	assert aspect.suggested.PLACE in paragraph
+	names_a_place = any(
+		"{PLACE" in sentence
+		for sentence in aspect.structure.SENTENCES
+		)
+	assert names_a_place == (
+		aspect.suggested.PLACE in paragraph
+		)
 	for legacy in TIEFLING_HERITAGES:
 		if legacy is not aspect.suggested:
 			assert legacy.PLACE not in paragraph, paragraph
@@ -1530,7 +1551,11 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 			for feature in character.features
 			if feature.name == f"{character:Heritage}"
 			)
-		assert entry.description == blood.aspect.paragraph()
+		assert entry.description == blood.aspect.paragraph().format(
+			**Name_Slots(
+				character,
+				),
+			)
 
 		seen_mixed = seen_mixed or blood.mixed
 		seen_pure = seen_pure or not blood.mixed

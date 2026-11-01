@@ -49,6 +49,7 @@ from AtlasActorLudi.SpeciesKit.grammar import Derive
 from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
 from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
 	#-- Importing the map is what fills the Pins below with marks.
+from AtlasActorLudi.SpeciesKit.Tieflings.pins import Bearing
 from AtlasActorLudi.SpeciesKit.Tieflings.pins import Coat
 from AtlasActorLudi.SpeciesKit.Tieflings.pins import Coat_Pattern
 from AtlasActorLudi.SpeciesKit.Tieflings.pins import Eyes
@@ -79,6 +80,7 @@ LOOK_SLOTS = (
 		( "sheen", Sheen ),
 		( "scent", Scent ),
 		( "tail", Tail ),
+		( "bearing", Bearing ),
 		)
 
 # Which slots each sentence symbol says.  A structure says the slots of the
@@ -89,6 +91,7 @@ SLOTS_SAID_BY = {
 		"FUR": ( "coat", "pattern", "accent", "sheen" ),
 		"TAIL": ( "tail", ),
 		"SCENT": ( "scent", ),
+		"BEARING": ( "bearing", ),
 		"PLACE": (),
 		"PLACE_OPENING": (),
 		}
@@ -118,6 +121,7 @@ class Fiendish_Aspect:
 	sheen: object
 	scent: object
 	tail: object
+	bearing: object
 	# The legacy the looks suggest, named and never described.
 	suggested: type
 	# The structure's sentences, derived once by the grammar.
@@ -483,6 +487,22 @@ def _fur(
 			)
 
 
+def _phrase_or_nothing(
+		mark,
+		) -> str:
+	if mark is ABSENT:
+		return ""
+	return mark.PHRASE
+
+
+def _omen_or_nothing(
+		mark,
+		) -> str:
+	if mark is ABSENT:
+		return ""
+	return mark.OMEN
+
+
 def _lexicon(
 		drawn,
 		suggested,
@@ -490,12 +510,17 @@ def _lexicon(
 	"""The words the grammar slots in, from the marks the collapse chose."""
 	return {
 			"horns": _text_or_nothing( drawn["horn_shape"] ),
+			"horn_phrase": _phrase_or_nothing( drawn["horn_shape"] ),
 			"horn_material": _text_or_nothing( drawn["horn_material"] ),
 			"eyes": _text_or_nothing( drawn["eyes"] ),
+			"eyes_phrase": _phrase_or_nothing( drawn["eyes"] ),
 			"fur": _fur( drawn ),
 			"sheen": _text_or_nothing( drawn["sheen"] ),
 			"scent": _text_or_nothing( drawn["scent"] ),
+			"scent_phrase": _phrase_or_nothing( drawn["scent"] ),
+			"omen": _omen_or_nothing( drawn["scent"] ),
 			"tail": _text_or_nothing( drawn["tail"] ),
+			"bearing": _text_or_nothing( drawn["bearing"] ),
 			"place": suggested.PLACE,
 			}
 
@@ -525,6 +550,10 @@ def _derive_sentences(
 					sentence,
 					lexicon,
 					dice,
+					keep=(
+							"name",
+							"full_name",
+							),
 					)
 			for sentence in structure.SENTENCES
 			]
@@ -585,6 +614,7 @@ def Collapse_Aspect(
 			sheen=drawn["sheen"],
 			scent=drawn["scent"],
 			tail=drawn["tail"],
+			bearing=drawn["bearing"],
 			suggested=suggested,
 			sentences=sentences,
 			)

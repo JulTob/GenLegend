@@ -36,6 +36,11 @@ class Aspect_Mark(Tag):
 	# What fills its slot: a phrase, or several whole sentences (a tuple) for
 	# a mark said on its own.  See each Aspect_Part for the grammar.
 	TEXT: str | tuple[str, ...] = ""
+	# The same mark as a noun phrase, to finish a sentence somebody else
+	# started ("...but most people only notice the horns: {horn_phrase}.").
+	PHRASE: str = ""
+	# What people say it means, for a scent ("a funeral").
+	OMEN: str = ""
 
 
 class Structure_Mark(Aspect_Mark):
@@ -120,6 +125,13 @@ class Tail(Aspect_Part):
 	"""Whole sentences about the tail."""
 
 
+class Bearing(Aspect_Part):
+	"""
+	Whole sentences about how a Tiefling carries what people see: passing,
+	hiding, or done with both.  The look's meaning, not the look.
+	"""
+
+
 @Pin
 class Lent_By(Tag):
 	"""Root Pin: which legacy lends a mark to a Tiefling's aspect."""
@@ -150,6 +162,8 @@ def Make_Mark(
 		lent_by: tuple[type[Lent_By], ...],
 		text: str | tuple[str, ...],
 		keys: tuple[str, ...] = (),
+		phrase: str = "",
+		omen: str = "",
 		) -> type[Aspect_Mark]:
 	"""Make one mark, pin it to its part and to every legacy that lends it."""
 	if part is Structure:
@@ -165,6 +179,8 @@ def Make_Mark(
 			( Aspect_Mark, ),
 			{
 					"TEXT": text,
+					"PHRASE": phrase,
+					"OMEN": omen,
 					"__module__": __name__,
 					"__doc__": f"Aspect mark: {text}",
 					},

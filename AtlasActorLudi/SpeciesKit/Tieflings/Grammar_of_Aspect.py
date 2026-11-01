@@ -1,28 +1,32 @@
 """
 Grammar of Aspect — the rewrite rules a Tiefling's aspect is written with.
 
-The collapse (``Fiendish_Aspect``) chooses *what* a Tiefling looks like and
-which few things the presentation dwells on.  This grammar chooses *how it is
-said*.  Each structure is a sequence of sentence symbols (``Map_of_Marks``);
-every symbol here rewrites to one of several productions.  The marks are the
-lexicon, slotted in by name, and the marks said on their own bring whole
-sentences of their own, several each:
+An Aasimar's talaria and halo are emotional anchors: they make the reader
+feel something.  A Tiefling's anchor is how the world takes them.  Nobody
+describes a Tiefling neutrally: every word said about them rings of insult or
+fear, and what they feel back is frustration, fear and anger, and the
+constant arithmetic of passing or hiding.  So this grammar does not only say
+what a Tiefling looks like; it says what the looks *mean* to the people
+looking (QST-0153, an experiment on Julio's idea of 2026-11-01).
 
-- ``{horns}``       a horn shape's sentences, with ``{horn_material}`` inside
-- ``{horn_material}`` a bare noun phrase ("old ivory", "polished jet")
-- ``{eyes}``        the eyes' sentences
-- ``{fur}``         a noun phrase ("fox red, spotted with onyx black")
-- ``{sheen}``       a bare metal ("silver", "copper")
-- ``{scent}``       a scent's sentences
-- ``{tail}``        a tail's sentences
-- ``{place}``       where the bloodline is suggested to start ("Hades")
+The collapse (``Fiendish_Aspect``) chooses what is said; this grammar chooses
+how.  Sentences are built the generative way, with a start that several
+endings can finish: "Strangers see the horns first, and you a long time
+after:" + any horn phrase.  The marks are the lexicon:
+
+- ``{horns}`` / ``{eyes}`` / ``{scent}`` / ``{tail}`` / ``{bearing}``: a mark's
+  own sentences
+- ``{horn_phrase}`` / ``{eyes_phrase}`` / ``{scent_phrase}``: the same marks as
+  noun phrases, to finish someone else's sentence
+- ``{omen}``: what people say a scent means ("a funeral")
+- ``{horn_material}``, ``{fur}``, ``{sheen}``, ``{place}``: as before
+- ``{full_name}``: kept as it is and filled when the sheet is printed, since
+  the name is settled after the Species (``{full_name}`` rather than
+  ``{name}`` until #124: a name may start with a title)
 
 Every production must read as English for every item its slots can hold, and
-none breaks the flow with a semicolon.  The self-test checks that the grammar
-is closed (every symbol has a rule, every rule is used, every lexical item is
-one the aspect fills); whether each derivation reads well is checked by
-reading them.  Words a production adds are not keyed, so a production should
-not reuse a word a mark may bring.
+none breaks the flow with a semicolon.  Words a production adds are not
+keyed, so a production should not reuse a word a mark may bring.
 """
 
 from __future__ import annotations
@@ -32,50 +36,94 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 
 	# --- Sentences -------------------------------------------------------
 
+	# A lead is listed twice beside a mark's own sentence on purpose: two in
+	# three times, the look is said through how someone else meets it.
 	"HORNS": (
 		"{horns}",
+		"{HORNS_LEAD}: {horn_phrase}.",
+		"{HORNS_LEAD}: {horn_phrase}.",
 		),
 
 	"EYES": (
 		"{eyes}",
+		"{EYES_LEAD}: {eyes_phrase}.",
+		"{EYES_LEAD}: {eyes_phrase}.",
 		),
 
-	# The fur and its sheen are one image.  {fur} may carry commas of its own
-	# ("wolf grey, striped with onyx black"), so the sheen comes first and
-	# every sentence ends on {fur}.
+	# {fur} may carry commas of its own, so every sentence ends on it.
 	"FUR": (
+		"Your fur carries {SCARS}, and no cloak quite covers it: {fur}.",
+		"{FUR_LEAD}, a glint of {sheen} gives you away in your fur, which is {fur}.",
 		"Lamplight finds {sheen} in your fur, which is {fur}.",
-		"A glint of {sheen} runs through your fur, which is {fur}.",
-		"Your fur carries a sheen of {sheen}: {fur}.",
-		"When you turn, a sheen of {sheen} moves through your coat of {fur}.",
+		"Your fur carries {SCARS}, and its colour is {fur}.",
+		),
+
+	"SCENT": (
+		"{scent}",
+		"{SAY_SCENT} you smell like {omen}, of {scent_phrase}.",
+		"{SAY_SCENT} you smell like {omen}.",
 		),
 
 	"TAIL": (
 		"{tail}",
 		),
 
-	"SCENT": (
-		"{scent}",
+	"BEARING": (
+		"{bearing}",
 		),
 
 	"PLACE": (
-		"Your looks suggest your {LINE} {BEGINS} {place}.",
 		"{WHO} would say your {LINE} {BEGINS} {place}.",
-		"{WHO} would trace your {LINE} to {place}.",
+		"{HOSTILE} say your {LINE} {BEGINS} {place}, as if that settled anything.",
+		"{HOSTILE} say your {LINE} {BEGINS} {place}, and they say it loudly.",
 		),
 
-	"PLACE_OPENING": (
-		"Your looks suggest your {LINE} {BEGINS} {place}, though nobody can say how many generations ago.",
-		"{WHO} would trace your {LINE} to {place}, though not how far.",
+	# --- Leads: how the world meets the look -----------------------------
+
+	"HORNS_LEAD": (
+		"{full_name}'s face is of great beauty, but most people only notice the horns",
+		"Strangers see the horns first, and you a long time after",
+		"Children point at the horns before their parents pull them away",
+		"No hat has ever sat right on you, and no innkeeper has ever missed why",
 		),
 
-	# --- Phrases ---------------------------------------------------------
+	"EYES_LEAD": (
+		"Few people hold your gaze for long",
+		"Innkeepers look anywhere but at your eyes",
+		"Priests make a quiet sign when they meet your eyes",
+		"Mothers tell their children not to look at your eyes",
+		),
+
+	"FUR_LEAD": (
+		"However you dress",
+		"Under any hood",
+		"In any crowd",
+		),
+
+	"SCARS": (
+		"old scars, the kind a crowd leaves",
+		"a scar for every town that wanted you gone",
+		"the marks of more than one thrown stone",
+		),
+
+	"SAY_SCENT": (
+		"People say",
+		"Behind your back, they say",
+		"You have been told, more than once, that",
+		),
+
+	# --- The place: named, never described --------------------------------
 
 	"WHO": (
 		"Anyone who knows the signs",
 		"Those who read such things",
 		"A scholar of such matters",
-		"The stories",
+		),
+
+	"HOSTILE": (
+		"Those who spit at your feet",
+		"The priests who turned you away",
+		"The ones who throw stones",
 		),
 
 	"LINE": (
@@ -84,8 +132,6 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		"blood",
 		),
 
-	# No "back" and no "old" anywhere in the grammar's own words: the marks
-	# use both ("curl back", "along your back", "old ivory").
 	"BEGINS": (
 		"starts in",
 		"begins in",
