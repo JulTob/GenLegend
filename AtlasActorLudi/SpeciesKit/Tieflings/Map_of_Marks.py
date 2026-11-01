@@ -164,10 +164,10 @@ HORN_SHAPES = (
 						"Your horns branch into barbs of {horn_material}, each side going its own way",
 						"Barbs of {horn_material} branch from your head, more like thorns than horns",
 						) ),
-		Make_Mark( "Horns_Spiral", part=Horn_Shape, lent_by=ABYSS, keys=( "spiral", ), phrase=( "two spirals of {horn_material}, each turning the wrong way", "two spirals of {horn_material} that turn against each other, like dancers who never learned the same steps", "corkscrew horns of {horn_material}, one winding sunwise and the other against it" ),
+		Make_Mark( "Horns_Spiral", part=Horn_Shape, lent_by=ABYSS, keys=( "spiral", ), phrase=( "two horns of {horn_material}, turning into spirals of different lengths", "two spirals of {horn_material} that turn against each other, like dancers who never learned the same steps", "corkscrew horns of {horn_material}, one winding sunwise and the other against it" ),
 				text=(
 						"Your horns of {horn_material} spiral in opposite directions, as if neither asked the other",
-						"Two spirals of {horn_material} turn from your brow, each the wrong way round",
+						"Two horns of {horn_material} turn from your brow into spirals of different lengths",
 						"Your horns of {horn_material} corkscrew in opposite directions, never quite agreeing",
 						) ),
 		Make_Mark( "Horns_Regrown", part=Horn_Shape, lent_by=ABYSS, keys=( "broken", ), phrase=( "horns of {horn_material}, one broken long ago and grown back jagged", "mismatched horns of {horn_material}, one smooth and the other grown back jagged where it broke", "horns of {horn_material} that no longer match, since one snapped in a fight you won anyway and came back jagged" ),
