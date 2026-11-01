@@ -1308,9 +1308,11 @@ def _test_tiefling_grammar_is_complete() -> None:
 	lexicon = {
 		"horns",
 		"horn_phrase",
+		"horn_phrase_cap",
 		"horn_material",
 		"eyes",
 		"eyes_phrase",
+		"eyes_phrase_cap",
 		"fur",
 		"sheen",
 		"scent",

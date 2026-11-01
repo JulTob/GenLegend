@@ -81,6 +81,8 @@ STRUCTURES = (
 		Make_Structure( "Punk_Gaze", "{EYES}", "{HORNS}", "{SCENT}", "{CLOSE}" ),
 		Make_Structure( "Punk_Coat", "{FUR}", "{TAIL}", "{BEARING}" ),
 		Make_Structure( "Punk_Scent", "{SCENT}", "{EYES}", "{PLACE}", "{CLOSE}" ),
+		Make_Structure( "Story_Portrait", "{EYES}", "{HORNS}", "{FUR}", "{CLOSE}" ),
+		Make_Structure( "Rumour_Led", "{PLACE_OPENING}", "{HORNS}", "{SCENT}", "{BEARING}" ),
 		)
 
 
@@ -90,65 +92,95 @@ STRUCTURES = (
 # ---------------------------------------------------------------------------
 
 HORN_SHAPES = (
-		Make_Mark( "Horns_Crown", part=Horn_Shape, lent_by=HADES, keys=( "crown", "close" ), phrase="a crown of {horn_material}, worn so close that it could be taken for a real one",
+		Make_Mark( "Horns_Crown", part=Horn_Shape, lent_by=HADES, keys=( "crown", "close" ), phrase="horns of {horn_material} worn close as a crown, so close they could be taken for a real one",
 				text=(
 						"A crown of {horn_material} rises from your brow, so close to your head that strangers take it for one",
 						"Your horns sit close to your head like a crown of {horn_material}",
+						"Your horns of {horn_material} rise close to your head, a crown nobody gave you and nobody can take",
 						) ),
 		Make_Mark( "Horns_Tiara", part=Horn_Shape, lent_by=HADES, keys=( "tiara", ), phrase="low horns of {horn_material} that follow your temples like a tiara",
 				text=(
 						"Low horns of {horn_material} follow your temples like a tiara someone forgot to take off",
 						"Your horns lie low along your temples, a tiara of {horn_material}",
+						"A low tiara of {horn_material} grows along your temples, as if you were meant for some quieter throne",
 						) ),
 		Make_Mark( "Horns_Diadem", part=Horn_Shape, lent_by=HADES, keys=( "diadem", ), phrase="short points of {horn_material} ringing your brow like a diadem",
 				text=(
 						"Short points of {horn_material} ring your brow like a diadem",
 						"A diadem of {horn_material} rings your brow, too even to be an accident",
+						"Your brow is ringed with short points of {horn_material}, like a diadem worn too long",
 						) ),
 		Make_Mark( "Horns_Tines", part=Horn_Shape, lent_by=HADES, keys=( "tines", "antler" ), phrase="small tines of {horn_material} above your temples, like antlers just beginning",
 				text=(
 						"Small tines of {horn_material} branch above your temples, like antlers just beginning",
 						"Your horns are only tines of {horn_material}, branching above your temples like a young stag's",
+						"Little tines of {horn_material} sprout above your temples, as if your horns are still deciding what to be",
+						) ),
+		Make_Mark( "Horns_Laurel", part=Horn_Shape, lent_by=HADES, keys=( "laurel", ), phrase="horns of {horn_material} that lie flat in your hair like a laurel wreath",
+				text=(
+						"Your horns of {horn_material} lie flat against your hair, like a laurel wreath that grew there",
+						"A wreath of {horn_material} lies flat along your skull, so close it could be braided",
+						"Your horns are a laurel of {horn_material}, worn so long they have become part of you",
 						) ),
 		Make_Mark( "Horns_Ram", part=Horn_Shape, lent_by=HELLS, keys=( "ram", "back" ), phrase="ram's horns of {horn_material}, curling back over your ears",
 				text=(
 						"Ram's horns of {horn_material} curl back over your ears",
 						"Your horns curl back over your ears like a ram's, {horn_material} catching the light",
+						"Your horns of {horn_material} curl back over your ears like a ram's, heavy and patient",
 						) ),
 		Make_Mark( "Horns_Swept", part=Horn_Shape, lent_by=HELLS, keys=( "swept", "back" ), phrase="two horns of {horn_material}, swept back and matched to the last curve",
 				text=(
 						"Two horns of {horn_material} sweep back from your brow, matched to the last curve",
 						"Your horns sweep back from your brow in a perfect pair, smooth as {horn_material}",
+						"Your horns of {horn_material} sweep back from your brow, so perfectly matched they look carved",
 						) ),
 		Make_Mark( "Horns_Spires", part=Horn_Shape, lent_by=HELLS, keys=( "spire", ), phrase="two ridged spires of {horn_material}",
 				text=(
 						"Two ridged spires of {horn_material} rise from your brow",
 						"Your horns rise straight from your brow, ridged spires of {horn_material}",
+						"Two spires of {horn_material} rise from your brow, ridged like old bark",
 						) ),
 		Make_Mark( "Horns_Bull", part=Horn_Shape, lent_by=HELLS, keys=( "bull", ), phrase="thick horns of {horn_material}, sweeping out and up like a bull's",
 				text=(
 						"Thick horns of {horn_material} sweep out and up like a bull's",
 						"Your horns of {horn_material} sweep out and up, broad as a bull's",
+						"Your horns of {horn_material} reach out and up like a bull's, so wide that you take doorways sideways",
+						) ),
+		Make_Mark( "Horns_Capped", part=Horn_Shape, lent_by=HELLS, keys=( "brass", "capped" ), phrase="horns of {horn_material}, their tips capped in old brass",
+				text=(
+						"The tips of your horns of {horn_material} are capped in old brass, a gift from someone you lost",
+						"Your horns of {horn_material} end in caps of worn brass, polished every morning out of habit",
+						"Old brass caps the points of your horns of {horn_material}, so you never catch a curtain again",
 						) ),
 		Make_Mark( "Horns_Twisted", part=Horn_Shape, lent_by=ABYSS, keys=( "twisted", ), phrase="twisted spikes of {horn_material}, no two alike",
 				text=(
 						"Twisted spikes of {horn_material} break from your brow, no two alike",
 						"Your horns grow in twisted spikes of {horn_material}, and no two of them agree",
+						"Twisted spikes of {horn_material} crowd your brow, each growing its own way",
 						) ),
 		Make_Mark( "Horns_Barbed", part=Horn_Shape, lent_by=ABYSS, keys=( "barb", ), phrase="barbed horns of {horn_material}, never the same on both sides",
 				text=(
 						"Barbed horns of {horn_material} branch from your head, never the same on both sides",
 						"Your horns branch into barbs of {horn_material}, each side going its own way",
+						"Barbs of {horn_material} branch from your head, more like thorns than horns",
 						) ),
 		Make_Mark( "Horns_Spiral", part=Horn_Shape, lent_by=ABYSS, keys=( "spiral", ), phrase="two spirals of {horn_material}, each turning the wrong way",
 				text=(
 						"Your horns of {horn_material} spiral in opposite directions, as if neither asked the other",
 						"Two spirals of {horn_material} turn from your brow, each the wrong way round",
+						"Your horns of {horn_material} corkscrew in opposite directions, never quite agreeing",
 						) ),
 		Make_Mark( "Horns_Regrown", part=Horn_Shape, lent_by=ABYSS, keys=( "broken", ), phrase="horns of {horn_material}, one broken long ago and grown back jagged",
 				text=(
 						"One of your horns of {horn_material} broke long ago and grew back jagged",
 						"Your horns of {horn_material} do not match, since one broke and grew back wild",
+						"You broke a horn of {horn_material} once, and it grew back wilder than before",
+						) ),
+		Make_Mark( "Horns_Ringed", part=Horn_Shape, lent_by=ABYSS, keys=( "rings", "iron" ), phrase="horns of {horn_material}, pierced with a row of small iron rings",
+				text=(
+						"Your horns of {horn_material} are pierced with small iron rings, one for every year you survived",
+						"A row of little iron rings runs up each of your horns of {horn_material}, and they chime when you laugh",
+						"You have hung your horns of {horn_material} with iron rings, because if people will stare, let them stare at something",
 						) ),
 		)
 
@@ -183,61 +215,91 @@ EYES = (
 				text=(
 						"Your eyes are black, each holding a single violet iris, like a flower left on a grave",
 						"At the bottom of your black eyes lies a vivid violet, like a flower in a well",
+						"Each of your black eyes holds one violet iris, small and vivid as a bruise",
 						) ),
 		Make_Mark( "Eyes_Green_Iris", part=Eyes, lent_by=HADES, keys=( "green", "moss", "black" ), phrase="black eyes with irises the green of tomb moss",
 				text=(
 						"Your eyes are black, and their irises are the green of moss on a tombstone",
 						"In the black of your eyes sits a green iris, bright as new moss",
+						"Your eyes are black, with a green iris in each like a leaf at the bottom of a pond",
 						) ),
 		Make_Mark( "Eyes_Ice_Iris", part=Eyes, lent_by=HADES, keys=( "ice", "well", "black" ), phrase="black eyes with irises of pale ice",
 				text=(
 						"Your eyes are black as a well at night, with irises of pale ice",
 						"Irises pale as ice float in eyes as black as a well",
+						"Your black eyes hold irises so pale they look like frost on a window",
 						) ),
 		Make_Mark( "Eyes_Silver_Ring", part=Eyes, lent_by=HADES, keys=( "silver", "coin", "black" ), phrase="black eyes, each ringed with a thin line of silver",
 				text=(
 						"Your eyes are black, each ringed with a thin line of silver, like a coin at the bottom of a well",
 						"A thin ring of silver circles the black of each of your eyes",
+						"A silver ring circles each of your black irises, like the rim of an old coin",
+						) ),
+		Make_Mark( "Eyes_Starless", part=Eyes, lent_by=HADES, keys=( "starless", "black" ), phrase="eyes black all the way through, without iris or white",
+				text=(
+						"Your eyes are black all the way through, without iris or white, and somehow they are kind",
+						"There is no white in your eyes and no iris either, only a quiet, starless black",
+						"Your eyes are black from edge to edge, like a night sky with every star put out",
 						) ),
 		Make_Mark( "Eyes_Coal_Iris", part=Eyes, lent_by=HELLS, keys=( "gold", "coal", "black" ), phrase="black eyes with a golden iris burning in each, like a coal",
 				text=(
 						"Your eyes are black, and in each burns a golden iris, like a coal that will not go out",
 						"A coal of gold burns in the black of each of your eyes",
+						"Your irises burn gold in the black of your eyes, steady as coals in a banked fire",
 						) ),
 		Make_Mark( "Eyes_Ember_Iris", part=Eyes, lent_by=HELLS, keys=( "red", "ember", "black" ), phrase="black eyes with irises like embers in a grate",
 				text=(
 						"Embers sit where your irises should be, red in the black of your eyes",
 						"Your irises glow the red of embers in a grate, set in eyes of perfect black",
+						"Your irises are the deep red of embers, and they brighten when you are angry",
 						) ),
 		Make_Mark( "Eyes_Candle_Iris", part=Eyes, lent_by=HELLS, keys=( "gold", "candle", "flame", "black" ), phrase="black eyes where the gold flickers like a candle",
 				text=(
 						"In the black of your eyes, the gold of each iris flickers like a candle flame",
 						"Your eyes are black, and the gold in them flickers like candlelight in a draught",
+						"Gold flickers in the black of your eyes, like a candle someone forgot to blow out",
 						) ),
 		Make_Mark( "Eyes_Furnace", part=Eyes, lent_by=HELLS, keys=( "furnace", "black" ), phrase="black eyes that glow like a furnace door when you are angry",
 				text=(
 						"Your eyes are black, until you are angry and they glow like a furnace door left open",
 						"In the black of your eyes there is a glow, banked low, like a furnace at night",
+						"When you are angry, your black eyes glow from somewhere deep, like a furnace with its door ajar",
+						) ),
+		Make_Mark( "Eyes_Spark", part=Eyes, lent_by=HELLS, keys=( "spark", "black", "laugh" ), phrase="black eyes where a red spark jumps whenever you laugh",
+				text=(
+						"Your eyes are black, and a spark of red jumps in them whenever you laugh",
+						"A red spark lives in the black of your eyes, and it dances when you are pleased",
+						"Your black eyes catch fire for a moment when you laugh, a single red spark in each",
 						) ),
 		Make_Mark( "Eyes_Borrowed", part=Eyes, lent_by=ABYSS, keys=( "brown", "stare" ), phrase="plain brown eyes that take the colour of whoever stares too long",
 				text=(
 						"Your eyes look an ordinary brown, until you stare too long at someone and they take on that person's colour",
 						"Your eyes are a plain brown, until you hold someone's gaze too long and they borrow its colour",
+						"Your eyes are an ordinary brown, until someone stares too long and finds their own colour looking back",
 						) ),
 		Make_Mark( "Eyes_Mornings", part=Eyes, lent_by=ABYSS, keys=( "morning", "mirror" ), phrase="eyes that are never the same colour two days running",
 				text=(
 						"No mirror has ever seen your eyes the same colour twice",
 						"Your eyes wake each morning in a colour of their own choosing",
+						"Your eyes change colour overnight, and you have long since stopped checking which",
 						) ),
 		Make_Mark( "Eyes_Moods", part=Eyes, lent_by=ABYSS, keys=( "mood", ), phrase="eyes that change colour with every mood you try to hide",
 				text=(
 						"Your eyes change colour before your face can, and give away every mood you would rather hide",
 						"Every mood you have shows first in your eyes, which shift colour to match it",
+						"Your eyes give away every mood, shifting colour faster than you can hide what you feel",
 						) ),
 		Make_Mark( "Eyes_Mismatched", part=Eyes, lent_by=ABYSS, keys=( "mismatch", ), phrase="mismatched eyes that trade their colours while you sleep",
 				text=(
 						"Your eyes do not match, and they trade their colours while you sleep",
 						"One of your eyes is never the colour of the other, and they take turns",
+						"Your eyes never match, and each seems to have its own opinion of the room",
+						) ),
+		Make_Mark( "Eyes_Sea_Liar", part=Eyes, lent_by=ABYSS, keys=( "sea", "lie" ), phrase="eyes that turn the colour of the sea whenever you lie",
+				text=(
+						"Your eyes go the colour of the sea whenever you lie, so you have learned not to",
+						"Every lie you tell turns your eyes sea-green, which has made you famously honest",
+						"Your eyes are a dull grey, until you lie and they flood with the colour of the sea",
 						) ),
 		)
 
@@ -344,75 +406,108 @@ SCENTS = (
 				text=(
 						"A breath of incense follows you, as if you had just left a temple nobody remembers",
 						"You smell faintly of incense, the kind burned for the dead",
+						"Incense clings to your clothes, though you have not set foot in a temple in years",
 						) ),
 		Make_Mark( "Scent_Myrrh", part=Scent, lent_by=HADES, keys=( "myrrh", ), phrase="myrrh", omen="a tomb",
 				text=(
 						"Myrrh clings to you, sweet and ancient, like the inside of a reliquary",
 						"There is myrrh in your hair, though you have never bought any",
+						"You smell faintly of myrrh, like a reliquary opened for the first time in a century",
 						) ),
 		Make_Mark( "Scent_Rain", part=Scent, lent_by=HADES, keys=( "rain", ), phrase="rain on stone", omen="an open grave",
 				text=(
 						"The smell of rain lingers in you, like a persistent memory",
 						"You smell of rain on stone, even under a cloudless sky",
+						"Rain follows you, or at least its smell does, even in the driest town",
 						) ),
 		Make_Mark( "Scent_Turned_Earth", part=Scent, lent_by=HADES, keys=( "earth", "grave" ), phrase="turned earth", omen="a fresh grave",
 				text=(
 						"You smell of freshly turned earth, the way a garden does, or a grave",
 						"Wherever you sleep, the room smells of turned earth by morning",
+						"You smell of turned earth, like a field the morning after the plough",
 						) ),
 		Make_Mark( "Scent_Cold_Wax", part=Scent, lent_by=HADES, keys=( "wax", "chapel" ), phrase="cold wax", omen="a vigil",
 				text=(
 						"You smell of cold candle wax and old chapels",
 						"A scent of cold wax clings to you, like a chapel after the last prayer",
+						"Cold wax and old prayers are what you smell like, and nobody knows why",
+						) ),
+		Make_Mark( "Scent_Lilies", part=Scent, lent_by=HADES, keys=( "lilies", ), phrase="lilies", omen="a deathbed",
+				text=(
+						"You smell of lilies, the kind people bring when it is already too late",
+						"A scent of white lilies follows you, heavy and sweet and a little sad",
+						"Lilies, always lilies, as if someone had just left flowers for you",
 						) ),
 		Make_Mark( "Scent_Sulfur", part=Scent, lent_by=HELLS, keys=( "sulfur", "match" ), phrase="sulfur", omen="a curse being spoken",
 				text=(
 						"A trace of sulfur follows you, like a struck match that never quite goes out",
 						"Every room you enter smells, briefly, of sulfur",
+						"A whiff of sulfur follows you around corners, never quite gone",
 						) ),
 		Make_Mark( "Scent_Campfire", part=Scent, lent_by=HELLS, keys=( "campfire", "smoke" ), phrase="old smoke", omen="a burned house",
 				text=(
 						"You smell like a campfire just put out, warm and a little dangerous",
 						"Smoke from a fire long since doused still clings to you",
+						"You smell of a campfire on a cold night, smoke and warmth together",
 						) ),
 		Make_Mark( "Scent_Forge", part=Scent, lent_by=HELLS, keys=( "iron", "forge" ), phrase="hot iron", omen="a branding",
 				text=(
 						"You carry the smell of hot iron, like a forge at the end of the day",
 						"Close to you, the air smells of iron fresh from the forge",
+						"You smell of the forge, iron and coal and long days",
 						) ),
 		Make_Mark( "Scent_Snuffed_Candle", part=Scent, lent_by=HELLS, keys=( "candle", "smoke" ), phrase="snuffed candles", omen="a wake",
 				text=(
 						"You smell of a snuffed candle, that thin smoke that means someone has just left",
+						"The smell of a candle just blown out follows you from room to room",
 						) ),
 		Make_Mark( "Scent_Cinnamon_Ash", part=Scent, lent_by=HELLS, keys=( "cinnamon", "ash" ), phrase="cinnamon and ash", omen="a market after a fire",
 				text=(
 						"You smell of cinnamon and ash, like a spice market after a fire",
 						"There is cinnamon on you, and under it, always, a little ash",
+						"Cinnamon and ash cling to you, sweet and scorched at once",
+						) ),
+		Make_Mark( "Scent_Burnt_Sugar", part=Scent, lent_by=HELLS, keys=( "sugar", ), phrase="burnt sugar", omen="a fire in a sweetshop",
+				text=(
+						"You smell of burnt sugar, sweet and scorched, like a fairground after closing",
+						"There is a smell of caramel left too long on the fire about you",
+						"Burnt sugar clings to you, the smell of a treat that went a little wrong",
 						) ),
 		Make_Mark( "Scent_Wine", part=Scent, lent_by=ABYSS, keys=( "wine", ), phrase="freshly opened wine", omen="a feast gone wrong",
 				text=(
 						"You smell of freshly opened wine, even in clean, fine clothes",
 						"A scent of wine just uncorked follows you, rich and a little too sweet",
+						"You smell of red wine, poured too generously",
 						) ),
 		Make_Mark( "Scent_Storm", part=Scent, lent_by=ABYSS, keys=( "storm", "lightning" ), phrase="lightning", omen="a storm about to break",
 				text=(
 						"The air around you smells the way it does before a storm",
 						"You smell of the air before lightning, sharp and restless",
+						"You smell of rain about to fall, sharp with lightning",
 						) ),
 		Make_Mark( "Scent_Brine", part=Scent, lent_by=ABYSS, keys=( "brine", "sea" ), phrase="brine", omen="a drowned sailor",
 				text=(
 						"You smell of brine, as if you had just walked out of the sea",
 						"Salt and brine cling to you, however far you are from any coast",
+						"You smell of the sea, salt and kelp and somewhere far away",
 						) ),
 		Make_Mark( "Scent_Overripe", part=Scent, lent_by=ABYSS, keys=( "sweet", "fruit" ), phrase="overripe fruit", omen="rot dressed up as sweetness",
 				text=(
 						"A sweetness of overripe fruit hangs about you, pleasant for a moment too long",
 						"You smell of flowers left too long in the vase, sweet on the edge of turning",
+						"You smell of fruit a day past ripe, sweet enough to be dangerous",
 						) ),
 		Make_Mark( "Scent_Absinthe", part=Scent, lent_by=ABYSS, keys=( "absinthe", "mint" ), phrase="absinthe and wild mint", omen="a night nobody remembers",
 				text=(
 						"You smell of absinthe and wild mint, green and dizzying",
 						"A green, dizzying scent of absinthe follows you from one bad decision to the next",
+						"There is absinthe on your breath and your clothes, though you swear you only had one",
+						) ),
+		Make_Mark( "Scent_Patchouli_Smoke", part=Scent, lent_by=ABYSS, keys=( "patchouli", "smoke" ), phrase="patchouli and cheap smoke", omen="a den of thieves",
+				text=(
+						"You smell of patchouli and cheap smoke, like the back room of a tavern nobody admits to",
+						"Patchouli and pipe smoke follow you, the smell of every party worth leaving early",
+						"You carry a haze of patchouli and smoke, and the guards always sniff twice",
 						) ),
 		)
 
@@ -428,11 +523,19 @@ TAILS = (
 						"A long tail sways behind you, ending in an arrow-shaped tip",
 						"Behind you, a long tail ends in a tip shaped like an arrowhead",
 						"You keep your tail wound under your coat, but it lashes when you are angry, and then everyone knows",
+						"Your tail ends in a neat arrowhead, and you have tied a ribbon just above it",
 						) ),
 		Make_Mark( "Tail_Lash", part=Tail, lent_by=HELLS, keys=( "arrow", "barb", "tips" ),
 				text=(
 						"A thin tail lashes behind you when you are angry, its tip barbed like an arrow",
 						"You have learned to sit with your back to the wall, so nobody steps on the tail, or stares at it",
+						"Your thin tail is barbed at the tip, and it knocks things off tables when you are nervous",
+						) ),
+		Make_Mark( "Tail_Curl", part=Tail, lent_by=HELLS, keys=( "curl", ),
+				text=(
+						"Your tail curls around your ankle when you stand still, like a cat's",
+						"You have a long, restless tail that gives away every feeling you would rather keep",
+						"Your tail flicks when you are amused, and it has ruined more than one straight face",
 						) ),
 		)
 
@@ -459,6 +562,20 @@ BEARINGS = (
 						"You have a stillness people mistake for menace, until you smile",
 						"Graveyards never frightened you, and these days neither do crowds",
 						) ),
+		Make_Mark( "Bearing_Deep_Hoods", part=Bearing, lent_by=HADES, keys=( "hoods", ),
+				text=(
+						"You own more hoods than shirts, and every one of them is deep",
+						"You keep your hood up in every town, and still the dogs bark",
+						) ),
+		Make_Mark( "Bearing_Gentle", part=Bearing, lent_by=HADES, keys=( "gentle", ),
+				text=(
+						"Animals trust you before people do, and you have come to prefer it that way",
+						"You are kinder than you look, and you have stopped waiting for anyone to notice",
+						) ),
+		Make_Mark( "Bearing_Funerals", part=Bearing, lent_by=HADES, keys=( "funeral", ),
+				text=(
+						"You wear your horns to every funeral, wedding and brawl, and this year you have been to all three",
+						) ),
 		Make_Mark( "Bearing_No_Hiding", part=Bearing, lent_by=ABYSS, keys=( "hide", ),
 				text=(
 						"No hood was ever deep enough to hide you, so you threw the last one in a river",
@@ -474,6 +591,19 @@ BEARINGS = (
 						"You dress louder than anyone else in the room, and somehow it suits you",
 						"You have never once blended in, and you have stopped pretending you want to",
 						) ),
+		Make_Mark( "Bearing_Marked", part=Bearing, lent_by=ABYSS, keys=( "gates", ),
+				text=(
+						"Wherever you go, someone is watching your hands",
+						"There is no hiding what you are, and every town lets you know it before the gates",
+						) ),
+		Make_Mark( "Bearing_Laugh", part=Bearing, lent_by=ABYSS, keys=( "laugh", ),
+				text=(
+						"For all the stares, you laugh easily, and it is the laugh people remember",
+						) ),
+		Make_Mark( "Bearing_Painted", part=Bearing, lent_by=ABYSS, keys=( "paint", ),
+				text=(
+						"You paint your horns on feast days, because if they are going to stare, they might as well enjoy it",
+						) ),
 		Make_Mark( "Bearing_Unapologetic", part=Bearing, lent_by=HELLS, keys=( "apology", ),
 				text=(
 						"You stopped apologising for your horns years ago, and the world has had to adjust",
@@ -483,6 +613,19 @@ BEARINGS = (
 				text=(
 						"You have a temper, and you have learned to point it at the right people",
 						"You carry yourself like someone who has already survived the worst of it",
+						) ),
+		Make_Mark( "Bearing_Careful", part=Bearing, lent_by=HELLS, keys=( "careful", ),
+				text=(
+						"You keep your hands where people can see them, and that has saved your life more than once",
+						"You speak softly and move slowly, because the alternative has cost you before",
+						) ),
+		Make_Mark( "Bearing_Warm", part=Bearing, lent_by=HELLS, keys=( "warm", ),
+				text=(
+						"You run warm, and on cold nights your friends find excuses to sit beside you",
+						) ),
+		Make_Mark( "Bearing_Singer", part=Bearing, lent_by=HELLS, keys=( "sing", ),
+				text=(
+						"You learned to sing in taverns that would not serve you, and now they ask you back",
 						) ),
 		Make_Mark( "Bearing_Soft_Spoken", part=Bearing, lent_by=HELLS, keys=( "voice", ),
 				text=(

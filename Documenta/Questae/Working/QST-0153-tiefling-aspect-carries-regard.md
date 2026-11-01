@@ -11,48 +11,87 @@
 
 ## 🔍 The idea, in Julio's words
 
+**First pass (2026-11-01).**
+
 > The talaria and halo are emotional anchors, they evoke an emotional
 > response... But what would a tiefling feel when described? When everything
-> said about them rings of insults, and fear? They would inspire frustration,
-> fear, anger. Maybe starting the presentation with that... like "Your fur of
-> {fur} carries multiple scars", or "{name}'s face is of great beauty, but
-> most people only notice the horns: {horns}" or "People say you smell like a
-> funeral, to incense and myrrh". [...] Transmitting not just the looks, but
-> the meaning and vibe those looks carry onto you as a character. The "you
-> are not passing" or "you must hide" vibe.
+> said about them rings of insults, and fear? [...] Transmitting not just the
+> looks, but the meaning and vibe those looks carry onto you as a character.
+> The "you are not passing" or "you must hide" vibe.
 
 He also noted that a grammar works best when a start can be finished by
 several endings, and that QST-0151 had taken too much of that away.
 
+**Second pass (same day), on reading the first samples.**
+
+> Now it's like too tragic... A bit is good, but only that is depressing. We
+> could have kept the previous structures, just add these new ones as
+> alternative waves. One or two references, a scar or a "not trying anymore"
+> are good enough to change the whole vibe. [...] Maybe use structure inside
+> structures, to have more variety without writing tons of lines. [...] The
+> vibe I'm going for is "strangely beautiful", "born this way"... Evocative of
+> a rough past but, mysteriously, open to a future. In one word: Punk.
+
+**Third pass (same day).**
+
+> The beauty of the generator is mixing ups and downs, and that's fine. One
+> tiefling having a reaaaally sad story is fine, all of them is not. All of
+> the tieflings sounding punky is... not so bad tbh, but is not ideal either.
+> Let the structure collapse and find the story. Just add the options for it
+> and let the chips fall as they may. [...] Recover some of the last deleted
+> lines, grow the options with some extra lines (I did like the punk style
+> ones, I would add more) and try to find ways to add variety of the
+> structural elements with positional changes, or little variations on the
+> existing lines.
+
+Julio singled out as good examples: horn tines like antlers just beginning, a
+horn broken long ago and grown back jagged, eyes that trade colours, scents
+of cinnamon and ash, and of absinthe. New marks follow that style: specific,
+with a small story inside.
+
 ## 🧭 What the experiment does
 
-- **Leads and endings.** A look is said, two times in three, through how
-  someone else meets it: a lead ("Children point at the horns before their
-  parents pull them away", "Innkeepers look anywhere but at your eyes",
-  "People say you smell like a funeral") finished by the mark as a noun
-  phrase (`PHRASE`), or by what people say a scent means (`OMEN`). Any lead
-  finishes with any mark, so the mixing comes back.
-- **A bearing.** A new slot in the collapse, lent by the legacies: how the
-  look is carried. Chthonic lends passing ("Under a hood and in poor light you
-  can pass for human, almost, and almost is a word you know well"), the Abyss
-  lends no hiding at all, the Nine Hells lend the ones who stopped
-  apologising. This is the emotional anchor, as the talaria and the halo are
-  for the Aasimar.
-- **Scars, stares, the hostile voice.** The fur carries scars "the kind a
-  crowd leaves"; the place is said by "those who spit at your feet", "as if
-  that settled anything". The hells are still only named, never described.
-- **The name.** A lead may name the Character. The aspect is drawn before the
-  Character has a name, so the grammar keeps `{full_name}` in place
-  (`Derive(..., keep=...)`), and the Species projection fills it on its second
-  pass, after naming. A Tiefling keeps its drawn paragraph as
-  `heritage_description`, which `Project_Species_Description` prints ahead of
-  a Heritage's fixed `HERITAGE_DESCRIPTION`.
+- **Both kinds of presentation, in one wave.** QST-0151's six plain
+  presentations stay; four punk ones sit beside them, and the collapse picks
+  among all ten. A punk presentation closes on a **bearing** (how the look is
+  carried) or on a **past and a future**.
+- **Structure inside structure.** A sentence is a mark's own clause, and
+  sometimes an afterthought sentence of its own ("You have never once filed
+  them down."). A feature may instead be opened by a frame and finished by
+  the mark as a noun phrase ("You were born with them: ram's horns of
+  polished jet, curling back over your ears"). The closing is `{PAST},
+  {FUTURE}`: four pasts ("You were born this way") and four futures ("but the
+  road ahead is wide open"), sixteen lines from eight. Most afterthoughts are
+  empty on purpose, so attitude lands once or twice a paragraph.
+- **Bearings, in the punk register.** Lent by the legacies: Chthonic could
+  pass and stopped wanting to; the Abyss threw the last hood in a river and
+  dresses louder than anyone; the Nine Hells stopped apologising and point
+  their temper at the right people.
+- **More to work with.** One more horn shape, pair of eyes and scent per
+  legacy: tines like antlers just beginning (Hades), a bull's sweep (the Nine
+  Hells), a horn broken long ago and grown back jagged (the Abyss); a ring of
+  silver, a banked furnace, eyes that trade colours; cold wax, cinnamon and
+  ash, absinthe and wild mint.
+- **The name.** A frame may name the Character. The aspect is drawn before
+  the name exists, so the grammar keeps `{full_name}` (`Derive(..., keep=...)`)
+  and the Species projection fills it after naming, from the paragraph kept
+  as `heritage_description`.
+
+**After the third pass:** every register sits side by side as options (plain,
+tender, punk, sad), and no register is forced. Frames and verdicts put the
+same idea at either end of a sentence; the fur may split from its sheen;
+{PEOPLE}, {SAY_SCENT} and {SHEEN_LINE} vary the small words; afterthoughts,
+pasts and futures roughly doubled. Every horn shape, pair of eyes and scent
+has three sentences; 112 marks and 12 presentations in all. The sad lines cut
+in the second pass are back, as options among the others.
+
+Over 300 Tieflings: 881 distinct sentences. By marker phrases, about a
+quarter of paragraphs read purely sad, an eighth each purely punk, tender or
+plain, and the rest mix registers.
 
 ## ❓ For Julio
 
-1. Is this the voice? Samples in the PR body.
-2. Should it replace QST-0151's presentations, or join them (the collapse can
-   hold both kinds of structure, so some Tieflings are described plainly and
-   some through regard)?
-3. How bitter? The leads range from stares to thrown stones; a table may want
-   that dialled.
+1. Is this the voice?
+2. Should it fold into QST-0151 (#122) once you like it, or stay apart?
+3. The balance of presentations: six plain, six that close on a bearing or on
+   a past and a future. Every register can appear in any of them.

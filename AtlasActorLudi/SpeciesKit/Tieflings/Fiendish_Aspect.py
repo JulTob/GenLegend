@@ -493,6 +493,15 @@ def _phrase_or_nothing(
 	return mark.PHRASE
 
 
+def _capitalised(
+		text: str,
+		) -> str:
+	"""The same words, opening a sentence."""
+	if not text:
+		return text
+	return text[0].upper() + text[1:]
+
+
 def _omen_or_nothing(
 		mark,
 		) -> str:
@@ -509,9 +518,15 @@ def _lexicon(
 	return {
 			"horns": _text_or_nothing( drawn["horn_shape"] ),
 			"horn_phrase": _phrase_or_nothing( drawn["horn_shape"] ),
+			"horn_phrase_cap": _capitalised(
+					_phrase_or_nothing( drawn["horn_shape"] ),
+					),
 			"horn_material": _text_or_nothing( drawn["horn_material"] ),
 			"eyes": _text_or_nothing( drawn["eyes"] ),
 			"eyes_phrase": _phrase_or_nothing( drawn["eyes"] ),
+			"eyes_phrase_cap": _capitalised(
+					_phrase_or_nothing( drawn["eyes"] ),
+					),
 			"fur": _fur( drawn ),
 			"sheen": _text_or_nothing( drawn["sheen"] ),
 			"scent": _text_or_nothing( drawn["scent"] ),
