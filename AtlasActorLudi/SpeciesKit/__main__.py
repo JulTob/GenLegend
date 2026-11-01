@@ -1319,7 +1319,9 @@ def _test_tiefling_grammar_is_complete() -> None:
 		"scent_phrase",
 		"omen",
 		"tail",
+		"tail_lc",
 		"bearing",
+		"bearing_lc",
 		"place",
 		"name",
 		"full_name",
@@ -1365,6 +1367,66 @@ def _test_tiefling_grammar_is_complete() -> None:
 		), set(
 			GRAMMAR,
 			) - used
+
+
+def _test_tiefling_three_alternatives_everywhere() -> None:
+	"""
+	Every choice has at least three alternatives (Julio, 2026-11-01).
+
+	Every rule of the grammar has three distinct productions; every mark
+	that brings its own sentences, noun phrases or omens brings three; and
+	every legacy lends at least three marks to every part (the tail aside,
+	which only the Nine Hells lend).
+	"""
+	from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
+	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Tail
+
+	for symbol, productions in GRAMMAR.items():
+		assert len(
+			set(
+				productions,
+				)
+			) >= 3, symbol
+	for mark in ROSTER:
+		for field in (
+			"TEXT",
+			"PHRASE",
+			"OMEN",
+			):
+			value = getattr(
+				mark,
+				field,
+				"",
+				)
+			if isinstance(
+				value,
+				tuple,
+				):
+				assert len(
+					value,
+					) >= 3, (
+						mark,
+						field,
+						)
+	for _name, part in _aspect_slots():
+		if part is Tail:
+			continue
+		for legacy in TIEFLING_HERITAGES:
+			lent = [
+				mark
+				for mark in Marks_Of(
+					part,
+					)
+				if mark in legacy.MARKS
+				]
+			assert len(
+				lent,
+				) >= 3, (
+					part,
+					legacy,
+					)
 
 
 def _aspect_slots():
@@ -2203,6 +2265,7 @@ def _self_test() -> None:
 	_test_tiefling_identity_is_level_stable()
 	_test_tiefling_marks_are_a_vocabulary()
 	_test_tiefling_grammar_is_complete()
+	_test_tiefling_three_alternatives_everywhere()
 	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()
 	_test_tiefling_heritage_conflict_is_atomic()

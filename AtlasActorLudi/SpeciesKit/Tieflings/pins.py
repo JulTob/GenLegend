@@ -38,9 +38,9 @@ class Aspect_Mark(Tag):
 	TEXT: str | tuple[str, ...] = ""
 	# The same mark as a noun phrase, to finish a sentence somebody else
 	# started ("...but most people only notice the horns: {horn_phrase}.").
-	PHRASE: str = ""
+	PHRASE: str | tuple[str, ...] = ""
 	# What people say it means, for a scent ("a funeral").
-	OMEN: str = ""
+	OMEN: str | tuple[str, ...] = ""
 
 
 class Structure_Mark(Aspect_Mark):
@@ -162,8 +162,8 @@ def Make_Mark(
 		lent_by: tuple[type[Lent_By], ...],
 		text: str | tuple[str, ...],
 		keys: tuple[str, ...] = (),
-		phrase: str = "",
-		omen: str = "",
+		phrase: str | tuple[str, ...] = "",
+		omen: str | tuple[str, ...] = "",
 		) -> type[Aspect_Mark]:
 	"""Make one mark, pin it to its part and to every legacy that lends it."""
 	if part is Structure:

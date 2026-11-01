@@ -100,14 +100,26 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 
 	"TAIL": (
 		"{tail}.",
+		"{tail}.",
+		"{tail}.{TAIL_AFTER}",
+		"{tail}.{TAIL_AFTER}",
+		"Last of all, {tail_lc}.",
 		),
 
 	"BEARING": (
 		"{bearing}.",
+		"{bearing}.",
+		# Bearings come in every tense ("You learned", "You wear", "You have
+		# passed"), so the openers here are tense-neutral.
+		"And through it all, {bearing_lc}.",
+		"For what it is worth, {bearing_lc}.",
 		),
 
 	"CLOSE": (
 		"{PAST}, {FUTURE}.",
+		"{PAST}, {FUTURE}.",
+		"{PAST}. {AHEAD}.",
+		"{AHEAD}.",
 		),
 
 	"PLACE": (
@@ -115,13 +127,14 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		"{WHO} would say your {LINE} {BEGINS} {place}.",
 		"{WHO} would trace your {LINE} to {place}.",
 		"Some whisper that your {LINE} comes straight from {place}.",
+		"Some whisper that your {LINE} comes straight from {place}, from before {EPIC_EVENT}.",
 		"{HOSTILE} say your {LINE} {BEGINS} {place}, as if that settled anything.",
 		"{HOSTILE} say your {LINE} {BEGINS} {place}, and they say it loudly.",
 		),
 
 	"PLACE_OPENING": (
 		"Your looks suggest your {LINE} {BEGINS} {place}, though nobody can say how many generations ago.",
-		"{WHO} would trace your {LINE} to {place}, though not how far.",
+		"{WHO} would trace your {LINE} to {place}, all the way back to the times before {EPIC_EVENT}.",
 		"Some whisper that your {LINE} comes straight from {place}, and nobody asks twice.",
 		"{HOSTILE} say your {LINE} {BEGINS} {place}, and you have stopped arguing.",
 		),
@@ -267,7 +280,38 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		"but the people who matter have stopped noticing the horns",
 		),
 
+	# Afterthoughts for any tail, hidden or shown.
+	"TAIL_AFTER": (
+		"",
+		"",
+		" You would not part with it for anything.",
+		" Some nights it twitches in your sleep, chasing dreams of its own.",
+		" It is the first thing children ask about, and the thing they like best.",
+		" On cold nights, you wrap it around yourself like a scarf.",
+		),
+
+	"AHEAD": (
+		"The road ahead is wide open",
+		"The best part has not happened yet",
+		"Whatever comes next, you mean to meet it with your head up",
+		"Some days that is enough",
+		),
+
 	# --- The place: named, never described --------------------------------
+
+	# Lost events of the deep past, never explained (Julio: "What is the
+	# Fall? Is it Lucifer? Is it the Machinean division? Who knows. It's
+	# mysterious!").
+	"EPIC_EVENT": (
+		"the Fall",
+		"the Machinean Division",
+		"the Sundering",
+		"the Long Night",
+		"the Silence of the Bells",
+		"the First Betrayal",
+		"the Drowning of the Moon",
+		"the Shattered Choir",
+		),
 
 	"WHO": (
 		"Anyone who knows the signs",

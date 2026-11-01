@@ -494,12 +494,31 @@ def _phrase_or_nothing(
 
 
 def _capitalised(
-		text: str,
-		) -> str:
-	"""The same words, opening a sentence."""
+		text,
+		):
+	"""The same words, opening a sentence (each realisation, for a tuple)."""
+	if isinstance( text, tuple ):
+		return tuple(
+				_capitalised( one )
+				for one in text
+				)
 	if not text:
 		return text
 	return text[0].upper() + text[1:]
+
+
+def _lowered(
+		text,
+		):
+	"""The same words, inside a sentence (each realisation, for a tuple)."""
+	if isinstance( text, tuple ):
+		return tuple(
+				_lowered( one )
+				for one in text
+				)
+	if not text:
+		return text
+	return text[0].lower() + text[1:]
 
 
 def _omen_or_nothing(
@@ -533,7 +552,13 @@ def _lexicon(
 			"scent_phrase": _phrase_or_nothing( drawn["scent"] ),
 			"omen": _omen_or_nothing( drawn["scent"] ),
 			"tail": _text_or_nothing( drawn["tail"] ),
+			"tail_lc": _lowered(
+					_text_or_nothing( drawn["tail"] ),
+					),
 			"bearing": _text_or_nothing( drawn["bearing"] ),
+			"bearing_lc": _lowered(
+					_text_or_nothing( drawn["bearing"] ),
+					),
 			"place": suggested.PLACE,
 			}
 
