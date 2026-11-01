@@ -468,7 +468,7 @@ SCENTS = (
 						"There is cinnamon on you, and under it, always, a little ash",
 						"Cinnamon and ash cling to you, sweet and scorched at once",
 						) ),
-		Make_Mark( "Scent_Burnt_Sugar", part=Scent, lent_by=HELLS, keys=( "sugar", ), phrase=( "burnt sugar", "caramel left on the fire", "toffee in a scorched pan" ), omen=( "a fire in a sweetshop", "a confectioner's last mistake", "a birthday that ended in tears" ),
+		Make_Mark( "Scent_Burnt_Sugar", part=Scent, lent_by=HELLS, keys=( "sugar", ), phrase=( "burnt sugar", "caramel left too long in the pan", "toffee in a scorched pan" ), omen=( "a fire in a sweetshop", "a confectioner's last mistake", "a birthday that ended in tears" ),
 				text=(
 						"You smell of burnt sugar, sweet and scorched, like a fairground after closing",
 						"There is a smell of caramel left too long on the fire about you",
