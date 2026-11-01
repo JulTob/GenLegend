@@ -73,6 +73,9 @@ class Aspect_Part(Tag):
 			):
 		return _is_mark( target )
 
+	# Keys are words, not addresses: two marks may share one (both Infernal
+	# tails are arrow-tipped).  What the collapse forbids is two marks with a
+	# key in common sitting in the same aspect.
 	@Record
 	def KEYS(
 			target,

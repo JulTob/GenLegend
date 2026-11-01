@@ -323,6 +323,7 @@ GRAMMAR: dict[str, tuple[str, ...]] = {
 		"Those who spit at your feet",
 		"The priests who turned you away",
 		"The ones who throw stones",
+		"The town elders who never learned your name",
 		),
 
 	"LINE": (

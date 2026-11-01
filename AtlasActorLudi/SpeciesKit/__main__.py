@@ -1383,6 +1383,8 @@ def _test_tiefling_three_alternatives_everywhere() -> None:
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Tail
 
+	# Distinct productions: a production listed twice on purpose (to weight
+	# it) is one alternative, not two.
 	for symbol, productions in GRAMMAR.items():
 		assert len(
 			set(
@@ -1515,6 +1517,8 @@ def _assert_aspect_obeys_its_rules(
 		"",
 		)
 	assert ";" not in paragraph
+	# Equality holds only while no bearing or afterthought names a place of
+	# its own; if one ever does, this check must look at the place sentence.
 	names_a_place = any(
 		"{PLACE" in sentence
 		for sentence in aspect.structure.SENTENCES
