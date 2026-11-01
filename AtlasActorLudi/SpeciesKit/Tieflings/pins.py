@@ -33,8 +33,9 @@ from TopKit import Tag
 class Aspect_Mark(Tag):
 	"""One piece of a Tiefling's look: a word in the aspect's vocabulary."""
 
-	# A phrase that fills its slot; see each Aspect_Part for the grammar.
-	TEXT = ""
+	# What fills its slot: a phrase, or several whole sentences (a tuple) for
+	# a mark said on its own.  See each Aspect_Part for the grammar.
+	TEXT: str | tuple[str, ...] = ""
 
 
 class Structure_Mark(Aspect_Mark):
@@ -85,18 +86,18 @@ class Structure(Aspect_Part):
 
 
 class Horn_Shape(Aspect_Part):
-	"""
-	Completes "Your horns ___": a verb phrase, plural, present tense, with no
-	comma and no "and" of its own (the grammar adds clauses after it).
-	"""
+	"""Whole sentences about the horns, with ``{horn_material}`` set inside."""
 
 
 class Horn_Material(Aspect_Part):
-	"""What the horns look made of: a bare noun phrase, no article ("old ivory")."""
+	"""What the horns are made of: a bare noun phrase, no article ("old ivory").
+
+	It must read after "of", "like a crown of" and "smooth as".
+	"""
 
 
 class Eyes(Aspect_Part):
-	"""Completes "Your eyes ___": a verb phrase, plural, present tense."""
+	"""Whole sentences about the eyes."""
 
 
 class Coat(Aspect_Part):
@@ -108,15 +109,15 @@ class Coat_Pattern(Aspect_Part):
 
 
 class Sheen(Aspect_Part):
-	"""The metal the fur catches the light like: a noun ("copper")."""
+	"""The metal the fur catches the light like: a bare noun ("copper")."""
 
 
 class Scent(Aspect_Part):
-	"""A faint smell: a noun phrase that follows "a trace of"."""
+	"""Whole sentences about a faint smell, never explained."""
 
 
 class Tail(Aspect_Part):
-	"""A whole sentence about the tail."""
+	"""Whole sentences about the tail."""
 
 
 @Pin
@@ -147,7 +148,7 @@ def Make_Mark(
 		*,
 		part: type[Aspect_Part],
 		lent_by: tuple[type[Lent_By], ...],
-		text: str,
+		text: str | tuple[str, ...],
 		keys: tuple[str, ...] = (),
 		) -> type[Aspect_Mark]:
 	"""Make one mark, pin it to its part and to every legacy that lends it."""

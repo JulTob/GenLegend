@@ -13,7 +13,10 @@ A production is text with two kinds of slot in braces:
 - ``{UPPER_CASE}`` is a **non-terminal**: another symbol of the grammar, to be
   rewritten in its turn (so rules can nest, as phrases nest in a sentence);
 - ``{lower_case}`` is a **lexical item**: a word or phrase supplied from
-  outside (the **lexicon**), placed as it is.
+  outside (the **lexicon**).  An item may come with several realisations (a
+  tuple), one drawn like a production; and an item may hold slots of its own,
+  filled in turn, so a word can bring its own frame ("Ram's horns of
+  {horn_material} curl back over your ears").
 
 Generating a text is a **derivation**: start from one symbol, choose one of
 its productions with the Character's own dice (Decree 0002), and rewrite the
@@ -36,6 +39,7 @@ _SLOT = re.compile(
 		)
 
 Grammar = dict[str, tuple[str, ...]]
+Lexicon = dict[str, str | tuple[str, ...]]
 
 
 class Grammar_Error(ValueError):
@@ -67,7 +71,7 @@ def _rewrite(
 		target,
 		grammar: Grammar,
 		symbol: str,
-		lexicon: dict[str, str],
+		lexicon: Lexicon,
 		dice,
 		depth: int,
 		) -> str:
@@ -95,11 +99,47 @@ def _rewrite(
 			)
 
 
+def _realise(
+		target,
+		grammar: Grammar,
+		name: str,
+		lexicon: Lexicon,
+		dice,
+		depth: int,
+		) -> str:
+	"""One lexical item: one of its realisations, with its own slots filled."""
+	if depth > MAX_DEPTH:
+		raise Grammar_Error(
+				f"Grammar: {name} recurses deeper than {MAX_DEPTH}."
+				)
+	if name not in lexicon:
+		raise Grammar_Error(
+				f"Grammar: the lexicon has no {name}."
+				)
+	entry = lexicon[name]
+	realisations = entry
+	if isinstance( entry, str ):
+		realisations = ( entry, )
+	chosen = _choose(
+			target,
+			tuple( realisations ),
+			dice,
+			)
+	return _fill(
+			target,
+			grammar,
+			chosen,
+			lexicon,
+			dice,
+			depth + 1,
+			)
+
+
 def _fill(
 		target,
 		grammar: Grammar,
 		text: str,
-		lexicon: dict[str, str],
+		lexicon: Lexicon,
 		dice,
 		depth: int,
 		) -> str:
@@ -121,11 +161,16 @@ def _fill(
 							)
 					)
 		else:
-			if name not in lexicon:
-				raise Grammar_Error(
-						f"Grammar: the lexicon has no {name}."
-						)
-			pieces.append( lexicon[name] )
+			pieces.append(
+					_realise(
+							target,
+							grammar,
+							name,
+							lexicon,
+							dice,
+							depth,
+							)
+					)
 		position = slot.end()
 	pieces.append( text[position:] )
 	return "".join( pieces )
@@ -135,7 +180,7 @@ def Derive(
 		target,
 		grammar: Grammar,
 		text: str,
-		lexicon: dict[str, str],
+		lexicon: Lexicon,
 		dice,
 		) -> str:
 	"""

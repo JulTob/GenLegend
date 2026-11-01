@@ -1,34 +1,44 @@
 """
 Fiendish Aspect — how a Tiefling's blood shows, made by a collapse.
 
-The aspect is a wave of ten slots: a structure (the order the sentences come
-in) and nine parts of the look.  Each part's candidates are the marks the
-blood's legacies lend (``Map_of_Marks``); the collapse (``SpeciesKit.collapse``)
-fills the most constrained slot first, with the Character's own dice, and
-three rules narrow the rest as it goes:
+The aspect is a **presentation**, not an inventory: it dwells on a few things
+and says them well.  It is a wave of ten slots: a structure (which few things
+are said, and in what order) and nine parts of the look.  Each part's
+candidates are the marks the blood's legacies lend (``Map_of_Marks``), and
+``ABSENT`` for a part left unsaid.  The collapse (``SpeciesKit.collapse``)
+fills the most constrained slot first, with the Character's own dice, and four
+rules narrow the rest as it goes:
 
-1. **No word twice.**  Two marks sharing a key never sit in one aspect: no
+1. **Say only what the structure presents.**  Once the structure is drawn,
+   every part it does not say stays empty and every part it says must be
+   filled; and the other way round, a part already drawn rules out the
+   structures that disagree with it (a structure that says the tail is never
+   drawn for a blood with no tail).
+2. **No word twice.**  Two marks sharing a key never sit in one aspect: no
    gold iris under a gold sheen, no red fur marked with red.
-2. **The pattern and its second colour agree.**  A two-colour pattern needs an
+3. **The pattern and its second colour agree.**  A two-colour pattern needs an
    accent; a one-colour pattern forbids one; and the other way round.
-3. **A mixed blood shows both legacies.**  When only one slot could still show
-   the legacy nothing has shown yet, that slot must show it.
+4. **A mixed blood shows both legacies,** in what is said.  When only one slot
+   could still show the legacy nothing has shown yet, that slot must show it.
 
 The hells stay hidden.  The page never describes one; it only suggests where
-the bloodline starts, naming the legacy that lent the most of the look (the
-Heritage, on a tie).  That the blood is two legacies is structure, like the
-Aasimar's two Ideals, and never said.
+the bloodline starts, naming the legacy that lent the most of what is said
+(the Heritage, on a tie).  That the blood is two legacies is structure, like
+the Aasimar's two Ideals, and never said.
 
-How it is *said* is a second draw: each sentence of the chosen structure is a
-symbol of a generative grammar (``Grammar_of_Aspect``, on
-``SpeciesKit.grammar``), rewritten once with the Character's dice, the marks
-slotted in as its lexicon.  The sentences are kept, so reading never rolls.
+How it is *said* is a second draw: each sentence of the structure is a symbol
+of a generative grammar (``Grammar_of_Aspect``, on ``SpeciesKit.grammar``),
+rewritten once with the Character's dice; the marks are its lexicon, and the
+marks said on their own bring sentences of their own.  The sentences are
+kept, so reading never rolls.
 
 Nothing here is mechanical.  Fiendish Legacy carries the rules; this carries
 the aspect.
 """
 
 from __future__ import annotations
+
+import re
 
 from dataclasses import dataclass
 
@@ -71,6 +81,25 @@ LOOK_SLOTS = (
 		( "tail", Tail ),
 		)
 
+# Which slots each sentence symbol says.  A structure says the slots of the
+# symbols in its sentences, and no others.
+SLOTS_SAID_BY = {
+		"HORNS": ( "horn_shape", "horn_material" ),
+		"EYES": ( "eyes", ),
+		"FUR": ( "coat", "pattern", "accent", "sheen" ),
+		"TAIL": ( "tail", ),
+		"SCENT": ( "scent", ),
+		"PLACE": (),
+		"PLACE_OPENING": (),
+		}
+
+# Slots that may stay empty even when said: the accent of a one-colour coat.
+EMPTY_WHEN_SAID = ( "accent", )
+
+_SYMBOL = re.compile(
+		r"\{([A-Z_]+)\}"
+		)
+
 
 @dataclass(
 		frozen=True,
@@ -79,17 +108,16 @@ class Fiendish_Aspect:
 	"""One Tiefling's look, collapsed once and kept, with the words it is said in."""
 
 	structure: type
-	horn_shape: type
-	horn_material: type
-	eyes: type
-	coat: type
-	pattern: type
+	# Each part is a mark, or ABSENT when this presentation does not say it.
+	horn_shape: object
+	horn_material: object
+	eyes: object
+	coat: object
+	pattern: object
 	accent: object
-		#-- A coat mark, or ABSENT for a one-colour pattern.
-	sheen: type
-	scent: type
+	sheen: object
+	scent: object
 	tail: object
-		#-- A tail mark, or ABSENT.
 	# The legacy the looks suggest, named and never described.
 	suggested: type
 	# The structure's sentences, derived once by the grammar.
@@ -102,7 +130,7 @@ class Fiendish_Aspect:
 
 
 # ---------------------------------------------------------------------------
-# Who lends what.
+# Who lends what, and what a structure says.
 # ---------------------------------------------------------------------------
 
 def _lent_by_blood(
@@ -153,6 +181,17 @@ def _is_two_colour(
 	return "{b}" in pattern.TEXT
 
 
+def Slots_Said(
+		structure,
+		) -> tuple[str, ...]:
+	"""The look slots a structure says, read from its sentence symbols."""
+	said = []
+	for sentence in structure.SENTENCES:
+		for symbol in _SYMBOL.findall( sentence ):
+			said.extend( SLOTS_SAID_BY[symbol] )
+	return tuple( said )
+
+
 # ---------------------------------------------------------------------------
 # The slots and their first candidates.
 # ---------------------------------------------------------------------------
@@ -171,38 +210,6 @@ def _lent_marks(
 			)
 
 
-def _some_legacy_lends_none(
-		part,
-		legacies,
-		) -> bool:
-	return any(
-			not any(
-					mark in legacy.MARKS
-					for mark in Marks_Of( part )
-					)
-			for legacy in legacies
-			)
-
-
-def _candidates(
-		name: str,
-		part,
-		legacies,
-		) -> tuple:
-	marks = _lent_marks(
-			part,
-			legacies,
-			)
-	if name == "accent":
-		return ( *marks, ABSENT )
-	if name == "tail" and _some_legacy_lends_none(
-			part,
-			legacies,
-			):
-		return ( *marks, ABSENT )
-	return marks
-
-
 def _slots(
 		legacies,
 		) -> tuple[Slot, ...]:
@@ -213,10 +220,12 @@ def _slots(
 	look = tuple(
 			Slot(
 					name,
-					_candidates(
-							name,
-							part,
-							legacies,
+					(
+							*_lent_marks(
+									part,
+									legacies,
+									),
+							ABSENT,
 							),
 					)
 			for name, part in LOOK_SLOTS
@@ -225,7 +234,7 @@ def _slots(
 
 
 # ---------------------------------------------------------------------------
-# The three rules.
+# The four rules.
 # ---------------------------------------------------------------------------
 
 def _narrow(
@@ -243,11 +252,72 @@ def _narrow(
 	return narrowed
 
 
+def _fits(
+		structure,
+		name: str,
+		value,
+		) -> bool:
+	"""Whether a value of a look slot agrees with what the structure says."""
+	said = name in Slots_Said( structure )
+	if not said:
+		return value is ABSENT
+	if name in EMPTY_WHEN_SAID:
+		return True
+	return value is not ABSENT
+
+
+def _say_only_what_is_presented(
+		drawn,
+		domains,
+		):
+	"""Rule 1: the structure and the look slots agree on what is said."""
+	look = [
+			name
+			for name, _part in LOOK_SLOTS
+			]
+	if "structure" in drawn:
+		structure = drawn["structure"]
+		for name in look:
+			if name in drawn:
+				continue
+			domains = _narrow(
+					domains,
+					name,
+					lambda value, name=name: _fits(
+							structure,
+							name,
+							value,
+							),
+					)
+		return domains
+
+	def could_say(
+			structure,
+			) -> bool:
+		return all(
+				any(
+						_fits(
+								structure,
+								name,
+								value,
+								)
+						for value in domains[name]
+						)
+				for name in look
+				)
+
+	return _narrow(
+			domains,
+			"structure",
+			could_say,
+			)
+
+
 def _no_word_twice(
 		drawn,
 		domains,
 		):
-	"""Rule 1: an open slot loses every candidate sharing a key with a drawn mark."""
+	"""Rule 2: an open slot loses every candidate sharing a key with a drawn mark."""
 	used = {
 			key
 			for mark in drawn.values()
@@ -268,9 +338,13 @@ def _accent_follows_pattern(
 		drawn,
 		domains,
 		):
-	"""Rule 2: a two-colour pattern has an accent, a one-colour one has none."""
-	if "pattern" in drawn and "accent" not in drawn:
-		if _is_two_colour( drawn["pattern"] ):
+	"""Rule 3: a two-colour pattern has an accent, a one-colour one has none."""
+	pattern = drawn.get(
+			"pattern",
+			ABSENT,
+			)
+	if pattern is not ABSENT and "accent" not in drawn:
+		if _is_two_colour( pattern ):
 			return _narrow(
 					domains,
 					"accent",
@@ -282,11 +356,16 @@ def _accent_follows_pattern(
 				lambda accent: accent is ABSENT,
 				)
 	if "accent" in drawn and "pattern" not in drawn:
-		wants_two = drawn["accent"] is not ABSENT
+		if drawn["accent"] is ABSENT:
+			return _narrow(
+					domains,
+					"pattern",
+					lambda pattern: pattern is ABSENT or not _is_two_colour( pattern ),
+					)
 		return _narrow(
 				domains,
 				"pattern",
-				lambda pattern: _is_two_colour( pattern ) == wants_two,
+				lambda pattern: pattern is not ABSENT and _is_two_colour( pattern ),
 				)
 	return domains
 
@@ -304,7 +383,7 @@ def _contradiction(
 def _both_legacies_show(
 		legacies,
 		):
-	"""Rule 3, for one blood: a mixed blood shows both of its legacies."""
+	"""Rule 4, for one blood: a mixed blood shows both of its legacies."""
 
 	def rule(
 			drawn,
@@ -356,14 +435,14 @@ def _both_legacies_show(
 
 
 # ---------------------------------------------------------------------------
-# The suggested origin, and the collapse itself.
+# The suggested origin, the words, and the collapse itself.
 # ---------------------------------------------------------------------------
 
 def _most_shown(
 		drawn,
 		legacies,
 		):
-	"""The legacy that lent the most of the look; the Heritage on a tie."""
+	"""The legacy that lent the most of what is said; the Heritage on a tie."""
 	counts = {
 			legacy: 0
 			for legacy in legacies
@@ -384,39 +463,38 @@ def _most_shown(
 		#-- Legacies are in blood order, Heritage first, so it wins ties.
 
 
-def _fur(
-		drawn,
-		) -> str:
-	"""The coat, the pattern and the accent, as one phrase."""
-	accent = ""
-	if drawn["accent"] is not ABSENT:
-		accent = drawn["accent"].TEXT
-	return drawn["pattern"].TEXT.format(
-			a=drawn["coat"].TEXT,
-			b=accent,
-			)
-
-
 def _text_or_nothing(
 		mark,
-		) -> str:
+		):
 	if mark is ABSENT:
 		return ""
 	return mark.TEXT
 
 
+def _fur(
+		drawn,
+		) -> str:
+	"""The coat, the pattern and the accent, as one phrase (nothing if unsaid)."""
+	if drawn["pattern"] is ABSENT:
+		return ""
+	return drawn["pattern"].TEXT.format(
+			a=_text_or_nothing( drawn["coat"] ),
+			b=_text_or_nothing( drawn["accent"] ),
+			)
+
+
 def _lexicon(
 		drawn,
 		suggested,
-		) -> dict[str, str]:
+		) -> dict:
 	"""The words the grammar slots in, from the marks the collapse chose."""
 	return {
-			"horn_shape": drawn["horn_shape"].TEXT,
-			"horn_material": drawn["horn_material"].TEXT,
-			"eyes": drawn["eyes"].TEXT,
+			"horns": _text_or_nothing( drawn["horn_shape"] ),
+			"horn_material": _text_or_nothing( drawn["horn_material"] ),
+			"eyes": _text_or_nothing( drawn["eyes"] ),
 			"fur": _fur( drawn ),
-			"sheen": drawn["sheen"].TEXT,
-			"scent": drawn["scent"].TEXT,
+			"sheen": _text_or_nothing( drawn["sheen"] ),
+			"scent": _text_or_nothing( drawn["scent"] ),
 			"tail": _text_or_nothing( drawn["tail"] ),
 			"place": suggested.PLACE,
 			}
@@ -477,6 +555,7 @@ def Collapse_Aspect(
 			target,
 			_slots( legacies ),
 			(
+					_say_only_what_is_presented,
 					_no_word_twice,
 					_accent_follows_pattern,
 					_both_legacies_show( legacies ),
