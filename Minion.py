@@ -14,11 +14,17 @@ _START_FILES = frozenset({"main.py"})
 # By default, console logging is DISABLED in production to avoid noise.
 # Set MINION_ENABLED=1 to enable console output. Setting MINION_LOG alone
 # still enables file logging (backward compatible with the old behaviour).
+# An explicit MINION_ENABLED=0/false/no silences everything, even MINION_LOG.
 _log_path = os.environ.get("MINION_LOG") or None
-_minion_enabled = (
-	os.environ.get("MINION_ENABLED", "").lower() in ("1", "true", "yes")
-	or _log_path is not None
-	)
+_enabled_env = os.environ.get("MINION_ENABLED", "").lower()
+if _enabled_env in ("0", "false", "no"):
+	# An explicit disable wins over MINION_LOG: the whole run stays silent.
+	_minion_enabled = False
+else:
+	_minion_enabled = (
+		_enabled_env in ("1", "true", "yes")
+		or _log_path is not None
+		)
 
 # Minion emoji for code
 

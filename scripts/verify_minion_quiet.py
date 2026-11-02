@@ -155,6 +155,31 @@ p = summon_player(seed=42, level=1)
 			os.unlink(log_path)
 
 
+def test_minion_explicit_disable_wins() -> tuple[bool, str]:
+	"""Test that MINION_ENABLED=no silences the run even when MINION_LOG is set."""
+	env = {"MINION_ENABLED": "no", "MINION_LOG": "minion_should_stay_silent.log"}
+	stdout, stderr, returncode = run_python_code(_SUMMON_CODE, env)
+	if os.path.exists("minion_should_stay_silent.log"):
+		size = os.path.getsize("minion_should_stay_silent.log")
+		os.unlink("minion_should_stay_silent.log")
+		if size > 0:
+			return False, (
+				"MINION_ENABLED=no did not silence file logging; "
+				f"the log file received {size} bytes."
+				)
+	if returncode != 0:
+		return False, (
+			f"summon_player failed under explicit disable (rc={returncode}). "
+			f"stderr: {stderr[:200]}"
+			)
+	if _has_minion_records(stdout):
+		return False, (
+			"MINION_ENABLED=no did not silence console output. "
+			f"Output began with: {stdout[:200]}"
+			)
+	return True, "MINION_ENABLED=no silences everything, even MINION_LOG"
+
+
 def main() -> int:
 	"""Run all verification checks."""
 	print("=" * 70)
@@ -187,6 +212,16 @@ def main() -> int:
 	# Test 3: Minion log file works without MINION_ENABLED
 	print("[Check 3] Verifying MINION_LOG=file.log alone writes to file...")
 	passed, message = test_minion_log_file()
+	if passed:
+		print(f"✅ {message}")
+	else:
+		print(f"❌ {message}")
+		all_passed = False
+	print()
+
+	# Test 4: an explicit disable wins over MINION_LOG
+	print("[Check 4] Verifying MINION_ENABLED=no silences even MINION_LOG...")
+	passed, message = test_minion_explicit_disable_wins()
 	if passed:
 		print(f"✅ {message}")
 	else:
