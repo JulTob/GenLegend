@@ -5,7 +5,9 @@ This script ensures that:
 1. Minion logging produces NO output by default
 2. Setting MINION_ENABLED=1 enables logging
 3. MINION_LOG=file.log alone still enables file logging (backward compatible)
-4. The quiet mode works correctly for CI/CD
+4. An explicit MINION_ENABLED=no silences everything, even MINION_LOG
+5. set_log_file(None) restores the quiet default (no console leak)
+6. The quiet mode works correctly for CI/CD
 
 Run:
     python scripts/verify_minion_quiet.py
@@ -180,6 +182,41 @@ def test_minion_explicit_disable_wins() -> tuple[bool, str]:
 	return True, "MINION_ENABLED=no silences everything, even MINION_LOG"
 
 
+def test_set_log_file_none_restores_silence() -> tuple[bool, str]:
+	"""Test that set_log_file(None) restores the default quiet state.
+
+	Regression test: choosing a log file enables Minion logging, but clearing
+	it again used to leave logging enabled, so records fell through to the
+	console even though the caller asked for silence.
+	"""
+	code = """
+import io
+from contextlib import redirect_stdout
+from Minion import set_log_file, _emit
+
+# A caller enabled logging by choosing a log file, then cleared it again.
+set_log_file("should_not_be_written.log")
+set_log_file(None)
+
+buf = io.StringIO()
+with redirect_stdout(buf):
+	_emit("[minion] this record must stay silent")
+
+if buf.getvalue().strip():
+	raise SystemExit("console output leaked: " + repr(buf.getvalue()))
+print("silent after set_log_file(None)")
+"""
+	stdout, stderr, returncode = run_python_code(code)
+	if returncode != 0:
+		return False, (
+			f"set_log_file(None) check failed (rc={returncode}). "
+			f"stderr: {stderr[:200]}"
+			)
+	if "silent after set_log_file(None)" not in stdout:
+		return False, f"unexpected output: {stdout[:200]}"
+	return True, "set_log_file(None) restores the quiet default"
+
+
 def main() -> int:
 	"""Run all verification checks."""
 	print("=" * 70)
@@ -222,6 +259,16 @@ def main() -> int:
 	# Test 4: an explicit disable wins over MINION_LOG
 	print("[Check 4] Verifying MINION_ENABLED=no silences even MINION_LOG...")
 	passed, message = test_minion_explicit_disable_wins()
+	if passed:
+		print(f"✅ {message}")
+	else:
+		print(f"❌ {message}")
+		all_passed = False
+	print()
+
+	# Test 5: clearing the log file restores the quiet default
+	print("[Check 5] Verifying set_log_file(None) restores the quiet default...")
+	passed, message = test_set_log_file_none_restores_silence()
 	if passed:
 		print(f"✅ {message}")
 	else:

@@ -25,6 +25,9 @@ else:
 		_enabled_env in ("1", "true", "yes")
 		or _log_path is not None
 		)
+# The environment-derived default, remembered so that set_log_file(None)
+# can restore it instead of leaving logging silently enabled.
+_env_default_enabled = _minion_enabled
 
 # Minion emoji for code
 
@@ -60,6 +63,10 @@ def set_log_file(path="minion_app.log"):
 	_log_path = path
 	if path is not None:
 		_minion_enabled = True
+	else:
+		# Clearing the log file restores the environment-derived default:
+		# set_log_file(None) must not leave console logging on by accident.
+		_minion_enabled = _env_default_enabled
 
 def get_log_file():
 	"""Current log file path, or None."""
@@ -132,7 +139,7 @@ def _identity(text):
 def print_record(text, color=None):
 	"""
 	Report one line to the log.
-	  	• No Chronicler open  → print it now (unchanged behaviour).
+  		• No Chronicler open  → print it now (unchanged behaviour).
 	  	• Chronicler open     → first sighting prints live; repeats are only tallied;
 	                          	errors are held back for the closing section.
 	"""
