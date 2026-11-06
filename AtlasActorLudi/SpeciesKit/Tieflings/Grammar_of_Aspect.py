@@ -40,6 +40,20 @@ The marks are the lexicon (each mark sentence is a clause, no full stop):
 Every production must read as English for every item its slots can hold; no
 semicolons.  Words a production adds are not keyed, so a production should
 not reuse a word a mark may bring.
+
+**Weights are written by repetition.**  A production listed three times is
+drawn three times as often as one listed once; empty afterthoughts are listed
+several times so that attitude lands only once or twice a paragraph.  So
+adding or removing a copy changes the voice of every Tiefling without changing
+a single sentence: treat a copy as a change of voice, and say so in the commit.
+The three-alternatives self-test counts distinct productions, never copies.
+
+**Every clause and phrase of a horn shape, eyes, scent, tail or bearing
+starts with a plain ASCII letter.**  Those may open a sentence, and the
+``_cap`` and ``_lc`` items change only the first character, so a clause that
+opened on a slot, a quote or an accented capital would be left as it is; the
+marks self-test fails on any that does not.  (Coat patterns are templates
+set mid-sentence, and open on ``{a}``.)
 """
 
 from __future__ import annotations

@@ -101,6 +101,13 @@ SLOTS_SAID_BY = {
 # Slots that may stay empty even when said: the accent of a one-colour coat.
 EMPTY_WHEN_SAID = ( "accent", )
 
+# Lexical items the grammar leaves in place for the naming pass to fill: the
+# aspect is drawn before the Character has a name.  Only {full_name}: {name}
+# is unsafe for Tieflings until #124 (Name_Slots and titles) is settled.  When
+# #124 lands, revisit this tuple; the grammar self-test fails on any kept item
+# that no production uses.
+KEPT_FOR_NAMING = ( "full_name", )
+
 _SYMBOL = re.compile(
 		r"\{([A-Z_]+)\}"
 		)
@@ -588,10 +595,7 @@ def _derive_sentences(
 					sentence,
 					lexicon,
 					dice,
-					keep=(
-							"name",
-							"full_name",
-							),
+					keep=KEPT_FOR_NAMING,
 					)
 			for sentence in structure.SENTENCES
 			]

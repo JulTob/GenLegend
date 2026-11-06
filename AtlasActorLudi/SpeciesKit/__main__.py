@@ -1238,13 +1238,50 @@ def _test_tiefling_identity_is_level_stable() -> None:
 		)
 
 
+def _mark_openings(
+	mark,
+	) -> list[str]:
+	"""The first character of each clause and noun phrase a mark brings."""
+	openings = []
+	for field in (
+		"TEXT",
+		"PHRASE",
+		):
+		value = getattr(
+			mark,
+			field,
+			"",
+			)
+		realisations = value if isinstance(
+			value,
+			tuple,
+			) else (
+			value,
+			)
+		for realisation in realisations:
+			if realisation:
+				openings.append(
+					realisation[0],
+					)
+	return openings
+
+
 def _test_tiefling_marks_are_a_vocabulary() -> None:
-	"""Every mark fills one part; every legacy has horn shapes of its own."""
+	"""
+	Every mark fills one part; every legacy has horn shapes of its own; every
+	clause and phrase of a part said on its own opens on a plain ASCII letter
+	(it may open a sentence, and the ``_cap`` and ``_lc`` items change only
+	the first character).  Coat patterns are templates set mid-sentence.
+	"""
 	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Aspect_Part
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Bearing
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Eyes
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Horn_Shape
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Scent
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Structure
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Tail
 
 	parts = (
 		Structure,
@@ -1264,7 +1301,23 @@ def _test_tiefling_marks_are_a_vocabulary() -> None:
 		) == len(
 			names,
 			)
+	said_on_their_own = (
+		Horn_Shape,
+		Eyes,
+		Scent,
+		Tail,
+		Bearing,
+		)
 	for mark in ROSTER:
+		if any(
+			mark in part
+			for part in said_on_their_own
+			):
+			for opening in _mark_openings(
+				mark,
+				):
+				assert opening.isascii(), mark
+				assert opening.isalpha(), mark
 		assert mark in Aspect_Part
 		homes = {
 			part
@@ -1301,11 +1354,13 @@ def _test_tiefling_grammar_is_complete() -> None:
 	"""Every symbol has a rule, every rule is used, every item is in the lexicon."""
 	import re
 
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import KEPT_FOR_NAMING
 	from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
 	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
 	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import STRUCTURES
 
 	lexicon = {
+		*KEPT_FOR_NAMING,
 		"horns",
 		"horn_phrase",
 		"horn_phrase_cap",
@@ -1323,8 +1378,6 @@ def _test_tiefling_grammar_is_complete() -> None:
 		"bearing",
 		"bearing_lc",
 		"place",
-		"name",
-		"full_name",
 		}
 	slot = re.compile(
 		r"\{([A-Za-z_]+)\}",
@@ -1351,6 +1404,7 @@ def _test_tiefling_grammar_is_complete() -> None:
 			),
 		]
 	used = set()
+	used_items = set()
 	for text in texts:
 		for name in slot.findall(
 			text,
@@ -1362,11 +1416,16 @@ def _test_tiefling_grammar_is_complete() -> None:
 					)
 			else:
 				assert name in lexicon, name
+				used_items.add(
+					name,
+					)
 	assert used == set(
 		GRAMMAR,
 		), set(
 			GRAMMAR,
 			) - used
+	# Both ways: an item (a kept one above all) that no text uses is dead.
+	assert used_items == lexicon, lexicon - used_items
 
 
 def _test_tiefling_three_alternatives_everywhere() -> None:
@@ -1510,9 +1569,6 @@ def _assert_aspect_obeys_its_rules(
 	paragraph = aspect.paragraph()
 	# The name is the one slot left for the naming pass to fill.
 	assert "{" not in paragraph.replace(
-		"{name}",
-		"",
-		).replace(
 		"{full_name}",
 		"",
 		)
