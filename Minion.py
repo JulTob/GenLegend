@@ -10,14 +10,17 @@ _STOP_FILES = frozenset({"Minion.py"})
 _START_FILES = frozenset({"main.py"})
 
 # Log system: when set, decorators append plain-text records here.
-# ``MINION_LOG=minion_app.log python3 ...`` enables file logging for a whole run.
+# ```MINION_LOG=minion_app.log python3 ...``` enables file logging for a whole run.
 # By default, console logging is DISABLED in production to avoid noise.
 # Set MINION_ENABLED=1 to enable console output. Setting MINION_LOG alone
 # still enables file logging (backward compatible with the old behaviour).
 # An explicit MINION_ENABLED=0/false/no silences everything, even MINION_LOG.
 _log_path = os.environ.get("MINION_LOG") or None
 _enabled_env = os.environ.get("MINION_ENABLED", "").lower()
-if _enabled_env in ("0", "false", "no"):
+# An explicit disable in the environment wins over everything, including a
+# later set_log_file() call: the whole run stays silent.
+_env_explicitly_disabled = _enabled_env in ("0", "false", "no")
+if _env_explicitly_disabled:
 	# An explicit disable wins over MINION_LOG: the whole run stays silent.
 	_minion_enabled = False
 else:
@@ -62,7 +65,10 @@ def set_log_file(path="minion_app.log"):
 	global _minion_enabled
 	_log_path = path
 	if path is not None:
-		_minion_enabled = True
+		# Choosing a path enables logging, unless the environment said no:
+		# an explicit MINION_ENABLED=0/false/no silences the whole run,
+		# even when a log path is chosen programmatically.
+		_minion_enabled = not _env_explicitly_disabled
 	else:
 		# Clearing the log file restores the environment-derived default:
 		# set_log_file(None) must not leave console logging on by accident.
