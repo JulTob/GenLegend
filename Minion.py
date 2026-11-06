@@ -10,8 +10,27 @@ _STOP_FILES = frozenset({"Minion.py"})
 _START_FILES = frozenset({"main.py"})
 
 # Log system: when set, decorators append plain-text records here.
-# ``MINION_LOG=minion_app.log python3 ...`` enables it for a whole run.
+# ```MINION_LOG=minion_app.log python3 ...``` enables file logging for a whole run.
+# By default, console logging is DISABLED in production to avoid noise.
+# Set MINION_ENABLED=1 to enable console output. Setting MINION_LOG alone
+# still enables file logging (backward compatible with the old behaviour).
+# An explicit MINION_ENABLED=0/false/no silences everything, even MINION_LOG.
 _log_path = os.environ.get("MINION_LOG") or None
+_enabled_env = os.environ.get("MINION_ENABLED", "").lower()
+# An explicit disable in the environment wins over everything, including a
+# later set_log_file() call: the whole run stays silent.
+_env_explicitly_disabled = _enabled_env in ("0", "false", "no")
+if _env_explicitly_disabled:
+	# An explicit disable wins over MINION_LOG: the whole run stays silent.
+	_minion_enabled = False
+else:
+	_minion_enabled = (
+		_enabled_env in ("1", "true", "yes")
+		or _log_path is not None
+		)
+# The environment-derived default, remembered so that set_log_file(None)
+# can restore it instead of leaving logging silently enabled.
+_env_default_enabled = _minion_enabled
 
 # Minion emoji for code
 
@@ -41,13 +60,32 @@ CHANGELING_COLOR = "yellow"
 
 
 def set_log_file(path="minion_app.log"):
-	"""Set path for decorators to append records. Default 'minion_app.log'. Pass None to disable file logging."""
+	"""Set path for decorators to append records. Default 'minion_app.log'. Pass None to disable file logging. Choosing a path also enables Minion logging."""
 	global _log_path
+	global _minion_enabled
 	_log_path = path
+	if path is not None:
+		# Choosing a path enables logging, unless the environment said no:
+		# an explicit MINION_ENABLED=0/false/no silences the whole run,
+		# even when a log path is chosen programmatically.
+		_minion_enabled = not _env_explicitly_disabled
+	else:
+		# Clearing the log file restores the environment-derived default:
+		# set_log_file(None) must not leave console logging on by accident.
+		_minion_enabled = _env_default_enabled
 
 def get_log_file():
 	"""Current log file path, or None."""
 	return _log_path
+
+def set_minion_enabled(enabled: bool) -> None:
+	"""Enable or disable Minion logging globally. Pass False to silence all Minion output."""
+	global _minion_enabled
+	_minion_enabled = enabled
+
+def get_minion_enabled() -> bool:
+	"""Check if Minion logging is currently enabled."""
+	return _minion_enabled
 
 def set_start_files(files):
 	"""Set custom start files for get_call_tree."""
@@ -60,15 +98,20 @@ def get_start_files():
 
 def _emit(plain_text, color=None):
 	"""Low-level sink: file when _log_path is set (plain text), else console (optionally colored)."""
-	if _log_path is None:
-		print(Color(plain_text, color) if color else plain_text)
+	# If Minion logging is disabled globally, do nothing
+	if not _minion_enabled:
 		return
-	try:
-		with open(_log_path, "a", encoding="utf-8") as f:
-			f.write(plain_text + "\n")
-	except OSError:
-		print(Color(f"{ALERT_MINION} Error writing to log file: {_log_path}", ALERT_COLOR))
-		print(Color(plain_text, ALERT_COLOR))
+
+	if _log_path is not None:
+		try:
+			with open(_log_path, "a", encoding="utf-8") as f:
+				f.write(plain_text + "\n")
+				return
+		except OSError:
+			print(Color(f"{ALERT_MINION} Error writing to log file: {_log_path}", ALERT_COLOR))
+
+	# Fall back to console output
+	print(Color(plain_text, color) if color else plain_text)
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  The Chronicler — gathers one job's records into a single, tidy account
@@ -102,7 +145,7 @@ def _identity(text):
 def print_record(text, color=None):
 	"""
 	Report one line to the log.
-	  	• No Chronicler open  → print it now (unchanged behaviour).
+  		• No Chronicler open  → print it now (unchanged behaviour).
 	  	• Chronicler open     → first sighting prints live; repeats are only tallied;
 	                          	errors are held back for the closing section.
 	"""
@@ -483,6 +526,9 @@ def spy(f):
 
 if __name__ == "__main__":
 	# Self-test / usage demo. Run:  python Minion.py
+	# The demo exists to show Minion records, so switch them on explicitly;
+	# library defaults keep console logging off (see MINION_ENABLED).
+	set_minion_enabled(True)
 
 	@watcher
 	def name_step():

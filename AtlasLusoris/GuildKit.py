@@ -19,5 +19,7 @@ re-exporting the body before the first kit is read.
 from AtlasLusoris.Grimoire_of_Guilds import *
 from AtlasLusoris.Grimoire_of_Guilds import __all__ as __all__
 from AtlasLusoris.AtlasOfGuilds import Load_Guild_Libraries
+from AtlasLusoris.AtlasOfGuilds import Validate_Guild_Specializations
 
 Load_Guild_Libraries()
+Validate_Guild_Specializations()
