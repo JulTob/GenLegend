@@ -49,6 +49,12 @@ class Fiendish_Blood:
 			self,
 			) -> tuple[tuple[int, str], ...]:
 		"""The legacy spells as ``(level, spell key)`` rows, like ``SPELLS``."""
+		if len( self.spell_lenders ) != len( SPELL_LEVELS ):
+			raise ValueError(
+				f"A fiendish blood needs one spell lender per "
+				f"place ({len( SPELL_LEVELS )}), not "
+				f"{len( self.spell_lenders )}."
+				)
 		return tuple(
 				_spell_at_level(
 						lender,

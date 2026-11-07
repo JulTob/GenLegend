@@ -53,7 +53,7 @@ class Otherworldly_Presence(Trait):
 		(
 			1,
 			"Thaumaturgy",
-			),
+		),
 		)
 
 	@Imprint
@@ -71,13 +71,19 @@ def Imprint_Fiendish_Heritage(
 	Imprint one Tiefling Heritage, its blood, and the Resistance it lends.
 
 	The blood is a choice made once: drawn here, only read later.  Its
-	Resistance is one of its legacies' (QST-0152), so it is granted after the
-	blood is drawn, not from the Heritage alone.
+	Resistance is one of its legacies' (QST-0152), so it is granted after
+	the blood is drawn, not from the Heritage alone.  The blood is drawn
+	before anything is imprinted, so a wave that cannot collapse leaves the
+	Character untouched instead of half-adorned.
 	"""
 	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Blood import (
 		Draw_Fiendish_Blood,
 		)
 
+	blood = Draw_Fiendish_Blood(
+		target,
+		heritage,
+		)
 	Imprint_Heritage(
 		target,
 		heritage,
@@ -86,14 +92,11 @@ def Imprint_Fiendish_Heritage(
 		"_",
 		" ",
 		)
-	target.fiendish_blood = Draw_Fiendish_Blood(
-		target,
-		heritage,
-		)
+	target.fiendish_blood = blood
 	Grant_Resistance(
 		target,
-		target.fiendish_blood.resistance,
+		blood.resistance,
 		)
 	target.fiendish_legacy_damage_resistance = (
-		target.fiendish_blood.resistance
+		blood.resistance
 		)
