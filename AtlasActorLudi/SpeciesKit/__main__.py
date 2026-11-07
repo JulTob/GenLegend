@@ -79,6 +79,7 @@ from AtlasActorLudi.SpeciesKit.Tieflings import Otherworldly_Presence
 from AtlasActorLudi.SpeciesKit.traits import Darkvision as Common_Darkvision
 from AtlasActorLudi.SpeciesKit.traits import Darkvision_Rules
 from AtlasLusoris.FeaturesKit import Feature
+from AtlasLusoris.FeaturesKit import Name_Slots
 from AtlasLusoris.FeaturesKit import ORIGIN_FEATS
 from AtlasLusoris.FeaturesKit import Resourceful
 from AtlasLusoris.FeaturesKit import Skillful
@@ -1237,13 +1238,50 @@ def _test_tiefling_identity_is_level_stable() -> None:
 		)
 
 
+def _mark_openings(
+	mark,
+	) -> list[str]:
+	"""The first character of each clause and noun phrase a mark brings."""
+	openings = []
+	for field in (
+		"TEXT",
+		"PHRASE",
+		):
+		value = getattr(
+			mark,
+			field,
+			"",
+			)
+		realisations = value if isinstance(
+			value,
+			tuple,
+			) else (
+			value,
+			)
+		for realisation in realisations:
+			if realisation:
+				openings.append(
+					realisation[0],
+					)
+	return openings
+
+
 def _test_tiefling_marks_are_a_vocabulary() -> None:
-	"""Every mark fills one part; every legacy has horn shapes of its own."""
+	"""
+	Every mark fills one part; every legacy has horn shapes of its own; every
+	clause and phrase of a part said on its own opens on a plain ASCII letter
+	(it may open a sentence, and the ``_cap`` and ``_lc`` items change only
+	the first character).  Coat patterns are templates set mid-sentence.
+	"""
 	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Aspect_Part
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Bearing
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Eyes
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Horn_Shape
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Scent
 	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Structure
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Tail
 
 	parts = (
 		Structure,
@@ -1263,7 +1301,23 @@ def _test_tiefling_marks_are_a_vocabulary() -> None:
 		) == len(
 			names,
 			)
+	said_on_their_own = (
+		Horn_Shape,
+		Eyes,
+		Scent,
+		Tail,
+		Bearing,
+		)
 	for mark in ROSTER:
+		if any(
+			mark in part
+			for part in said_on_their_own
+			):
+			for opening in _mark_openings(
+				mark,
+				):
+				assert opening.isascii(), mark
+				assert opening.isalpha(), mark
 		assert mark in Aspect_Part
 		homes = {
 			part
@@ -1300,18 +1354,29 @@ def _test_tiefling_grammar_is_complete() -> None:
 	"""Every symbol has a rule, every rule is used, every item is in the lexicon."""
 	import re
 
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import KEPT_FOR_NAMING
 	from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
 	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
 	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import STRUCTURES
 
 	lexicon = {
+		*KEPT_FOR_NAMING,
 		"horns",
+		"horn_phrase",
+		"horn_phrase_cap",
 		"horn_material",
 		"eyes",
+		"eyes_phrase",
+		"eyes_phrase_cap",
 		"fur",
 		"sheen",
 		"scent",
+		"scent_phrase",
+		"omen",
 		"tail",
+		"tail_lc",
+		"bearing",
+		"bearing_lc",
 		"place",
 		}
 	slot = re.compile(
@@ -1339,6 +1404,7 @@ def _test_tiefling_grammar_is_complete() -> None:
 			),
 		]
 	used = set()
+	used_items = set()
 	for text in texts:
 		for name in slot.findall(
 			text,
@@ -1350,11 +1416,78 @@ def _test_tiefling_grammar_is_complete() -> None:
 					)
 			else:
 				assert name in lexicon, name
+				used_items.add(
+					name,
+					)
 	assert used == set(
 		GRAMMAR,
 		), set(
 			GRAMMAR,
 			) - used
+	# Both ways: an item (a kept one above all) that no text uses is dead.
+	assert used_items == lexicon, lexicon - used_items
+
+
+def _test_tiefling_three_alternatives_everywhere() -> None:
+	"""
+	Every choice has at least three alternatives (Julio, 2026-11-01).
+
+	Every rule of the grammar has three distinct productions; every mark
+	that brings its own sentences, noun phrases or omens brings three; and
+	every legacy lends at least three marks to every part (the tail aside,
+	which only the Nine Hells lend).
+	"""
+	from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
+	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Tail
+
+	# Distinct productions: a production listed twice on purpose (to weight
+	# it) is one alternative, not two.
+	for symbol, productions in GRAMMAR.items():
+		assert len(
+			set(
+				productions,
+				)
+			) >= 3, symbol
+	for mark in ROSTER:
+		for field in (
+			"TEXT",
+			"PHRASE",
+			"OMEN",
+			):
+			value = getattr(
+				mark,
+				field,
+				"",
+				)
+			if isinstance(
+				value,
+				tuple,
+				):
+				assert len(
+					value,
+					) >= 3, (
+						mark,
+						field,
+						)
+	for _name, part in _aspect_slots():
+		if part is Tail:
+			continue
+		for legacy in TIEFLING_HERITAGES:
+			lent = [
+				mark
+				for mark in Marks_Of(
+					part,
+					)
+				if mark in legacy.MARKS
+				]
+			assert len(
+				lent,
+				) >= 3, (
+					part,
+					legacy,
+					)
 
 
 def _aspect_slots():
@@ -1434,9 +1567,21 @@ def _assert_aspect_obeys_its_rules(
 			) <= shown, legacies
 	assert aspect.suggested in legacies
 	paragraph = aspect.paragraph()
-	assert "{" not in paragraph
+	# The name is the one slot left for the naming pass to fill.
+	assert "{" not in paragraph.replace(
+		"{full_name}",
+		"",
+		)
 	assert ";" not in paragraph
-	assert aspect.suggested.PLACE in paragraph
+	# Equality holds only while no bearing or afterthought names a place of
+	# its own; if one ever does, this check must look at the place sentence.
+	names_a_place = any(
+		"{PLACE" in sentence
+		for sentence in aspect.structure.SENTENCES
+		)
+	assert names_a_place == (
+		aspect.suggested.PLACE in paragraph
+		)
 	for legacy in TIEFLING_HERITAGES:
 		if legacy is not aspect.suggested:
 			assert legacy.PLACE not in paragraph, paragraph
@@ -1597,7 +1742,15 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 			for feature in character.features
 			if feature.name == f"{character:Heritage}"
 			)
-		assert entry.description == blood.aspect.paragraph()
+		assert entry.description == blood.aspect.paragraph().format(
+			**Name_Slots(
+				character,
+				),
+			)
+		# A kept slot ({full_name}) lives only in heritage_description; the
+		# projection fills it, so none ever reaches the sheet's own text.
+		assert "{" not in entry.description, entry.description
+		assert "}" not in entry.description, entry.description
 
 		seen_mixed = seen_mixed or blood.mixed
 		seen_pure = seen_pure or not blood.mixed
@@ -2243,6 +2396,7 @@ def _self_test() -> None:
 	_test_tiefling_identity_is_level_stable()
 	_test_tiefling_marks_are_a_vocabulary()
 	_test_tiefling_grammar_is_complete()
+	_test_tiefling_three_alternatives_everywhere()
 	_test_collapse_fails_loudly_on_bad_input()
 	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()

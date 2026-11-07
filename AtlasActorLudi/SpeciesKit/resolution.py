@@ -57,7 +57,9 @@ def Project_Species_Description(
 		)
 
 	# The Heritage prose, when a Heritage carries any, heads its own Entry
-	# beneath the Species one and obeys the same refresh rule.
+	# beneath the Species one and obeys the same refresh rule.  A Heritage
+	# whose prose is drawn per Character (a Tiefling's aspect) keeps it on the
+	# Character as ``heritage_description``; that comes first.
 	from AtlasActorLudi.SpeciesKit.catalog import Current_Heritage
 
 	heritage = Current_Heritage(character)
@@ -67,6 +69,11 @@ def Project_Species_Description(
 
 	branch = str(
 		getattr(
+			character,
+			"heritage_description",
+			None,
+			)
+		or getattr(
 			heritage,
 			"HERITAGE_DESCRIPTION",
 			"",

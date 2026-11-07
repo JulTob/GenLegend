@@ -50,6 +50,7 @@ from AtlasActorLudi.SpeciesKit.grammar import Derive
 from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
 from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
 	#-- Importing the map is what fills the Pins below with marks.
+from AtlasActorLudi.SpeciesKit.Tieflings.pins import Bearing
 from AtlasActorLudi.SpeciesKit.Tieflings.pins import Coat
 from AtlasActorLudi.SpeciesKit.Tieflings.pins import Coat_Pattern
 from AtlasActorLudi.SpeciesKit.Tieflings.pins import Eyes
@@ -80,6 +81,7 @@ LOOK_SLOTS = (
 		( "sheen", Sheen ),
 		( "scent", Scent ),
 		( "tail", Tail ),
+		( "bearing", Bearing ),
 		)
 
 # Which slots each sentence symbol says.  A structure says the slots of the
@@ -90,12 +92,21 @@ SLOTS_SAID_BY = {
 		"FUR": ( "coat", "pattern", "accent", "sheen" ),
 		"TAIL": ( "tail", ),
 		"SCENT": ( "scent", ),
+		"BEARING": ( "bearing", ),
+		"CLOSE": (),
 		"PLACE": (),
 		"PLACE_OPENING": (),
 		}
 
 # Slots that may stay empty even when said: the accent of a one-colour coat.
 EMPTY_WHEN_SAID = ( "accent", )
+
+# Lexical items the grammar leaves in place for the naming pass to fill: the
+# aspect is drawn before the Character has a name.  Only {full_name}: {name}
+# is unsafe for Tieflings until #124 (Name_Slots and titles) is settled.  When
+# #124 lands, revisit this tuple; the grammar self-test fails on any kept item
+# that no production uses.
+KEPT_FOR_NAMING = ( "full_name", )
 
 _SYMBOL = re.compile(
 		r"\{([A-Z_]+)\}"
@@ -119,6 +130,7 @@ class Fiendish_Aspect:
 	sheen: object
 	scent: object
 	tail: object
+	bearing: object
 	# The legacy the rumour names: one of the blood's two, never described.
 	suggested: type
 	# The structure's sentences, derived once by the grammar.
@@ -480,6 +492,50 @@ def _fur(
 			)
 
 
+def _phrase_or_nothing(
+		mark,
+		) -> str:
+	if mark is ABSENT:
+		return ""
+	return mark.PHRASE
+
+
+def _capitalised(
+		text,
+		):
+	"""The same words, opening a sentence (each realisation, for a tuple)."""
+	if isinstance( text, tuple ):
+		return tuple(
+				_capitalised( one )
+				for one in text
+				)
+	if not text:
+		return text
+	return text[0].upper() + text[1:]
+
+
+def _lowered(
+		text,
+		):
+	"""The same words, inside a sentence (each realisation, for a tuple)."""
+	if isinstance( text, tuple ):
+		return tuple(
+				_lowered( one )
+				for one in text
+				)
+	if not text:
+		return text
+	return text[0].lower() + text[1:]
+
+
+def _omen_or_nothing(
+		mark,
+		) -> str:
+	if mark is ABSENT:
+		return ""
+	return mark.OMEN
+
+
 def _lexicon(
 		drawn,
 		suggested,
@@ -487,12 +543,29 @@ def _lexicon(
 	"""The words the grammar slots in, from the marks the collapse chose."""
 	return {
 			"horns": _text_or_nothing( drawn["horn_shape"] ),
+			"horn_phrase": _phrase_or_nothing( drawn["horn_shape"] ),
+			"horn_phrase_cap": _capitalised(
+					_phrase_or_nothing( drawn["horn_shape"] ),
+					),
 			"horn_material": _text_or_nothing( drawn["horn_material"] ),
 			"eyes": _text_or_nothing( drawn["eyes"] ),
+			"eyes_phrase": _phrase_or_nothing( drawn["eyes"] ),
+			"eyes_phrase_cap": _capitalised(
+					_phrase_or_nothing( drawn["eyes"] ),
+					),
 			"fur": _fur( drawn ),
 			"sheen": _text_or_nothing( drawn["sheen"] ),
 			"scent": _text_or_nothing( drawn["scent"] ),
+			"scent_phrase": _phrase_or_nothing( drawn["scent"] ),
+			"omen": _omen_or_nothing( drawn["scent"] ),
 			"tail": _text_or_nothing( drawn["tail"] ),
+			"tail_lc": _lowered(
+					_text_or_nothing( drawn["tail"] ),
+					),
+			"bearing": _text_or_nothing( drawn["bearing"] ),
+			"bearing_lc": _lowered(
+					_text_or_nothing( drawn["bearing"] ),
+					),
 			"place": suggested.PLACE,
 			}
 
@@ -522,6 +595,7 @@ def _derive_sentences(
 					sentence,
 					lexicon,
 					dice,
+					keep=KEPT_FOR_NAMING,
 					)
 			for sentence in structure.SENTENCES
 			]
@@ -582,6 +656,7 @@ def Collapse_Aspect(
 			sheen=drawn["sheen"],
 			scent=drawn["scent"],
 			tail=drawn["tail"],
+			bearing=drawn["bearing"],
 			suggested=suggested,
 			sentences=sentences,
 			)
