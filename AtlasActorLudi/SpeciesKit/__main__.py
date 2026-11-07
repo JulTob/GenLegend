@@ -1455,6 +1455,73 @@ def _assert_aspect_obeys_its_rules(
 			assert legacy.PLACE not in paragraph, paragraph
 
 
+def _test_collapse_fails_loudly_on_bad_input() -> None:
+	"""An empty wave, and a rule that widens a slot, both fail loudly."""
+	from AtlasActorLudi.SpeciesKit.collapse import Collapse
+	from AtlasActorLudi.SpeciesKit.collapse import Collapse_Rule_Error
+	from AtlasActorLudi.SpeciesKit.collapse import Slot
+
+	try:
+		Collapse(
+			None,
+			(),
+			(),
+			None,
+			)
+	except ValueError:
+		pass
+	else:
+		raise AssertionError(
+			"An empty wave must fail loudly.",
+			)
+
+	def widen(
+		drawn,
+		domains,
+		):
+		return {
+			**domains,
+			"colour": (
+				*domains["colour"],
+				"green",
+				),
+			}
+
+	def drop_a_slot(
+		drawn,
+		domains,
+		):
+		return {}
+
+	for bad_rule in (
+		widen,
+		drop_a_slot,
+		):
+		try:
+			Collapse(
+				None,
+				(
+					Slot(
+						"colour",
+						(
+							"red",
+							"blue",
+							),
+						),
+					),
+				(
+					bad_rule,
+					),
+				None,
+				)
+		except Collapse_Rule_Error:
+			pass
+		else:
+			raise AssertionError(
+				f"{bad_rule.__name__} must fail loudly.",
+				)
+
+
 def _test_tiefling_aspect_collapses_for_every_blood() -> None:
 	"""Every pair of legacies collapses, on every seed, and obeys its rules."""
 	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import (
@@ -2237,6 +2304,7 @@ def _self_test() -> None:
 	_test_tiefling_identity_is_level_stable()
 	_test_tiefling_marks_are_a_vocabulary()
 	_test_tiefling_grammar_is_complete()
+	_test_collapse_fails_loudly_on_bad_input()
 	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()
 	_test_tiefling_heritage_conflict_is_atomic()
