@@ -1747,6 +1747,10 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 				character,
 				),
 			)
+		# A kept slot ({full_name}) lives only in heritage_description; the
+		# projection fills it, so none ever reaches the sheet's own text.
+		assert "{" not in entry.description, entry.description
+		assert "}" not in entry.description, entry.description
 
 		seen_mixed = seen_mixed or blood.mixed
 		seen_pure = seen_pure or not blood.mixed

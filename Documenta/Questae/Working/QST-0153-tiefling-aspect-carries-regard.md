@@ -103,6 +103,10 @@ paragraphs and 1,388 distinct sentences.
 ## ❓ For Julio
 
 1. Is this the voice?
-2. Should it fold into QST-0151 (#122) once you like it, or stay apart?
+2. ~~Should it fold into QST-0151 (#122) once you like it, or stay apart?~~
+   **Ruled (Julio, review of 2026-11-07): stay apart.** #122 merges first;
+   this branch then follows `main` as its own PR, so the plain voice and the
+   bearing voice are each ruled on, instead of hiding the voice judgement in
+   one 2,400-line review.
 3. The balance of presentations: six plain, six that close on a bearing or on
    a past and a future. Every register can appear in any of them.
