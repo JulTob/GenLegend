@@ -25,7 +25,10 @@ Nothing here knows about Tieflings.  A rule is a plain function
 
 where ``drawn`` maps each collapsed slot to its value, and ``domains`` maps
 every slot to the candidates it still holds.  A rule returns the domains it
-narrowed; it never adds a candidate back.
+narrowed; it never adds a candidate back.  A rule that did could undo another
+rule's work forever, so propagation checks every rule's answer and fails
+loudly (``Collapse_Rule_Error``) on a rule that widens a slot, adds one or
+drops one.
 """
 
 from __future__ import annotations
@@ -68,6 +71,10 @@ class Collapse_Contradiction(RuntimeError):
 	"""The rules left a slot with no candidate, every time."""
 
 
+class Collapse_Rule_Error(ValueError):
+	"""A rule broke the contract: it may only narrow the slots it is given."""
+
+
 def _lowest_entropy(
 		slots: tuple[Slot, ...],
 		drawn: Drawn,
@@ -100,19 +107,60 @@ def _draw(
 			)
 
 
+def _rule_name(
+		rule: Rule,
+		) -> str:
+	"""A rule's name for an error message (a partial has none of its own)."""
+	return getattr(
+			rule,
+			"__name__",
+			repr( rule ),
+			)
+
+
+def _check_only_narrows(
+		rule: Rule,
+		before: Domains,
+		after: Domains,
+		) -> None:
+	"""Fail loudly unless the rule kept every slot and only removed candidates."""
+	if set( after ) != set( before ):
+		raise Collapse_Rule_Error(
+				f"Collapse: rule {_rule_name( rule )} added or dropped a slot."
+				)
+	for name, candidates in after.items():
+		if not set( candidates ) <= set( before[name] ):
+			raise Collapse_Rule_Error(
+					f"Collapse: rule {_rule_name( rule )} added a candidate "
+					f"back to slot {name!r}."
+					)
+
+
 def _propagate(
 		rules: tuple[Rule, ...],
 		drawn: Drawn,
 		domains: Domains,
 		) -> Domains:
-	"""Run every rule until no domain narrows any further."""
+	"""
+	Run every rule until no domain narrows any further.
+
+	This ends because every pass either removes a candidate or stops, and a
+	wave holds finitely many.  That holds only while rules never add a
+	candidate back, so each rule's answer is checked (``_check_only_narrows``).
+	"""
 	while True:
 		narrowed = dict( domains )
 		for rule in rules:
-			narrowed = rule(
+			answer = rule(
 					drawn,
 					narrowed,
 					)
+			_check_only_narrows(
+					rule,
+					narrowed,
+					answer,
+					)
+			narrowed = answer
 		if narrowed == domains:
 			return domains
 		domains = narrowed
@@ -181,6 +229,10 @@ def Collapse(
 	Deterministic for a given seed and Dice Bag: the slot order, the rules and
 	the dice decide everything, and no set or hash order is ever consulted.
 	"""
+	if not slots:
+		raise ValueError(
+				"Collapse: a wave needs at least one slot."
+				)
 	names = [
 			slot.name
 			for slot in slots
