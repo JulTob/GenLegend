@@ -10,6 +10,7 @@ from AtlasActorLudi.SpeciesKit.Tieflings.traits import (
 	)
 from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
+from AtlasActorLudi.SpeciesKit.Tieflings.pins import Abyssal_Marks
 
 
 class Abyssal(
@@ -26,9 +27,10 @@ class Abyssal(
 		return No_Heritage_Yet( target )
 
 	DAMAGE_RESISTANCE = "Poison"
-	HERITAGE_DESCRIPTION = (
-		"You descend from demons, chaotic beings with no defined shape. The chaos of the abyss reflects in your metallic fur of bright color, with spots and lines, sometimes shifting and moving from place to place or changing shape each time you wake up. Your colors are the most intense of all Tieflings, but also the hardest to hide. Your horns are twisted and spiky, most times uneven. Your eyes could look normal, if they didn't change color with your emotions."
-		)
+	# Where the looks may suggest the bloodline starts: a name, never described.
+	PLACE = "the Abyss"
+	# The marks this legacy lends to a Tiefling's aspect (``Map_of_Marks``).
+	MARKS = Abyssal_Marks
 	SPELLS = (
 		(
 			1,

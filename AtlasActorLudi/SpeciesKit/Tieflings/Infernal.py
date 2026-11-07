@@ -10,6 +10,7 @@ from AtlasActorLudi.SpeciesKit.Tieflings.traits import (
 	)
 from TopKit import Pre
 from AtlasActorLudi.SpeciesKit.bases import No_Heritage_Yet
+from AtlasActorLudi.SpeciesKit.Tieflings.pins import Infernal_Marks
 
 
 class Infernal(
@@ -26,9 +27,10 @@ class Infernal(
 		return No_Heritage_Yet( target )
 
 	DAMAGE_RESISTANCE = "Fire"
-	HERITAGE_DESCRIPTION = (
-		"Yours is the aspect of the Nine Hells: fire and brimstone. Your horns are black like onyx, your eyes are black except for a golden fiery iris, and your fur is either black or a bright color that resembles a flame, in both cases with a metallic, almost golden, shine to it. You also have a tail with an arrow shape at the end."
-		)
+	# Where the looks may suggest the bloodline starts: a name, never described.
+	PLACE = "the Nine Hells"
+	# The marks this legacy lends to a Tiefling's aspect (``Map_of_Marks``).
+	MARKS = Infernal_Marks
 	SPELLS = (
 		(
 			1,
