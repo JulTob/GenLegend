@@ -1620,6 +1620,26 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 				3,
 				5,
 				)
+		# Each part on its own is one a published Tiefling gets: the spell
+		# at each level is its lender's own spell at that level, and the
+		# Resistance is its lender's own.  The whole combination need not be
+		# (Fire Resistance with Chill Touch is the house rule at work).
+		for (level, spell), lender in zip(
+			blood.spells,
+			blood.spell_lenders,
+			strict=True,
+			):
+			assert (
+				level,
+				spell,
+				) in lender.SPELLS, (
+					lender,
+					level,
+					spell,
+					)
+		assert blood.resistance == (
+			blood.resistance_lender.DAMAGE_RESISTANCE
+			)
 
 		_completed_ledger(character)
 		Resolve_Species_Features(character)

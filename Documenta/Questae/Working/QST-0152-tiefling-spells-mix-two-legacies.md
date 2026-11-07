@@ -77,3 +77,12 @@ Example, level 5, a Chthonic Tiefling whose blood is Chthonic and Infernal:
    is part of the charm."
 3. "You know the spells of your legacy" stays as written: the legacy is the
    blood. Reword?
+4. ~~Lean the draws toward the Heritage (for example, the cantrip)?~~
+   **Answered by the same ruling (2026-11-01): no, uniform.** So a mixed
+   blood lends all three spells from one legacy one time in four (each
+   place is a coin toss between the two legacies), and half of those times
+   it is the *other* legacy. Then the spells read like a pure blood of that other
+   legacy under this Heritage's title, and the Resistance agrees with them
+   half the time. That is intended: the blood stays hidden, and a sheet may
+   mislead. A weighted first draw would cost one line, if Julio ever wants
+   the Heritage to lean.

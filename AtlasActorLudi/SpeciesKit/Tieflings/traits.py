@@ -3,6 +3,7 @@
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage
+from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Blood import Draw_Fiendish_Blood
 from AtlasLusoris.FeaturesKit import Grant_Resistance
 from AtlasLusoris.FeaturesKit import Trait
 
@@ -76,10 +77,6 @@ def Imprint_Fiendish_Heritage(
 	before anything is imprinted, so a wave that cannot collapse leaves the
 	Character untouched instead of half-adorned.
 	"""
-	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Blood import (
-		Draw_Fiendish_Blood,
-		)
-
 	blood = Draw_Fiendish_Blood(
 		target,
 		heritage,
