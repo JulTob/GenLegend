@@ -158,6 +158,18 @@ class Infernal_Marks(Lent_By):
 	"""Marks the Nine Hells lend."""
 
 
+def _is_shape_of(
+		value,
+		pin: type,
+		) -> bool:
+	"""True when ``value`` is one of the pin's shapes (a subclass, not the pin)."""
+	return (
+			isinstance( value, type )
+			and issubclass( value, pin )
+			and value is not pin
+			)
+
+
 def Make_Mark(
 		name: str,
 		*,
@@ -169,14 +181,36 @@ def Make_Mark(
 		omen: str | tuple[str, ...] = "",
 		) -> type[Aspect_Mark]:
 	"""Make one mark, pin it to its part and to every legacy that lends it."""
+	if not _is_shape_of(
+			part,
+			Aspect_Part,
+			):
+		raise TypeError(
+				f"Make_Mark: {name}'s part must be a shape of Aspect_Part, "
+				f"not {part!r}."
+				)
 	if part is Structure:
 		raise ValueError(
 				"Make_Mark: a Structure is made with Make_Structure."
+				)
+	if not isinstance( lent_by, tuple ):
+		raise TypeError(
+				f"Make_Mark: {name}'s lent_by must be a tuple of legacies, "
+				f"not {lent_by!r}."
 				)
 	if not lent_by:
 		raise ValueError(
 				f"Make_Mark: {name} must be lent by at least one legacy."
 				)
+	for legacy_marks in lent_by:
+		if not _is_shape_of(
+				legacy_marks,
+				Lent_By,
+				):
+			raise TypeError(
+					f"Make_Mark: {name} is lent by {legacy_marks!r}, "
+					f"which is not a shape of Lent_By."
+					)
 	mark = type(
 			name,
 			( Aspect_Mark, ),

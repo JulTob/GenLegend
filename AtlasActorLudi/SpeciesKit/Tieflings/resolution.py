@@ -69,6 +69,7 @@ def _legacy_free_cast_chips(
 def _project_fiendish_legacy(
 	target,
 	heritage,
+	blood,
 	legacy_spells,
 	ability_label,
 	) -> None:
@@ -92,7 +93,7 @@ def _project_fiendish_legacy(
 		free_casts
 		)
 	description = (
-		f"You have Resistance to {heritage.DAMAGE_RESISTANCE} damage. "
+		f"You have Resistance to {blood.resistance} damage. "
 		f"You know the spells of your legacy at your level: {legacy_names}. "
 		f"{ability_label} is your spellcasting ability for them."
 		)
@@ -111,7 +112,7 @@ def _project_fiendish_legacy(
 			Chip(
 				"🛡️",
 				"Damage Resistance",
-				heritage.DAMAGE_RESISTANCE,
+				blood.resistance,
 				),
 			*Species_Spellcasting_Chips(
 				target
@@ -142,11 +143,14 @@ def Resolve_Tiefling_Features(
 	if heritage is None:
 		return
 
+	blood = target.fiendish_blood
+		#-- Drawn in the Heritage's Imprint, so a Tiefling with a Heritage
+		#-- always has one; its spells are the Heritage's when the blood is pure.
 	unlocked = Resolve_Species_Spells(
 		target,
 		(
 			*Otherworldly_Presence.SPELLS,
-			*heritage.SPELLS,
+			*blood.spells,
 			),
 		)
 	legacy_spell_names = {
@@ -154,7 +158,7 @@ def Resolve_Tiefling_Features(
 			Lodge_of_Spells,
 			provider_key,
 			).name
-		for required_level, provider_key in heritage.SPELLS
+		for required_level, provider_key in blood.spells
 		if target.level >= required_level
 		}
 	legacy_spells = tuple(
@@ -181,6 +185,7 @@ def Resolve_Tiefling_Features(
 	_project_fiendish_legacy(
 		target,
 		heritage,
+		blood,
 		legacy_spells,
 		ability_label,
 		)

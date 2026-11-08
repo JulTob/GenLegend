@@ -1032,12 +1032,13 @@ def _test_tiefling_heritage_geometry() -> None:
 		assert character in Humanoid
 		assert character not in Fiend
 		assert Current_Heritage(character) is heritage
+		# One Resistance, lent by a legacy of the blood (QST-0152).
 		assert character.damage_resistances == (
-			heritage.DAMAGE_RESISTANCE,
+			character.fiendish_blood.resistance,
 			)
 		assert character.fiendish_legacy == heritage.__name__
 		assert character.fiendish_legacy_damage_resistance == (
-			heritage.DAMAGE_RESISTANCE
+			character.fiendish_blood.resistance
 			)
 		assert character.otherworldly_presence_spell == "Thaumaturgy"
 		assert character.darkvision == 60
@@ -1071,7 +1072,7 @@ def _test_tiefling_rule_projection() -> None:
 		5: 3,
 		}
 
-	for heritage, progression in expected_spells.items():
+	for heritage in expected_spells:
 		for level, unlocked_count in unlock_counts.items():
 			character = Character(
 				seed=433,
@@ -1081,6 +1082,18 @@ def _test_tiefling_rule_projection() -> None:
 				character,
 				Tiefling,
 				heritage=heritage,
+				)
+			blood = character.fiendish_blood
+			# Each place is lent by one legacy of the blood (QST-0152).
+			progression = tuple(
+				expected_spells[
+					lender
+					][
+					place
+					]
+				for place, lender in enumerate(
+					blood.spell_lenders,
+					)
 				)
 			_completed_ledger(character)
 			Resolve_Species_Features(character)
@@ -1126,7 +1139,7 @@ def _test_tiefling_rule_projection() -> None:
 				)
 			assert character.species_spell_save_dc >= 10
 			assert character.damage_resistances == (
-				heritage.DAMAGE_RESISTANCE,
+				blood.resistance,
 				)
 			assert all(
 				spell_name in legacy_feature.description
@@ -1319,6 +1332,22 @@ def _test_tiefling_marks_are_a_vocabulary() -> None:
 				assert opening.isascii(), mark
 				assert opening.isalpha(), mark
 		assert mark in Aspect_Part
+		# A key is one concept, written as one lowercase ASCII word: a stem
+		# may stand for its forms ("swept" for "sweep"), so keys are not
+		# checked against the mark's own text.
+		for key in mark.KEYS:
+			assert key.isascii(), (
+				mark,
+				key,
+				)
+			assert key.isalpha(), (
+				mark,
+				key,
+				)
+			assert key == key.lower(), (
+				mark,
+				key,
+				)
 		homes = {
 			part
 			for part in parts
@@ -1348,6 +1377,61 @@ def _test_tiefling_marks_are_a_vocabulary() -> None:
 			assert lenders == [
 				legacy,
 				], shape
+
+
+def _test_tiefling_make_mark_fails_loudly() -> None:
+	"""A part or a lender that is not a shape of its Pin is refused."""
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Chthonic_Marks
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Eyes
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Horn_Shape
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Make_Mark
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
+
+	for part, lent_by in (
+		(
+			Chthonic_Marks,
+			(
+				Chthonic_Marks,
+				),
+			),
+		(
+			Eyes,
+			Chthonic_Marks,
+			),
+		(
+			Eyes,
+			(
+				Horn_Shape,
+				),
+			),
+		):
+		try:
+			Make_Mark(
+				"Never_Made",
+				part=part,
+				lent_by=lent_by,
+				text="never printed",
+				)
+		except TypeError:
+			pass
+		else:
+			raise AssertionError(
+				(
+					part,
+					lent_by,
+					),
+				)
+	# Refused before anything was made: no half-made mark is pinned anywhere.
+	for part in (
+		Eyes,
+		Horn_Shape,
+		):
+		assert all(
+			mark.__name__ != "Never_Made"
+			for mark in Marks_Of(
+				part,
+				)
+			), part
 
 
 def _test_tiefling_grammar_is_complete() -> None:
@@ -1588,8 +1672,12 @@ def _assert_aspect_obeys_its_rules(
 
 
 def _test_collapse_fails_loudly_on_bad_input() -> None:
-	"""An empty wave, and a rule that widens a slot, both fail loudly."""
+	"""
+	An empty wave, and a rule that widens a slot, both fail loudly; a wave
+	that can never be filled names its last dead end (slot and rule).
+	"""
 	from AtlasActorLudi.SpeciesKit.collapse import Collapse
+	from AtlasActorLudi.SpeciesKit.collapse import Collapse_Contradiction
 	from AtlasActorLudi.SpeciesKit.collapse import Collapse_Rule_Error
 	from AtlasActorLudi.SpeciesKit.collapse import Slot
 
@@ -1624,6 +1712,64 @@ def _test_collapse_fails_loudly_on_bad_input() -> None:
 		domains,
 		):
 		return {}
+
+	def always_empty(
+		drawn,
+		domains,
+		):
+		return {
+			**domains,
+			"colour": (),
+			}
+
+	for slots, rules, slot, cause in (
+		(
+			(
+				Slot(
+					"colour",
+					(
+						"red",
+						"blue",
+						),
+					),
+				),
+			(
+				always_empty,
+				),
+			"colour",
+			"rule always_empty",
+			),
+		(
+			(
+				Slot(
+					"colour",
+					(),
+					),
+				),
+			(),
+			"colour",
+			"its own declaration",
+			),
+		):
+		try:
+			Collapse(
+				None,
+				slots,
+				rules,
+				None,
+				)
+		except Collapse_Contradiction as error:
+			assert error.dead_end.slot == slot, error
+			assert error.dead_end.rule.startswith(
+				cause,
+				), error
+			assert slot in str(
+				error,
+				), error
+		else:
+			raise AssertionError(
+				f"A wave that cannot fill {slot!r} must fail loudly.",
+				)
 
 	for bad_rule in (
 		widen,
@@ -1694,9 +1840,11 @@ def _test_tiefling_aspect_collapses_for_every_blood() -> None:
 
 
 def _test_tiefling_blood_mixes_two_legacies() -> None:
-	"""The aspect comes from the Heritage and one more drawn legacy (QST-0151)."""
+	"""The aspect and the rules come from the Heritage and one more legacy."""
 	seen_mixed = False
 	seen_pure = False
+	seen_spell_from_second = False
+	seen_resistance_from_second = False
 
 	for seed in range(
 		1,
@@ -1732,6 +1880,44 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 			blood.aspect,
 			legacies,
 			)
+		# QST-0152: each spell place and the Resistance are lent by a legacy
+		# of the blood, as the dice fall; a pure blood lends all of them.
+		assert all(
+			lender in legacies
+			for lender in blood.spell_lenders
+			)
+		assert len(
+			blood.spell_lenders,
+			) == 3
+		assert blood.resistance_lender in legacies
+		assert tuple(
+			level
+			for level, _ in blood.spells
+			) == (
+				1,
+				3,
+				5,
+				)
+		# Each part on its own is one a published Tiefling gets: the spell
+		# at each level is its lender's own spell at that level, and the
+		# Resistance is its lender's own.  The whole combination need not be
+		# (Fire Resistance with Chill Touch is the house rule at work).
+		for (level, spell), lender in zip(
+			blood.spells,
+			blood.spell_lenders,
+			strict=True,
+			):
+			assert (
+				level,
+				spell,
+				) in lender.SPELLS, (
+					lender,
+					level,
+					spell,
+					)
+		assert blood.resistance == (
+			blood.resistance_lender.DAMAGE_RESISTANCE
+			)
 
 		_completed_ledger(character)
 		Resolve_Species_Features(character)
@@ -1752,11 +1938,38 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 		assert "{" not in entry.description, entry.description
 		assert "}" not in entry.description, entry.description
 
+		if not blood.mixed:
+			# A pure blood is the published rule, exactly.
+			heritage = legacies[
+				0
+				]
+			assert blood.spells == tuple(
+				sorted(
+					heritage.SPELLS,
+					),
+				)
+			assert blood.resistance == heritage.DAMAGE_RESISTANCE
+		else:
+			second = legacies[
+				1
+				]
+			seen_spell_from_second = (
+				seen_spell_from_second
+				or second in blood.spell_lenders
+				)
+			seen_resistance_from_second = (
+				seen_resistance_from_second
+				or blood.resistance_lender is second
+				)
+
 		seen_mixed = seen_mixed or blood.mixed
 		seen_pure = seen_pure or not blood.mixed
 
 	assert seen_mixed
 	assert seen_pure
+	# The house rule is not only allowed but happens (QST-0152).
+	assert seen_spell_from_second
+	assert seen_resistance_from_second
 
 
 def _test_tiefling_heritage_conflict_is_atomic() -> None:
@@ -1781,8 +1994,9 @@ def _test_tiefling_heritage_conflict_is_atomic() -> None:
 	assert character in Abyssal
 	assert character not in Infernal
 	assert Current_Heritage(character) is Abyssal
+	# The refused second Heritage added nothing: still one Resistance.
 	assert character.damage_resistances == (
-		"Poison",
+		character.fiendish_blood.resistance,
 		)
 
 
@@ -2395,6 +2609,7 @@ def _self_test() -> None:
 	_test_tiefling_rule_projection()
 	_test_tiefling_identity_is_level_stable()
 	_test_tiefling_marks_are_a_vocabulary()
+	_test_tiefling_make_mark_fails_loudly()
 	_test_tiefling_grammar_is_complete()
 	_test_tiefling_three_alternatives_everywhere()
 	_test_collapse_fails_loudly_on_bad_input()

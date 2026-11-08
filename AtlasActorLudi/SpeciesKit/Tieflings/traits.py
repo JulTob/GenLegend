@@ -3,6 +3,7 @@
 from TopKit import Imprint
 
 from AtlasActorLudi.SpeciesKit.physiology import Imprint_Heritage
+from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Blood import Draw_Fiendish_Blood
 from AtlasLusoris.FeaturesKit import Grant_Resistance
 from AtlasLusoris.FeaturesKit import Trait
 
@@ -68,18 +69,14 @@ def Imprint_Fiendish_Heritage(
 	heritage,
 	) -> None:
 	"""
-	Imprint one Tiefling Heritage, its blood, and its resistance atomically.
+	Imprint one Tiefling Heritage, its blood, and the Resistance it lends.
 
-	The blood and its aspect are a choice made once: drawn here, only read
-	later.  The blood is drawn before anything is imprinted, so a wave that
-	cannot collapse leaves the Character untouched instead of half-adorned
-	(a collapse failure raises before the Heritage, the Resistance or the
-	legacy labels are written).
+	The blood is a choice made once: drawn here, only read later.  Its
+	Resistance is one of its legacies' (QST-0152), so it is granted after
+	the blood is drawn, not from the Heritage alone.  The blood is drawn
+	before anything is imprinted, so a wave that cannot collapse leaves the
+	Character untouched instead of half-adorned.
 	"""
-	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Blood import (
-		Draw_Fiendish_Blood,
-		)
-
 	blood = Draw_Fiendish_Blood(
 		target,
 		heritage,
@@ -88,18 +85,18 @@ def Imprint_Fiendish_Heritage(
 		target,
 		heritage,
 		)
-	Grant_Resistance(
-		target,
-		heritage.DAMAGE_RESISTANCE,
-		)
 	target.fiendish_legacy = heritage.__name__.replace(
 		"_",
 		" ",
 		)
-	target.fiendish_legacy_damage_resistance = (
-		heritage.DAMAGE_RESISTANCE
-		)
 	target.fiendish_blood = blood
+	Grant_Resistance(
+		target,
+		blood.resistance,
+		)
+	target.fiendish_legacy_damage_resistance = (
+		blood.resistance
+		)
 	# Raw and unformatted: it may still hold {full_name}, since the name is
 	# settled after the Species.  The Species projection owns the fill
 	# (``Name_Slots``); anything else that prints it must fill it the same way.
