@@ -15,7 +15,14 @@ one value:
 A slot left with no candidates is a contradiction.  The wave then starts again
 from its first state, drawing on from the same dice, so the result is still a
 pure function of the Character's seed.  After ``ATTEMPTS`` contradictions in a
-row the collapse fails loudly: the data cannot be satisfied.
+row the collapse fails loudly: the data cannot be satisfied.  The error names
+the last dead end: the slot left empty, and the rule that emptied it.
+
+Retries are deterministic, but they shape the odds.  A wave that often runs
+into a contradiction keeps only the attempts that succeed, so its results
+lean toward whatever the rules let through, not toward an even draw over the
+candidates.  A rule that empties slots often is a rule that reshapes the
+distribution, and is worth measuring.
 
 ``ABSENT`` is a candidate like any other, meaning "this slot stays empty".
 
@@ -67,8 +74,29 @@ Drawn = dict[str, object]
 Rule = Callable[[Drawn, Domains], Domains]
 
 
+@dataclass(
+		frozen=True,
+		)
+class Dead_End:
+	"""Where one attempt failed: the slot left empty, and the rule that emptied it."""
+
+	slot: str
+	rule: str
+
+
 class Collapse_Contradiction(RuntimeError):
 	"""The rules left a slot with no candidate, every time."""
+
+	def __init__(
+			self,
+			dead_end: Dead_End,
+			) -> None:
+		self.dead_end = dead_end
+		super().__init__(
+				f"Collapse: no attempt in {ATTEMPTS} filled every slot.  "
+				f"The last one left slot {dead_end.slot!r} empty "
+				f"(emptied by {dead_end.rule})."
+				)
 
 
 class Collapse_Rule_Error(ValueError):
@@ -136,18 +164,33 @@ def _check_only_narrows(
 					)
 
 
+def _newly_emptied(
+		before: Domains,
+		after: Domains,
+		) -> str | None:
+	"""The first slot, in wave order, that held candidates before and none after."""
+	for name, candidates in after.items():
+		if not candidates and before[name]:
+			return name
+	return None
+
+
 def _propagate(
 		rules: tuple[Rule, ...],
 		drawn: Drawn,
 		domains: Domains,
-		) -> Domains:
+		) -> tuple[Domains, Dead_End | None]:
 	"""
 	Run every rule until no domain narrows any further.
 
 	This ends because every pass either removes a candidate or stops, and a
 	wave holds finitely many.  That holds only while rules never add a
 	candidate back, so each rule's answer is checked (``_check_only_narrows``).
+
+	Returns the narrowed domains, and the first dead end met on the way (the
+	first slot a rule emptied), or ``None``.
 	"""
+	dead_end = None
 	while True:
 		narrowed = dict( domains )
 		for rule in rules:
@@ -160,19 +203,32 @@ def _propagate(
 					narrowed,
 					answer,
 					)
+			emptied = _newly_emptied(
+					narrowed,
+					answer,
+					)
+			if dead_end is None and emptied is not None:
+				dead_end = Dead_End(
+						slot=emptied,
+						rule=f"rule {_rule_name( rule )}",
+						)
 			narrowed = answer
 		if narrowed == domains:
-			return domains
+			return domains, dead_end
 		domains = narrowed
 
 
-def _has_contradiction(
-		domains: Domains,
-		) -> bool:
-	return any(
-			len( candidates ) == 0
-			for candidates in domains.values()
-			)
+def _empty_from_the_start(
+		slots: tuple[Slot, ...],
+		) -> Dead_End | None:
+	"""A slot declared with no candidates at all: a dead end before any rule."""
+	for slot in slots:
+		if not slot.candidates:
+			return Dead_End(
+					slot=slot.name,
+					rule="its own declaration (no candidates to begin with)",
+					)
+	return None
 
 
 def _collapse_once(
@@ -180,21 +236,24 @@ def _collapse_once(
 		slots: tuple[Slot, ...],
 		rules: tuple[Rule, ...],
 		dice,
-		) -> Drawn | None:
-	"""One attempt at the whole wave; ``None`` on a contradiction."""
+		) -> Drawn | Dead_End:
+	"""One attempt at the whole wave: every slot drawn, or where it failed."""
+	empty = _empty_from_the_start( slots )
+	if empty is not None:
+		return empty
 	drawn: Drawn = {}
 	domains: Domains = {
 			slot.name: tuple( slot.candidates )
 			for slot in slots
 			}
-	domains = _propagate(
+	domains, dead_end = _propagate(
 			rules,
 			drawn,
 			domains,
 			)
 	while len( drawn ) < len( slots ):
-		if _has_contradiction( domains ):
-			return None
+		if dead_end is not None:
+			return dead_end
 		name = _lowest_entropy(
 				slots,
 				drawn,
@@ -207,13 +266,13 @@ def _collapse_once(
 				)
 		drawn[name] = value
 		domains[name] = ( value, )
-		domains = _propagate(
+		domains, dead_end = _propagate(
 				rules,
 				drawn,
 				domains,
 				)
-	if _has_contradiction( domains ):
-		return None
+	if dead_end is not None:
+		return dead_end
 	return drawn
 
 
@@ -241,15 +300,17 @@ def Collapse(
 		raise ValueError(
 				"Collapse: every slot needs its own name."
 				)
+	last_dead_end = None
 	for _attempt in range( ATTEMPTS ):
-		drawn = _collapse_once(
+		result = _collapse_once(
 				target,
 				slots,
 				rules,
 				dice,
 				)
-		if drawn is not None:
-			return drawn
+		if not isinstance( result, Dead_End ):
+			return result
+		last_dead_end = result
 	raise Collapse_Contradiction(
-			f"Collapse: the rules left a slot empty {ATTEMPTS} times in a row."
+			last_dead_end,
 			)

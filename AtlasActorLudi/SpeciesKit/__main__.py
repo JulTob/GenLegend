@@ -1265,6 +1265,22 @@ def _test_tiefling_marks_are_a_vocabulary() -> None:
 			)
 	for mark in ROSTER:
 		assert mark in Aspect_Part
+		# A key is one concept, written as one lowercase ASCII word: a stem
+		# may stand for its forms ("swept" for "sweep"), so keys are not
+		# checked against the mark's own text.
+		for key in mark.KEYS:
+			assert key.isascii(), (
+				mark,
+				key,
+				)
+			assert key.isalpha(), (
+				mark,
+				key,
+				)
+			assert key == key.lower(), (
+				mark,
+				key,
+				)
 		homes = {
 			part
 			for part in parts
@@ -1294,6 +1310,61 @@ def _test_tiefling_marks_are_a_vocabulary() -> None:
 			assert lenders == [
 				legacy,
 				], shape
+
+
+def _test_tiefling_make_mark_fails_loudly() -> None:
+	"""A part or a lender that is not a shape of its Pin is refused."""
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Chthonic_Marks
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Eyes
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Horn_Shape
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Make_Mark
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
+
+	for part, lent_by in (
+		(
+			Chthonic_Marks,
+			(
+				Chthonic_Marks,
+				),
+			),
+		(
+			Eyes,
+			Chthonic_Marks,
+			),
+		(
+			Eyes,
+			(
+				Horn_Shape,
+				),
+			),
+		):
+		try:
+			Make_Mark(
+				"Never_Made",
+				part=part,
+				lent_by=lent_by,
+				text="never printed",
+				)
+		except TypeError:
+			pass
+		else:
+			raise AssertionError(
+				(
+					part,
+					lent_by,
+					),
+				)
+	# Refused before anything was made: no half-made mark is pinned anywhere.
+	for part in (
+		Eyes,
+		Horn_Shape,
+		):
+		assert all(
+			mark.__name__ != "Never_Made"
+			for mark in Marks_Of(
+				part,
+				)
+			), part
 
 
 def _test_tiefling_grammar_is_complete() -> None:
@@ -1443,8 +1514,12 @@ def _assert_aspect_obeys_its_rules(
 
 
 def _test_collapse_fails_loudly_on_bad_input() -> None:
-	"""An empty wave, and a rule that widens a slot, both fail loudly."""
+	"""
+	An empty wave, and a rule that widens a slot, both fail loudly; a wave
+	that can never be filled names its last dead end (slot and rule).
+	"""
 	from AtlasActorLudi.SpeciesKit.collapse import Collapse
+	from AtlasActorLudi.SpeciesKit.collapse import Collapse_Contradiction
 	from AtlasActorLudi.SpeciesKit.collapse import Collapse_Rule_Error
 	from AtlasActorLudi.SpeciesKit.collapse import Slot
 
@@ -1479,6 +1554,64 @@ def _test_collapse_fails_loudly_on_bad_input() -> None:
 		domains,
 		):
 		return {}
+
+	def always_empty(
+		drawn,
+		domains,
+		):
+		return {
+			**domains,
+			"colour": (),
+			}
+
+	for slots, rules, slot, cause in (
+		(
+			(
+				Slot(
+					"colour",
+					(
+						"red",
+						"blue",
+						),
+					),
+				),
+			(
+				always_empty,
+				),
+			"colour",
+			"rule always_empty",
+			),
+		(
+			(
+				Slot(
+					"colour",
+					(),
+					),
+				),
+			(),
+			"colour",
+			"its own declaration",
+			),
+		):
+		try:
+			Collapse(
+				None,
+				slots,
+				rules,
+				None,
+				)
+		except Collapse_Contradiction as error:
+			assert error.dead_end.slot == slot, error
+			assert error.dead_end.rule.startswith(
+				cause,
+				), error
+			assert slot in str(
+				error,
+				), error
+		else:
+			raise AssertionError(
+				f"A wave that cannot fill {slot!r} must fail loudly.",
+				)
 
 	for bad_rule in (
 		widen,
@@ -2242,6 +2375,7 @@ def _self_test() -> None:
 	_test_tiefling_rule_projection()
 	_test_tiefling_identity_is_level_stable()
 	_test_tiefling_marks_are_a_vocabulary()
+	_test_tiefling_make_mark_fails_loudly()
 	_test_tiefling_grammar_is_complete()
 	_test_collapse_fails_loudly_on_bad_input()
 	_test_tiefling_aspect_collapses_for_every_blood()
