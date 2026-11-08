@@ -374,10 +374,17 @@ def _accent_follows_pattern(
 def _contradiction(
 		domains,
 		):
-	"""Domains the collapse will read as a contradiction (one slot emptied)."""
+	"""
+	Domains the collapse will read as a contradiction: the structure emptied.
+
+	Which slot is emptied does not change what happens next: any empty slot
+	sends the whole wave back to its first state, drawing on from the same
+	dice.  The structure is named because it is what failed: the presentation
+	drawn so far cannot show both legacies.  The collapse's error names this
+	slot and this rule, if it never recovers.
+	"""
 	emptied = dict( domains )
-	first = next( iter( emptied ) )
-	emptied[first] = ()
+	emptied["structure"] = ()
 	return emptied
 
 
@@ -386,7 +393,7 @@ def _both_legacies_show(
 		):
 	"""Rule 4, for one blood: a mixed blood shows both of its legacies."""
 
-	def rule(
+	def both_legacies_show(
 			drawn,
 			domains,
 			):
@@ -432,7 +439,7 @@ def _both_legacies_show(
 						)
 		return domains
 
-	return rule
+	return both_legacies_show
 
 
 # ---------------------------------------------------------------------------
