@@ -53,6 +53,23 @@ Example, level 5, a Chthonic Tiefling whose blood is Chthonic and Infernal:
   `blood.resistance`; nothing reads a Heritage's own `SPELLS` or
   `DAMAGE_RESISTANCE` directly any more.
 
+### The contract for a legacy
+
+Anyone adding a legacy (a fourth hell) must give its Tag:
+
+- **`SPELLS`**: exactly one `(level, spell key)` row at each of the levels
+  1, 3 and 5 (`SPELL_LEVELS`), in any order. A legacy missing a level, or
+  carrying one twice, fails loudly the first time a blood borrows from it:
+  *"Abyssal must declare exactly one spell at level 3, not 0."*
+- **`DAMAGE_RESISTANCE`**: one damage type.
+- A blood always carries exactly one spell lender per level; anything else
+  fails loudly: *"A fiendish blood needs one spell lender per place (3),
+  not 2."*
+
+If ever a mixed blood should show *at least one* spell from each legacy, that
+is a rule to state and test, not a change to the draw (Julio's review,
+2026-11-08). Today the mix is free.
+
 ## ⚖️ Evaluation (Decree 0007)
 
 - **Against the rules:** balance is unchanged in count and level (one
