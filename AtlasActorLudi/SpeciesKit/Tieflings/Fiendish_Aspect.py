@@ -507,6 +507,11 @@ def _phrase_or_nothing(
 	return mark.PHRASE
 
 
+# _capitalised and _lowered change only the first character, so they assume
+# every text they touch opens on a plain ASCII letter (no quote, no ellipsis,
+# no accented capital).  The marks self-test enforces it for every clause and
+# phrase a horn shape, eyes, scent, tail or bearing brings.
+
 def _capitalised(
 		text,
 		):

@@ -2,10 +2,10 @@
 
 - **Type:** experiment · lore (📗) · generator
 - **Priority:** 🟢 low until Julio reads the samples *(Julio, 2026-11-01: "Keep the current work, but branch to try this idea.")*
-- **Status:** Working — an experimental branch stacked on QST-0151 (#122)
+- **Status:** Working — an experimental branch stacked on QST-0152 (#123), which stacks on QST-0151 (#122): it merges last, so it can never undo the lent spells and Resistance (Julio, 2026-11-08)
 - **Owner:** unclaimed
 - **Route to:** Lore (Bard)
-- **Parent:** QST-0151 · **Related:** `Documenta/Canon/Mythos/Tiefling.md` §0 (passing), §4 (a diaspora with no homeland) · #124 (`{name}` and titles)
+- **Parent:** QST-0151, QST-0152 · **Related:** `Documenta/Canon/Mythos/Tiefling.md` §0 (passing), §4 (a diaspora with no homeland) · #124 (`{name}` and titles)
 
 ---
 
