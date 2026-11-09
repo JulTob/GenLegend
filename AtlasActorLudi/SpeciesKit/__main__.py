@@ -1972,6 +1972,58 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 	assert seen_resistance_from_second
 
 
+def _test_tiefling_broken_blood_fails_at_the_draw() -> None:
+	"""A blood with the wrong lenders fails as it is made, not when read."""
+	from dataclasses import replace
+
+	character = Character(
+		seed=443,
+		)
+	Apply_Species(
+		character,
+		Tiefling,
+		heritage=Abyssal,
+		)
+	blood = character.fiendish_blood
+	missing_a_level = type(
+		"Legacy_Missing_Level_3",
+		(),
+		{
+			"SPELLS": (
+				(
+					1,
+					"Fire_Bolt",
+					),
+				(
+					5,
+					"Darkness",
+					),
+				),
+			},
+		)
+	for spell_lenders in (
+		blood.spell_lenders[
+			:2
+			],
+		(
+			missing_a_level,
+			missing_a_level,
+			missing_a_level,
+			),
+		):
+		try:
+			replace(
+				blood,
+				spell_lenders=spell_lenders,
+				)
+		except ValueError:
+			pass
+		else:
+			raise AssertionError(
+				spell_lenders,
+				)
+
+
 def _test_tiefling_heritage_conflict_is_atomic() -> None:
 	character = Character(
 		seed=443,
@@ -1980,6 +2032,10 @@ def _test_tiefling_heritage_conflict_is_atomic() -> None:
 		character,
 		Tiefling,
 		heritage=Abyssal,
+		)
+	blood_before = character.fiendish_blood
+	resistances_before = tuple(
+		character.damage_resistances,
 		)
 
 	try:
@@ -1994,10 +2050,17 @@ def _test_tiefling_heritage_conflict_is_atomic() -> None:
 	assert character in Abyssal
 	assert character not in Infernal
 	assert Current_Heritage(character) is Abyssal
-	# The refused second Heritage added nothing: still one Resistance.
-	assert character.damage_resistances == (
-		character.fiendish_blood.resistance,
+	# The refused second Heritage changed nothing: the same blood, the same
+	# one Resistance, and that Resistance is the one the blood lends (which
+	# may be either of its legacies', QST-0152).
+	assert character.fiendish_blood is blood_before
+	assert tuple(
+		character.damage_resistances,
+		) == resistances_before
+	assert resistances_before == (
+		blood_before.resistance_lender.DAMAGE_RESISTANCE,
 		)
+	assert blood_before.resistance_lender in blood_before.legacies
 
 
 def _test_elf_heritage_geometry() -> None:
@@ -2615,6 +2678,7 @@ def _self_test() -> None:
 	_test_collapse_fails_loudly_on_bad_input()
 	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()
+	_test_tiefling_broken_blood_fails_at_the_draw()
 	_test_tiefling_heritage_conflict_is_atomic()
 	_test_elf_heritage_geometry()
 	_test_elf_rule_projection()
