@@ -25,6 +25,7 @@ or different spells.  Reading the blood afterwards never rolls.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import cached_property
 
 from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import Collapse_Aspect
 from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import Fiendish_Aspect
@@ -44,17 +45,24 @@ class Fiendish_Blood:
 	# The legacy that lends the one damage Resistance.
 	resistance_lender: type
 
-	@property
+	def __post_init__(
+			self,
+			) -> None:
+		"""Check the blood as it is made: a broken legacy fails at the draw."""
+		_check_spell_lenders(
+				self.spell_lenders,
+				)
+
+	@cached_property
 	def spells(
 			self,
 			) -> tuple[tuple[int, str], ...]:
-		"""The legacy spells as ``(level, spell key)`` rows, like ``SPELLS``."""
-		if len( self.spell_lenders ) != len( SPELL_LEVELS ):
-			raise ValueError(
-				f"A fiendish blood needs one spell lender per "
-				f"place ({len( SPELL_LEVELS )}), not "
-				f"{len( self.spell_lenders )}."
-				)
+		"""
+		The legacy spells as ``(level, spell key)`` rows, like ``SPELLS``.
+
+		Derived on the first read and kept: every later read is a lookup.  The
+		lenders were checked when the blood was made, so this cannot fail.
+		"""
 		return tuple(
 				_spell_at_level(
 						lender,
@@ -63,6 +71,7 @@ class Fiendish_Blood:
 				for level, lender in zip(
 						SPELL_LEVELS,
 						self.spell_lenders,
+						strict=True,
 						)
 				)
 
@@ -115,6 +124,30 @@ def _spell_at_level(
 				f"at level {level}, not {len( rows )}."
 				)
 	return rows[0]
+
+
+def _check_spell_lenders(
+		spell_lenders: tuple[type, ...],
+		) -> None:
+	"""
+	Fail loudly unless the blood has one lender per spell place, and every
+	lender declares exactly one spell at its place's level.
+	"""
+	if len( spell_lenders ) != len( SPELL_LEVELS ):
+		raise ValueError(
+				f"A fiendish blood needs one spell lender per "
+				f"place ({len( SPELL_LEVELS )}), not "
+				f"{len( spell_lenders )}."
+				)
+	for level, lender in zip(
+			SPELL_LEVELS,
+			spell_lenders,
+			strict=True,
+			):
+		_spell_at_level(
+				lender,
+				level,
+				)
 
 
 def _open_blood_dice(

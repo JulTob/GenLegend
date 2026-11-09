@@ -44,6 +44,9 @@ Example, level 5, a Chthonic Tiefling whose blood is Chthonic and Infernal:
   rows in the same shape as a legacy's own `SPELLS`, finding each row by its
   level, never by its position (`_spell_at_level` fails loudly on a legacy
   missing a level). `resistance` is the lender's `DAMAGE_RESISTANCE`.
+- The lenders are checked once, as the blood is made (`__post_init__`): a
+  broken legacy fails at the draw, not when the sheet is resolved. `spells` is
+  derived on its first read and kept, so later reads are lookups.
 - The places and the Resistance draw from **their own** Dice Bag,
   `identity.species.Tiefling.fiendish_blood.rules`, apart from the legacies'
   and the aspect's, so the rules and the look can each change without moving
@@ -93,7 +96,11 @@ is a rule to state and test, not a change to the draw (Julio's review,
    so a Chthonic on the sheet may resist Fire and cast Fire Bolt. "That chaos
    is part of the charm."
 3. "You know the spells of your legacy" stays as written: the legacy is the
-   blood. Reword?
+   blood. Reword? *Suggested in review (2026-11-09):* "You know the spells
+   your blood lends". It keeps the blood hidden and stops promising a named
+   legacy, since the spells may all come from the other one. One line, but it
+   moves the Fiendish Legacy entry on every Tiefling sheet, so it waits for
+   Julio.
 4. ~~Lean the draws toward the Heritage (for example, the cantrip)?~~
    **Answered by the same ruling (2026-11-01): no, uniform.** So a mixed
    blood lends all three spells from one legacy one time in four (each
