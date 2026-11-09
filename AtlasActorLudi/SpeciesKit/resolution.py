@@ -57,9 +57,7 @@ def Project_Species_Description(
 		)
 
 	# The Heritage prose, when a Heritage carries any, heads its own Entry
-	# beneath the Species one and obeys the same refresh rule.  A Heritage
-	# whose prose is drawn per Character (a Tiefling's aspect) keeps it on the
-	# Character as ``heritage_description``; that comes first.
+	# beneath the Species one and obeys the same refresh rule.
 	from AtlasActorLudi.SpeciesKit.catalog import Current_Heritage
 
 	heritage = Current_Heritage(character)
@@ -67,7 +65,46 @@ def Project_Species_Description(
 	if heritage is None:
 		return
 
-	branch = str(
+	branch = Heritage_Description(
+		character,
+		)
+
+	if not branch.strip():
+		return
+
+	Project_Species_Feature(
+		character,
+		heritage.__name__.replace(
+			"_",
+			" ",
+			),
+		branch,
+		level=0,
+		narrative=True,
+		)
+
+
+def Heritage_Description(
+	character,
+	) -> str:
+	"""
+	The Heritage prose for this Character, filled and ready to print.
+
+	This is the one place the Heritage prose is filled.  A Heritage whose prose
+	is drawn per Character (a Tiefling's aspect) keeps it raw on the Character
+	as ``heritage_description``, and it may still hold ``{full_name}``: never
+	print that attribute directly, print this.  Otherwise the prose is the
+	Heritage's own ``HERITAGE_DESCRIPTION``.  Empty when the Character has no
+	Heritage, or the Heritage no prose.
+	"""
+	from AtlasActorLudi.SpeciesKit.catalog import Current_Heritage
+
+	heritage = Current_Heritage(character)
+
+	if heritage is None:
+		return ""
+
+	raw = str(
 		getattr(
 			character,
 			"heritage_description",
@@ -80,23 +117,10 @@ def Project_Species_Description(
 			)
 		or ""
 		)
-
-	if not branch.strip():
-		return
-
-	Project_Species_Feature(
-		character,
-		heritage.__name__.replace(
-			"_",
-			" ",
+	return raw.format(
+		**Name_Slots(
+			character,
 			),
-		branch.format(
-			**Name_Slots(
-				character,
-				),
-			),
-		level=0,
-		narrative=True,
 		)
 
 

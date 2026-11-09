@@ -100,6 +100,24 @@ at least three, and every legacy lends at least three marks to every part;
 the self-test enforces all three. Over 500 Tieflings: 500 distinct
 paragraphs and 1,388 distinct sentences.
 
+## 🪤 Tripwire: #124
+
+The frames name the Character by `{full_name}` because `{name}` is unsafe for
+Tieflings while #124 (Name_Slots and titles) is open. The choice lives in one
+place, `KEPT_FOR_NAMING` in `Fiendish_Aspect.py`, and the grammar self-test
+fails on a kept item that no production uses, so the two can only move
+together.
+
+- **When #124 is fixed:** decide whether the frames should say the short name.
+  If so, put `"name"` in `KEPT_FOR_NAMING` and change the frames from
+  `{full_name}` to `{name}` in the same commit; the self-test fails if only
+  one of the two moves.
+- **If #124 is closed without a fix:** `{full_name}` stays, but by decision,
+  not by accident. Record that here.
+
+The raw paragraph is printed only through `Heritage_Description(character)`,
+which fills either slot.
+
 ## ❓ For Julio
 
 1. Is this the voice?

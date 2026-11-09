@@ -98,6 +98,7 @@ def Imprint_Fiendish_Heritage(
 		blood.resistance
 		)
 	# Raw and unformatted: it may still hold {full_name}, since the name is
-	# settled after the Species.  The Species projection owns the fill
-	# (``Name_Slots``); anything else that prints it must fill it the same way.
+	# settled after the Species.  Never print it directly: print
+	# SpeciesKit.resolution.Heritage_Description(target), the one place it is
+	# filled (``Name_Slots``).
 	target.heritage_description = blood.aspect.paragraph()

@@ -31,6 +31,7 @@ from AtlasActorLudi.SpeciesKit import Halfling
 from AtlasActorLudi.SpeciesKit import HERITAGE_CHOICES
 from AtlasActorLudi.SpeciesKit import HERITAGES_BY_SPECIES
 from AtlasActorLudi.SpeciesKit import Heritage
+from AtlasActorLudi.SpeciesKit import Heritage_Description
 from AtlasActorLudi.SpeciesKit import High_Elf
 from AtlasActorLudi.SpeciesKit import Humanoid
 from AtlasActorLudi.SpeciesKit import Human
@@ -1934,7 +1935,11 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 				),
 			)
 		# A kept slot ({full_name}) lives only in heritage_description; the
-		# projection fills it, so none ever reaches the sheet's own text.
+		# one fill (Heritage_Description) runs before printing, so none ever
+		# reaches the sheet's own text.
+		assert entry.description == Heritage_Description(
+			character,
+			)
 		assert "{" not in entry.description, entry.description
 		assert "}" not in entry.description, entry.description
 
