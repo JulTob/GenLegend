@@ -2,7 +2,7 @@
 #   make run            serve app.main:app on $(PORT)      make dev   the same, reloading on edits
 #   make smoke-player   boot and generate seed 42           make replay-player   the seeded-replay rite
 #   make sweep-player   every Guild at levels 1 and 5 (add WIDE=1 for every level, Species, Background, Specialization)
-.PHONY: run dev setup smoke-player sweep-player replay-player verify-aasimar safepoint install-hooks loss-check
+.PHONY: run dev setup smoke-player sweep-player replay-player verify-aasimar prove-specieskit safepoint install-hooks loss-check
 
 PORT ?= 8080
 VENV := .venv
@@ -18,7 +18,7 @@ endif
 # Homebrew headers and libraries on Apple Silicon, for any dependency built from source.
 ifneq ($(wildcard /opt/homebrew/include),)
 export CPPFLAGS += -I/opt/homebrew/include
-export LDFLAGS += -L/opt/homebrew/lib
+export LDFLAGS += -L/opt/homebrew/include
 endif
 
 run: setup
@@ -50,6 +50,12 @@ verify-aasimar: setup
 
 sweep-player: setup
 	$(VENV_PYTHON) scripts/sweep_player.py $(if $(WIDE),--wide,)
+
+# The SpeciesKit self-test: the closed grammar, the three-alternatives rule,
+# the Tiefling lending checks, the collapse guards.  Until now it ran only
+# when someone remembered it locally; Prove runs it now, on every PR.
+prove-specieskit: setup
+	$(VENV_PYTHON) -m AtlasActorLudi.SpeciesKit
 
 safepoint:
 	@chmod +x scripts/safepoint.sh

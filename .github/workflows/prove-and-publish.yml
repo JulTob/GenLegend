@@ -52,7 +52,7 @@ jobs:
       - name: Build the venv
         run: make setup
 
-      # The same three rites a contributor runs, by the same commands, so
+      # The same rites a contributor runs, by the same commands, so
       # there is one definition of the gate rather than two.
       - name: Smoke
         run: make smoke-player
@@ -62,6 +62,12 @@ jobs:
 
       - name: Sweep
         run: make sweep-player
+
+      # The SpeciesKit self-test (the grammar, the Tiefling invariants) ran
+      # only by hand before; every invariant the stacked Tiefling PRs rely
+      # on is enforced here now, on every PR and every push to main.
+      - name: SpeciesKit self-test
+        run: make prove-specieskit
 
   # Not configured and half configured are different things, and the job
   # treats them differently.
