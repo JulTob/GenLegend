@@ -18,7 +18,7 @@ endif
 # Homebrew headers and libraries on Apple Silicon, for any dependency built from source.
 ifneq ($(wildcard /opt/homebrew/include),)
 export CPPFLAGS += -I/opt/homebrew/include
-export LDFLAGS += -L/opt/homebrew/include
+export LDFLAGS += -L/opt/homebrew/lib
 endif
 
 run: setup
