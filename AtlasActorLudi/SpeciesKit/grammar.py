@@ -24,6 +24,10 @@ non-terminals inside it, leftmost first, until only words are left.  A few
 choices at every level multiply: small variations accumulate into a text that
 is new each time, and the same seed always derives the same text.
 
+A lexical item named in ``keep`` is left in place, braces and all, for a
+later pass to fill: a word not known yet when the text is derived (a
+Character's name is settled after their Species).
+
 Nothing here knows about Tieflings.
 """
 
@@ -74,6 +78,7 @@ def _rewrite(
 		lexicon: Lexicon,
 		dice,
 		depth: int,
+		keep: tuple[str, ...],
 		) -> str:
 	"""Derive one symbol into words, rewriting nested symbols leftmost first."""
 	if depth > MAX_DEPTH:
@@ -96,6 +101,7 @@ def _rewrite(
 			lexicon,
 			dice,
 			depth + 1,
+			keep,
 			)
 
 
@@ -106,6 +112,7 @@ def _realise(
 		lexicon: Lexicon,
 		dice,
 		depth: int,
+		keep: tuple[str, ...],
 		) -> str:
 	"""One lexical item: one of its realisations, with its own slots filled."""
 	if depth > MAX_DEPTH:
@@ -132,6 +139,7 @@ def _realise(
 			lexicon,
 			dice,
 			depth + 1,
+			keep,
 			)
 
 
@@ -142,6 +150,7 @@ def _fill(
 		lexicon: Lexicon,
 		dice,
 		depth: int,
+		keep: tuple[str, ...],
 		) -> str:
 	"""Replace every slot in a text: symbols by derivation, items from the lexicon."""
 	pieces = []
@@ -163,8 +172,11 @@ def _fill(
 							lexicon,
 							dice,
 							depth,
+							keep,
 							)
 					)
+		elif name in keep:
+			pieces.append( slot.group( 0 ) )
 		else:
 			pieces.append(
 					_realise(
@@ -174,6 +186,7 @@ def _fill(
 							lexicon,
 							dice,
 							depth,
+							keep,
 							)
 					)
 		position = slot.end()
@@ -187,6 +200,7 @@ def Derive(
 		text: str,
 		lexicon: Lexicon,
 		dice,
+		keep: tuple[str, ...] = (),
 		) -> str:
 	"""
 	Derive a text: rewrite every symbol in it until only words remain.
@@ -202,4 +216,5 @@ def Derive(
 			lexicon,
 			dice,
 			0,
+			keep,
 			)

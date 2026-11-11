@@ -92,6 +92,8 @@ from AtlasActorLudi.SpeciesKit.Tieflings import Chthonic
 from AtlasActorLudi.SpeciesKit.Tieflings import Infernal
 from AtlasActorLudi.SpeciesKit.Tieflings import TIEFLING_HERITAGES
 from AtlasActorLudi.SpeciesKit.Tieflings import Tiefling
+from AtlasActorLudi.SpeciesKit.resolution import Heritage_Description
+from AtlasActorLudi.SpeciesKit.resolution import Heritage_Description_Error
 from AtlasActorLudi.SpeciesKit.resolution import Resolve_Species_Features
 
 
@@ -143,6 +145,8 @@ __all__ = (
 	"HERITAGES_BY_SPECIES",
 	"Heritages_By_Species",
 	"Heritage",
+	"Heritage_Description",
+	"Heritage_Description_Error",
 	"High_Elf",
 	"Homebrew",
 	"Human",

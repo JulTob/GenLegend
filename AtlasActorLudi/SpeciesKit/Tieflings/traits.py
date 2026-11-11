@@ -97,3 +97,8 @@ def Imprint_Fiendish_Heritage(
 	target.fiendish_legacy_damage_resistance = (
 		blood.resistance
 		)
+	# Raw and unformatted: it may still hold {full_name}, since the name is
+	# settled after the Species.  Never print it directly: print
+	# SpeciesKit.resolution.Heritage_Description(target), the one place it is
+	# filled (``Name_Slots``).
+	target.heritage_description = blood.aspect.paragraph()

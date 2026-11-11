@@ -65,13 +65,8 @@ def Project_Species_Description(
 	if heritage is None:
 		return
 
-	branch = str(
-		getattr(
-			heritage,
-			"HERITAGE_DESCRIPTION",
-			"",
-			)
-		or ""
+	branch = Heritage_Description(
+		character,
 		)
 
 	if not branch.strip():
@@ -83,14 +78,66 @@ def Project_Species_Description(
 			"_",
 			" ",
 			),
-		branch.format(
-			**Name_Slots(
-				character,
-				),
-			),
+		branch,
 		level=0,
 		narrative=True,
 		)
+
+
+class Heritage_Description_Error(ValueError):
+	"""Heritage prose that cannot be filled: a slot no name fills, or a stray brace."""
+
+
+def Heritage_Description(
+	character,
+	) -> str:
+	"""
+	The Heritage prose for this Character, filled and ready to print.
+
+	This is the one place the Heritage prose is filled.  A Heritage whose prose
+	is drawn per Character (a Tiefling's aspect) keeps it raw on the Character
+	as ``heritage_description``, and it may still hold ``{full_name}``: never
+	print that attribute directly, print this.  Otherwise the prose is the
+	Heritage's own ``HERITAGE_DESCRIPTION``.  Empty when the Character has no
+	Heritage, or the Heritage no prose.  Prose that cannot be filled fails
+	loudly, naming the Heritage and what broke (``Heritage_Description_Error``).
+	"""
+	from AtlasActorLudi.SpeciesKit.catalog import Current_Heritage
+
+	heritage = Current_Heritage(character)
+
+	if heritage is None:
+		return ""
+
+	raw = str(
+		getattr(
+			character,
+			"heritage_description",
+			None,
+			)
+		or getattr(
+			heritage,
+			"HERITAGE_DESCRIPTION",
+			"",
+			)
+		or ""
+		)
+	try:
+		return raw.format(
+			**Name_Slots(
+				character,
+				),
+			)
+	except (
+		KeyError,
+		IndexError,
+		ValueError,
+		) as error:
+		raise Heritage_Description_Error(
+			f"The {heritage.__name__} Heritage prose cannot be filled: "
+			f"{error!r} (a slot that Name_Slots does not fill, or a stray "
+			f"brace)."
+			) from error
 
 
 def Resolve_Species_Features(
