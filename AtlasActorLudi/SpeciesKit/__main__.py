@@ -1414,6 +1414,9 @@ def _test_tiefling_grammar_is_complete() -> None:
 		for name in slot.findall(
 			text,
 			):
+			# A slot is a rule (all upper case) or an item (all lower case):
+			# a mixed name would be read as a missing item, the wrong layer.
+			assert name.isupper() or name.islower(), name
 			if name.isupper():
 				assert name in GRAMMAR, name
 				used.add(
@@ -1511,6 +1514,29 @@ def _assert_aspect_obeys_its_rules(
 	for legacy in TIEFLING_HERITAGES:
 		if legacy is not aspect.suggested:
 			assert legacy.PLACE not in paragraph, paragraph
+
+
+def _test_grammar_names_a_mixed_case_slot() -> None:
+	"""A slot in mixed case fails as such, not as a missing lexical item."""
+	from AtlasActorLudi.SpeciesKit.grammar import Derive
+	from AtlasActorLudi.SpeciesKit.grammar import Grammar_Error
+
+	try:
+		Derive(
+			None,
+			{},
+			"{Say_Scent}",
+			{},
+			None,
+			)
+	except Grammar_Error as error:
+		assert "neither a rule" in str(
+			error,
+			), error
+	else:
+		raise AssertionError(
+			"A mixed-case slot must fail loudly.",
+			)
 
 
 def _test_collapse_fails_loudly_on_bad_input() -> None:
@@ -2378,6 +2404,7 @@ def _self_test() -> None:
 	_test_tiefling_make_mark_fails_loudly()
 	_test_tiefling_grammar_is_complete()
 	_test_collapse_fails_loudly_on_bad_input()
+	_test_grammar_names_a_mixed_case_slot()
 	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()
 	_test_tiefling_heritage_conflict_is_atomic()

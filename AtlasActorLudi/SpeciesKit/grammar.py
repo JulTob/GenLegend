@@ -149,6 +149,11 @@ def _fill(
 	for slot in _SLOT.finditer( text ):
 		pieces.append( text[position:slot.start()] )
 		name = slot.group( 1 )
+		if not _is_non_terminal( name ) and not name.islower():
+			raise Grammar_Error(
+					f"Grammar: {{{name}}} is neither a rule (all upper case) "
+					f"nor a lexical item (all lower case)."
+					)
 		if _is_non_terminal( name ):
 			pieces.append(
 					_rewrite(
