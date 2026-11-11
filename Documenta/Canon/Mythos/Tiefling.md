@@ -238,10 +238,11 @@ documents and on this page's own decisions log, which are not the Questa / Agora
 - **The body is furred and crowned, not red-skinned** (§3). A divergence from the
   published art direction, and the most deletable thing on this page. It needs
   recording where a later pass cannot quietly undo it. It also needs narrowing or
-  widening first: of the three shipped paragraphs only the Chthonic one puts the
-  horns close to the head like a crown or a tiara. The Abyssal's are twisted,
-  spiky and uneven, and the Infernal's are onyx with no position given. The
-  metallic sheen is genuinely all three.
+  widening first. Julio settled the shape on 2026-10-31 (QST-0151): every
+  legacy has horn shapes of its own, and the crown is Chthonic's, the least
+  demonised. The Abyssal's twist, branch and spiral and never match; the
+  Infernal's curl like a ram's, sweep back as a matched pair, or rise as ridged
+  spires. The metallic sheen is genuinely all three, named by its metal.
 - **The heritage ledger** (§3): which hell, which body, which Resistance, which
   spells, per legacy. The three names and the fact of a Resistance are ratified;
   the four columns are not. A sibling of QST-0057, so the lists are verified as
@@ -319,10 +320,10 @@ game fails to find what the town is certain about, and the engine is the one
 thing in the setting that never gets the reading wrong. Horns close to the head
 make the single sentence of history the species entry is allowed physically
 possible; a crown is what a horn like that looks like, and also what somebody
-wants it to be, so the claim stays an observation and never becomes proof. Today
-only the Chthonic paragraph carries that shape, which is either the point (the
-crown survives in one hell and not the others) or an unfinished pass across the
-other two, and §3 has to say which. The three bodies then do work across the
+wants it to be, so the claim stays an observation and never becomes proof. Only
+the Chthonic horns carry that shape, and Julio ruled that this is the point
+(2026-10-31, QST-0151): the crown survives in one hell, the least demonised,
+and not in the others. The three bodies then do work across the
 three legacies: Chthonic passes for human most easily and Abyssal is the hardest
 to hide, which turns "some of us can pass under a hood, and the ones who cannot
 are never left alone" into a difference rather than a mood, and a Resistance
@@ -351,12 +352,19 @@ drawn from Intelligence, Wisdom and Charisma and then overridden by the class's
 own casting ability wherever that is one of the three, the draw standing as the
 fallback for a non-caster; and the name, from the Fiend corpus.
 
-**The body is not drawn.** Each legacy carries one fixed `HERITAGE_DESCRIPTION`
-paragraph, printed verbatim, so the fur, the horns and the eyes are the same
-sentences on every Abyssal sheet ever generated. This is the sharpest difference
-between this species and the Aasimar, whose talaria metal, aureola stone and
-placement are three separate draws. Whether the Tiefling should gain the same
-apparatus is a real design question and nobody has asked it yet.
+**The aspect is drawn from two legacies** (QST-0151, Working; Julio's rulings
+of 2026-10-30 and 2026-10-31). The Heritage stays the one legacy that carries
+the rules; a second legacy is drawn from the whole list and may repeat it,
+which makes a pure blood. That the blood is two legacies is structure, hidden
+like the Aasimar's two Ideals: the page never describes a hell, and only
+suggests where the bloodline starts, by name. The aspect is collapsed from
+small Tags (marks) that each legacy lends through a Pin: horn shapes of its
+own (crowns are Chthonic's, the least demonised), materials by name (ivory,
+jet, agate), black eyes with one colour or eyes that will not keep one, the
+coats and markings, a metallic sheen named by its metal, a faint scent
+(incense, sulfur, brine), and the Nine Hells' tail. The fixed
+`HERITAGE_DESCRIPTION` paragraphs are gone from the three legacies, reworked
+into those marks.
 
 None of what *is* drawn was filled in at random. The size pair and the ability are
 published *player* choices, and a generated sheet never prints a choice it has
@@ -374,7 +382,8 @@ palettes. It carries no book because no Questa says so.
 | What | Where | State |
 |---|---|---|
 | Species entry | `AtlasActorLudi/SpeciesKit/Tieflings/__init__.py` | Shipping. Second person only; no "we" by design. |
-| Heritages | `Tieflings/Abyssal.py`, `Chthonic.py`, `Infernal.py` | Each carries a `HERITAGE_DESCRIPTION` paragraph (the body) and a spell list. |
+| Heritages | `Tieflings/Abyssal.py`, `Chthonic.py`, `Infernal.py` | Each carries its rules (`DAMAGE_RESISTANCE`, `SPELLS`), a `PLACE` the aspect may name, and `MARKS`, the Pin of the marks it lends to the aspect (QST-0151). |
+| The aspect | `Tieflings/Map_of_Marks.py`, `Grammar_of_Aspect.py`, `Fiendish_Aspect.py`, `pins.py` | The marks each legacy lends, the grammar it is said in, and the collapse that draws it once per Tiefling (QST-0151). |
 | Traits and rules | `Tieflings/traits.py`, `resolution.py` | Rulebook voice (QST-0094). No inspiration lines on Darkvision, Otherworldly Presence or Fiendish Legacy. |
 | Names | `AtlasNomina/Races/Fiend.py` | Demonology names, and a second pool of *virtue names* (Glory, Honor, Purity, Flame, Sinner). |
 | Culture | legend `grimdark` only; no society key | Shared with the Warlock and the Fiend patron. |
@@ -420,7 +429,8 @@ from every other people. "The midwife went quiet, and that was how it began."
 Some families hide the child; some report a stillbirth and mean it as mercy.
 
 **Fur, horns, eyes, tail.** In this setting the Tiefling is furred, with a
-metallic sheen, and the horns sit close to the head like a crown or a tiara.
+metallic sheen, and every legacy wears horns of its own; the crown and the tiara
+are Chthonic's (QST-0151).
 This is a distinctive design and should be protected as such: not a human with
 horns, and not the published red skin.
 

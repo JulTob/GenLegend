@@ -1167,6 +1167,7 @@ def _test_tiefling_identity_is_level_stable() -> None:
 	sizes = []
 	abilities = []
 	spell_sets = []
+	aspects = []
 
 	for level in levels:
 		character = Character(
@@ -1195,10 +1196,22 @@ def _test_tiefling_identity_is_level_stable() -> None:
 				character.species_spells,
 				),
 			)
+		aspects.append(
+			character.fiendish_blood,
+			)
 
 	assert len(
 		set(
 			heritages,
+			)
+		) == 1
+	# A blood is a frozen record holding the legacy Tags and the aspect's mark
+	# Tags themselves, so this compares every part of the aspect, legacies
+	# included.  Keep the Tags there: names in their place would still hash,
+	# and would compare less.
+	assert len(
+		set(
+			aspects,
 			)
 		) == 1
 	assert len(
@@ -1222,6 +1235,534 @@ def _test_tiefling_identity_is_level_stable() -> None:
 				],
 			)
 		)
+
+
+def _test_tiefling_marks_are_a_vocabulary() -> None:
+	"""Every mark fills one part; every legacy has horn shapes of its own."""
+	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Aspect_Part
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Horn_Shape
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Structure
+
+	parts = (
+		Structure,
+		*(
+			part
+			for _name, part in _aspect_slots()
+			),
+		)
+	names = [
+		mark.__name__
+		for mark in ROSTER
+		]
+	assert len(
+		set(
+			names,
+			)
+		) == len(
+			names,
+			)
+	for mark in ROSTER:
+		assert mark in Aspect_Part
+		# A key is one concept, written as one lowercase ASCII word: a stem
+		# may stand for its forms ("swept" for "sweep"), so keys are not
+		# checked against the mark's own text.
+		for key in mark.KEYS:
+			assert key.isascii(), (
+				mark,
+				key,
+				)
+			assert key.isalpha(), (
+				mark,
+				key,
+				)
+			assert key == key.lower(), (
+				mark,
+				key,
+				)
+		homes = {
+			part
+			for part in parts
+			if mark in part
+			}
+		assert len(
+			homes,
+			) == 1, mark
+
+	for legacy in TIEFLING_HERITAGES:
+		own_shapes = [
+			shape
+			for shape in Marks_Of(
+				Horn_Shape,
+				)
+			if shape in legacy.MARKS
+			]
+		assert len(
+			own_shapes,
+			) >= 2, legacy
+		for shape in own_shapes:
+			lenders = [
+				other
+				for other in TIEFLING_HERITAGES
+				if shape in other.MARKS
+				]
+			assert lenders == [
+				legacy,
+				], shape
+
+
+def _test_tiefling_make_mark_fails_loudly() -> None:
+	"""A part or a lender that is not a shape of its Pin is refused."""
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Chthonic_Marks
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Eyes
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Horn_Shape
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Make_Mark
+	from AtlasActorLudi.SpeciesKit.Tieflings.pins import Marks_Of
+
+	for part, lent_by in (
+		(
+			Chthonic_Marks,
+			(
+				Chthonic_Marks,
+				),
+			),
+		(
+			Eyes,
+			Chthonic_Marks,
+			),
+		(
+			Eyes,
+			(
+				Horn_Shape,
+				),
+			),
+		):
+		try:
+			Make_Mark(
+				"Never_Made",
+				part=part,
+				lent_by=lent_by,
+				text="never printed",
+				)
+		except TypeError:
+			pass
+		else:
+			raise AssertionError(
+				(
+					part,
+					lent_by,
+					),
+				)
+	# Refused before anything was made: no half-made mark is pinned anywhere.
+	for part in (
+		Eyes,
+		Horn_Shape,
+		):
+		assert all(
+			mark.__name__ != "Never_Made"
+			for mark in Marks_Of(
+				part,
+				)
+			), part
+
+
+def _test_tiefling_grammar_is_complete() -> None:
+	"""Every symbol has a rule, every rule is used, every item is in the lexicon."""
+	import re
+
+	from AtlasActorLudi.SpeciesKit.Tieflings.Grammar_of_Aspect import GRAMMAR
+	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import ROSTER
+	from AtlasActorLudi.SpeciesKit.Tieflings.Map_of_Marks import STRUCTURES
+
+	lexicon = {
+		"horns",
+		"horn_material",
+		"eyes",
+		"fur",
+		"sheen",
+		"scent",
+		"tail",
+		"place",
+		}
+	slot = re.compile(
+		r"\{([A-Za-z_]+)\}",
+		)
+	texts = [
+		*(
+			sentence
+			for structure in STRUCTURES
+			for sentence in structure.SENTENCES
+			),
+		*(
+			production
+			for productions in GRAMMAR.values()
+			for production in productions
+			),
+		*(
+			sentence
+			for mark in ROSTER
+			if isinstance(
+				mark.TEXT,
+				tuple,
+				)
+			for sentence in mark.TEXT
+			),
+		]
+	used = set()
+	for text in texts:
+		for name in slot.findall(
+			text,
+			):
+			# A slot is a rule (all upper case) or an item (all lower case):
+			# a mixed name would be read as a missing item, the wrong layer.
+			assert name.isupper() or name.islower(), name
+			if name.isupper():
+				assert name in GRAMMAR, name
+				used.add(
+					name,
+					)
+			else:
+				assert name in lexicon, name
+	assert used == set(
+		GRAMMAR,
+		), set(
+			GRAMMAR,
+			) - used
+
+
+def _aspect_slots():
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import LOOK_SLOTS
+
+	return LOOK_SLOTS
+
+
+def _assert_aspect_obeys_its_rules(
+	aspect,
+	legacies,
+	) -> None:
+	from AtlasActorLudi.SpeciesKit.collapse import ABSENT
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import (
+		EMPTY_WHEN_SAID,
+		)
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import Slots_Said
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import _shows
+
+	said = Slots_Said(
+		aspect.structure,
+		)
+	for name, _part in _aspect_slots():
+		value = getattr(
+			aspect,
+			name,
+			)
+		if name not in said:
+			assert value is ABSENT, name
+		elif name not in EMPTY_WHEN_SAID:
+			assert value is not ABSENT, name
+	present = [
+		getattr(
+			aspect,
+			name,
+			)
+		for name, _part in _aspect_slots()
+		if getattr(
+			aspect,
+			name,
+			) is not ABSENT
+		]
+	for mark in present:
+		assert any(
+			mark in legacy.MARKS
+			for legacy in legacies
+			), mark
+	keys = [
+		key
+		for mark in present
+		for key in mark.KEYS
+		]
+	assert len(
+		keys,
+		) == len(
+			set(
+				keys,
+				)
+			), keys
+	if aspect.pattern is not ABSENT:
+		two_colours = "{b}" in aspect.pattern.TEXT
+		assert two_colours == (
+			aspect.accent is not ABSENT
+			)
+	if len(
+		legacies,
+		) > 1:
+		shown = {
+			_shows(
+				mark,
+				legacies,
+				)
+			for mark in present
+			}
+		assert set(
+			legacies,
+			) <= shown, legacies
+	assert aspect.suggested in legacies
+	paragraph = aspect.paragraph()
+	assert "{" not in paragraph
+	assert ";" not in paragraph
+	assert aspect.suggested.PLACE in paragraph
+	for legacy in TIEFLING_HERITAGES:
+		if legacy is not aspect.suggested:
+			assert legacy.PLACE not in paragraph, paragraph
+
+
+def _test_grammar_names_a_mixed_case_slot() -> None:
+	"""A slot in mixed case fails as such, not as a missing lexical item."""
+	from AtlasActorLudi.SpeciesKit.grammar import Derive
+	from AtlasActorLudi.SpeciesKit.grammar import Grammar_Error
+
+	try:
+		Derive(
+			None,
+			{},
+			"{Say_Scent}",
+			{},
+			None,
+			)
+	except Grammar_Error as error:
+		assert "neither a rule" in str(
+			error,
+			), error
+	else:
+		raise AssertionError(
+			"A mixed-case slot must fail loudly.",
+			)
+
+
+def _test_collapse_fails_loudly_on_bad_input() -> None:
+	"""
+	An empty wave, and a rule that widens a slot, both fail loudly; a wave
+	that can never be filled names its last dead end (slot and rule).
+	"""
+	from AtlasActorLudi.SpeciesKit.collapse import Collapse
+	from AtlasActorLudi.SpeciesKit.collapse import Collapse_Contradiction
+	from AtlasActorLudi.SpeciesKit.collapse import Collapse_Rule_Error
+	from AtlasActorLudi.SpeciesKit.collapse import Slot
+
+	try:
+		Collapse(
+			None,
+			(),
+			(),
+			None,
+			)
+	except ValueError:
+		pass
+	else:
+		raise AssertionError(
+			"An empty wave must fail loudly.",
+			)
+
+	def widen(
+		drawn,
+		domains,
+		):
+		return {
+			**domains,
+			"colour": (
+				*domains["colour"],
+				"green",
+				),
+			}
+
+	def drop_a_slot(
+		drawn,
+		domains,
+		):
+		return {}
+
+	def always_empty(
+		drawn,
+		domains,
+		):
+		return {
+			**domains,
+			"colour": (),
+			}
+
+	for slots, rules, slot, cause in (
+		(
+			(
+				Slot(
+					"colour",
+					(
+						"red",
+						"blue",
+						),
+					),
+				),
+			(
+				always_empty,
+				),
+			"colour",
+			"rule always_empty",
+			),
+		(
+			(
+				Slot(
+					"colour",
+					(),
+					),
+				),
+			(),
+			"colour",
+			"its own declaration",
+			),
+		):
+		try:
+			Collapse(
+				None,
+				slots,
+				rules,
+				None,
+				)
+		except Collapse_Contradiction as error:
+			assert error.dead_end.slot == slot, error
+			assert error.dead_end.rule.startswith(
+				cause,
+				), error
+			assert slot in str(
+				error,
+				), error
+		else:
+			raise AssertionError(
+				f"A wave that cannot fill {slot!r} must fail loudly.",
+				)
+
+	for bad_rule in (
+		widen,
+		drop_a_slot,
+		):
+		try:
+			Collapse(
+				None,
+				(
+					Slot(
+						"colour",
+						(
+							"red",
+							"blue",
+							),
+						),
+					),
+				(
+					bad_rule,
+					),
+				None,
+				)
+		except Collapse_Rule_Error:
+			pass
+		else:
+			raise AssertionError(
+				f"{bad_rule.__name__} must fail loudly.",
+				)
+
+
+def _test_tiefling_aspect_collapses_for_every_blood() -> None:
+	"""Every pair of legacies collapses, on every seed, and obeys its rules."""
+	from AtlasActorLudi.SpeciesKit.Tieflings.Fiendish_Aspect import (
+		Collapse_Aspect,
+		)
+
+	for first in TIEFLING_HERITAGES:
+		for second in TIEFLING_HERITAGES:
+			legacies = (
+				first,
+				)
+			if second is not first:
+				legacies = (
+					first,
+					second,
+					)
+			for seed in range(
+				1,
+				41,
+				):
+				aspect = Collapse_Aspect(
+					Character(
+						seed=seed,
+						),
+					legacies,
+					)
+				_assert_aspect_obeys_its_rules(
+					aspect,
+					legacies,
+					)
+				again = Collapse_Aspect(
+					Character(
+						seed=seed,
+						),
+					legacies,
+					)
+				assert again == aspect
+
+
+def _test_tiefling_blood_mixes_two_legacies() -> None:
+	"""The aspect comes from the Heritage and one more drawn legacy (QST-0151)."""
+	seen_mixed = False
+	seen_pure = False
+
+	for seed in range(
+		1,
+		61,
+		):
+		character = Character(
+			seed=seed,
+			)
+		Apply_Species(
+			character,
+			Tiefling,
+			)
+		blood = character.fiendish_blood
+		legacies = blood.legacies
+
+		assert legacies[
+			0
+			] is Current_Heritage(
+				character,
+				)
+		assert len(
+			set(
+				legacies,
+				)
+			) == len(
+				legacies,
+				)
+		assert all(
+			legacy in TIEFLING_HERITAGES
+			for legacy in legacies
+			)
+		_assert_aspect_obeys_its_rules(
+			blood.aspect,
+			legacies,
+			)
+
+		_completed_ledger(character)
+		Resolve_Species_Features(character)
+		# The sheet files the aspect as the Heritage description by its name,
+		# so the Entry keeps the Heritage's name even when the blood is mixed.
+		entry = next(
+			feature
+			for feature in character.features
+			if feature.name == f"{character:Heritage}"
+			)
+		assert entry.description == blood.aspect.paragraph()
+
+		seen_mixed = seen_mixed or blood.mixed
+		seen_pure = seen_pure or not blood.mixed
+
+	assert seen_mixed
+	assert seen_pure
 
 
 def _test_tiefling_heritage_conflict_is_atomic() -> None:
@@ -1859,6 +2400,13 @@ def _self_test() -> None:
 	_test_tiefling_heritage_geometry()
 	_test_tiefling_rule_projection()
 	_test_tiefling_identity_is_level_stable()
+	_test_tiefling_marks_are_a_vocabulary()
+	_test_tiefling_make_mark_fails_loudly()
+	_test_tiefling_grammar_is_complete()
+	_test_collapse_fails_loudly_on_bad_input()
+	_test_grammar_names_a_mixed_case_slot()
+	_test_tiefling_aspect_collapses_for_every_blood()
+	_test_tiefling_blood_mixes_two_legacies()
 	_test_tiefling_heritage_conflict_is_atomic()
 	_test_elf_heritage_geometry()
 	_test_elf_rule_projection()
