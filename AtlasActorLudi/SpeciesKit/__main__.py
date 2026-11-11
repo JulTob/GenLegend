@@ -1812,10 +1812,15 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 		assert entry.description == blood.aspect.paragraph()
 
 		if not blood.mixed:
-			# A pure blood is the published rule, exactly.
+			# A pure blood is the published rule, exactly: its one legacy
+			# lends every spell place and the Resistance.
 			heritage = legacies[
 				0
 				]
+			assert blood.spell_lenders == (
+				heritage,
+				) * 3
+			assert blood.resistance_lender is heritage
 			assert blood.spells == tuple(
 				sorted(
 					heritage.SPELLS,
@@ -1843,6 +1848,50 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 	# The house rule is not only allowed but happens (QST-0152).
 	assert seen_spell_from_second
 	assert seen_resistance_from_second
+
+
+def _test_tiefling_second_legacy_lends_its_own() -> None:
+	"""
+	A blood whose second legacy lends everything carries exactly that
+	legacy's spells and Resistance: a fixed probe of the lending, which does
+	not depend on what any seed happens to draw.
+	"""
+	from dataclasses import replace
+
+	for seed in range(
+		1,
+		61,
+		):
+		character = Character(
+			seed=seed,
+			)
+		Apply_Species(
+			character,
+			Tiefling,
+			)
+		blood = character.fiendish_blood
+		if blood.mixed:
+			break
+	else:
+		raise AssertionError(
+			"No mixed blood in 60 seeds.",
+			)
+	second = blood.legacies[
+		1
+		]
+	probe = replace(
+		blood,
+		spell_lenders=(
+			second,
+			) * 3,
+		resistance_lender=second,
+		)
+	assert probe.spells == tuple(
+		sorted(
+			second.SPELLS,
+			),
+		)
+	assert probe.resistance == second.DAMAGE_RESISTANCE
 
 
 def _test_tiefling_broken_blood_fails_at_the_draw() -> None:
@@ -2551,6 +2600,7 @@ def _self_test() -> None:
 	_test_grammar_names_a_mixed_case_slot()
 	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()
+	_test_tiefling_second_legacy_lends_its_own()
 	_test_tiefling_broken_blood_fails_at_the_draw()
 	_test_tiefling_heritage_conflict_is_atomic()
 	_test_elf_heritage_geometry()

@@ -53,6 +53,10 @@ class Fiendish_Blood:
 				self.spell_lenders,
 				)
 
+	# A cached_property on a frozen dataclass: it works because the cache is
+	# written straight into the instance's __dict__, past the frozen
+	# __setattr__.  The value is derived only from frozen fields, so keeping
+	# it never changes what the blood says.
 	@cached_property
 	def spells(
 			self,
@@ -61,7 +65,8 @@ class Fiendish_Blood:
 		The legacy spells as ``(level, spell key)`` rows, like ``SPELLS``.
 
 		Derived on the first read and kept: every later read is a lookup.  The
-		lenders were checked when the blood was made, so this cannot fail.
+		lenders were checked when the blood was made; ``_spell_at_level`` still
+		fails loudly if a legacy's ``SPELLS`` were changed since.
 		"""
 		return tuple(
 				_spell_at_level(
