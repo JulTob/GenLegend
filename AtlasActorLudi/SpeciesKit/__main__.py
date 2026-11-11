@@ -1031,12 +1031,13 @@ def _test_tiefling_heritage_geometry() -> None:
 		assert character in Humanoid
 		assert character not in Fiend
 		assert Current_Heritage(character) is heritage
+		# One Resistance, lent by a legacy of the blood (QST-0152).
 		assert character.damage_resistances == (
-			heritage.DAMAGE_RESISTANCE,
+			character.fiendish_blood.resistance,
 			)
 		assert character.fiendish_legacy == heritage.__name__
 		assert character.fiendish_legacy_damage_resistance == (
-			heritage.DAMAGE_RESISTANCE
+			character.fiendish_blood.resistance
 			)
 		assert character.otherworldly_presence_spell == "Thaumaturgy"
 		assert character.darkvision == 60
@@ -1070,7 +1071,7 @@ def _test_tiefling_rule_projection() -> None:
 		5: 3,
 		}
 
-	for heritage, progression in expected_spells.items():
+	for heritage in expected_spells:
 		for level, unlocked_count in unlock_counts.items():
 			character = Character(
 				seed=433,
@@ -1080,6 +1081,18 @@ def _test_tiefling_rule_projection() -> None:
 				character,
 				Tiefling,
 				heritage=heritage,
+				)
+			blood = character.fiendish_blood
+			# Each place is lent by one legacy of the blood (QST-0152).
+			progression = tuple(
+				expected_spells[
+					lender
+					][
+					place
+					]
+				for place, lender in enumerate(
+					blood.spell_lenders,
+					)
 				)
 			_completed_ledger(character)
 			Resolve_Species_Features(character)
@@ -1125,7 +1138,7 @@ def _test_tiefling_rule_projection() -> None:
 				)
 			assert character.species_spell_save_dc >= 10
 			assert character.damage_resistances == (
-				heritage.DAMAGE_RESISTANCE,
+				blood.resistance,
 				)
 			assert all(
 				spell_name in legacy_feature.description
@@ -1708,9 +1721,11 @@ def _test_tiefling_aspect_collapses_for_every_blood() -> None:
 
 
 def _test_tiefling_blood_mixes_two_legacies() -> None:
-	"""The aspect comes from the Heritage and one more drawn legacy (QST-0151)."""
+	"""The aspect and the rules come from the Heritage and one more legacy."""
 	seen_mixed = False
 	seen_pure = False
+	seen_spell_from_second = False
+	seen_resistance_from_second = False
 
 	for seed in range(
 		1,
@@ -1746,6 +1761,44 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 			blood.aspect,
 			legacies,
 			)
+		# QST-0152: each spell place and the Resistance are lent by a legacy
+		# of the blood, as the dice fall; a pure blood lends all of them.
+		assert all(
+			lender in legacies
+			for lender in blood.spell_lenders
+			)
+		assert len(
+			blood.spell_lenders,
+			) == 3
+		assert blood.resistance_lender in legacies
+		assert tuple(
+			level
+			for level, _ in blood.spells
+			) == (
+				1,
+				3,
+				5,
+				)
+		# Each part on its own is one a published Tiefling gets: the spell
+		# at each level is its lender's own spell at that level, and the
+		# Resistance is its lender's own.  The whole combination need not be
+		# (Fire Resistance with Chill Touch is the house rule at work).
+		for (level, spell), lender in zip(
+			blood.spells,
+			blood.spell_lenders,
+			strict=True,
+			):
+			assert (
+				level,
+				spell,
+				) in lender.SPELLS, (
+					lender,
+					level,
+					spell,
+					)
+		assert blood.resistance == (
+			blood.resistance_lender.DAMAGE_RESISTANCE
+			)
 
 		_completed_ledger(character)
 		Resolve_Species_Features(character)
@@ -1758,11 +1811,139 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 			)
 		assert entry.description == blood.aspect.paragraph()
 
+		if not blood.mixed:
+			# A pure blood is the published rule, exactly: its one legacy
+			# lends every spell place and the Resistance.
+			heritage = legacies[
+				0
+				]
+			assert blood.spell_lenders == (
+				heritage,
+				) * 3
+			assert blood.resistance_lender is heritage
+			assert blood.spells == tuple(
+				sorted(
+					heritage.SPELLS,
+					),
+				)
+			assert blood.resistance == heritage.DAMAGE_RESISTANCE
+		else:
+			second = legacies[
+				1
+				]
+			seen_spell_from_second = (
+				seen_spell_from_second
+				or second in blood.spell_lenders
+				)
+			seen_resistance_from_second = (
+				seen_resistance_from_second
+				or blood.resistance_lender is second
+				)
+
 		seen_mixed = seen_mixed or blood.mixed
 		seen_pure = seen_pure or not blood.mixed
 
 	assert seen_mixed
 	assert seen_pure
+	# The house rule is not only allowed but happens (QST-0152).
+	assert seen_spell_from_second
+	assert seen_resistance_from_second
+
+
+def _test_tiefling_second_legacy_lends_its_own() -> None:
+	"""
+	A blood whose second legacy lends everything carries exactly that
+	legacy's spells and Resistance: a fixed probe of the lending, which does
+	not depend on what any seed happens to draw.
+	"""
+	from dataclasses import replace
+
+	for seed in range(
+		1,
+		61,
+		):
+		character = Character(
+			seed=seed,
+			)
+		Apply_Species(
+			character,
+			Tiefling,
+			)
+		blood = character.fiendish_blood
+		if blood.mixed:
+			break
+	else:
+		raise AssertionError(
+			"No mixed blood in 60 seeds.",
+			)
+	second = blood.legacies[
+		1
+		]
+	probe = replace(
+		blood,
+		spell_lenders=(
+			second,
+			) * 3,
+		resistance_lender=second,
+		)
+	assert probe.spells == tuple(
+		sorted(
+			second.SPELLS,
+			),
+		)
+	assert probe.resistance == second.DAMAGE_RESISTANCE
+
+
+def _test_tiefling_broken_blood_fails_at_the_draw() -> None:
+	"""A blood with the wrong lenders fails as it is made, not when read."""
+	from dataclasses import replace
+
+	character = Character(
+		seed=443,
+		)
+	Apply_Species(
+		character,
+		Tiefling,
+		heritage=Abyssal,
+		)
+	blood = character.fiendish_blood
+	missing_a_level = type(
+		"Legacy_Missing_Level_3",
+		(),
+		{
+			"SPELLS": (
+				(
+					1,
+					"Fire_Bolt",
+					),
+				(
+					5,
+					"Darkness",
+					),
+				),
+			},
+		)
+	for spell_lenders in (
+		blood.spell_lenders[
+			:2
+			],
+		(
+			missing_a_level,
+			missing_a_level,
+			missing_a_level,
+			),
+		):
+		try:
+			replace(
+				blood,
+				spell_lenders=spell_lenders,
+				)
+		except ValueError:
+			pass
+		else:
+			raise AssertionError(
+				spell_lenders,
+				)
 
 
 def _test_tiefling_heritage_conflict_is_atomic() -> None:
@@ -1773,6 +1954,10 @@ def _test_tiefling_heritage_conflict_is_atomic() -> None:
 		character,
 		Tiefling,
 		heritage=Abyssal,
+		)
+	blood_before = character.fiendish_blood
+	resistances_before = tuple(
+		character.damage_resistances,
 		)
 
 	try:
@@ -1787,9 +1972,17 @@ def _test_tiefling_heritage_conflict_is_atomic() -> None:
 	assert character in Abyssal
 	assert character not in Infernal
 	assert Current_Heritage(character) is Abyssal
-	assert character.damage_resistances == (
-		"Poison",
+	# The refused second Heritage changed nothing: the same blood, the same
+	# one Resistance, and that Resistance is the one the blood lends (which
+	# may be either of its legacies', QST-0152).
+	assert character.fiendish_blood is blood_before
+	assert tuple(
+		character.damage_resistances,
+		) == resistances_before
+	assert resistances_before == (
+		blood_before.resistance_lender.DAMAGE_RESISTANCE,
 		)
+	assert blood_before.resistance_lender in blood_before.legacies
 
 
 def _test_elf_heritage_geometry() -> None:
@@ -2407,6 +2600,8 @@ def _self_test() -> None:
 	_test_grammar_names_a_mixed_case_slot()
 	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()
+	_test_tiefling_second_legacy_lends_its_own()
+	_test_tiefling_broken_blood_fails_at_the_draw()
 	_test_tiefling_heritage_conflict_is_atomic()
 	_test_elf_heritage_geometry()
 	_test_elf_rule_projection()
