@@ -32,6 +32,7 @@ from AtlasActorLudi.SpeciesKit import HERITAGE_CHOICES
 from AtlasActorLudi.SpeciesKit import HERITAGES_BY_SPECIES
 from AtlasActorLudi.SpeciesKit import Heritage
 from AtlasActorLudi.SpeciesKit import Heritage_Description
+from AtlasActorLudi.SpeciesKit import Heritage_Description_Error
 from AtlasActorLudi.SpeciesKit import High_Elf
 from AtlasActorLudi.SpeciesKit import Humanoid
 from AtlasActorLudi.SpeciesKit import Human
@@ -2104,6 +2105,44 @@ def _test_tiefling_broken_blood_fails_at_the_draw() -> None:
 				)
 
 
+def _test_heritage_description_fails_loudly() -> None:
+	"""Prose that cannot be filled names the Heritage and what broke."""
+	character = Character(
+		seed=443,
+		)
+	Apply_Species(
+		character,
+		Tiefling,
+		heritage=Abyssal,
+		)
+	for raw, culprit in (
+		(
+			"Strangers stare at {nobody}.",
+			"nobody",
+			),
+		(
+			"A stray brace { in the prose.",
+			"ValueError",
+			),
+		):
+		character.heritage_description = raw
+		try:
+			Heritage_Description(
+				character,
+				)
+		except Heritage_Description_Error as error:
+			assert "Abyssal" in str(
+				error,
+				), error
+			assert culprit in str(
+				error,
+				), error
+		else:
+			raise AssertionError(
+				raw,
+				)
+
+
 def _test_tiefling_heritage_conflict_is_atomic() -> None:
 	character = Character(
 		seed=443,
@@ -2761,6 +2800,7 @@ def _self_test() -> None:
 	_test_tiefling_blood_mixes_two_legacies()
 	_test_tiefling_second_legacy_lends_its_own()
 	_test_tiefling_broken_blood_fails_at_the_draw()
+	_test_heritage_description_fails_loudly()
 	_test_tiefling_heritage_conflict_is_atomic()
 	_test_elf_heritage_geometry()
 	_test_elf_rule_projection()

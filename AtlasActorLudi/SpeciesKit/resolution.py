@@ -84,6 +84,10 @@ def Project_Species_Description(
 		)
 
 
+class Heritage_Description_Error(ValueError):
+	"""Heritage prose that cannot be filled: a slot no name fills, or a stray brace."""
+
+
 def Heritage_Description(
 	character,
 	) -> str:
@@ -95,7 +99,8 @@ def Heritage_Description(
 	as ``heritage_description``, and it may still hold ``{full_name}``: never
 	print that attribute directly, print this.  Otherwise the prose is the
 	Heritage's own ``HERITAGE_DESCRIPTION``.  Empty when the Character has no
-	Heritage, or the Heritage no prose.
+	Heritage, or the Heritage no prose.  Prose that cannot be filled fails
+	loudly, naming the Heritage and what broke (``Heritage_Description_Error``).
 	"""
 	from AtlasActorLudi.SpeciesKit.catalog import Current_Heritage
 
@@ -117,11 +122,22 @@ def Heritage_Description(
 			)
 		or ""
 		)
-	return raw.format(
-		**Name_Slots(
-			character,
-			),
-		)
+	try:
+		return raw.format(
+			**Name_Slots(
+				character,
+				),
+			)
+	except (
+		KeyError,
+		IndexError,
+		ValueError,
+		) as error:
+		raise Heritage_Description_Error(
+			f"The {heritage.__name__} Heritage prose cannot be filled: "
+			f"{error!r} (a slot that Name_Slots does not fill, or a stray "
+			f"brace)."
+			) from error
 
 
 def Resolve_Species_Features(
