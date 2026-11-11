@@ -359,48 +359,6 @@ def Grant_Resistance(
 	return char.damage_resistances
 
 
-def Grant_Resistance(
-		char,
-		*damage_types: str,
-		) -> tuple[str, ...]:
-	"""
-	Make a Resistance true on the sheet, not merely described in the prose.
-
-	Whatever names a Resistance should call this, so that anything reading
-	``damage_resistances`` finds it without knowing whether a Dwarf, a pact or a
-	Circle put it there.  Order is kept and repeats are dropped, so a Dragonborn
-	of Cold ancestry with a Cold-resistant Circle still lists Cold once.
-
-	The reason this exists is that a feature which only *says* it grants
-	Resistance is invisible: it reads correctly and plays wrong.  That bug has
-	been found four times in this codebase, in the Dwarf, the Dragonborn, the
-	Celestial pact and the Sea Druid.
-	"""
-	current = tuple(
-		getattr(
-			char,
-			"damage_resistances",
-			(),
-			) or ()
-		)
-	char.damage_resistances = tuple(
-		dict.fromkeys(
-			(
-				*current,
-				*(
-					str(
-						damage
-						).strip()
-					for damage in damage_types
-					if damage
-					),
-				)
-			)
-		)
-
-	return char.damage_resistances
-
-
 def grant(
 		char,
 		name,
