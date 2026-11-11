@@ -1494,6 +1494,9 @@ def _test_tiefling_grammar_is_complete() -> None:
 		for name in slot.findall(
 			text,
 			):
+			# A slot is a rule (all upper case) or an item (all lower case):
+			# a mixed name would be read as a missing item, the wrong layer.
+			assert name.isupper() or name.islower(), name
 			if name.isupper():
 				assert name in GRAMMAR, name
 				used.add(
@@ -1670,6 +1673,29 @@ def _assert_aspect_obeys_its_rules(
 	for legacy in TIEFLING_HERITAGES:
 		if legacy is not aspect.suggested:
 			assert legacy.PLACE not in paragraph, paragraph
+
+
+def _test_grammar_names_a_mixed_case_slot() -> None:
+	"""A slot in mixed case fails as such, not as a missing lexical item."""
+	from AtlasActorLudi.SpeciesKit.grammar import Derive
+	from AtlasActorLudi.SpeciesKit.grammar import Grammar_Error
+
+	try:
+		Derive(
+			None,
+			{},
+			"{Say_Scent}",
+			{},
+			None,
+			)
+	except Grammar_Error as error:
+		assert "neither a rule" in str(
+			error,
+			), error
+	else:
+		raise AssertionError(
+			"A mixed-case slot must fail loudly.",
+			)
 
 
 def _test_collapse_fails_loudly_on_bad_input() -> None:
@@ -1944,10 +1970,15 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 		assert "}" not in entry.description, entry.description
 
 		if not blood.mixed:
-			# A pure blood is the published rule, exactly.
+			# A pure blood is the published rule, exactly: its one legacy
+			# lends every spell place and the Resistance.
 			heritage = legacies[
 				0
 				]
+			assert blood.spell_lenders == (
+				heritage,
+				) * 3
+			assert blood.resistance_lender is heritage
 			assert blood.spells == tuple(
 				sorted(
 					heritage.SPELLS,
@@ -1975,6 +2006,50 @@ def _test_tiefling_blood_mixes_two_legacies() -> None:
 	# The house rule is not only allowed but happens (QST-0152).
 	assert seen_spell_from_second
 	assert seen_resistance_from_second
+
+
+def _test_tiefling_second_legacy_lends_its_own() -> None:
+	"""
+	A blood whose second legacy lends everything carries exactly that
+	legacy's spells and Resistance: a fixed probe of the lending, which does
+	not depend on what any seed happens to draw.
+	"""
+	from dataclasses import replace
+
+	for seed in range(
+		1,
+		61,
+		):
+		character = Character(
+			seed=seed,
+			)
+		Apply_Species(
+			character,
+			Tiefling,
+			)
+		blood = character.fiendish_blood
+		if blood.mixed:
+			break
+	else:
+		raise AssertionError(
+			"No mixed blood in 60 seeds.",
+			)
+	second = blood.legacies[
+		1
+		]
+	probe = replace(
+		blood,
+		spell_lenders=(
+			second,
+			) * 3,
+		resistance_lender=second,
+		)
+	assert probe.spells == tuple(
+		sorted(
+			second.SPELLS,
+			),
+		)
+	assert probe.resistance == second.DAMAGE_RESISTANCE
 
 
 def _test_tiefling_broken_blood_fails_at_the_draw() -> None:
@@ -2681,8 +2756,10 @@ def _self_test() -> None:
 	_test_tiefling_grammar_is_complete()
 	_test_tiefling_three_alternatives_everywhere()
 	_test_collapse_fails_loudly_on_bad_input()
+	_test_grammar_names_a_mixed_case_slot()
 	_test_tiefling_aspect_collapses_for_every_blood()
 	_test_tiefling_blood_mixes_two_legacies()
+	_test_tiefling_second_legacy_lends_its_own()
 	_test_tiefling_broken_blood_fails_at_the_draw()
 	_test_tiefling_heritage_conflict_is_atomic()
 	_test_elf_heritage_geometry()

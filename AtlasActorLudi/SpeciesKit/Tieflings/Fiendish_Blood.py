@@ -53,6 +53,10 @@ class Fiendish_Blood:
 				self.spell_lenders,
 				)
 
+	# A cached_property on a frozen dataclass: it works because the cache is
+	# written straight into the instance's __dict__, past the frozen
+	# __setattr__.  The value is derived only from frozen fields, so keeping
+	# it never changes what the blood says.
 	@cached_property
 	def spells(
 			self,
@@ -61,7 +65,8 @@ class Fiendish_Blood:
 		The legacy spells as ``(level, spell key)`` rows, like ``SPELLS``.
 
 		Derived on the first read and kept: every later read is a lookup.  The
-		lenders were checked when the blood was made, so this cannot fail.
+		lenders were checked when the blood was made; ``_spell_at_level`` still
+		fails loudly if a legacy's ``SPELLS`` were changed since.
 		"""
 		return tuple(
 				_spell_at_level(
@@ -231,10 +236,20 @@ def Draw_Fiendish_Blood(
 	"""
 	Draw this Tiefling's blood, once and for life.
 
-	Called from the Heritage's Imprint.  The legacies, the aspect and the
-	rules draw from three Dice Bags of their own, so changing one never moves
-	the others.  The spell places are drawn before the Resistance; that order
-	is part of the replay contract.
+	Called from the Heritage's Imprint.  The replay contract, in one place:
+	every draw of the blood has a Dice Bag of its own, each fresh for its
+	purpose, so changing one draw never moves another.
+
+	- ``identity.species.Tiefling.fiendish_blood``: the second legacy (here).
+	- ``identity.species.Tiefling.fiendish_blood.rules``: the legacy that
+	  lends each spell place, then the one that lends the Resistance (here).
+	  Places before the Resistance: that order is part of the contract.
+	- ``identity.species.Tiefling.fiendish_blood.rumour``: the place the
+	  aspect suggests (opened in ``Collapse_Aspect``).
+	- ``identity.species.Tiefling.fiendish_blood.aspect``: the collapse of the
+	  look (opened in ``Collapse_Aspect``).
+	- ``identity.species.Tiefling.fiendish_blood.voice``: the words the
+	  grammar derives (opened in ``Collapse_Aspect``).
 	"""
 	legacies = _draw_legacies(
 			target,
