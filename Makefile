@@ -1,7 +1,8 @@
 # Gen Legend: one door.
 #   make run            serve app.main:app on $(PORT)      make dev   the same, reloading on edits
 #   make smoke-player   boot and generate seed 42           make replay-player   the seeded-replay rite
-#   make sweep-player   every Guild at levels 1 and 5 (add WIDE=1 for every level, Species, Background, Specialization)
+#   make prove-specieskit   the SpeciesKit self-test: grammar, Tiefling invariants
+
 .PHONY: run dev setup smoke-player sweep-player replay-player verify-aasimar prove-specieskit safepoint install-hooks loss-check
 
 PORT ?= 8080
