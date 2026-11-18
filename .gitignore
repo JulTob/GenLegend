@@ -14,22 +14,19 @@ docs/site_libs/bootstrap-3.3.5/css/fonts/OpenSansLight.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/OpenSansLightItalic.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/Raleway.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/RalewayBold.ttf
+docs/site_libs/bootstrap-3.3.5/css/fonts/OpenSansLight.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/Roboto.ttf
-docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoBold.ttf
-docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoLight.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoMedium.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansPro.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansProBold.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansProItalic.ttf
-docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansProLight.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/Ubuntu.ttf
 docs/site_libs/bootstrap-3.3.5/css/journal.min.css
 docs/site_libs/bootstrap-3.3.5/css/lumen.min.css
 docs/site_libs/bootstrap-3.3.5/css/paper.min.css
 docs/site_libs/bootstrap-3.3.5/css/readable.min.css
 docs/site_libs/bootstrap-3.3.5/css/sandstone.min.css
-docs/site_libs/bootstrap-3.3.5/css/simplex.min.css
-docs/site_libs/bootstrap-3.3.5/css/spacelab.min.css
+docs/site_libs/bootstrap-3.3.5/css/space/lab.min.css
 docs/site_libs/bootstrap-3.3.5/css/united.min.css
 docs/site_libs/bootstrap-3.3.5/css/yeti.min.css
 docs/site_libs/bootstrap-3.3.5/fonts/glyphicons-halflings-regular.eot
@@ -49,9 +46,7 @@ docs/site_libs/font-awesome-6.4.0/css/v4-shims.min.css
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-brands-400.ttf
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-brands-400.woff2
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-regular-400.ttf
-docs/site_libs/font-awesome-6.4.0/webfonts/fa-regular-400.woff2
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-solid-900.ttf
-docs/site_libs/font-awesome-6.4.0/webfonts/fa-solid-900.woff2
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-v4compatibility.ttf
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-v4compatibility.woff2
 .DS_Store
@@ -104,6 +99,12 @@ $S/
 .safepoint/
 * 2.py
 * 2.md
+
+# --- Accident-recovery debris copies (PR #128) ------------------------------
+# Partial file copies kept beside the live source after a recovery drift apart
+# and read like source. Recovery notes belong in RECOVERY NOTE blocks inside
+# the live files; copies belong in git history, never in the working tree.
+*.pre-accident-partial
 
 # Documenta/Sources holds reference material consulted by hand (books, transcripts).
 # It is not repository content (Julio, 2026-09-06, QST-0087).
