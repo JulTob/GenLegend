@@ -14,8 +14,10 @@ docs/site_libs/bootstrap-3.3.5/css/fonts/OpenSansLight.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/OpenSansLightItalic.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/Raleway.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/RalewayBold.ttf
-docs/site_libs/bootstrap-3.3.5/css/fonts/OpenSansLight.ttf
-docs/site_libs/bootstrap-3.3.5/css/fonts/Roboto.ttf
+docs/site_libs/bootstrap-3.3.5/css/fonts/RalewayItalic.ttf
+docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoBold.ttf
+docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoLight.ttf
+docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoItalic.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoMedium.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansPro.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansProBold.ttf
@@ -26,7 +28,8 @@ docs/site_libs/bootstrap-3.3.5/css/lumen.min.css
 docs/site_libs/bootstrap-3.3.5/css/paper.min.css
 docs/site_libs/bootstrap-3.3.5/css/readable.min.css
 docs/site_libs/bootstrap-3.3.5/css/sandstone.min.css
-docs/site_libs/bootstrap-3.3.5/css/space/lab.min.css
+docs/site_libs/bootstrap-3.3.5/css/simplex.min.css
+docs/site_libs/bootstrap-3.3.5/css/spacelab.min.css
 docs/site_libs/bootstrap-3.3.5/css/united.min.css
 docs/site_libs/bootstrap-3.3.5/css/yeti.min.css
 docs/site_libs/bootstrap-3.3.5/fonts/glyphicons-halflings-regular.eot
