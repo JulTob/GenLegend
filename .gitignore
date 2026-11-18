@@ -105,6 +105,12 @@ $S/
 * 2.py
 * 2.md
 
+# --- Accident-recovery debris copies (PR #128) ------------------------------
+# Partial file copies kept beside the live source after a recovery drift apart
+# and read like source. Recovery notes belong in RECOVERY NOTE blocks inside
+# the live files; copies belong in git history, never in the working tree.
+*.pre-accident-partial
+
 # Documenta/Sources holds reference material consulted by hand (books, transcripts).
 # It is not repository content (Julio, 2026-09-06, QST-0087).
 Documenta/Sources/
