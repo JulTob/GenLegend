@@ -14,14 +14,14 @@ docs/site_libs/bootstrap-3.3.5/css/fonts/OpenSansLight.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/OpenSansLightItalic.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/Raleway.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/RalewayBold.ttf
-docs/site_libs/bootstrap-3.3.5/css/fonts/RalewayItalic.ttf
+docs/site_libs/bootstrap-3.3.5/css/fonts/Roboto.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoBold.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoLight.ttf
-docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoItalic.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/RobotoMedium.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansPro.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansProBold.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansProItalic.ttf
+docs/site_libs/bootstrap-3.3.5/css/fonts/SourceSansProLight.ttf
 docs/site_libs/bootstrap-3.3.5/css/fonts/Ubuntu.ttf
 docs/site_libs/bootstrap-3.3.5/css/journal.min.css
 docs/site_libs/bootstrap-3.3.5/css/lumen.min.css
@@ -49,7 +49,9 @@ docs/site_libs/font-awesome-6.4.0/css/v4-shims.min.css
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-brands-400.ttf
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-brands-400.woff2
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-regular-400.ttf
+docs/site_libs/font-awesome-6.4.0/webfonts/fa-regular-400.woff2
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-solid-900.ttf
+docs/site_libs/font-awesome-6.4.0/webfonts/fa-solid-900.woff2
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-v4compatibility.ttf
 docs/site_libs/font-awesome-6.4.0/webfonts/fa-v4compatibility.woff2
 .DS_Store
