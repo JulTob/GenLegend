@@ -52,7 +52,13 @@ jobs:
       - name: Build the venv
         run: make setup
 
-      # The same three rites a contributor runs, by the same commands, so
+      # The SpeciesKit self-test runs first on purpose: it is the cheapest of
+      # the rites and the most specific, so a broken grammar is named in
+      # seconds instead of after Sweep has spent its minutes.
+      - name: SpeciesKit self-test
+        run: make prove-specieskit
+
+      # The same rites a contributor runs, by the same commands, so
       # there is one definition of the gate rather than two.
       - name: Smoke
         run: make smoke-player
